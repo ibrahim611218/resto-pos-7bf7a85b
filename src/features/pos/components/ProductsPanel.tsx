@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +7,7 @@ import { Product, Category } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
 import CategoryList from "./CategoryList";
 import ProductsList from "./ProductsList";
+import SizeSelectionDialog from "./SizeSelectionDialog";
 
 interface ProductsPanelProps {
   searchTerm: string;
@@ -32,6 +34,19 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   isArabic,
   getSizeLabel,
 }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <div className="flex-1 p-4 overflow-y-auto">
       <div className="mb-4">
@@ -73,7 +88,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                 animation="fade"
                 delay={index * 50}
                 className="cursor-pointer hover:shadow-md"
-                onClick={() => onAddToCart(product, product.variants[0].id)}
+                onClick={() => handleProductClick(product)}
               >
                 <div className="text-center py-2">
                   <p className="font-medium">
@@ -94,6 +109,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         onAddToCart={onAddToCart} 
         isArabic={isArabic}
         getSizeLabel={getSizeLabel}
+      />
+
+      <SizeSelectionDialog
+        product={selectedProduct}
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        onAddToCart={onAddToCart}
+        isArabic={isArabic}
       />
     </div>
   );
