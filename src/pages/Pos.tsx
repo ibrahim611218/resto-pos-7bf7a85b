@@ -6,7 +6,7 @@ interface PosProps {
   language: Language;
 }
 
-const Pos = ({ language }: PosProps) => {
+const Pos = ({ language = "ar" }: PosProps) => {
   return <PosFeature language={language} />;
 };
 

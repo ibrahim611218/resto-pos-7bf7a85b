@@ -23,8 +23,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Index language="en" />} />
-            <Route path="/pos" element={<Pos language="en" />} />
+            <Route path="/" element={<Index language="ar" />} />
+            <Route path="/pos" element={<Pos language="ar" />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/add" element={<ProductForm />} />
             <Route path="/products/edit/:id" element={<ProductForm />} />
