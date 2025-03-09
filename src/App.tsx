@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import MainLayout from "./components/layout/MainLayout";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index language="en" />} />
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Index language="en" />} />
+            <Route path="/pos" element={<h1 className="text-2xl font-bold">نقطة البيع</h1>} />
+            <Route path="/products" element={<h1 className="text-2xl font-bold">الأصناف</h1>} />
+            <Route path="/products/add" element={<h1 className="text-2xl font-bold">إضافة صنف</h1>} />
+            <Route path="/categories" element={<h1 className="text-2xl font-bold">التصنيفات</h1>} />
+            <Route path="/inventory" element={<h1 className="text-2xl font-bold">المخزون</h1>} />
+            <Route path="/inventory/add" element={<h1 className="text-2xl font-bold">إضافة مخزون</h1>} />
+            <Route path="/invoices" element={<h1 className="text-2xl font-bold">الفواتير</h1>} />
+            <Route path="/reports/sales" element={<h1 className="text-2xl font-bold">تقارير المبيعات</h1>} />
+            <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
+            <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
+            <Route path="/settings" element={<h1 className="text-2xl font-bold">الإعدادات</h1>} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
