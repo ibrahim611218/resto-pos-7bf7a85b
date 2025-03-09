@@ -12,6 +12,7 @@ import {
   Tags,
   Users,
   FileText,
+  ChefHat,
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
@@ -29,6 +30,11 @@ export const getSidebarLinks = (): SidebarLink[] => [
       { name: "عملية بيع جديدة", path: "/pos", icon: <Plus size={16} /> },
       { name: "الفواتير", path: "/invoices", icon: <FileText size={16} /> },
     ]
+  },
+  { 
+    name: "المطبخ", 
+    path: "/kitchen", 
+    icon: <ChefHat size={20} /> 
   },
   { 
     name: "الأصناف", 

@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -10,10 +10,14 @@ import { getSidebarLinks } from "./sidebar/sidebarLinks";
 import SidebarItem from "./sidebar/SidebarItem";
 import { SidebarProps } from "./sidebar/types";
 import ThemeToggle from "../ui-custom/ThemeToggle";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user, logout, hasPermission } = useAuth();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
     products: false,
     reports: false,
@@ -29,7 +33,45 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     }));
   };
 
-  const mainLinks = getSidebarLinks();
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  // Get all sidebar links
+  const allLinks = getSidebarLinks();
+  
+  // Filter links based on user role
+  const mainLinks = allLinks.filter(link => {
+    // Admin can see all links
+    if (hasPermission("admin")) return true;
+    
+    // Filter based on path
+    if (link.path === "/pos" || link.path === "#" && link.name === "نقاط البيع") {
+      return hasPermission(["admin", "cashier"]);
+    }
+    
+    if (link.path === "/kitchen") {
+      return hasPermission(["admin", "kitchen"]);
+    }
+    
+    // Hide these sections from non-admins
+    if (
+      link.path === "#" && 
+      (link.name === "الأصناف" || 
+       link.name === "المخزون" || 
+       link.name === "التقارير")
+    ) {
+      return hasPermission("admin");
+    }
+    
+    if (link.path === "/settings") {
+      return hasPermission("admin");
+    }
+    
+    // By default, show the link
+    return true;
+  });
 
   if (isMobile && collapsed) return null;
 
@@ -58,6 +100,30 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           </Button>
         </div>
 
+        {user && (
+          <div className={cn(
+            "flex items-center px-4 py-3 border-b",
+            collapsed ? "justify-center" : "justify-start gap-3"
+          )}>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">
+                {user.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            
+            {!collapsed && (
+              <div className="flex flex-col">
+                <span className="font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {user.role === "admin" ? "مدير" : 
+                   user.role === "cashier" ? "محاسب" : 
+                   user.role === "kitchen" ? "مطبخ" : "مستخدم"}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         <nav className="mt-4 flex-1 space-y-1 px-3">
           {mainLinks.map((link) => (
             <SidebarItem
@@ -71,8 +137,20 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           ))}
         </nav>
         
-        <div className="border-t p-3">
+        <div className="border-t p-3 space-y-2">
           <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
+          
+          <Button 
+            variant="outline"
+            className={cn(
+              "w-full",
+              collapsed ? "justify-center" : "justify-start"
+            )}
+            onClick={handleLogout}
+          >
+            <LogOut size={18} />
+            {!collapsed && <span className="mr-2">تسجيل الخروج</span>}
+          </Button>
         </div>
       </aside>
     </AnimatedTransition>
