@@ -1,9 +1,10 @@
-
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen";
 
 export type Size = "small" | "medium" | "large";
+
+export type ProductType = "sized" | "single";
 
 export interface User {
   id: string;
@@ -36,6 +37,8 @@ export interface Product {
   categoryId: string;
   variants: ProductVariant[];
   taxable: boolean;
+  type: ProductType;
+  price?: number; // For single products without variants
 }
 
 export interface CartItem {
