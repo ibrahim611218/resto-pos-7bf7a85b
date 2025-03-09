@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
+import Categories from "./pages/Categories";
+import Products from "./pages/Products";
 
 const queryClient = new QueryClient();
 
@@ -20,9 +22,9 @@ const App = () => (
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index language="en" />} />
             <Route path="/pos" element={<h1 className="text-2xl font-bold">نقطة البيع</h1>} />
-            <Route path="/products" element={<h1 className="text-2xl font-bold">الأصناف</h1>} />
+            <Route path="/products" element={<Products />} />
             <Route path="/products/add" element={<h1 className="text-2xl font-bold">إضافة صنف</h1>} />
-            <Route path="/categories" element={<h1 className="text-2xl font-bold">التصنيفات</h1>} />
+            <Route path="/categories" element={<Categories />} />
             <Route path="/inventory" element={<h1 className="text-2xl font-bold">المخزون</h1>} />
             <Route path="/inventory/add" element={<h1 className="text-2xl font-bold">إضافة مخزون</h1>} />
             <Route path="/invoices" element={<h1 className="text-2xl font-bold">الفواتير</h1>} />
