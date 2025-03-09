@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Invoice } from "@/types";
 import { mockInvoices } from "../data/mockInvoices";
-import format from "date-fns/format";
+import { format } from "date-fns";
 import { toast } from "sonner";
 
 export const useInvoices = () => {
