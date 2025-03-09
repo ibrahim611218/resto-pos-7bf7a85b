@@ -10,6 +10,7 @@ import MainLayout from "./components/layout/MainLayout";
 import Categories from "./pages/Categories";
 import Products from "./pages/Products";
 import ProductForm from "./components/ProductForm";
+import Pos from "./pages/Pos";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +23,7 @@ const App = () => (
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index language="en" />} />
-            <Route path="/pos" element={<h1 className="text-2xl font-bold">نقطة البيع</h1>} />
+            <Route path="/pos" element={<Pos language="en" />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/add" element={<ProductForm />} />
             <Route path="/products/edit/:id" element={<ProductForm />} />

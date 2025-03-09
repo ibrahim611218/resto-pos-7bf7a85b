@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Search, Plus, Minus, Trash2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -47,6 +46,7 @@ const Pos = ({ language }: PosProps) => {
         { id: "1-l", size: "large", price: 45 },
       ],
       taxable: true,
+      type: "sized",
     },
     {
       id: "2",
@@ -59,6 +59,7 @@ const Pos = ({ language }: PosProps) => {
         { id: "2-l", size: "large", price: 60 },
       ],
       taxable: true,
+      type: "sized",
     },
     {
       id: "3",
@@ -71,6 +72,7 @@ const Pos = ({ language }: PosProps) => {
         { id: "3-l", size: "large", price: 25 },
       ],
       taxable: true,
+      type: "sized",
     },
     {
       id: "4",
@@ -83,6 +85,7 @@ const Pos = ({ language }: PosProps) => {
         { id: "4-l", size: "large", price: 35 },
       ],
       taxable: true,
+      type: "sized",
     },
     {
       id: "5",
@@ -95,6 +98,7 @@ const Pos = ({ language }: PosProps) => {
         { id: "5-l", size: "large", price: 20 },
       ],
       taxable: true,
+      type: "sized",
     },
   ];
   
@@ -196,7 +200,6 @@ const Pos = ({ language }: PosProps) => {
       status: "completed",
     };
     
-    // This would typically save the invoice to a database
     console.log("Created invoice:", invoice);
     
     toast.success(
@@ -224,7 +227,6 @@ const Pos = ({ language }: PosProps) => {
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      {/* Product selection panel */}
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="mb-4">
           <div className="relative">
@@ -337,7 +339,6 @@ const Pos = ({ language }: PosProps) => {
         </div>
       </div>
       
-      {/* Cart panel */}
       <div className="w-full md:w-96 bg-card border-l p-4 overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">
           {isArabic ? "السلة" : "Cart"}
