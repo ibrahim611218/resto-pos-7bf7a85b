@@ -29,4 +29,11 @@ export const mockUsers: MockUser[] = [
     role: "kitchen",
     password: "kitchen123",
   },
+  {
+    id: "4",
+    name: "إبراهيم عبدالفتاح",
+    email: "eng.ibrahimabdalfatah@gmail.com",
+    role: "admin",
+    password: "Ibrahim@1995",
+  },
 ];
