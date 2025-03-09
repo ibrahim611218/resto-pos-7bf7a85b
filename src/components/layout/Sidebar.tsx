@@ -9,6 +9,7 @@ import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { getSidebarLinks } from "./sidebar/sidebarLinks";
 import SidebarItem from "./sidebar/SidebarItem";
 import { SidebarProps } from "./sidebar/types";
+import ThemeToggle from "../ui-custom/ThemeToggle";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
@@ -69,6 +70,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             />
           ))}
         </nav>
+        
+        <div className="border-t p-3">
+          <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
+        </div>
       </aside>
     </AnimatedTransition>
   );
