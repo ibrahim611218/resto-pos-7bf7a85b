@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -6,7 +5,6 @@ import {
   ShoppingCart,
   Package,
   Boxes,
-  FileChart,
   BarChart3,
   Settings,
   ChevronLeft,
@@ -94,7 +92,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     { 
       name: "التقارير", 
       path: "#", 
-      icon: <FileChart size={20} />,
+      icon: <BarChart3 size={20} />,
       children: [
         { name: "المبيعات", path: "/reports/sales", icon: <BarChart3 size={16} /> },
         { name: "المخزون", path: "/reports/inventory", icon: <Package size={16} /> },
