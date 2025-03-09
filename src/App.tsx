@@ -11,6 +11,7 @@ import Categories from "./pages/Categories";
 import Products from "./pages/Products";
 import ProductForm from "./components/ProductForm";
 import Pos from "./pages/Pos";
+import Invoices from "./pages/Invoices";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,7 @@ const App = () => (
             <Route path="/categories" element={<Categories />} />
             <Route path="/inventory" element={<h1 className="text-2xl font-bold">المخزون</h1>} />
             <Route path="/inventory/add" element={<h1 className="text-2xl font-bold">إضافة مخزون</h1>} />
-            <Route path="/invoices" element={<h1 className="text-2xl font-bold">الفواتير</h1>} />
+            <Route path="/invoices" element={<Invoices />} />
             <Route path="/reports/sales" element={<h1 className="text-2xl font-bold">تقارير المبيعات</h1>} />
             <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
             <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
