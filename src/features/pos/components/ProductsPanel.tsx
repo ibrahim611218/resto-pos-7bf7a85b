@@ -47,6 +47,15 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     setSelectedProduct(null);
   };
 
+  // Group products by category for better organization
+  const productsByCategory = filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
+    if (!acc[product.categoryId]) {
+      acc[product.categoryId] = [];
+    }
+    acc[product.categoryId].push(product);
+    return acc;
+  }, {});
+
   return (
     <div className="flex-1 p-4 overflow-y-auto">
       <div className="mb-4">
@@ -78,39 +87,69 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             setActiveCategory={setActiveCategory}
             isArabic={isArabic}
           />
+          
+          {activeCategory && (
+            <div className="mt-4">
+              <h3 className="font-bold mb-2">
+                {isArabic 
+                  ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
+                  : categories.find(c => c.id === activeCategory)?.name || "Products"}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-2">
+                {searchedProducts.map((product, index) => (
+                  <GlassCard
+                    key={product.id}
+                    animation="fade"
+                    delay={index * 50}
+                    className="cursor-pointer hover:shadow-md bg-secondary/30"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="text-center py-2">
+                      <p className="font-medium">
+                        {isArabic ? product.nameAr : product.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
+                      </p>
+                    </div>
+                  </GlassCard>
+                ))}
+              </div>
+            </div>
+          )}
         </TabsContent>
         
         <TabsContent value="all" className="mt-2">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-2">
-            {filteredProducts.map((product, index) => (
-              <GlassCard
-                key={product.id}
-                animation="fade"
-                delay={index * 50}
-                className="cursor-pointer hover:shadow-md"
-                onClick={() => handleProductClick(product)}
-              >
-                <div className="text-center py-2">
-                  <p className="font-medium">
-                    {isArabic ? product.nameAr : product.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
-                  </p>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
+          {categories.map((category) => (
+            <div key={category.id} className="mb-6">
+              <h3 className="font-bold mb-2 text-lg">
+                {isArabic ? category.nameAr : category.name}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-2">
+                {productsByCategory[category.id]?.map((product, index) => (
+                  <GlassCard
+                    key={product.id}
+                    animation="fade"
+                    delay={index * 50}
+                    className="cursor-pointer hover:shadow-md bg-secondary/30"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="text-center py-2">
+                      <p className="font-medium">
+                        {isArabic ? product.nameAr : product.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
+                      </p>
+                    </div>
+                  </GlassCard>
+                ))}
+              </div>
+            </div>
+          ))}
         </TabsContent>
       </Tabs>
       
-      <ProductsList 
-        products={searchedProducts} 
-        onAddToCart={onAddToCart} 
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
-      />
-
       <SizeSelectionDialog
         product={selectedProduct}
         isOpen={isDialogOpen}

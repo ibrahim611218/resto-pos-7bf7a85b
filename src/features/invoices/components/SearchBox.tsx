@@ -1,7 +1,7 @@
 
 import React from "react";
-import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface SearchBoxProps {
   searchTerm: string;
@@ -16,9 +16,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({
 }) => {
   return (
     <div className="relative w-64">
-      <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
       <Input
-        className="pl-10 w-full"
+        className="pl-9 w-full"
         placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
