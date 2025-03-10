@@ -4,12 +4,13 @@ import { Language, CartItem } from "@/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import GlassCard from "@/components/ui-custom/GlassCard";
 import { Button } from "@/components/ui/button";
-import { Check, Clock, ChefHat } from "lucide-react";
+import { Check, Clock, ChefHat, Bell } from "lucide-react";
 import { getSizeLabel } from "@/features/pos/utils/sizeLabels";
 import { toast } from "sonner";
 
 interface KitchenOrder {
   id: string;
+  invoiceId?: string;
   items: CartItem[];
   status: "pending" | "preparing" | "completed";
   timestamp: Date;
@@ -19,83 +20,79 @@ interface KitchenOrdersProps {
   language: Language;
 }
 
-// Mock orders - in a real app, this would come from an API or database
-const mockOrders: KitchenOrder[] = [
-  {
-    id: "order-1",
-    items: [
+// Set up a notification function
+const notifyOrderStatus = (orderId: string, status: string, isArabic: boolean) => {
+  // In a real app, this would use WebSockets or server-sent events
+  // For now we'll just use the toast system
+  
+  if (status === "preparing") {
+    toast.info(
+      isArabic 
+        ? `تم بدء تحضير الطلب ${orderId}` 
+        : `Started preparing order ${orderId}`,
       {
-        id: "item-1",
-        productId: "1",
-        name: "Espresso",
-        nameAr: "إسبريسو",
-        variantId: "1-1",
-        size: "small",
-        price: 10,
-        quantity: 2,
-        taxable: true,
-      },
+        icon: <ChefHat className="h-5 w-5" />
+      }
+    );
+  } else if (status === "completed") {
+    toast.success(
+      isArabic 
+        ? `تم إكمال الطلب ${orderId}` 
+        : `Order ${orderId} is completed`,
       {
-        id: "item-2",
-        productId: "2",
-        name: "Cappuccino",
-        nameAr: "كابتشينو",
-        variantId: "2-2",
-        size: "medium",
-        price: 15,
-        quantity: 1,
-        taxable: true,
-      },
-    ],
-    status: "pending",
-    timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-  },
-  {
-    id: "order-2",
-    items: [
-      {
-        id: "item-3",
-        productId: "3",
-        name: "Latte",
-        nameAr: "لاتيه",
-        variantId: "3-3",
-        size: "large",
-        price: 18,
-        quantity: 1,
-        taxable: true,
-      },
-    ],
-    status: "preparing",
-    timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-  },
-];
+        icon: <Check className="h-5 w-5" />
+      }
+    );
+  }
+};
 
 const KitchenOrders: React.FC<KitchenOrdersProps> = ({ language }) => {
   const isArabic = language === "ar";
   const { user } = useAuth();
-  const [orders, setOrders] = useState<KitchenOrder[]>(mockOrders);
+  const [orders, setOrders] = useState<KitchenOrder[]>([]);
+
+  // Load orders from localStorage 
+  useEffect(() => {
+    const loadOrders = () => {
+      const storedOrders = localStorage.getItem('kitchenOrders');
+      if (storedOrders) {
+        try {
+          // Parse the stored orders and fix the timestamp which is stored as string
+          const parsedOrders = JSON.parse(storedOrders).map((order: any) => ({
+            ...order,
+            timestamp: new Date(order.timestamp)
+          }));
+          setOrders(parsedOrders);
+        } catch (error) {
+          console.error("Error loading kitchen orders:", error);
+        }
+      }
+    };
+
+    loadOrders();
+
+    // Set up an interval to check for new orders every 30 seconds
+    const interval = setInterval(loadOrders, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const updateOrderStatus = (orderId: string, newStatus: "pending" | "preparing" | "completed") => {
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
+    setOrders(prevOrders => {
+      const updatedOrders = prevOrders.map(order => 
         order.id === orderId 
           ? { ...order, status: newStatus } 
           : order
-      )
-    );
-
-    if (newStatus === "completed") {
-      toast.success(
-        isArabic 
-          ? "تم إكمال الطلب بنجاح وإرسال إشعار" 
-          : "Order completed and notification sent",
-        {
-          description: isArabic 
-            ? `الطلب رقم ${orderId} جاهز للتسليم` 
-            : `Order #${orderId} is ready for delivery`
-        }
       );
-    }
+      
+      // Update localStorage
+      localStorage.setItem('kitchenOrders', JSON.stringify(updatedOrders));
+      
+      // Send notification
+      notifyOrderStatus(orderId, newStatus, isArabic);
+      
+      return updatedOrders;
+    });
   };
 
   const getStatusColor = (status: string) => {
@@ -135,10 +132,21 @@ const KitchenOrders: React.FC<KitchenOrdersProps> = ({ language }) => {
     if (statusOrder[a.status] !== statusOrder[b.status]) {
       return statusOrder[a.status] - statusOrder[b.status];
     }
-    return a.timestamp.getTime() - b.timestamp.getTime();
+    return b.timestamp.getTime() - a.timestamp.getTime(); // Newest first within same status
   });
 
-  if (!user || user.role !== "kitchen") {
+  if (!user) {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">
+          {isArabic ? "يرجى تسجيل الدخول" : "Please login"}
+        </h1>
+      </div>
+    );
+  }
+
+  // Allow both kitchen staff and admin to view
+  if (user.role !== "kitchen" && user.role !== "admin") {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold mb-4">
@@ -153,79 +161,93 @@ const KitchenOrders: React.FC<KitchenOrdersProps> = ({ language }) => {
       className={`container mx-auto p-4 ${isArabic ? "font-[system-ui]" : ""}`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <h1 className="text-2xl font-bold mb-6">
+      <h1 className="text-2xl font-bold mb-6 flex items-center">
         {isArabic ? "طلبات المطبخ" : "Kitchen Orders"}
+        {sortedOrders.filter(o => o.status === "pending").length > 0 && (
+          <span className="mr-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-sm">
+            {sortedOrders.filter(o => o.status === "pending").length}
+          </span>
+        )}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedOrders.map((order) => (
-          <GlassCard key={order.id} className="overflow-hidden">
-            <div className="p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-bold">
-                  {isArabic ? `الطلب #${order.id}` : `Order #${order.id}`}
-                </h2>
-                <div className={`px-3 py-1 rounded-full text-white flex items-center gap-2 ${getStatusColor(order.status)}`}>
-                  {getStatusIcon(order.status)}
-                  <span>{getStatusText(order.status)}</span>
+      {sortedOrders.length === 0 ? (
+        <div className="text-center py-12">
+          <Bell className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-muted-foreground">
+            {isArabic ? "لا توجد طلبات حاليًا" : "No orders currently"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedOrders.map((order) => (
+            <GlassCard key={order.id} className="overflow-hidden">
+              <div className="p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-bold">
+                    {isArabic ? `الطلب #${order.id}` : `Order #${order.id}`}
+                  </h2>
+                  <div className={`px-3 py-1 rounded-full text-white flex items-center gap-2 ${getStatusColor(order.status)}`}>
+                    {getStatusIcon(order.status)}
+                    <span>{getStatusText(order.status)}</span>
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {isArabic ? "وقت الطلب:" : "Order Time:"}
+                    {" "}
+                    {new Date(order.timestamp).toLocaleTimeString(isArabic ? "ar-SA" : "en-US")}
+                  </p>
+                  <ul className="space-y-2">
+                    {order.items.map((item) => (
+                      <li key={item.id} className="flex justify-between">
+                        <div>
+                          <span className="font-medium">
+                            {isArabic ? item.nameAr : item.name}
+                          </span>
+                          <span className="text-sm text-muted-foreground block">
+                            {getSizeLabel(item.size, language)} × {item.quantity}
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-4 space-x-2 flex justify-end">
+                  {order.status === "pending" && (
+                    <Button 
+                      onClick={() => updateOrderStatus(order.id, "preparing")}
+                      className="w-full"
+                    >
+                      {isArabic ? "بدء التحضير" : "Start Preparing"}
+                    </Button>
+                  )}
+                  
+                  {order.status === "preparing" && (
+                    <Button 
+                      onClick={() => updateOrderStatus(order.id, "completed")}
+                      className="w-full"
+                    >
+                      {isArabic ? "إكمال الطلب" : "Complete Order"}
+                    </Button>
+                  )}
+                  
+                  {order.status === "completed" && (
+                    <Button 
+                      variant="outline" 
+                      disabled
+                      className="w-full"
+                    >
+                      {isArabic ? "تم الإكمال" : "Completed"}
+                    </Button>
+                  )}
                 </div>
               </div>
-              
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground mb-2">
-                  {isArabic ? "وقت الطلب:" : "Order Time:"}
-                  {" "}
-                  {order.timestamp.toLocaleTimeString(isArabic ? "ar-SA" : "en-US")}
-                </p>
-                <ul className="space-y-2">
-                  {order.items.map((item) => (
-                    <li key={item.id} className="flex justify-between">
-                      <div>
-                        <span className="font-medium">
-                          {isArabic ? item.nameAr : item.name}
-                        </span>
-                        <span className="text-sm text-muted-foreground block">
-                          {getSizeLabel(item.size, language)} × {item.quantity}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-4 space-x-2 flex justify-end">
-                {order.status === "pending" && (
-                  <Button 
-                    onClick={() => updateOrderStatus(order.id, "preparing")}
-                    className="w-full"
-                  >
-                    {isArabic ? "بدء التحضير" : "Start Preparing"}
-                  </Button>
-                )}
-                
-                {order.status === "preparing" && (
-                  <Button 
-                    onClick={() => updateOrderStatus(order.id, "completed")}
-                    className="w-full"
-                  >
-                    {isArabic ? "إكمال الطلب" : "Complete Order"}
-                  </Button>
-                )}
-                
-                {order.status === "completed" && (
-                  <Button 
-                    variant="outline" 
-                    disabled
-                    className="w-full"
-                  >
-                    {isArabic ? "تم الإكمال" : "Completed"}
-                  </Button>
-                )}
-              </div>
-            </div>
-          </GlassCard>
-        ))}
-      </div>
+            </GlassCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

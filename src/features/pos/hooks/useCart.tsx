@@ -4,10 +4,12 @@ import { toast } from "sonner";
 import { Product, CartItem, Language, Invoice } from "@/types";
 import { calculateInvoiceAmounts, generateInvoiceNumber } from "@/utils/invoice";
 import { getSizeLabel } from "../utils/sizeLabels";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const useCart = (language: Language) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const isArabic = language === "ar";
+  const { user } = useAuth();
   
   const addToCart = (product: Product, variantId: string) => {
     const variant = product.variants.find((v) => v.id === variantId);
@@ -88,20 +90,38 @@ export const useCart = (language: Language) => {
       taxAmount,
       total,
       paymentMethod: "Cash",
-      cashierId: "1",
-      cashierName: "John Doe",
+      cashierId: user?.id || "1",
+      cashierName: user?.name || "Unknown Cashier",
       status: "completed",
     };
     
     console.log("Created invoice:", invoice);
     
+    // Send order to kitchen
+    const kitchenOrder = {
+      id: `order-${invoice.id}`,
+      invoiceId: invoice.id,
+      items: [...cartItems],
+      status: "pending",
+      timestamp: new Date(),
+    };
+    
+    // In a real app, this would be sent to a database
+    // For now, we'll just log it
+    console.log("Sending order to kitchen:", kitchenOrder);
+    
+    // Add to local storage as a simple way to simulate persistence
+    const existingOrders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
+    localStorage.setItem('kitchenOrders', JSON.stringify([...existingOrders, kitchenOrder]));
+    
     toast.success(
       isArabic
-        ? `تم إنشاء الفاتورة رقم ${invoice.number}`
-        : `Created invoice #${invoice.number}`
+        ? `تم إنشاء الفاتورة رقم ${invoice.number} وإرسالها للمطبخ`
+        : `Created invoice #${invoice.number} and sent to kitchen`
     );
     
     clearCart();
+    return invoice;
   };
   
   const { subtotal, taxAmount, total } = calculateInvoiceAmounts(cartItems, 15); // 15% VAT

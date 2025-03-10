@@ -1,6 +1,6 @@
 
 import React from "react";
-import { CreditCard } from "lucide-react";
+import { CreditCard, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
@@ -107,12 +107,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
       
       <div className="mt-6 space-y-2">
         <Button 
-          className="w-full h-12" 
+          className="w-full h-12 flex items-center justify-center gap-2" 
           onClick={createInvoice}
           disabled={cartItems.length === 0}
         >
-          <CreditCard className="mr-2 h-4 w-4" />
-          {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
+          <div className="flex items-center">
+            <CreditCard className="mr-2 h-4 w-4" />
+            {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
+          </div>
+          <ChefHat className="ml-2 h-4 w-4" />
         </Button>
         <Button 
           variant="outline" 
