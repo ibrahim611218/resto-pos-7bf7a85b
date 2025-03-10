@@ -24,7 +24,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Cairo", "Inter", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
