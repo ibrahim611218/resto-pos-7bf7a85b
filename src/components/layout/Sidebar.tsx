@@ -1,39 +1,77 @@
 
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  Receipt,
-  BarChart3,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
-
-interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
-}
+import { getSidebarLinks } from "./sidebar/sidebarLinks";
+import SidebarItem from "./sidebar/SidebarItem";
+import { SidebarProps } from "./sidebar/types";
+import ThemeToggle from "../ui-custom/ThemeToggle";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { user, logout, hasPermission } = useAuth();
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
+    products: false,
+    reports: false,
+    inventory: false,
+    pos: false,
+  });
+
+  const toggleCategory = (category: string) => {
+    if (collapsed) return;
+    setOpenCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  // Get all sidebar links
+  const allLinks = getSidebarLinks();
   
-  const links = [
-    { name: "Dashboard", path: "/", icon: <LayoutDashboard size={20} /> },
-    { name: "POS", path: "/pos", icon: <ShoppingCart size={20} /> },
-    { name: "Products", path: "/products", icon: <Package size={20} /> },
-    { name: "Invoices", path: "/invoices", icon: <Receipt size={20} /> },
-    { name: "Reports", path: "/reports", icon: <BarChart3 size={20} /> },
-    { name: "Settings", path: "/settings", icon: <Settings size={20} /> },
-  ];
+  // Filter links based on user role
+  const mainLinks = allLinks.filter(link => {
+    // Admin can see all links
+    if (hasPermission("admin")) return true;
+    
+    // Filter based on path
+    if (link.path === "/pos" || link.path === "#" && link.name === "نقاط البيع") {
+      return hasPermission(["admin", "cashier"]);
+    }
+    
+    if (link.path === "/kitchen") {
+      return hasPermission(["admin", "kitchen"]);
+    }
+    
+    // Hide these sections from non-admins
+    if (
+      link.path === "#" && 
+      (link.name === "الأصناف" || 
+       link.name === "المخزون" || 
+       link.name === "التقارير")
+    ) {
+      return hasPermission("admin");
+    }
+    
+    if (link.path === "/settings") {
+      return hasPermission("admin");
+    }
+    
+    // By default, show the link
+    return true;
+  });
 
   if (isMobile && collapsed) return null;
 
@@ -41,7 +79,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     <AnimatedTransition animation="fade">
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 left-0 z-30 flex h-screen flex-col glass border-r",
+          "fixed lg:relative inset-y-0 right-0 z-30 flex h-screen flex-col glass border-l",
           collapsed ? "w-20" : "w-64",
           "transition-all duration-300 ease-in-out"
         )}
@@ -49,50 +87,69 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
         <div className="flex items-center justify-between p-4 h-16">
           {!collapsed && (
             <AnimatedTransition animation="fade">
-              <h2 className="text-xl font-bold">NectarPOS</h2>
+              <h2 className="text-xl font-bold">نظام المطاعم</h2>
             </AnimatedTransition>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className="ml-auto"
+            className="mr-auto"
             onClick={onToggle}
           >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            {collapsed ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
           </Button>
         </div>
 
+        {user && (
+          <div className={cn(
+            "flex items-center px-4 py-3 border-b",
+            collapsed ? "justify-center" : "justify-start gap-3"
+          )}>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">
+                {user.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            
+            {!collapsed && (
+              <div className="flex flex-col">
+                <span className="font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {user.role === "admin" ? "مدير" : 
+                   user.role === "cashier" ? "محاسب" : 
+                   user.role === "kitchen" ? "مطبخ" : "مستخدم"}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         <nav className="mt-4 flex-1 space-y-1 px-3">
-          {links.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={cn(
-                "flex items-center rounded-md px-3 py-2 transition-colors",
-                location.pathname === link.path
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-accent hover:text-accent-foreground",
-                collapsed ? "justify-center" : "justify-start"
-              )}
-            >
-              {link.icon}
-              {!collapsed && (
-                <span className="ml-3 transition-opacity">{link.name}</span>
-              )}
-            </Link>
+          {mainLinks.map((link) => (
+            <SidebarItem
+              key={link.name}
+              link={link}
+              collapsed={collapsed}
+              isOpen={openCategories[link.path.replace("/", "")] || false}
+              currentPath={location.pathname}
+              onToggleCategory={toggleCategory}
+            />
           ))}
         </nav>
-
-        <div className="p-4">
-          <Button
-            variant="ghost"
+        
+        <div className="border-t p-3 space-y-2">
+          <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
+          
+          <Button 
+            variant="outline"
             className={cn(
-              "w-full flex items-center text-muted-foreground",
+              "w-full",
               collapsed ? "justify-center" : "justify-start"
             )}
+            onClick={handleLogout}
           >
-            <LogOut size={20} />
-            {!collapsed && <span className="ml-2">Logout</span>}
+            <LogOut size={18} />
+            {!collapsed && <span className="mr-2">تسجيل الخروج</span>}
           </Button>
         </div>
       </aside>

@@ -1,310 +1,169 @@
 
-import React from "react";
-import {
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-  Filter,
-  Package,
-  MoreHorizontal,
-} from "lucide-react";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { sampleProducts, sampleCategories } from "@/data/sampleData";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import GlassCard from "@/components/ui-custom/GlassCard";
-import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { Product, Category, Language } from "@/types";
-import { toast } from "sonner";
+import { Package, Plus, Tag, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Size } from "@/types";
 
-interface ProductsProps {
-  language: Language;
-}
+const Products = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryId = queryParams.get("category");
 
-const Products = ({ language }: ProductsProps) => {
-  const isArabic = language === "ar";
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  
-  // Mock data
-  const categories: Category[] = [
-    { id: "1", name: "Main Dishes", nameAr: "الأطباق الرئيسية" },
-    { id: "2", name: "Appetizers", nameAr: "المقبلات" },
-    { id: "3", name: "Desserts", nameAr: "الحلويات" },
-    { id: "4", name: "Beverages", nameAr: "المشروبات" },
-  ];
-  
-  const products: Product[] = [
-    {
-      id: "1",
-      name: "Burger",
-      nameAr: "برجر",
-      description: "Juicy beef burger with toppings",
-      descriptionAr: "برجر لحم مع إضافات",
-      categoryId: "1",
-      variants: [
-        { id: "1-s", size: "small", price: 25 },
-        { id: "1-m", size: "medium", price: 35 },
-        { id: "1-l", size: "large", price: 45 },
-      ],
-      taxable: true,
-    },
-    {
-      id: "2",
-      name: "Pizza",
-      nameAr: "بيتزا",
-      description: "Classic pizza with cheese",
-      descriptionAr: "بيتزا كلاسيكية بالجبن",
-      categoryId: "1",
-      variants: [
-        { id: "2-s", size: "small", price: 30 },
-        { id: "2-m", size: "medium", price: 45 },
-        { id: "2-l", size: "large", price: 60 },
-      ],
-      taxable: true,
-    },
-    {
-      id: "3",
-      name: "Salad",
-      nameAr: "سلطة",
-      description: "Fresh garden salad",
-      descriptionAr: "سلطة خضار طازجة",
-      categoryId: "2",
-      variants: [
-        { id: "3-s", size: "small", price: 15 },
-        { id: "3-m", size: "medium", price: 20 },
-        { id: "3-l", size: "large", price: 25 },
-      ],
-      taxable: true,
-    },
-    {
-      id: "4",
-      name: "Cake",
-      nameAr: "كيك",
-      description: "Chocolate cake",
-      descriptionAr: "كيك شوكولاتة",
-      categoryId: "3",
-      variants: [
-        { id: "4-s", size: "small", price: 18 },
-        { id: "4-m", size: "medium", price: 25 },
-        { id: "4-l", size: "large", price: 35 },
-      ],
-      taxable: true,
-    },
-    {
-      id: "5",
-      name: "Coffee",
-      nameAr: "قهوة",
-      description: "Freshly brewed coffee",
-      descriptionAr: "قهوة طازجة",
-      categoryId: "4",
-      variants: [
-        { id: "5-s", size: "small", price: 10 },
-        { id: "5-m", size: "medium", price: 15 },
-        { id: "5-l", size: "large", price: 20 },
-      ],
-      taxable: true,
-    },
-  ];
-  
-  const handleAddProduct = () => {
-    toast.info(
-      isArabic ? "سيتم فتح نموذج إضافة منتج" : "Product creation form would open here"
-    );
+  const [selectedSize, setSelectedSize] = useState<Size | null>(null);
+
+  const filteredProducts = categoryId 
+    ? sampleProducts.filter(product => product.categoryId === categoryId)
+    : sampleProducts;
+
+  const getCategoryName = (categoryId: string) => {
+    const category = sampleCategories.find(cat => cat.id === categoryId);
+    return category?.nameAr || category?.name || "تصنيف غير معروف";
   };
-  
-  const handleEditProduct = (id: string) => {
-    const product = products.find((p) => p.id === id);
-    toast.info(
-      isArabic
-        ? `سيتم فتح نموذج تعديل ${product?.nameAr || product?.name}`
-        : `Edit form for ${product?.name} would open here`
-    );
-  };
-  
-  const handleDeleteProduct = (id: string) => {
-    const product = products.find((p) => p.id === id);
-    toast.info(
-      isArabic
-        ? `سيتم حذف ${product?.nameAr || product?.name}`
-        : `${product?.name} would be deleted`
-    );
-  };
-  
-  const filteredProducts = selectedCategory
-    ? products.filter((product) => product.categoryId === selectedCategory)
-    : products;
-    
-  const searchResults = searchTerm
-    ? filteredProducts.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (product.nameAr &&
-            product.nameAr.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (product.description &&
-            product.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (product.descriptionAr &&
-            product.descriptionAr.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    : filteredProducts;
-  
+
   return (
-    <div 
-      className={`space-y-6 p-6 pb-16 ${isArabic ? "font-[system-ui]" : ""}`}
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">
-          {isArabic ? "المنتجات" : "Products"}
-        </h2>
-        <Button onClick={handleAddProduct}>
-          <Plus className="mr-2 h-4 w-4" />
-          {isArabic ? "إضافة منتج" : "Add Product"}
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">الأصناف</h1>
+          {categoryId && (
+            <p className="text-muted-foreground">
+              تصنيف: {getCategoryName(categoryId)}
+            </p>
+          )}
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setSelectedSize(null)} 
+            variant={selectedSize === null ? "default" : "outline"}>
+            الكل
+          </Button>
+          <Button onClick={() => setSelectedSize("small")} 
+            variant={selectedSize === "small" ? "default" : "outline"}>
+            صغير
+          </Button>
+          <Button onClick={() => setSelectedSize("medium")} 
+            variant={selectedSize === "medium" ? "default" : "outline"}>
+            وسط
+          </Button>
+          <Button onClick={() => setSelectedSize("large")} 
+            variant={selectedSize === "large" ? "default" : "outline"}>
+            كبير
+          </Button>
+        </div>
+        <Button onClick={() => navigate("/products/add")}>
+          <Plus className="ml-2" size={16} /> إضافة صنف
         </Button>
       </div>
-      
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              {isArabic ? "تصفية حسب الفئة" : "Filter by Category"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => setSelectedCategory(null)}>
-              {isArabic ? "جميع الفئات" : "All Categories"}
-            </DropdownMenuItem>
-            <Separator className="my-1" />
-            {categories.map((category) => (
-              <DropdownMenuItem
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {isArabic ? category.nameAr : category.name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {searchResults.map((product, index) => (
-          <GlassCard
-            key={product.id}
-            animation="fade"
-            delay={index * 100}
-            hover
-            className="relative"
-          >
-            <div className="absolute top-3 right-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleEditProduct(product.id)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    {isArabic ? "تعديل" : "Edit"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive"
-                    onClick={() => handleDeleteProduct(product.id)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    {isArabic ? "حذف" : "Delete"}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => {
+          // For sized products, filter variants by selected size
+          if (product.type === "sized") {
+            const filteredVariants = selectedSize 
+              ? product.variants.filter(v => v.size === selectedSize)
+              : product.variants;
             
-            <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                <Package className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-medium">
-                  {isArabic ? product.nameAr : product.name}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {isArabic
-                    ? categories.find((c) => c.id === product.categoryId)?.nameAr
-                    : categories.find((c) => c.id === product.categoryId)?.name}
-                </p>
-              </div>
-            </div>
-            
-            <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-              {isArabic ? product.descriptionAr : product.description}
-            </p>
-            
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {product.variants.map((variant) => (
-                <div
-                  key={variant.id}
-                  className="bg-secondary rounded-md p-2 text-center"
-                >
-                  <div className="text-xs text-muted-foreground">
-                    {variant.size === "small"
-                      ? isArabic ? "صغير" : "Small"
-                      : variant.size === "medium"
-                      ? isArabic ? "وسط" : "Medium"
-                      : isArabic ? "كبير" : "Large"}
+            if (selectedSize && filteredVariants.length === 0) return null;
+
+            return (
+              <Card key={product.id} className="overflow-hidden">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="flex items-center">
+                      <Package className="ml-2" size={18} />
+                      {product.nameAr || product.name}
+                    </CardTitle>
+                    <Badge>{getCategoryName(product.categoryId)}</Badge>
                   </div>
-                  <div className="font-medium">
-                    {variant.price} {isArabic ? "ر.س" : "SAR"}
+                  {product.description && (
+                    <CardDescription>
+                      {product.descriptionAr || product.description}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="p-0">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.nameAr || product.name}
+                    className="w-full h-40 object-cover"
+                  />
+                </CardContent>
+                <CardFooter className="pt-4 flex-col">
+                  <div className="w-full grid grid-cols-3 gap-2 mb-4">
+                    {filteredVariants.map((variant) => (
+                      <div key={variant.id} className="border rounded p-2 text-center">
+                        <div className="text-sm font-medium">
+                          {variant.size === "small" && "صغير"}
+                          {variant.size === "medium" && "وسط"}
+                          {variant.size === "large" && "كبير"}
+                        </div>
+                        <div className="font-bold">{variant.price} ريال</div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-4 flex justify-between items-center">
-              <div className="flex items-center">
-                <span className="text-xs text-muted-foreground">
-                  {isArabic ? "خاضع للضريبة" : "Taxable"}:
-                </span>
-                <span className="ml-1 text-xs">
-                  {product.taxable
-                    ? isArabic ? "نعم" : "Yes"
-                    : isArabic ? "لا" : "No"}
-                </span>
-              </div>
-            </div>
-          </GlassCard>
-        ))}
+                  <div className="w-full flex justify-between">
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate(`/products/edit/${product.id}`)}
+                    >
+                      <Pencil size={16} className="ml-2" />
+                      تعديل
+                    </Button>
+                    <Button variant="default">إضافة للسلة</Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          } else {
+            // For single products (without sizes)
+            return (
+              <Card key={product.id} className="overflow-hidden">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="flex items-center">
+                      <Package className="ml-2" size={18} />
+                      {product.nameAr || product.name}
+                    </CardTitle>
+                    <Badge>{getCategoryName(product.categoryId)}</Badge>
+                  </div>
+                  {product.description && (
+                    <CardDescription>
+                      {product.descriptionAr || product.description}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="p-0">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.nameAr || product.name}
+                    className="w-full h-40 object-cover"
+                  />
+                </CardContent>
+                <CardFooter className="pt-4 flex-col">
+                  <div className="w-full text-center p-4 mb-4">
+                    <div className="font-bold text-xl">{product.price} ريال</div>
+                    <div className="text-sm text-muted-foreground">منتج فردي (بالحبة)</div>
+                  </div>
+                  <div className="w-full flex justify-between">
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate(`/products/edit/${product.id}`)}
+                    >
+                      <Pencil size={16} className="ml-2" />
+                      تعديل
+                    </Button>
+                    <Button variant="default">إضافة للسلة</Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          }
+        })}
       </div>
-      
-      {searchResults.length === 0 && (
-        <div className="text-center py-12">
-          <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium">
-            {isArabic ? "لا توجد منتجات" : "No products found"}
-          </h3>
-          <p className="text-muted-foreground">
-            {isArabic
-              ? "جرب تغيير معايير البحث أو التصفية"
-              : "Try changing your search or filter criteria"}
-          </p>
-        </div>
-      )}
     </div>
   );
 };
