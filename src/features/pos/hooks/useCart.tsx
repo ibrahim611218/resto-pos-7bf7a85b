@@ -1,131 +1,116 @@
-
-import { useState } from "react";
-import { toast } from "sonner";
-import { Product, CartItem, Language, Invoice } from "@/types";
-import { calculateInvoiceAmounts, generateInvoiceNumber } from "@/utils/invoice";
-import { getSizeLabel } from "../utils/sizeLabels";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useState, useCallback } from "react";
+import { Product, CartItem, Language } from "@/types";
+import { toast } from "@/hooks/use-toast";
+import { generateInvoiceNumber } from "@/utils/invoice";
 
 export const useCart = (language: Language) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const isArabic = language === "ar";
-  const { user } = useAuth();
-  
-  const addToCart = (product: Product, variantId: string) => {
+
+  const addToCart = useCallback((product: Product, variantId: string) => {
     const variant = product.variants.find((v) => v.id === variantId);
-    if (!variant) return;
     
-    const existingItem = cartItems.find(
-      (item) => item.productId === product.id && item.variantId === variantId
-    );
-    
-    if (existingItem) {
-      setCartItems(
-        cartItems.map((item) =>
-          item.id === existingItem.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-    } else {
-      const newItem: CartItem = {
-        id: `${Date.now()}`,
-        productId: product.id,
-        name: product.name,
-        nameAr: product.nameAr,
-        variantId,
-        size: variant.size,
-        price: variant.price,
-        quantity: 1,
-        taxable: product.taxable,
-      };
-      setCartItems([...cartItems, newItem]);
+    if (!variant) {
+      console.error("Variant not found");
+      return;
     }
     
-    toast.success(
-      isArabic
-        ? `تمت إضافة ${product.nameAr || product.name} (${
-            getSizeLabel(variant.size, "ar")
-          })`
-        : `Added ${product.name} (${getSizeLabel(variant.size, "en")})`
-    );
-  };
-  
-  const updateQuantity = (itemId: string, change: number) => {
-    setCartItems(
-      cartItems.map((item) => {
+    setCartItems((prev) => {
+      // Check if this product variant already exists in cart
+      const existingItemIndex = prev.findIndex(
+        (item) => item.productId === product.id && item.variantId === variantId
+      );
+      
+      // If found, increment quantity
+      if (existingItemIndex >= 0) {
+        const newItems = [...prev];
+        newItems[existingItemIndex].quantity += 1;
+        
+        toast({
+          title: isArabic ? "تم تحديث السلة" : "Cart updated",
+          description: isArabic 
+            ? `تم زيادة الكمية: ${product.nameAr || product.name}`
+            : `Increased quantity: ${product.name}`,
+        });
+        
+        return newItems;
+      }
+      
+      // Otherwise add new item
+      const newItem: CartItem = {
+        id: `${product.id}-${variantId}-${Date.now()}`,
+        productId: product.id,
+        variantId: variantId,
+        name: product.name,
+        nameAr: product.nameAr,
+        price: variant.price,
+        size: variant.size,
+        quantity: 1,
+      };
+      
+      toast({
+        title: isArabic ? "تمت الإضافة إلى السلة" : "Added to cart",
+        description: isArabic 
+          ? `تمت إضافة ${product.nameAr || product.name} إلى السلة`
+          : `${product.name} has been added to your cart`,
+      });
+      
+      return [...prev, newItem];
+    });
+  }, [isArabic]);
+
+  const updateQuantity = useCallback((itemId: string, change: number) => {
+    setCartItems((prev) => {
+      return prev.map((item) => {
         if (item.id === itemId) {
           const newQuantity = Math.max(1, item.quantity + change);
           return { ...item, quantity: newQuantity };
         }
         return item;
-      })
-    );
-  };
-  
-  const removeItem = (itemId: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== itemId));
-  };
-  
-  const clearCart = () => {
+      });
+    });
+  }, []);
+
+  const removeItem = useCallback((itemId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
+    toast({
+      title: isArabic ? "تمت إزالة العنصر" : "Item removed",
+      description: isArabic 
+        ? "تم إزالة العنصر من السلة"
+        : "Item has been removed from cart",
+    });
+  }, [isArabic]);
+
+  const clearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
+
+  // Calculate totals
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   
-  const createInvoice = () => {
-    if (cartItems.length === 0) {
-      toast.error(
-        isArabic ? "السلة فارغة" : "Cart is empty"
-      );
-      return;
-    }
+  const taxRate = 0.15; // 15% VAT
+  const taxAmount = subtotal * taxRate;
+  const total = subtotal + taxAmount;
+
+  const createInvoice = useCallback(() => {
+    const invoiceId = generateInvoiceNumber();
     
-    const { subtotal, taxAmount, total } = calculateInvoiceAmounts(cartItems, 15); // 15% VAT
+    // In a real app, you'd save the invoice to a database here
+    // For now, we'll just show a toast notification
+    toast({
+      title: isArabic ? "تم إنشاء الفاتورة" : "Invoice created",
+      description: isArabic 
+        ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`
+        : `Invoice #${invoiceId} has been created successfully`,
+      variant: "success",
+    });
     
-    const invoice: Invoice = {
-      id: `${Date.now()}`,
-      number: generateInvoiceNumber(),
-      date: new Date(),
-      items: [...cartItems],
-      subtotal,
-      taxAmount,
-      total,
-      paymentMethod: "Cash",
-      cashierId: user?.id || "1",
-      cashierName: user?.name || "Unknown Cashier",
-      status: "completed",
-    };
-    
-    console.log("Created invoice:", invoice);
-    
-    // Send order to kitchen
-    const kitchenOrder = {
-      id: `order-${invoice.id}`,
-      invoiceId: invoice.id,
-      items: [...cartItems],
-      status: "pending",
-      timestamp: new Date(),
-    };
-    
-    // In a real app, this would be sent to a database
-    // For now, we'll just log it
-    console.log("Sending order to kitchen:", kitchenOrder);
-    
-    // Add to local storage as a simple way to simulate persistence
-    const existingOrders = JSON.parse(localStorage.getItem('kitchenOrders') || '[]');
-    localStorage.setItem('kitchenOrders', JSON.stringify([...existingOrders, kitchenOrder]));
-    
-    toast.success(
-      isArabic
-        ? `تم إنشاء الفاتورة رقم ${invoice.number} وإرسالها للمطبخ`
-        : `Created invoice #${invoice.number} and sent to kitchen`
-    );
-    
-    clearCart();
-    return invoice;
-  };
-  
-  const { subtotal, taxAmount, total } = calculateInvoiceAmounts(cartItems, 15); // 15% VAT
-  
+    return invoiceId;
+  }, [isArabic]);
+
   return {
     cartItems,
     subtotal,

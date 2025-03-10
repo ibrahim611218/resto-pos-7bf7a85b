@@ -7,7 +7,6 @@ import { getSizeLabel } from "./utils/sizeLabels";
 import { categories, products } from "./data/mockData";
 import ProductsPanel from "./components/ProductsPanel";
 import CartPanel from "./components/CartPanel";
-import GlassCard from "@/components/ui-custom/GlassCard";
 
 interface PosProps {
   language: Language;
@@ -63,6 +62,7 @@ const Pos: React.FC<PosProps> = ({ language }) => {
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}
+        language={language}
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}

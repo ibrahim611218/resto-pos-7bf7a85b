@@ -1,19 +1,21 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { CreditCard, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { CartItem as CartItemType } from "@/types";
+import { CartItem as CartItemType, Language } from "@/types";
 import CartItemComponent from "./CartItem";
+import KitchenAssignmentDialog from "./KitchenAssignmentDialog";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
   isArabic: boolean;
+  language: Language;
   subtotal: number;
   taxAmount: number;
   total: number;
-  createInvoice: () => void;
+  createInvoice: () => string; // Modified to return invoice ID
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -23,6 +25,7 @@ interface CartPanelProps {
 const CartPanel: React.FC<CartPanelProps> = ({
   cartItems,
   isArabic,
+  language,
   subtotal,
   taxAmount,
   total,
@@ -32,6 +35,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
   updateQuantity,
   removeItem,
 }) => {
+  const [showKitchenDialog, setShowKitchenDialog] = useState(false);
+  const [currentInvoiceId, setCurrentInvoiceId] = useState<string>("");
+
+  const handleCreateInvoice = () => {
+    const invoiceId = createInvoice();
+    setCurrentInvoiceId(invoiceId);
+    setShowKitchenDialog(true);
+  };
+
   return (
     <div className="w-full md:w-96 bg-card border-l p-4 overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">
@@ -108,14 +120,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
       <div className="mt-6 space-y-2">
         <Button 
           className="w-full h-12 flex items-center justify-center gap-2" 
-          onClick={createInvoice}
+          onClick={handleCreateInvoice}
           disabled={cartItems.length === 0}
         >
           <div className="flex items-center">
             <CreditCard className="mr-2 h-4 w-4" />
             {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
           </div>
-          <ChefHat className="ml-2 h-4 w-4" />
         </Button>
         <Button 
           variant="outline" 
@@ -126,6 +137,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
           {isArabic ? "مسح السلة" : "Clear Cart"}
         </Button>
       </div>
+
+      {/* Kitchen Assignment Dialog */}
+      <KitchenAssignmentDialog
+        isOpen={showKitchenDialog}
+        onClose={() => setShowKitchenDialog(false)}
+        cartItems={cartItems}
+        invoiceId={currentInvoiceId}
+        language={language}
+      />
     </div>
   );
 };
