@@ -72,11 +72,11 @@ export interface Invoice {
   subtotal: number;
   taxAmount: number;
   total: number;
-  paymentMethod: string;
+  paymentMethod: "cash" | "card" | string;
   customer?: Customer;
   cashierId: string;
   cashierName: string;
-  status: "completed" | "cancelled" | "refunded";
+  status: "completed" | "cancelled" | "refunded" | "pending";
   discount?: number;             // مبلغ الخصم أو نسبة الخصم
   discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
   orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
@@ -144,3 +144,13 @@ export interface InventoryItem {
 
 // Invoice Export Options
 export type InvoiceExportType = "print" | "pdf" | "email";
+
+// Add payment methods type
+export type PaymentMethod = "cash" | "card"; // نقدي أو شبكة
+
+// Customer management types
+export interface CustomerFilter {
+  searchTerm?: string;
+  sortBy?: "name" | "createdAt";
+  sortDirection?: "asc" | "desc";
+}

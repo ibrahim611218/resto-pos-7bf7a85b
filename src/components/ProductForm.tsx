@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Package, Plus, Tag, X, Hash } from "lucide-react";
@@ -13,11 +12,15 @@ import { Switch } from "@/components/ui/switch";
 import { sampleCategories, sampleProducts } from "@/data/sampleData";
 import { Product, ProductVariant, ProductType } from "@/types";
 import { toast } from "sonner";
+import ImageUploader from "@/components/ui-custom/ImageUploader";
+import { useLanguage } from "@/context/LanguageContext";
 
 const ProductForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditing = !!id;
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
   
   const emptyProduct: Product = {
     id: "",
@@ -42,11 +45,11 @@ const ProductForm = () => {
         setProduct(existingProduct);
         setVariants([...existingProduct.variants]);
       } else {
-        toast.error("المنتج غير موجود");
+        toast.error(isArabic ? "المنتج غير موجود" : "Product not found");
         navigate("/products");
       }
     }
-  }, [id, isEditing, navigate]);
+  }, [id, isEditing, navigate, isArabic]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -85,6 +88,13 @@ const ProductForm = () => {
     }));
   };
 
+  const handleImageChange = (imageUrl: string) => {
+    setProduct(prev => ({
+      ...prev,
+      image: imageUrl
+    }));
+  };
+
   const addVariant = () => {
     const sizeOptions: { size: string, label: string }[] = [
       { size: "small", label: "صغير" },
@@ -92,7 +102,6 @@ const ProductForm = () => {
       { size: "large", label: "كبير" }
     ];
     
-    // Find a size that doesn't exist yet in variants
     const availableSizes = sizeOptions
       .filter(option => !variants.some(v => v.size === option.size))
       .map(option => option.size);
@@ -126,25 +135,21 @@ const ProductForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
     if (!product.name || !product.categoryId) {
-      toast.error("يرجى ملء جميع الحقول المطلوبة");
+      toast.error(isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields");
       return;
     }
 
     if (product.type === "sized" && variants.length === 0) {
-      toast.error("يرجى إضافة مقاس واحد على الأقل");
+      toast.error(isArabic ? "يرجى إضافة مقاس واحد على الأقل" : "Please add at least one size");
       return;
     }
 
     if (product.type === "single" && (!product.price || product.price <= 0)) {
-      toast.error("يرجى إدخال سعر صحيح للمنتج");
+      toast.error(isArabic ? "يرجى إدخال سعر صحيح للمنتج" : "Please enter a valid price for the product");
       return;
     }
 
-    // Here we would typically save to a database
-    // For now, just show a success message and navigate back
-    
     const updatedProduct: Product = {
       ...product,
       id: isEditing ? product.id : `prod-${Date.now()}`,
@@ -152,8 +157,8 @@ const ProductForm = () => {
     };
 
     const successMessage = isEditing 
-      ? "تم تعديل المنتج بنجاح" 
-      : "تم إضافة المنتج بنجاح";
+      ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
+      : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
     
     toast.success(successMessage);
     navigate("/products");
@@ -166,73 +171,83 @@ const ProductForm = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Package className="ml-2" size={18} />
-              {isEditing ? "تعديل المنتج" : "إضافة منتج جديد"}
+              {isEditing ? 
+                (isArabic ? "تعديل المنتج" : "Edit Product") : 
+                (isArabic ? "إضافة منتج جديد" : "Add New Product")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">اسم المنتج</Label>
+                <Label htmlFor="name">{isArabic ? "اسم المنتج" : "Product Name"}</Label>
                 <Input 
                   id="name"
                   name="name"
                   value={product.name}
                   onChange={handleInputChange}
-                  placeholder="أدخل اسم المنتج"
+                  placeholder={isArabic ? "أدخل اسم المنتج" : "Enter product name"}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="nameAr">اسم المنتج (عربي)</Label>
+                <Label htmlFor="nameAr">{isArabic ? "اسم المنتج (عربي)" : "Product Name (Arabic)"}</Label>
                 <Input 
                   id="nameAr"
                   name="nameAr"
                   value={product.nameAr || ""}
                   onChange={handleInputChange}
-                  placeholder="أدخل اسم المنتج بالعربية"
+                  placeholder={isArabic ? "أدخل اسم المنتج بالعربية" : "Enter product name in Arabic"}
                   dir="rtl"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">وصف المنتج</Label>
+              <Label>{isArabic ? "صورة المنتج" : "Product Image"}</Label>
+              <ImageUploader 
+                initialImage={product.image} 
+                onImageChange={handleImageChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">{isArabic ? "وصف المنتج" : "Product Description"}</Label>
               <Textarea 
                 id="description"
                 name="description"
                 value={product.description || ""}
                 onChange={handleInputChange}
-                placeholder="أدخل وصف المنتج"
+                placeholder={isArabic ? "أدخل وصف المنتج" : "Enter product description"}
                 rows={3}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="descriptionAr">وصف المنتج (عربي)</Label>
+              <Label htmlFor="descriptionAr">{isArabic ? "وصف المنتج (عربي)" : "Product Description (Arabic)"}</Label>
               <Textarea 
                 id="descriptionAr"
                 name="descriptionAr"
                 value={product.descriptionAr || ""}
                 onChange={handleInputChange}
-                placeholder="أدخل وصف المنتج بالعربية"
+                placeholder={isArabic ? "أدخل وصف المنتج بالعربية" : "Enter product description in Arabic"}
                 rows={3}
                 dir="rtl"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">التصنيف</Label>
+              <Label htmlFor="category">{isArabic ? "التصنيف" : "Category"}</Label>
               <Select 
                 value={product.categoryId} 
                 onValueChange={handleCategoryChange}
               >
                 <SelectTrigger id="category">
-                  <SelectValue placeholder="اختر التصنيف" />
+                  <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
                 </SelectTrigger>
                 <SelectContent>
                   {sampleCategories.map(category => (
                     <SelectItem key={category.id} value={category.id}>
-                      {category.nameAr || category.name}
+                      {isArabic ? (category.nameAr || category.name) : category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -356,10 +371,12 @@ const ProductForm = () => {
               variant="outline" 
               onClick={() => navigate("/products")}
             >
-              إلغاء
+              {isArabic ? "إلغاء" : "Cancel"}
             </Button>
             <Button type="submit">
-              {isEditing ? "حفظ التغييرات" : "إضافة المنتج"}
+              {isEditing ? 
+                (isArabic ? "حفظ التغييرات" : "Save Changes") : 
+                (isArabic ? "إضافة المنتج" : "Add Product")}
             </Button>
           </CardFooter>
         </form>

@@ -21,6 +21,7 @@ import Inventory from "./pages/Inventory";
 import BusinessSettings from "./pages/BusinessSettings";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
+import Customers from "./pages/Customers";
 
 const queryClient = new QueryClient();
 
@@ -35,23 +36,24 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 {/* Public routes */}
-                <Route path="/login" element={<Login language="ar" />} />
-                <Route path="/unauthorized" element={<Unauthorized language="ar" />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
                 
                 {/* Protected routes */}
                 <Route element={<ProtectedRoute />}>
                   <Route element={<MainLayout />}>
-                    <Route path="/" element={<Index language="ar" />} />
+                    <Route path="/" element={<Index />} />
                     
                     {/* Routes accessible to cashiers and admins */}
                     <Route element={<ProtectedRoute allowedRoles={["admin", "cashier"]} />}>
-                      <Route path="/pos" element={<Pos language="ar" />} />
+                      <Route path="/pos" element={<Pos />} />
                       <Route path="/invoices" element={<Invoices />} />
+                      <Route path="/customers" element={<Customers />} />
                     </Route>
                     
                     {/* Routes accessible to kitchen staff and admins */}
                     <Route element={<ProtectedRoute allowedRoles={["admin", "kitchen"]} />}>
-                      <Route path="/kitchen" element={<Kitchen language="ar" />} />
+                      <Route path="/kitchen" element={<Kitchen />} />
                     </Route>
                     
                     {/* Routes accessible only to admins */}

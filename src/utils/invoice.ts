@@ -1,6 +1,9 @@
 
 import { Invoice, BusinessSettings, CartItem, InvoiceExportType } from "@/types";
 import { toast } from "@/hooks/use-toast";
+import { QRCodeCanvas } from "qrcode.react";
+import React from "react";
+import { renderToString } from "react-dom/server";
 
 export const generateInvoiceNumber = (): string => {
   const prefix = "INV";
@@ -57,10 +60,6 @@ export const exportInvoiceToPDF = (
   invoice: Invoice,
   businessSettings: BusinessSettings
 ): void => {
-  // This would integrate with a PDF generation library
-  console.log("Export to PDF", invoice, businessSettings);
-  // Implementation would use libraries like jspdf or pdfmake
-  
   // For demonstration, show toast message
   toast({
     title: "تم تصدير الفاتورة",
@@ -69,14 +68,117 @@ export const exportInvoiceToPDF = (
   
   // Simulate PDF download
   setTimeout(() => {
+    // Create a hidden link to trigger download
     const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,');
+    
+    // Generate blob URL for PDF (in real app this would be actual PDF data)
+    const pdfData = generatePrintablePDF(invoice, businessSettings);
+    const blob = new Blob([pdfData], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    
+    element.setAttribute('href', url);
     element.setAttribute('download', `invoice-${invoice.number}.pdf`);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
-    document.body.removeChild(element);
+    
+    // Clean up
+    setTimeout(() => {
+      document.body.removeChild(element);
+      URL.revokeObjectURL(url);
+    }, 100);
   }, 1000);
+};
+
+// Helper function to generate PDF content
+const generatePrintablePDF = (invoice: Invoice, businessSettings: BusinessSettings): string => {
+  // In a real app, this would use a PDF library like jsPDF
+  // For now, we'll return simple HTML that would be converted to PDF in a real app
+  
+  const qrCodeElement = React.createElement(QRCodeCanvas, { value: generateInvoiceQRCodeData(invoice), size: 100 });
+  const qrCodeString = renderToString(qrCodeElement);
+  
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Invoice ${invoice.number}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .invoice-header { text-align: center; margin-bottom: 20px; }
+        .invoice-details { margin-bottom: 20px; }
+        .invoice-table { width: 100%; border-collapse: collapse; }
+        .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+        .invoice-table th { background-color: #f2f2f2; }
+        .invoice-footer { margin-top: 30px; text-align: center; }
+        .qr-code { text-align: center; margin-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-header">
+        <h1>${businessSettings.nameAr || businessSettings.name}</h1>
+        <p>${businessSettings.addressAr || businessSettings.address}</p>
+        <p>هاتف: ${businessSettings.phone}</p>
+        <p>الرقم الضريبي: ${businessSettings.taxNumber}</p>
+        <p>السجل التجاري: ${businessSettings.commercialRegisterAr || businessSettings.commercialRegister}</p>
+      </div>
+      
+      <div class="invoice-details">
+        <p><strong>رقم الفاتورة:</strong> ${invoice.number}</p>
+        <p><strong>التاريخ:</strong> ${new Date(invoice.date).toLocaleDateString('ar-SA')}</p>
+        <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
+        <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
+        ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
+        <p><strong>طريقة الدفع:</strong> ${invoice.paymentMethod}</p>
+      </div>
+      
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الصنف</th>
+            <th>السعر</th>
+            <th>الكمية</th>
+            <th>الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item, index) => `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.nameAr || item.name} (${item.size})</td>
+              <td>${item.price.toFixed(2)} ر.س</td>
+              <td>${item.quantity}</td>
+              <td>${(item.price * item.quantity).toFixed(2)} ر.س</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      
+      <div class="invoice-summary" style="margin-top: 20px; text-align: left;">
+        <p><strong>المجموع الفرعي:</strong> ${invoice.subtotal.toFixed(2)} ر.س</p>
+        <p><strong>ضريبة القيمة المضافة (${businessSettings.taxRate}%):</strong> ${invoice.taxAmount.toFixed(2)} ر.س</p>
+        ${invoice.discount ? `<p><strong>الخصم${invoice.discountType === 'percentage' ? ` (${invoice.discount}%)` : ''}:</strong> ${
+          invoice.discountType === 'percentage' 
+            ? ((invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)).toFixed(2) 
+            : invoice.discount.toFixed(2)
+        } ر.س</p>` : ''}
+        <p style="font-size: 1.2em;"><strong>الإجمالي:</strong> ${invoice.total.toFixed(2)} ر.س</p>
+      </div>
+      
+      <div class="qr-code">
+        ${qrCodeString}
+      </div>
+      
+      <div class="invoice-footer">
+        <p>${businessSettings.invoiceNotesAr || businessSettings.invoiceNotes || ''}</p>
+        <p>شكراً لزيارتكم</p>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return htmlContent;
 };
 
 export const emailInvoice = async (

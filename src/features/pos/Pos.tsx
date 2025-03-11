@@ -1,18 +1,15 @@
 
 import React from "react";
-import { Language } from "@/types";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
 import { getSizeLabel } from "./utils/sizeLabels";
 import { categories, products } from "./data/mockData";
 import ProductsPanel from "./components/ProductsPanel";
 import CartPanel from "./components/CartPanel";
+import { useLanguage } from "@/context/LanguageContext";
 
-interface PosProps {
-  language: Language;
-}
-
-const Pos: React.FC<PosProps> = ({ language }) => {
+const Pos: React.FC = () => {
+  const { language } = useLanguage();
   const isArabic = language === "ar";
   
   const {
@@ -33,7 +30,7 @@ const Pos: React.FC<PosProps> = ({ language }) => {
     setDiscountType,
     setOrderType,
     setTableNumber,
-  } = useCart(language);
+  } = useCart();
   
   const {
     searchTerm,

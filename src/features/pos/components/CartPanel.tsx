@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { CartItem as CartItemType, Language, Invoice } from "@/types";
+import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
 import CartItemComponent from "./CartItem";
 import KitchenAssignmentDialog from "./KitchenAssignmentDialog";
 import { formatCurrency } from "@/utils/invoice";
+import PaymentMethodSelector from "./PaymentMethodSelector";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -23,6 +24,7 @@ interface CartPanelProps {
   discountType: "percentage" | "fixed";
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
+  paymentMethod: PaymentMethod;
   createInvoice: () => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
@@ -32,6 +34,7 @@ interface CartPanelProps {
   setDiscountType: (type: "percentage" | "fixed") => void;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -45,6 +48,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   discountType,
   orderType,
   tableNumber,
+  paymentMethod,
   createInvoice,
   clearCart,
   getSizeLabel,
@@ -54,6 +58,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setDiscountType,
   setOrderType,
   setTableNumber,
+  setPaymentMethod,
 }) => {
   const [showKitchenDialog, setShowKitchenDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
@@ -155,6 +160,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
           />
         </div>
       )}
+      
+      {/* طريقة الدفع */}
+      <PaymentMethodSelector 
+        value={paymentMethod}
+        onChange={setPaymentMethod}
+      />
       
       {/* الخصم */}
       <div className="mb-4">

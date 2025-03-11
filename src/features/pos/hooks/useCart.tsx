@@ -1,17 +1,20 @@
 
 import { useState, useCallback } from "react";
-import { Product, CartItem, Language, Invoice } from "@/types";
+import { Product, CartItem, Invoice, PaymentMethod } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { generateInvoiceNumber, calculateInvoiceAmounts } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
 
-export const useCart = (language: Language) => {
+export const useCart = () => {
+  const { language } = useLanguage();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [orderType, setOrderType] = useState<"takeaway" | "dineIn">("takeaway");
   const [tableNumber, setTableNumber] = useState<string>("");
   const [discount, setDiscount] = useState<number>(0);
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   
   const { settings } = useBusinessSettings();
   const { user } = useAuth();
@@ -96,6 +99,8 @@ export const useCart = (language: Language) => {
     setCartItems([]);
     setDiscount(0);
     setTableNumber("");
+    setOrderType("takeaway");
+    setPaymentMethod("cash");
   }, []);
 
   // Calculate totals
@@ -129,7 +134,7 @@ export const useCart = (language: Language) => {
       total: total,
       discount: discount,
       discountType: discountType,
-      paymentMethod: "نقدي", // Default payment method
+      paymentMethod: paymentMethod === "cash" ? "نقدي" : "شبكة",
       cashierId: user?.id || "unknown",
       cashierName: user?.name || "كاشير",
       status: "completed",
@@ -147,7 +152,7 @@ export const useCart = (language: Language) => {
     });
     
     return invoice;
-  }, [cartItems, subtotal, taxAmount, total, discount, discountType, user, isArabic, orderType, tableNumber]);
+  }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber]);
 
   return {
     cartItems,
@@ -158,6 +163,7 @@ export const useCart = (language: Language) => {
     discountType,
     orderType,
     tableNumber,
+    paymentMethod,
     addToCart,
     updateQuantity,
     removeItem,
@@ -167,5 +173,6 @@ export const useCart = (language: Language) => {
     setDiscountType,
     setOrderType,
     setTableNumber,
+    setPaymentMethod,
   };
 };
