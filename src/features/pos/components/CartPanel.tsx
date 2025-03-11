@@ -1,12 +1,16 @@
 
 import React, { useState } from "react";
-import { CreditCard, ChefHat } from "lucide-react";
+import { CreditCard, ChefHat, Percent, DollarSign, Home, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { CartItem as CartItemType, Language } from "@/types";
+import { CartItem as CartItemType, Language, Invoice } from "@/types";
 import CartItemComponent from "./CartItem";
 import KitchenAssignmentDialog from "./KitchenAssignmentDialog";
+import { formatCurrency } from "@/utils/invoice";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -15,11 +19,19 @@ interface CartPanelProps {
   subtotal: number;
   taxAmount: number;
   total: number;
-  createInvoice: () => string; // Modified to return invoice ID
+  discount: number;
+  discountType: "percentage" | "fixed";
+  orderType: "takeaway" | "dineIn";
+  tableNumber: string;
+  createInvoice: () => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
   removeItem: (itemId: string) => void;
+  setDiscount: (discount: number) => void;
+  setDiscountType: (type: "percentage" | "fixed") => void;
+  setOrderType: (type: "takeaway" | "dineIn") => void;
+  setTableNumber: (number: string) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -29,20 +41,33 @@ const CartPanel: React.FC<CartPanelProps> = ({
   subtotal,
   taxAmount,
   total,
+  discount,
+  discountType,
+  orderType,
+  tableNumber,
   createInvoice,
   clearCart,
   getSizeLabel,
   updateQuantity,
   removeItem,
+  setDiscount,
+  setDiscountType,
+  setOrderType,
+  setTableNumber,
 }) => {
   const [showKitchenDialog, setShowKitchenDialog] = useState(false);
-  const [currentInvoiceId, setCurrentInvoiceId] = useState<string>("");
+  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
 
   const handleCreateInvoice = () => {
-    const invoiceId = createInvoice();
-    setCurrentInvoiceId(invoiceId);
+    const invoice = createInvoice();
+    setCurrentInvoice(invoice);
     setShowKitchenDialog(true);
   };
+
+  // Calculate discount amount
+  const discountAmount = discountType === "percentage" 
+    ? (subtotal + taxAmount) * (discount / 100)
+    : discount;
 
   return (
     <div className="w-full md:w-96 bg-card border-l p-4 overflow-y-auto">
@@ -90,13 +115,83 @@ const CartPanel: React.FC<CartPanelProps> = ({
       
       <Separator className="my-4" />
       
+      {/* نوع الطلب */}
+      <div className="mb-4">
+        <Label className="block mb-2">{isArabic ? "نوع الطلب" : "Order Type"}</Label>
+        <RadioGroup 
+          value={orderType} 
+          onValueChange={(value: "takeaway" | "dineIn") => setOrderType(value)}
+          className="flex"
+        >
+          <div className="flex items-center space-x-2 ml-4">
+            <RadioGroupItem value="takeaway" id="takeaway" />
+            <Label htmlFor="takeaway" className="flex items-center">
+              <ShoppingBag className="ml-1 h-4 w-4" />
+              {isArabic ? "سفري" : "Takeaway"}
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="dineIn" id="dineIn" />
+            <Label htmlFor="dineIn" className="flex items-center">
+              <Home className="ml-1 h-4 w-4" />
+              {isArabic ? "محلي" : "Dine In"}
+            </Label>
+          </div>
+        </RadioGroup>
+      </div>
+      
+      {/* رقم الطاولة (يظهر فقط عند اختيار محلي) */}
+      {orderType === "dineIn" && (
+        <div className="mb-4">
+          <Label htmlFor="tableNumber" className="block mb-2">
+            {isArabic ? "رقم الطاولة" : "Table Number"}
+          </Label>
+          <Input
+            id="tableNumber"
+            value={tableNumber}
+            onChange={(e) => setTableNumber(e.target.value)}
+            className="w-full"
+            placeholder={isArabic ? "أدخل رقم الطاولة" : "Enter table number"}
+          />
+        </div>
+      )}
+      
+      {/* الخصم */}
+      <div className="mb-4">
+        <Label className="block mb-2">{isArabic ? "الخصم" : "Discount"}</Label>
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                type="number"
+                min="0"
+                value={discount}
+                onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
+                className="w-full pr-8"
+                placeholder={isArabic ? "قيمة الخصم" : "Discount value"}
+              />
+              <div className="absolute inset-y-0 right-2 flex items-center">
+                {discountType === "percentage" ? "%" : "ر.س"}
+              </div>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="px-3"
+            onClick={() => setDiscountType(discountType === "percentage" ? "fixed" : "percentage")}
+          >
+            {discountType === "percentage" ? <Percent size={16} /> : <DollarSign size={16} />}
+          </Button>
+        </div>
+      </div>
+      
       <div className="space-y-2">
         <div className="flex justify-between">
           <span className="text-muted-foreground">
             {isArabic ? "المجموع الفرعي" : "Subtotal"}
           </span>
           <span>
-            {subtotal.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {formatCurrency(subtotal, "ar-SA", "SAR")}
           </span>
         </div>
         <div className="flex justify-between">
@@ -104,15 +199,28 @@ const CartPanel: React.FC<CartPanelProps> = ({
             {isArabic ? "ضريبة القيمة المضافة (15%)" : "VAT (15%)"}
           </span>
           <span>
-            {taxAmount.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {formatCurrency(taxAmount, "ar-SA", "SAR")}
           </span>
         </div>
+        
+        {discount > 0 && (
+          <div className="flex justify-between text-green-600">
+            <span>
+              {isArabic ? `الخصم ${discountType === 'percentage' ? `(${discount}%)` : ''}` : 
+                `Discount ${discountType === 'percentage' ? `(${discount}%)` : ''}`}
+            </span>
+            <span>
+              - {formatCurrency(discountAmount, "ar-SA", "SAR")}
+            </span>
+          </div>
+        )}
+        
         <div className="flex justify-between font-bold">
           <span>
             {isArabic ? "الإجمالي" : "Total"}
           </span>
           <span>
-            {total.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {formatCurrency(total, "ar-SA", "SAR")}
           </span>
         </div>
       </div>
@@ -143,7 +251,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         isOpen={showKitchenDialog}
         onClose={() => setShowKitchenDialog(false)}
         cartItems={cartItems}
-        invoiceId={currentInvoiceId}
+        invoiceId={currentInvoice?.number || ""}
         language={language}
       />
     </div>

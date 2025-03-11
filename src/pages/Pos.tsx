@@ -1,13 +1,9 @@
 
-import PosFeature from "@/features/pos/Pos";
-import { Language } from "@/types";
+import React from "react";
+import Pos from "@/features/pos/Pos";
 
-interface PosProps {
-  language: Language;
-}
-
-const Pos = ({ language = "ar" }: PosProps) => {
-  return <PosFeature language={language} />;
+const PosPage: React.FC = () => {
+  return <Pos language="ar" />;
 };
 
-export default Pos;
+export default PosPage;

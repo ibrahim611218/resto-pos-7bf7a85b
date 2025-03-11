@@ -77,6 +77,10 @@ export interface Invoice {
   cashierId: string;
   cashierName: string;
   status: "completed" | "cancelled" | "refunded";
+  discount?: number;             // مبلغ الخصم أو نسبة الخصم
+  discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
+  orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
+  tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
 }
 
 export interface BusinessSettings {

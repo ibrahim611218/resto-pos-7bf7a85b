@@ -1,11 +1,20 @@
 
 import { useState, useCallback } from "react";
-import { Product, CartItem, Language } from "@/types";
+import { Product, CartItem, Language, Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { generateInvoiceNumber } from "@/utils/invoice";
+import { generateInvoiceNumber, calculateInvoiceAmounts } from "@/utils/invoice";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const useCart = (language: Language) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [orderType, setOrderType] = useState<"takeaway" | "dineIn">("takeaway");
+  const [tableNumber, setTableNumber] = useState<string>("");
+  const [discount, setDiscount] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
+  
+  const { settings } = useBusinessSettings();
+  const { user } = useAuth();
   const isArabic = language === "ar";
 
   const addToCart = useCallback((product: Product, variantId: string) => {
@@ -85,6 +94,8 @@ export const useCart = (language: Language) => {
 
   const clearCart = useCallback(() => {
     setCartItems([]);
+    setDiscount(0);
+    setTableNumber("");
   }, []);
 
   // Calculate totals
@@ -93,15 +104,40 @@ export const useCart = (language: Language) => {
     0
   );
   
-  const taxRate = 0.15; // 15% VAT
+  const taxRate = settings.taxRate / 100 || 0.15; // Use tax rate from settings
   const taxAmount = subtotal * taxRate;
-  const total = subtotal + taxAmount;
+  
+  // Calculate discount amount
+  const discountAmount = discountType === "percentage" 
+    ? (subtotal + taxAmount) * (discount / 100)
+    : discount;
+  
+  // Calculate final total after discount
+  const total = Math.max(0, subtotal + taxAmount - discountAmount);
 
-  const createInvoice = useCallback(() => {
+  const createInvoice = useCallback((): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
+    // Create the invoice object with all needed data
+    const invoice: Invoice = {
+      id: Math.random().toString(36).substring(2, 9),
+      number: invoiceId,
+      date: new Date(),
+      items: [...cartItems],
+      subtotal: subtotal,
+      taxAmount: taxAmount,
+      total: total,
+      discount: discount,
+      discountType: discountType,
+      paymentMethod: "نقدي", // Default payment method
+      cashierId: user?.id || "unknown",
+      cashierName: user?.name || "كاشير",
+      status: "completed",
+      orderType: orderType,
+      tableNumber: orderType === "dineIn" ? tableNumber : undefined
+    };
+    
     // In a real app, you'd save the invoice to a database here
-    // For now, we'll just show a toast notification
     toast({
       title: isArabic ? "تم إنشاء الفاتورة" : "Invoice created",
       description: isArabic 
@@ -110,18 +146,26 @@ export const useCart = (language: Language) => {
       variant: "default",
     });
     
-    return invoiceId;
-  }, [isArabic]);
+    return invoice;
+  }, [cartItems, subtotal, taxAmount, total, discount, discountType, user, isArabic, orderType, tableNumber]);
 
   return {
     cartItems,
     subtotal,
     taxAmount,
     total,
+    discount,
+    discountType,
+    orderType,
+    tableNumber,
     addToCart,
     updateQuantity,
     removeItem,
     clearCart,
     createInvoice,
+    setDiscount,
+    setDiscountType,
+    setOrderType,
+    setTableNumber,
   };
 };

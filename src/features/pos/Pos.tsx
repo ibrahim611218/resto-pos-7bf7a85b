@@ -20,11 +20,19 @@ const Pos: React.FC<PosProps> = ({ language }) => {
     subtotal,
     taxAmount,
     total,
+    discount,
+    discountType,
+    orderType,
+    tableNumber,
     addToCart,
     updateQuantity,
     removeItem,
     clearCart,
     createInvoice,
+    setDiscount,
+    setDiscountType,
+    setOrderType,
+    setTableNumber,
   } = useCart(language);
   
   const {
@@ -66,11 +74,19 @@ const Pos: React.FC<PosProps> = ({ language }) => {
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}
+        discount={discount}
+        discountType={discountType}
+        orderType={orderType}
+        tableNumber={tableNumber}
         createInvoice={createInvoice}
         clearCart={clearCart}
         getSizeLabel={getSizeLabelFn}
         updateQuantity={updateQuantity}
         removeItem={removeItem}
+        setDiscount={setDiscount}
+        setDiscountType={setDiscountType}
+        setOrderType={setOrderType}
+        setTableNumber={setTableNumber}
       />
     </div>
   );

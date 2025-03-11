@@ -13,7 +13,9 @@ export const generateInvoiceNumber = (): string => {
 
 export const calculateInvoiceAmounts = (
   items: CartItem[],
-  taxRate: number
+  taxRate: number,
+  discount: number = 0,
+  discountType: "percentage" | "fixed" = "percentage"
 ): { subtotal: number; taxAmount: number; total: number } => {
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -25,11 +27,17 @@ export const calculateInvoiceAmounts = (
     .reduce((sum, item) => sum + item.price * item.quantity, 0);
   
   const taxAmount = +(taxableSubtotal * (taxRate / 100)).toFixed(2);
-  const total = +(subtotal + taxAmount).toFixed(2);
+  
+  // Calculate discount amount
+  const discountAmount = discountType === "percentage" 
+    ? (subtotal + taxAmount) * (discount / 100)
+    : discount;
+  
+  const total = +Math.max(0, subtotal + taxAmount - discountAmount).toFixed(2);
   
   return {
     subtotal: +subtotal.toFixed(2),
-    taxAmount,
+    taxAmount: +taxAmount.toFixed(2),
     total,
   };
 };
@@ -121,6 +129,8 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
     invoiceNumber: invoice.number,
     total: invoice.total,
     date: invoice.date,
+    businessName: "مطعم الذواق", // يمكن استخدام بيانات المتجر الفعلية
+    taxNumber: "300000000000003", // يمكن استخدام الرقم الضريبي الفعلي
   };
   return JSON.stringify(data);
 };

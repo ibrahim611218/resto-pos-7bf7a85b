@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { BusinessSettings, Language } from "@/types";
+import { Language } from "@/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, Save, Building2, Phone, Mail, Hash, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 interface BusinessSettingsFormProps {
   language: Language;
@@ -16,31 +16,16 @@ interface BusinessSettingsFormProps {
 const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language }) => {
   const isArabic = language === "ar";
   
-  // Sample business settings (in a real app, this would come from an API or database)
-  const [settings, setSettings] = useState<BusinessSettings>({
-    name: "مطعم الذواق",
-    nameAr: "مطعم الذواق",
-    taxNumber: "300000000000003",
-    address: "شارع الملك فهد، الرياض، المملكة العربية السعودية",
-    addressAr: "شارع الملك فهد، الرياض، المملكة العربية السعودية",
-    phone: "+966 50 000 0000",
-    email: "info@restaurant.com",
-    taxRate: 15,
-    commercialRegister: "1010000000",
-    commercialRegisterAr: "١٠١٠٠٠٠٠٠٠",
-    invoiceNotes: "شكراً لزيارتكم، نتمنى أن تزورونا مرة أخرى",
-    invoiceNotesAr: "شكراً لزيارتكم، نتمنى أن تزورونا مرة أخرى",
-  });
+  const { settings, updateSettings } = useBusinessSettings();
   
   // Logo preview state
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(settings.logo || null);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setSettings(prev => ({
-      ...prev,
+    updateSettings({
       [name]: name === "taxRate" ? parseFloat(value) : value
-    }));
+    });
   };
   
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,10 +34,9 @@ const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language })
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
-        setSettings(prev => ({
-          ...prev,
+        updateSettings({
           logo: reader.result as string
-        }));
+        });
       };
       reader.readAsDataURL(file);
     }
