@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { Product, CartItem, Language } from "@/types";
 import { toast } from "@/hooks/use-toast";
@@ -46,6 +47,7 @@ export const useCart = (language: Language) => {
         price: variant.price,
         size: variant.size,
         quantity: 1,
+        taxable: product.taxable,
       };
       
       toast({
@@ -105,7 +107,7 @@ export const useCart = (language: Language) => {
       description: isArabic 
         ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`
         : `Invoice #${invoiceId} has been created successfully`,
-      variant: "success",
+      variant: "default",
     });
     
     return invoiceId;

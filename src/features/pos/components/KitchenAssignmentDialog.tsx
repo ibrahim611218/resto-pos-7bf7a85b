@@ -11,6 +11,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Language, CartItem } from "@/types";
 import { ChefHat, Check } from "lucide-react";
+import { getSizeLabel } from "../utils/sizeLabels";
 
 interface KitchenAssignmentDialogProps {
   isOpen: boolean;
@@ -101,12 +102,5 @@ const KitchenAssignmentDialog: React.FC<KitchenAssignmentDialogProps> = ({
     </Dialog>
   );
 };
-
-function getSizeLabel(size: string, language: Language): string {
-  if (language === "ar") {
-    return size === "small" ? "صغير" : size === "medium" ? "وسط" : "كبير";
-  }
-  return size === "small" ? "S" : size === "medium" ? "M" : "L";
-}
 
 export default KitchenAssignmentDialog;

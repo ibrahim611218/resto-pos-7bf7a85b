@@ -16,7 +16,7 @@ import Login from "./features/auth/Login";
 import Unauthorized from "./pages/Unauthorized";
 import { AuthProvider } from "./features/auth/hooks/useAuth";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import KitchenOrders from "./features/kitchen/KitchenOrders";
+import Kitchen from "./pages/Kitchen";
 
 const queryClient = new QueryClient();
 
@@ -45,7 +45,7 @@ const App = () => (
                 
                 {/* Routes accessible to kitchen staff and admins */}
                 <Route element={<ProtectedRoute allowedRoles={["admin", "kitchen"]} />}>
-                  <Route path="/kitchen" element={<KitchenOrders language="ar" />} />
+                  <Route path="/kitchen" element={<Kitchen language="ar" />} />
                 </Route>
                 
                 {/* Routes accessible only to admins */}

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { KitchenOrder, Language, KitchenOrderStatus } from "@/types";
 import KitchenOrderCard from "./KitchenOrderCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

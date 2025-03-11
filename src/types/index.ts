@@ -1,3 +1,4 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen";
@@ -94,4 +95,27 @@ export interface ReportFilter {
   cashierId?: string;
   productId?: string;
   categoryId?: string;
+}
+
+// Kitchen Order Status Types
+export type KitchenOrderStatus = "pending" | "preparing" | "ready" | "completed" | "cancelled";
+
+export type KitchenOrderItemStatus = KitchenOrderStatus;
+
+export interface KitchenOrderItem {
+  id: string;
+  name: string;
+  nameAr?: string;
+  quantity: number;
+  size: string;
+  status: KitchenOrderItemStatus;
+}
+
+export interface KitchenOrder {
+  id: string;
+  invoiceId: string;
+  status: KitchenOrderStatus;
+  items: KitchenOrderItem[];
+  createdAt: string;
+  updatedAt: string;
 }
