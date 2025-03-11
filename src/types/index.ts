@@ -40,6 +40,8 @@ export interface Product {
   taxable: boolean;
   type: ProductType;
   price?: number; // For single products without variants
+  inStock?: number; // Quantity in stock
+  lowStockThreshold?: number; // Threshold for low stock warning
 }
 
 export interface CartItem {
@@ -87,6 +89,10 @@ export interface BusinessSettings {
   email: string;
   logo?: string;
   taxRate: number;
+  commercialRegister?: string;
+  commercialRegisterAr?: string;
+  invoiceNotes?: string;
+  invoiceNotesAr?: string;
 }
 
 export interface ReportFilter {
@@ -119,3 +125,18 @@ export interface KitchenOrder {
   createdAt: string;
   updatedAt: string;
 }
+
+// Inventory types
+export interface InventoryItem {
+  id: string;
+  productId: string;
+  productName: string;
+  productNameAr?: string;
+  quantity: number;
+  lowStockThreshold: number;
+  lastUpdated: Date;
+  categoryId: string;
+}
+
+// Invoice Export Options
+export type InvoiceExportType = "print" | "pdf" | "email";

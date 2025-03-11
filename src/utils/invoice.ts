@@ -1,5 +1,6 @@
 
-import { Invoice, BusinessSettings, CartItem } from "@/types";
+import { Invoice, BusinessSettings, CartItem, InvoiceExportType } from "@/types";
+import { toast } from "@/hooks/use-toast";
 
 export const generateInvoiceNumber = (): string => {
   const prefix = "INV";
@@ -51,6 +52,23 @@ export const exportInvoiceToPDF = (
   // This would integrate with a PDF generation library
   console.log("Export to PDF", invoice, businessSettings);
   // Implementation would use libraries like jspdf or pdfmake
+  
+  // For demonstration, show toast message
+  toast({
+    title: "تم تصدير الفاتورة",
+    description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
+  });
+  
+  // Simulate PDF download
+  setTimeout(() => {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,');
+    element.setAttribute('download', `invoice-${invoice.number}.pdf`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }, 1000);
 };
 
 export const emailInvoice = async (
@@ -60,5 +78,49 @@ export const emailInvoice = async (
 ): Promise<boolean> => {
   // This would integrate with an email service
   console.log("Email invoice", invoice, email, businessSettings);
+  
+  // For demonstration, show toast message
+  toast({
+    title: "تم إرسال الفاتورة",
+    description: `تم إرسال الفاتورة رقم ${invoice.number} إلى ${email} بنجاح`,
+  });
+  
   return true; // Successful email sending
+};
+
+export const handleInvoiceExport = (
+  exportType: InvoiceExportType,
+  invoice: Invoice,
+  businessSettings: BusinessSettings,
+  email?: string
+): void => {
+  switch (exportType) {
+    case "print":
+      window.print();
+      break;
+    case "pdf":
+      exportInvoiceToPDF(invoice, businessSettings);
+      break;
+    case "email":
+      if (email) {
+        emailInvoice(invoice, email, businessSettings);
+      } else {
+        toast({
+          title: "خطأ",
+          description: "يرجى تحديد عنوان البريد الإلكتروني",
+          variant: "destructive",
+        });
+      }
+      break;
+  }
+};
+
+// Generate QR code data for invoice
+export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
+  const data = {
+    invoiceNumber: invoice.number,
+    total: invoice.total,
+    date: invoice.date,
+  };
+  return JSON.stringify(data);
 };

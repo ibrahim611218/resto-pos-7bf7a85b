@@ -10,7 +10,9 @@ import { getSidebarLinks } from "./sidebar/sidebarLinks";
 import SidebarItem from "./sidebar/SidebarItem";
 import { SidebarProps } from "./sidebar/types";
 import ThemeToggle from "../ui-custom/ThemeToggle";
+import LanguageToggle from "../ui-custom/LanguageToggle";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
@@ -18,6 +20,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
+  const { language, toggleLanguage } = useLanguage();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
     products: false,
     reports: false,
@@ -139,6 +142,12 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
         
         <div className="border-t p-3 space-y-2">
           <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
+          <LanguageToggle 
+            collapsed={collapsed} 
+            className="w-full justify-start" 
+            language={language}
+            onToggle={toggleLanguage}
+          />
           
           <Button 
             variant="outline"
