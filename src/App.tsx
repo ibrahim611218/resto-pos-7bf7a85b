@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +24,8 @@ import { LanguageProvider } from "./context/LanguageContext";
 import Customers from "./pages/Customers";
 import SalesReport from "./pages/SalesReport";
 import UserManagement from "./pages/UserManagement";
+import InventoryReportPage from "./pages/InventoryReport";
+import CustomersReportPage from "./pages/CustomersReport";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,13 @@ function App() {
                 <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
               </Route>
             </Route>
+          </Route>
+          
+          {/* Reports Routes */}
+          <Route path="/reports" element={<ProtectedRoute allowedRoles={["admin", "owner", "supervisor"]} />}>
+            <Route path="sales" element={<SalesReportPage />} />
+            <Route path="inventory" element={<InventoryReportPage />} />
+            <Route path="customers" element={<CustomersReportPage />} />
           </Route>
           
           {/* Catch-all route */}

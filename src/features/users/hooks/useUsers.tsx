@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { mockUsers } from "@/features/auth/data/mockUsers";
 import { toast } from "@/hooks/use-toast";
@@ -6,7 +5,7 @@ import { UserWithPassword } from "../types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const useUsers = () => {
-  const { isOwner, getUserPermissions, updateUserPermissions } = useAuth();
+  const { isOwner, getUserPermissions, updateUserPermissions, allPermissions } = useAuth();
   const [users, setUsers] = useState<UserWithPassword[]>(
     mockUsers.map(user => ({ ...user, password: "********" }))
   );
@@ -23,6 +22,29 @@ export const useUsers = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   
   const canManageAdmins = isOwner();
+
+  // Check if system admin exists, if not add it
+  useState(() => {
+    const systemAdminExists = users.some(user => 
+      user.email === "system_admin@example.com" && user.role === "owner"
+    );
+    
+    if (!systemAdminExists) {
+      const systemAdmin: UserWithPassword = {
+        id: "sys-admin-1",
+        name: "مدير النظام",
+        email: "system_admin@example.com",
+        role: "owner",
+        password: "********"
+      };
+      
+      setUsers(prevUsers => [...prevUsers, systemAdmin]);
+      
+      // Ensure system admin has all permissions
+      const allPermissionValues = allPermissions.map(p => p.value);
+      updateUserPermissions("sys-admin-1", allPermissionValues);
+    }
+  }, []);
 
   const handleAddUser = () => {
     // Basic validation
