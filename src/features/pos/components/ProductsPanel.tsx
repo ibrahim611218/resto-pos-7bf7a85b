@@ -57,7 +57,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <div className="flex flex-col h-full overflow-hidden border-r">
-      <div className="p-4 border-b">
+      <div className="p-2 border-b">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -65,9 +65,9 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto p-4 pt-0">
-        <Tabs defaultValue="categories" className="mb-4">
-          <TabsList className="grid grid-cols-2 mb-4 sticky top-0 z-10">
+      <div className="flex-1 overflow-y-auto p-2">
+        <Tabs defaultValue="categories" className="mb-2">
+          <TabsList className="grid grid-cols-2 mb-2 sticky top-0 z-10">
             <TabsTrigger value="categories" className="text-base">
               {isArabic ? "الفئات" : "Categories"}
             </TabsTrigger>
@@ -85,26 +85,26 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             />
             
             {activeCategory && (
-              <div className="mt-4">
-                <h3 className="font-bold mb-3 text-lg sticky top-12 bg-background py-2 z-10">
+              <div className="mt-2">
+                <h3 className="font-bold mb-2 text-lg sticky top-12 bg-background py-1 z-10">
                   {isArabic 
                     ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                     : categories.find(c => c.id === activeCategory)?.name || "Products"}
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
                   {searchedProducts.map((product, index) => (
                     <GlassCard
                       key={product.id}
                       animation="fade"
                       delay={index * 50}
-                      className="cursor-pointer hover:shadow-md bg-secondary/30"
+                      className="cursor-pointer hover:shadow-md bg-secondary/30 p-1"
                       onClick={() => handleProductClick(product)}
                     >
-                      <div className="text-center py-2">
-                        <p className="font-medium truncate">
+                      <div className="text-center py-1">
+                        <p className="font-medium truncate text-sm">
                           {isArabic ? product.nameAr : product.name}
                         </p>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
                         </p>
                       </div>
@@ -115,27 +115,27 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             )}
           </TabsContent>
           
-          <TabsContent value="all" className="mt-2 space-y-6">
+          <TabsContent value="all" className="mt-2 space-y-3">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
-                <div key={category.id} className="mb-6">
-                  <h3 className="font-bold mb-3 text-lg border-b pb-2 sticky top-12 bg-background z-10">
+                <div key={category.id} className="mb-3">
+                  <h3 className="font-bold mb-2 text-sm border-b pb-1 sticky top-12 bg-background z-10">
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
                     {productsByCategory[category.id]?.map((product, index) => (
                       <GlassCard
                         key={product.id}
                         animation="fade"
                         delay={index * 50}
-                        className="cursor-pointer hover:shadow-md bg-secondary/30"
+                        className="cursor-pointer hover:shadow-md bg-secondary/30 p-1"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="text-center py-2">
-                          <p className="font-medium truncate">
+                        <div className="text-center py-1">
+                          <p className="font-medium truncate text-sm">
                             {isArabic ? product.nameAr : product.name}
                           </p>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
                           </p>
                         </div>

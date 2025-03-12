@@ -24,40 +24,40 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
 
   return (
     <>
-      <div className="mb-5">
-        <Label className="block mb-3 text-lg">{isArabic ? "نوع الطلب" : "Order Type"}</Label>
+      <div className="mb-3">
+        <Label className="block mb-1 text-base">{isArabic ? "نوع الطلب" : "Order Type"}</Label>
         <RadioGroup 
           value={orderType} 
           onValueChange={(value: "takeaway" | "dineIn") => setOrderType(value)}
-          className="flex space-x-4 space-x-reverse"
+          className="flex space-x-2 space-x-reverse"
         >
-          <div className="flex items-center space-x-2 space-x-reverse bg-accent p-3 rounded-lg border border-accent-foreground/20 flex-1 justify-center">
+          <div className="flex items-center space-x-1 space-x-reverse bg-accent p-2 rounded-lg border border-accent-foreground/20 flex-1 justify-center">
             <RadioGroupItem value="takeaway" id="takeaway" />
             <Label htmlFor="takeaway" className="flex items-center cursor-pointer">
-              <ShoppingBag className="ml-2 h-5 w-5" />
-              <span className="text-base">{isArabic ? "سفري" : "Takeaway"}</span>
+              <ShoppingBag className="ml-1 h-4 w-4" />
+              <span className="text-sm">{isArabic ? "سفري" : "Takeaway"}</span>
             </Label>
           </div>
-          <div className="flex items-center space-x-2 space-x-reverse bg-accent p-3 rounded-lg border border-accent-foreground/20 flex-1 justify-center">
+          <div className="flex items-center space-x-1 space-x-reverse bg-accent p-2 rounded-lg border border-accent-foreground/20 flex-1 justify-center">
             <RadioGroupItem value="dineIn" id="dineIn" />
             <Label htmlFor="dineIn" className="flex items-center cursor-pointer">
-              <Home className="ml-2 h-5 w-5" />
-              <span className="text-base">{isArabic ? "محلي" : "Dine In"}</span>
+              <Home className="ml-1 h-4 w-4" />
+              <span className="text-sm">{isArabic ? "محلي" : "Dine In"}</span>
             </Label>
           </div>
         </RadioGroup>
       </div>
       
       {orderType === "dineIn" && (
-        <div className="mb-5">
-          <Label htmlFor="tableNumber" className="block mb-3 text-lg">
+        <div className="mb-3">
+          <Label htmlFor="tableNumber" className="block mb-1 text-base">
             {isArabic ? "رقم الطاولة" : "Table Number"}
           </Label>
           <Input
             id="tableNumber"
             value={tableNumber}
             onChange={(e) => setTableNumber(e.target.value)}
-            className="w-full p-3 text-lg"
+            className="w-full p-2 text-base"
             placeholder={isArabic ? "أدخل رقم الطاولة" : "Enter table number"}
           />
         </div>

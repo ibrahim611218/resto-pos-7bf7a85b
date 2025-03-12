@@ -19,14 +19,14 @@ const CartActions: React.FC<CartActionsProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="mt-6">
+    <div className="mt-3">
       <Button 
-        className="w-full h-14 flex items-center justify-center gap-2 text-lg" 
+        className="w-full h-10 flex items-center justify-center gap-1 text-base" 
         onClick={handleCreateInvoice}
         disabled={isEmpty}
       >
         <div className="flex items-center">
-          <CreditCard className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
+          <CreditCard className={`${isArabic ? 'ml-1' : 'mr-1'} h-4 w-4`} />
           {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>
       </Button>

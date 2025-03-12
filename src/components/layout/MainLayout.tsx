@@ -14,7 +14,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background w-full m-0 p-0">
+    <div className="flex min-h-screen bg-background w-full m-0 p-0 compact-ui">
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <AnimatedTransition animation="fade" delay={100}>
         <div 
@@ -22,7 +22,7 @@ const MainLayout = () => {
             !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
           }`}
         >
-          <div className="h-screen w-full overflow-hidden m-0 p-0">
+          <div className="h-screen w-full overflow-auto m-0 p-0">
             <Outlet />
           </div>
         </div>

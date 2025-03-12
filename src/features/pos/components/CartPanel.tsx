@@ -82,27 +82,27 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div className="flex flex-col h-full border-r border-l bg-card shadow-md overflow-hidden">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center border-b">
-        <h2 className="text-2xl font-bold">
+      <div className="p-2 flex-shrink-0 flex justify-between items-center border-b">
+        <h2 className="text-lg font-bold">
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
           variant="ghost" 
-          size="icon"
+          size="sm"
           className="text-muted-foreground hover:text-destructive" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
-          <Trash2 className="h-5 w-5" />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto px-4 pb-2 min-h-0">
+      <div className="flex-grow overflow-y-auto px-2 pb-1 min-h-0">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-3 pt-3">
+          <div className="space-y-2 pt-2">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -118,8 +118,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-4 border-t bg-card flex-shrink-0">
-        <Separator className="mb-4" />
+      <div className="p-2 border-t bg-card flex-shrink-0">
+        <Separator className="mb-2" />
         
         <OrderTypeSelector
           orderType={orderType}
