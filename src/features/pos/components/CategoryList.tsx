@@ -31,7 +31,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   return (
-    <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
+    <div className="flex overflow-x-auto no-scrollbar pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
       <Button
         variant={isLightTheme ? "outline" : "secondary"}
         className={cn(

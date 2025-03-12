@@ -65,7 +65,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto p-4 pt-0">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 pt-0">
         <Tabs defaultValue="categories" className="mb-4">
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="categories" className="text-base">
@@ -115,7 +115,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             )}
           </TabsContent>
           
-          <TabsContent value="all" className="mt-2 space-y-6">
+          <TabsContent value="all" className="mt-2 space-y-6 overflow-y-auto no-scrollbar">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-6">

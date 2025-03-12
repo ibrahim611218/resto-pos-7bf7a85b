@@ -98,7 +98,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-280px)]">
+      <div className="flex-grow overflow-y-auto no-scrollbar px-4 pb-2 max-h-[calc(100vh-280px)]">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
