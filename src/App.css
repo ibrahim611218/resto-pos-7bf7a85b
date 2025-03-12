@@ -1,5 +1,6 @@
 
 
+
 #root {
   width: 100%;
   height: 100%;
@@ -66,6 +67,7 @@
 .screen-size-standard {
   width: 100%;
   height: 100%;
+  font-size: 1rem;
 }
 
 .screen-size-compact {
@@ -80,17 +82,45 @@
   font-size: 1.1rem;
 }
 
+/* Container size options */
+.container-standard {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.container-compact {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0.5rem;
+}
+
+.container-large {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
 /* Touch-friendly UI adjustments */
 .touch-ui button, 
 .touch-ui input, 
 .touch-ui select {
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 48px;
+  min-width: 48px;
 }
 
 .touch-ui .clickable {
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
+  margin: 4px;
+}
+
+.touch-ui .card {
+  padding: 1.5rem;
+}
+
+.touch-ui .form-control {
+  margin-bottom: 1rem;
 }
 
 /* Mouse-friendly UI adjustments */
@@ -103,3 +133,34 @@
 .mouse-ui select {
   min-height: 32px;
 }
+
+.mouse-ui .card {
+  padding: 1rem;
+}
+
+.mouse-ui .form-control {
+  margin-bottom: 0.75rem;
+}
+
+/* Responsive container classes */
+@media (max-width: 640px) {
+  .container-standard, .container-compact, .container-large {
+    padding: 0.5rem;
+    width: 100%;
+  }
+  
+  .touch-ui button, 
+  .touch-ui input, 
+  .touch-ui select {
+    min-height: 44px;
+  }
+}
+
+/* Fix content overflow issues */
+.content-container {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+

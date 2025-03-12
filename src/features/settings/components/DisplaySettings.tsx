@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -52,6 +53,10 @@ const DisplaySettingsComponent: React.FC = () => {
     document.body.classList.remove('screen-size-standard', 'screen-size-compact', 'screen-size-large');
     document.body.classList.add(`screen-size-${settings.screenSize}`);
     
+    // Apply container class based on screen size
+    document.body.classList.remove('container-standard', 'container-compact', 'container-large');
+    document.body.classList.add(`container-${settings.screenSize}`);
+    
   }, [settings.autoDetectInputMethod, settings.inputMethod, settings.screenSize]);
   
   useEffect(() => {
@@ -71,7 +76,7 @@ const DisplaySettingsComponent: React.FC = () => {
   };
   
   return (
-    <Card className="w-full">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Monitor size={18} />
@@ -97,23 +102,35 @@ const DisplaySettingsComponent: React.FC = () => {
             >
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <RadioGroupItem value="standard" id="standard" />
-                <Label htmlFor="standard">
+                <Label htmlFor="standard" className="flex items-center gap-2">
+                  <Monitor size={16} className="opacity-50" />
                   {isArabic ? "قياسي" : "Standard"}
                 </Label>
               </div>
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <RadioGroupItem value="compact" id="compact" />
-                <Label htmlFor="compact">
+                <Label htmlFor="compact" className="flex items-center gap-2">
+                  <Smartphone size={16} className="opacity-50" />
                   {isArabic ? "مضغوط" : "Compact"}
                 </Label>
               </div>
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <RadioGroupItem value="large" id="large" />
-                <Label htmlFor="large">
+                <Label htmlFor="large" className="flex items-center gap-2">
+                  <Monitor size={16} className="opacity-50" />
                   {isArabic ? "كبير" : "Large"}
                 </Label>
               </div>
             </RadioGroup>
+            
+            <div className="p-4 bg-muted rounded-md mt-4">
+              <p className="text-sm text-muted-foreground">
+                {isArabic 
+                  ? "تغيير حجم العرض يؤثر على كيفية عرض العناصر في التطبيق"
+                  : "Changing screen size affects how elements are displayed in the application"
+                }
+              </p>
+            </div>
           </TabsContent>
           
           <TabsContent value="inputMethod" className="space-y-4 mt-4">
