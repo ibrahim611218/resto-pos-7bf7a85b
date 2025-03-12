@@ -32,20 +32,7 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
     }
   } else {
     // Dark theme colors
-    switch (categoryId) {
-      case "cat1": // Main dishes
-        return "bg-green-900/40 hover:bg-green-900/60 border-green-800";
-      case "cat2": // Sides
-        return "bg-yellow-900/40 hover:bg-yellow-900/60 border-yellow-800";
-      case "cat3": // Drinks
-        return "bg-blue-900/40 hover:bg-blue-900/60 border-blue-800";
-      case "cat4": // Desserts
-        return "bg-pink-900/40 hover:bg-pink-900/60 border-pink-800";
-      case "cat5": // Combos
-        return "bg-purple-900/40 hover:bg-purple-900/60 border-purple-800";
-      default:
-        return "bg-orange-900/40 hover:bg-orange-900/60 border-orange-800";
-    }
+    return "bg-secondary/30 hover:bg-secondary/50";
   }
 };
 
@@ -54,7 +41,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   const isLightTheme = theme === "light";
   
   const displayPrice = product.variants.length > 0 
-    ? `${product.variants[0].price.toFixed(2)}+` 
+    ? `${product.variants[0].price}` 
     : "-";
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
@@ -70,12 +57,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   return (
     <Card 
       className={cn(
-        "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full",
+        "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full border",
         bgColorClass
       )} 
       onClick={handleClick}
     >
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="aspect-square w-full overflow-hidden bg-muted">
         {product.image ? (
           <img
             src={product.image}
@@ -88,11 +75,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
           </div>
         )}
       </div>
-      <CardContent className="p-3">
-        <div className={`font-medium truncate ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
+      <CardContent className="p-2">
+        <div className={`font-medium truncate text-sm ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
           {isArabic && product.nameAr ? product.nameAr : product.name}
         </div>
-        <div className="text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block">
+        <div className="text-sm mt-1 text-white font-semibold bg-black/60 rounded-full px-2 py-0.5 inline-block">
           {displayPrice} {isArabic ? "ر.س" : "SAR"}
         </div>
       </CardContent>

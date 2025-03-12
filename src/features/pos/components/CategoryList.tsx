@@ -3,9 +3,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
+import GlassCard from "@/components/ui-custom/GlassCard";
 
 interface CategoryListProps {
-  categories: { id: string; name: string; nameAr?: string }[];
+  categories: { id: string; name: string; nameAr?: string; image?: string }[];
   activeCategory: string | null;
   onCategoryClick?: (categoryId: string) => void;
   isArabic: boolean;
@@ -31,42 +32,45 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   return (
-    <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
-      <Button
-        variant={isLightTheme ? "outline" : "secondary"}
-        className={cn(
-          "flex-shrink-0 whitespace-nowrap",
-          isLightTheme 
-            ? (!activeCategory 
-                ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-            : (!activeCategory 
-                ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                : "")
-        )}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4">
+      <GlassCard
+        animation="fade"
+        delay={0}
+        className={`cursor-pointer hover:shadow-md transition-all duration-200 h-full
+          ${!activeCategory ? "bg-[#F97316]/20 border border-[#F97316]/50" : "bg-secondary/30"}`}
         onClick={() => handleCategoryClick("all")}
       >
-        {isArabic ? "الكل" : "All"}
-      </Button>
+        <div className="text-center py-2 px-1">
+          <p className="font-medium truncate">
+            {isArabic ? "الكل" : "All"}
+          </p>
+        </div>
+      </GlassCard>
       
-      {categories.map((category) => (
-        <Button
+      {categories.map((category, index) => (
+        <GlassCard
           key={category.id}
-          variant={isLightTheme ? "outline" : "secondary"}
-          className={cn(
-            "flex-shrink-0 whitespace-nowrap",
-            isLightTheme 
-              ? (activeCategory === category.id
-                  ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                  : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-              : (activeCategory === category.id 
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                  : "")
-          )}
+          animation="fade"
+          delay={(index + 1) * 50}
+          className={`cursor-pointer hover:shadow-md transition-all duration-200 h-full
+            ${activeCategory === category.id ? "bg-[#F97316]/20 border border-[#F97316]/50" : "bg-secondary/30"}`}
           onClick={() => handleCategoryClick(category.id)}
         >
-          {isArabic && category.nameAr ? category.nameAr : category.name}
-        </Button>
+          {category.image && (
+            <div className="w-full aspect-[4/3] overflow-hidden">
+              <img 
+                src={category.image}
+                alt={isArabic ? category.nameAr : category.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div className="text-center py-2 px-1">
+            <p className="font-medium truncate">
+              {isArabic && category.nameAr ? category.nameAr : category.name}
+            </p>
+          </div>
+        </GlassCard>
       ))}
     </div>
   );
