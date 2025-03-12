@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
-import GlassCard from "@/components/ui-custom/GlassCard";
-import CategoryList from "./CategoryList";
-import ProductsList from "./ProductsList";
 import SizeSelectionDialog from "./SizeSelectionDialog";
 import SearchBox from "@/features/invoices/components/SearchBox";
 import { useScreenSize } from "@/hooks/use-mobile";
+import { useGridColumns } from "../hooks/useGridColumns";
+import CategoriesTabContent from "./products/CategoriesTabContent";
+import AllProductsTabContent from "./products/AllProductsTabContent";
 
 interface ProductsPanelProps {
   searchTerm: string;
@@ -40,8 +40,9 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { width, isMobile, isTablet } = useScreenSize();
+  const { isMobile } = useScreenSize();
   const [activeTab, setActiveTab] = useState("categories");
+  const { getGridCols } = useGridColumns();
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -61,25 +62,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
       setShowAllProducts(false);
     }
   };
-
-  // Calculate grid columns based on screen size - enhanced for better product display
-  const getGridCols = () => {
-    if (width < 500) return "grid-cols-2";
-    if (width < 640) return "grid-cols-3";
-    if (width < 768) return "grid-cols-4";
-    if (width < 1024) return "grid-cols-5";
-    if (width < 1280) return "grid-cols-6";
-    return "grid-cols-8";
-  };
-
-  // Group products by category for better organization
-  const productsByCategory = filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
-    if (!acc[product.categoryId]) {
-      acc[product.categoryId] = [];
-    }
-    acc[product.categoryId].push(product);
-    return acc;
-  }, {});
 
   return (
     <div className="flex flex-col h-full overflow-hidden border-r">
@@ -107,92 +89,26 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="categories" className="mt-2">
-            <CategoryList
+          <TabsContent value="categories">
+            <CategoriesTabContent 
               categories={categories}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
+              searchedProducts={searchedProducts}
               isArabic={isArabic}
+              onProductClick={handleProductClick}
+              getGridCols={getGridCols}
+              isMobile={isMobile}
             />
-            
-            {activeCategory && (
-              <div className="mt-2">
-                <h3 className={`font-bold mb-2 ${isMobile ? "text-base" : "text-lg"} sticky top-12 bg-background py-1 z-10`}>
-                  {isArabic 
-                    ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
-                    : categories.find(c => c.id === activeCategory)?.name || "Products"}
-                </h3>
-                <div className={`grid ${getGridCols()} gap-2`}>
-                  {searchedProducts.map((product, index) => (
-                    <GlassCard
-                      key={product.id}
-                      animation="fade"
-                      delay={index * 50}
-                      className="cursor-pointer hover:shadow-md bg-secondary/30 p-1"
-                      onClick={() => handleProductClick(product)}
-                    >
-                      <div className="w-full aspect-square overflow-hidden rounded-md bg-muted mb-1">
-                        {product.image ? (
-                          <img 
-                            src={product.image} 
-                            alt={isArabic ? product.nameAr || product.name : product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                            {isArabic ? "لا توجد صورة" : "No image"}
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-center py-1">
-                        <p className="font-medium truncate text-sm">
-                          {isArabic ? product.nameAr : product.name}
-                        </p>
-                        <p className="text-xs text-white mt-0.5 bg-black/70 rounded-full px-2 py-0.5 inline-block">
-                          {product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
-                        </p>
-                      </div>
-                    </GlassCard>
-                  ))}
-                </div>
-              </div>
-            )}
           </TabsContent>
           
-          <TabsContent value="all" className="mt-2 space-y-3">
-            <div className={`grid ${getGridCols()} gap-2`}>
-              {searchedProducts.map((product, index) => (
-                <GlassCard
-                  key={product.id}
-                  animation="fade"
-                  delay={index * 50}
-                  className="cursor-pointer hover:shadow-md bg-secondary/30 p-1"
-                  onClick={() => handleProductClick(product)}
-                >
-                  <div className="w-full aspect-square overflow-hidden rounded-md bg-muted mb-1">
-                    {product.image ? (
-                      <img 
-                        src={product.image} 
-                        alt={isArabic ? product.nameAr || product.name : product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                        {isArabic ? "لا توجد صورة" : "No image"}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-center py-1">
-                    <p className="font-medium truncate text-sm">
-                      {isArabic ? product.nameAr : product.name}
-                    </p>
-                    <p className="text-xs text-white mt-0.5 bg-black/70 rounded-full px-2 py-0.5 inline-block">
-                      {product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
-                    </p>
-                  </div>
-                </GlassCard>
-              ))}
-            </div>
+          <TabsContent value="all">
+            <AllProductsTabContent 
+              searchedProducts={searchedProducts}
+              isArabic={isArabic}
+              onProductClick={handleProductClick}
+              getGridCols={getGridCols}
+            />
           </TabsContent>
         </Tabs>
       </div>
