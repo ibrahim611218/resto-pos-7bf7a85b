@@ -1,161 +1,109 @@
+import { useLanguage } from "@/context/LanguageContext";
+import Card from "../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
-import React from "react";
-import {
-  BarChart3,
-  TrendingUp,
-  ShoppingBag,
-  Users,
-  CreditCard,
-  DollarSign,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import GlassCard from "@/components/ui-custom/GlassCard";
-import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { Language } from "@/types";
-
-interface DashboardProps {
-  language: Language;
+interface IndexProps {
+  language?: string;
 }
 
-const Dashboard = ({ language }: DashboardProps) => {
+const Index: React.FC<IndexProps> = () => {
+  const { language } = useLanguage();
   const isArabic = language === "ar";
-  
-  const stats = [
-    {
-      title: isArabic ? "إجمالي المبيعات اليوم" : "Today's Sales",
-      value: "2,854.50 SAR",
-      change: "+12.5%",
-      icon: <DollarSign className="text-white" size={20} />,
-      iconBg: "bg-primary",
-    },
-    {
-      title: isArabic ? "معاملات اليوم" : "Today's Transactions",
-      value: "42",
-      change: "+4.2%",
-      icon: <CreditCard className="text-white" size={20} />,
-      iconBg: "bg-green-500",
-    },
-    {
-      title: isArabic ? "المنتجات النشطة" : "Active Products",
-      value: "278",
-      change: "+8",
-      icon: <ShoppingBag className="text-white" size={20} />,
-      iconBg: "bg-blue-500",
-    },
-    {
-      title: isArabic ? "العملاء" : "Customers",
-      value: "1,429",
-      change: "+4",
-      icon: <Users className="text-white" size={20} />,
-      iconBg: "bg-purple-500",
-    },
-  ];
+  const { user } = useAuth();
 
   return (
-    <div 
-      className={`space-y-6 p-6 pb-16 ${isArabic ? "font-[system-ui]" : ""}`}
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      <div className="flex flex-col space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">
-          {isArabic ? "لوحة التحكم" : "Dashboard"}
-        </h2>
-        <p className="text-muted-foreground">
-          {isArabic
-            ? "نظرة عامة على أداء مطعمك"
-            : "Overview of your restaurant's performance"}
-        </p>
-      </div>
+    <div dir={isArabic ? "rtl" : "ltr"}>
+      <h1 className="text-3xl font-bold mb-6">{isArabic ? "لوحة التحكم" : "Dashboard"}</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* POS Card */}
+        <Card className="p-6 hover:shadow-md transition-shadow">
+          <h2 className="text-xl font-bold mb-2">{isArabic ? "نقطة البيع" : "Point of Sale"}</h2>
+          <p className="text-muted-foreground mb-4">
+            {isArabic ? "إدارة المبيعات وإنشاء الفواتير" : "Manage sales and create invoices"}
+          </p>
+          <Button asChild className="w-full">
+            <Link to="/pos">{isArabic ? "فتح نقطة البيع" : "Open POS"}</Link>
+          </Button>
+        </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <GlassCard 
-            key={stat.title} 
-            animation="slide-up" 
-            delay={index * 100}
-            hover
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-              </div>
-              <div className={`p-2 rounded-full ${stat.iconBg}`}>
-                {stat.icon}
-              </div>
-            </div>
-            <div className="flex items-center pt-4 text-xs text-green-500">
-              <TrendingUp size={14} className="mr-1" />
-              <span>{stat.change}</span>
-              <span className="text-muted-foreground ml-1">
-                {isArabic ? "من الأمس" : "from yesterday"}
-              </span>
-            </div>
-          </GlassCard>
-        ))}
-      </div>
+        {/* Invoices Card */}
+        <Card className="p-6 hover:shadow-md transition-shadow">
+          <h2 className="text-xl font-bold mb-2">{isArabic ? "الفواتير" : "Invoices"}</h2>
+          <p className="text-muted-foreground mb-4">
+            {isArabic ? "عرض وإدارة الفواتير" : "View and manage invoices"}
+          </p>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/invoices">{isArabic ? "عرض الفواتير" : "View Invoices"}</Link>
+          </Button>
+        </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <GlassCard 
-          className="lg:col-span-2" 
-          animation="fade" 
-          delay={200}
-          hover
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium">
-              {isArabic ? "مبيعات هذا الأسبوع" : "Sales This Week"}
-            </h3>
-            <BarChart3 size={20} className="text-muted-foreground" />
-          </div>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            {isArabic ? "رسم بياني للمبيعات" : "Sales Chart"}
-          </div>
-        </GlassCard>
+        {/* Kitchen Card */}
+        <Card className="p-6 hover:shadow-md transition-shadow">
+          <h2 className="text-xl font-bold mb-2">{isArabic ? "المطبخ" : "Kitchen"}</h2>
+          <p className="text-muted-foreground mb-4">
+            {isArabic ? "إدارة طلبات المطبخ" : "Manage kitchen orders"}
+          </p>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/kitchen">{isArabic ? "عرض طلبات المطبخ" : "View Kitchen Orders"}</Link>
+          </Button>
+        </Card>
 
-        <GlassCard animation="fade" delay={300} hover>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium">
-              {isArabic ? "أفضل المنتجات" : "Top Products"}
-            </h3>
-            <ShoppingBag size={20} className="text-muted-foreground" />
-          </div>
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <AnimatedTransition
-                key={item}
-                animation="fade"
-                delay={300 + item * 50}
-              >
-                <div className="flex items-center justify-between py-2">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center mr-3">
-                      <ShoppingBag size={16} className="text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">
-                        {isArabic ? `المنتج ${item}` : `Product ${item}`}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {`${20 - item * 2} ${
-                          isArabic ? "المبيعات" : "sales"
-                        }`}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="font-medium">
-                    {`${120 - item * 15} ${isArabic ? "ر.س" : "SAR"}`}
-                  </p>
-                </div>
-              </AnimatedTransition>
-            ))}
-          </div>
-        </GlassCard>
+        {/* Products Card - Admin Only */}
+        {user?.role === "admin" && (
+          <Card className="p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold mb-2">{isArabic ? "المنتجات" : "Products"}</h2>
+            <p className="text-muted-foreground mb-4">
+              {isArabic ? "إدارة المنتجات والأصناف" : "Manage products and categories"}
+            </p>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/products">{isArabic ? "إدارة المنتجات" : "Manage Products"}</Link>
+            </Button>
+          </Card>
+        )}
+
+        {/* Inventory Card - Admin Only */}
+        {user?.role === "admin" && (
+          <Card className="p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold mb-2">{isArabic ? "المخزون" : "Inventory"}</h2>
+            <p className="text-muted-foreground mb-4">
+              {isArabic ? "إدارة المخزون والمشتريات" : "Manage inventory and purchases"}
+            </p>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/inventory">{isArabic ? "إدارة المخزون" : "Manage Inventory"}</Link>
+            </Button>
+          </Card>
+        )}
+
+        {/* Reports Card - Admin Only */}
+        {user?.role === "admin" && (
+          <Card className="p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold mb-2">{isArabic ? "التقارير" : "Reports"}</h2>
+            <p className="text-muted-foreground mb-4">
+              {isArabic ? "عرض تقارير المبيعات والأداء" : "View sales and performance reports"}
+            </p>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/reports/sales">{isArabic ? "عرض التقارير" : "View Reports"}</Link>
+            </Button>
+          </Card>
+        )}
+
+        {/* Settings Card - Admin Only */}
+        {user?.role === "admin" && (
+          <Card className="p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold mb-2">{isArabic ? "الإعدادات" : "Settings"}</h2>
+            <p className="text-muted-foreground mb-4">
+              {isArabic ? "إدارة إعدادات النظام" : "Manage system settings"}
+            </p>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/settings">{isArabic ? "فتح الإعدادات" : "Open Settings"}</Link>
+            </Button>
+          </Card>
+        )}
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Index;

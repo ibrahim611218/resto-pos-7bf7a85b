@@ -20,7 +20,7 @@ import Kitchen from "./pages/Kitchen";
 import Inventory from "./pages/Inventory";
 import BusinessSettings from "./pages/BusinessSettings";
 import { ThemeProvider } from "./context/ThemeContext";
-import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import Customers from "./pages/Customers";
 import SalesReport from "./pages/SalesReport";
 import UserManagement from "./pages/UserManagement";
@@ -39,13 +39,13 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}
-                  <Route path="/login" element={<Login language="ar" />} />
-                  <Route path="/unauthorized" element={<Unauthorized language="ar" />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/unauthorized" element={<Unauthorized />} />
                   
                   {/* Protected routes */}
                   <Route element={<ProtectedRoute />}>
                     <Route element={<MainLayout />}>
-                      <Route path="/" element={<Index language="ar" />} />
+                      <Route path="/" element={<Index />} />
                       
                       {/* Routes accessible to cashiers and admins */}
                       <Route element={<ProtectedRoute allowedRoles={["admin", "cashier"]} />}>
