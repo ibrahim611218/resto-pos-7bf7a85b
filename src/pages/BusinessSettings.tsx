@@ -2,10 +2,41 @@
 import React from "react";
 import BusinessSettingsForm from "@/features/settings/BusinessSettingsForm";
 import { useLanguage } from "@/context/LanguageContext";
+import DataManagement from "@/features/settings/components/DataManagement";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const BusinessSettings = () => {
   const { language } = useLanguage();
-  return <BusinessSettingsForm language={language} />;
+  const isArabic = language === "ar";
+  
+  return (
+    <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
+      <Tabs defaultValue="business" className="w-full">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsTrigger value="business">
+            {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
+          </TabsTrigger>
+          <TabsTrigger value="data">
+            {isArabic ? "إدارة البيانات" : "Data Management"}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="business">
+          <BusinessSettingsForm language={language} />
+        </TabsContent>
+        <TabsContent value="data">
+          <Card>
+            <CardHeader>
+              <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DataManagement />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
 
 export default BusinessSettings;

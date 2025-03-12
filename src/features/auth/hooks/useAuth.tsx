@@ -9,6 +9,8 @@ interface AuthContextType {
   login: (email: string, password: string) => boolean;
   logout: () => void;
   hasPermission: (requiredRole: UserRole | UserRole[]) => boolean;
+  isOwner: () => boolean;
+  isSupervisor: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,18 +54,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const hasPermission = (requiredRole: UserRole | UserRole[]): boolean => {
     if (!user) return false;
     
-    // Admin has all permissions
-    if (user.role === 'admin') return true;
+    // Admin and owner have all permissions
+    if (user.role === 'admin' || user.role === 'owner') return true;
     
+    // Supervisor has all permissions except those reserved for admin/owner
+    if (user.role === 'supervisor') {
+      if (Array.isArray(requiredRole)) {
+        return requiredRole.some(role => 
+          role === 'supervisor' || role === 'cashier' || role === 'kitchen');
+      }
+      return requiredRole === 'supervisor' || requiredRole === 'cashier' || requiredRole === 'kitchen';
+    }
+    
+    // For other roles, check exact match
     if (Array.isArray(requiredRole)) {
       return requiredRole.includes(user.role);
     }
     
     return user.role === requiredRole;
   };
+  
+  const isOwner = (): boolean => {
+    return user?.role === 'owner';
+  };
+  
+  const isSupervisor = (): boolean => {
+    return user?.role === 'supervisor' || user?.role === 'admin' || user?.role === 'owner';
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, hasPermission }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      login, 
+      logout, 
+      hasPermission,
+      isOwner,
+      isSupervisor
+    }}>
       {children}
     </AuthContext.Provider>
   );

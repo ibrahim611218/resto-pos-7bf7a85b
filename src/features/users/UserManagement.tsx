@@ -30,8 +30,9 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { PlusCircle, Edit, Trash, Key } from "lucide-react";
+import { PlusCircle, Edit, Trash, Key, ShieldAlert, ShieldCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 // Extend User type to include password for the form
 interface UserWithPassword extends User {
@@ -41,6 +42,7 @@ interface UserWithPassword extends User {
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { user: currentUser, isOwner } = useAuth();
   
   const [users, setUsers] = useState<UserWithPassword[]>(
     mockUsers.map(user => ({ ...user, password: "********" }))
@@ -59,6 +61,8 @@ const UserManagement: React.FC = () => {
   });
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  const canManageAdmins = isOwner();
   
   const handleAddUser = () => {
     // Basic validation
@@ -85,6 +89,16 @@ const UserManagement: React.FC = () => {
       toast({
         title: isArabic ? "خطأ" : "Error",
         description: isArabic ? "البريد الإلكتروني موجود بالفعل" : "Email already exists",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Check if trying to create admin/owner without permission
+    if ((newUser.role === 'admin' || newUser.role === 'owner') && !canManageAdmins) {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "ليس لديك صلاحية لإنشاء مستخدم بهذا الدور" : "You don't have permission to create a user with this role",
         variant: "destructive"
       });
       return;
@@ -118,6 +132,16 @@ const UserManagement: React.FC = () => {
       toast({
         title: isArabic ? "خطأ" : "Error",
         description: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Check if trying to edit to admin/owner without permission
+    if ((currentUser.role === 'admin' || currentUser.role === 'owner') && !canManageAdmins) {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "ليس لديك صلاحية لتعديل المستخدم إلى هذا الدور" : "You don't have permission to change user to this role",
         variant: "destructive"
       });
       return;
@@ -187,6 +211,17 @@ const UserManagement: React.FC = () => {
   const handleDeleteUser = () => {
     if (!currentUser) return;
     
+    // Check if trying to delete admin/owner without permission
+    if ((currentUser.role === 'admin' || currentUser.role === 'owner') && !canManageAdmins) {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "ليس لديك صلاحية لحذف مستخدم بهذا الدور" : "You don't have permission to delete a user with this role",
+        variant: "destructive"
+      });
+      setIsDeleteDialogOpen(false);
+      return;
+    }
+    
     // Delete user
     setUsers(users.filter(user => user.id !== currentUser.id));
     
@@ -203,12 +238,29 @@ const UserManagement: React.FC = () => {
     switch (role) {
       case "admin":
         return isArabic ? "مدير" : "Admin";
+      case "owner":
+        return isArabic ? "مالك" : "Owner";
+      case "supervisor":
+        return isArabic ? "مشرف" : "Supervisor";
       case "cashier":
         return isArabic ? "كاشير" : "Cashier";
       case "kitchen":
         return isArabic ? "مطبخ" : "Kitchen";
       default:
         return role;
+    }
+  };
+  
+  const getRoleBadge = (role: UserRole) => {
+    switch (role) {
+      case "owner":
+        return <ShieldAlert className="h-4 w-4 text-purple-500" />;
+      case "admin":
+        return <ShieldAlert className="h-4 w-4 text-red-500" />;
+      case "supervisor":
+        return <ShieldCheck className="h-4 w-4 text-blue-500" />;
+      default:
+        return null;
     }
   };
   
@@ -238,7 +290,10 @@ const UserManagement: React.FC = () => {
                   <TableRow key={user.id}>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{getRoleName(user.role)}</TableCell>
+                    <TableCell className="flex items-center gap-2">
+                      {getRoleBadge(user.role)}
+                      {getRoleName(user.role)}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button 
@@ -324,7 +379,13 @@ const UserManagement: React.FC = () => {
                   <SelectValue placeholder={isArabic ? "اختر الدور" : "Select role"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
+                  {canManageAdmins && (
+                    <>
+                      <SelectItem value="owner">{isArabic ? "مالك" : "Owner"}</SelectItem>
+                      <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
+                    </>
+                  )}
+                  <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
                   <SelectItem value="cashier">{isArabic ? "كاشير" : "Cashier"}</SelectItem>
                   <SelectItem value="kitchen">{isArabic ? "مطبخ" : "Kitchen"}</SelectItem>
                 </SelectContent>
@@ -377,7 +438,13 @@ const UserManagement: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
+                    {canManageAdmins && (
+                      <>
+                        <SelectItem value="owner">{isArabic ? "مالك" : "Owner"}</SelectItem>
+                        <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
+                      </>
+                    )}
+                    <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
                     <SelectItem value="cashier">{isArabic ? "كاشير" : "Cashier"}</SelectItem>
                     <SelectItem value="kitchen">{isArabic ? "مطبخ" : "Kitchen"}</SelectItem>
                   </SelectContent>

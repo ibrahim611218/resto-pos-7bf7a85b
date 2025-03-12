@@ -29,8 +29,46 @@ export const exportInvoiceToPDF = (
     
     printWindow.onload = function() {
       try {
+        // Set the document title for the PDF file name
         printWindow.document.title = `invoice-${invoice.number}.pdf`;
         
+        // Add media print styles to hide buttons when printing
+        const style = printWindow.document.createElement('style');
+        style.innerHTML = `
+          @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; padding: 0; }
+            @page { size: auto; margin: 0mm; }
+          }
+          .print-button {
+            background-color: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+          }
+          .print-button:hover {
+            background-color: #115e59;
+          }
+        `;
+        printWindow.document.head.appendChild(style);
+        
+        // Add print button
+        const printButton = printWindow.document.createElement('button');
+        printButton.innerHTML = 'طباعة الفاتورة';
+        printButton.className = 'print-button no-print';
+        printButton.onclick = function() {
+          printWindow.print();
+        };
+        printWindow.document.body.appendChild(printButton);
+        
+        // Print automatically after a short delay to ensure content is fully loaded
         setTimeout(() => {
           printWindow.print();
         }, 500);

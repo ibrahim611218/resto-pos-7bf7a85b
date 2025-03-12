@@ -1,11 +1,12 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type Theme = "light" | "dark" | "saudi";
 
 interface ThemeContextProps {
   theme: Theme;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
@@ -25,19 +26,21 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("theme", theme);
     
     // Update document class for CSS styling
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    const root = document.documentElement;
+    root.classList.remove("light", "dark", "saudi");
+    root.classList.add(theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => {
+      if (prevTheme === "light") return "dark";
+      if (prevTheme === "dark") return "saudi";
+      return "light";
+    });
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

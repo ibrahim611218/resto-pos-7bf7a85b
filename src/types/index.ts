@@ -1,7 +1,6 @@
-
 export type Language = "en" | "ar";
 
-export type UserRole = "admin" | "manager" | "cashier" | "kitchen";
+export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
 
 export type Size = "small" | "medium" | "large";
 
@@ -154,4 +153,29 @@ export interface CustomerFilter {
   searchTerm?: string;
   sortBy?: "name" | "createdAt";
   sortDirection?: "asc" | "desc";
+}
+
+// Types for sales report data visualization
+export interface SalesByPaymentMethod {
+  paymentMethod: string;
+  amount: number;
+  percentage: number;
+}
+
+export interface SalesByOrderType {
+  orderType: string;
+  count: number;
+  percentage: number;
+}
+
+export interface TopSellingProduct {
+  productId: string;
+  productName: string;
+  quantity: number;
+  revenue: number;
+}
+
+export interface SalesByTimeFrame {
+  timeFrame: string;
+  amount: number;
 }
