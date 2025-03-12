@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -9,6 +10,8 @@ import CartSummary from "./cart/CartSummary";
 import CartActions from "./cart/CartActions";
 import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -75,12 +78,24 @@ const CartPanel: React.FC<CartPanelProps> = ({
     return invoice;
   };
 
+  const isEmpty = cartItems.length === 0;
+
   return (
     <div className="w-full md:w-1/3 lg:w-2/5 flex flex-col h-full border-l bg-card shadow-md">
-      <div className="p-4 flex-shrink-0">
-        <h2 className="text-2xl font-bold mb-3">
+      <div className="p-4 flex-shrink-0 flex justify-between items-center">
+        <h2 className="text-2xl font-bold">
           {isArabic ? "السلة" : "Cart"}
         </h2>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="text-muted-foreground hover:text-destructive" 
+          onClick={clearCart}
+          disabled={isEmpty}
+          title={isArabic ? "مسح السلة" : "Clear Cart"}
+        >
+          <Trash2 className="h-5 w-5" />
+        </Button>
       </div>
       
       <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-280px)]">
