@@ -75,7 +75,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   };
 
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col h-full border-l">
+    <div className="w-full md:w-1/3 lg:w-2/5 flex flex-col h-full border-l bg-card shadow-md">
       <div className="p-4 flex-shrink-0">
         <h2 className="text-2xl font-bold mb-3">
           {isArabic ? "السلة" : "Cart"}

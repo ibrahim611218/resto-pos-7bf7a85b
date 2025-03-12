@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
@@ -47,10 +46,8 @@ const Pos: React.FC = () => {
     searchedProducts,
   } = useProductFiltering(products);
   
-  // Function for consistent size labels
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
   
-  // Handler for invoice creation
   const handleCreateInvoice = () => {
     const invoice = createInvoice();
     setCurrentInvoice(invoice);
@@ -58,7 +55,6 @@ const Pos: React.FC = () => {
     return invoice;
   };
   
-  // Format invoice date
   const formatInvoiceDate = (date: Date) => {
     return new Date(date).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
       year: 'numeric',
@@ -69,14 +65,13 @@ const Pos: React.FC = () => {
     });
   };
   
-  // Handle printing the invoice
   const handlePrintInvoice = (invoice: Invoice) => {
     window.print();
   };
   
   return (
     <div 
-      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row-reverse overflow-hidden ${
+      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row overflow-hidden ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}
@@ -118,7 +113,6 @@ const Pos: React.FC = () => {
         getSizeLabel={getSizeLabelFn}
       />
 
-      {/* Invoice Details Modal */}
       <InvoiceDetailsModal 
         invoice={currentInvoice}
         open={showInvoiceModal}
