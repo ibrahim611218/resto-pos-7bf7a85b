@@ -45,6 +45,13 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const { getGridCols } = useGridColumns();
 
   const handleProductClick = (product: Product) => {
+    // For single products with price (not variants), add directly to cart
+    if (product.variants.length === 0 && product.price !== undefined) {
+      onAddToCart(product, "simple");
+      return;
+    }
+    
+    // For products with variants, open the dialog
     setSelectedProduct(product);
     setIsDialogOpen(true);
   };
