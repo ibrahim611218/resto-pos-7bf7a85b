@@ -7,6 +7,7 @@ import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
+import databaseService from "@/services/DatabaseService";
 
 export const useInvoiceCreation = (
   cartItems: any[],
@@ -29,13 +30,13 @@ export const useInvoiceCreation = (
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
-  const createInvoice = useCallback((
+  const createInvoice = useCallback(async (
     customerName?: string, 
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
     address?: string
-  ): Invoice => {
+  ): Promise<Invoice> => {
     const invoiceId = generateInvoiceNumber();
     
     let customer: Customer | undefined;
@@ -68,25 +69,29 @@ export const useInvoiceCreation = (
       customer: customer
     };
     
-    toast({
-      title: "تم إنشاء الفاتورة",
-      description: `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`,
-      variant: "default",
-    });
-
-    // Store invoice in localStorage for demonstration
-    try {
-      const storedInvoices = localStorage.getItem('invoices');
-      let invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
-      invoices = [invoice, ...invoices]; // Add new invoice at the beginning
+    // Save invoice to the database service
+    const result = await databaseService.saveInvoice(invoice);
+    
+    if (result.success) {
+      toast({
+        title: isArabic ? "تم إنشاء الفاتورة" : "Invoice Created",
+        description: isArabic 
+          ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح` 
+          : `Invoice #${invoiceId} has been created successfully`,
+        variant: "default",
+      });
       
-      // Save back to localStorage
-      localStorage.setItem('invoices', JSON.stringify(invoices));
-
       // Add to invoices list for immediate display
       addNewInvoice(invoice);
-    } catch (error) {
-      console.error("Failed to save invoice to localStorage:", error);
+    } else {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic 
+          ? "حدث خطأ أثناء حفظ الفاتورة" 
+          : "Error saving invoice",
+        variant: "destructive",
+      });
+      console.error("Failed to save invoice:", result.error);
     }
     
     return invoice;

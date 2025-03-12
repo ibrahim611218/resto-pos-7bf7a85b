@@ -1,0 +1,25 @@
+
+{
+  "name": "resto-pos",
+  "productName": "Restaurant POS System",
+  "version": "1.0.0",
+  "description": "Restaurant POS System for Local Use",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "make": "electron-forge make",
+    "package": "electron-forge package"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.3.1",
+    "@electron-forge/maker-deb": "^7.3.1",
+    "@electron-forge/maker-rpm": "^7.3.1",
+    "@electron-forge/maker-squirrel": "^7.3.1",
+    "@electron-forge/maker-zip": "^7.3.1",
+    "electron": "latest"
+  },
+  "dependencies": {
+    "better-sqlite3": "latest",
+    "electron-is-dev": "latest"
+  }
+}

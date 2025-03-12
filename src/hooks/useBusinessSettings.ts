@@ -1,39 +1,65 @@
 
-import { useState, useEffect } from 'react';
-import { BusinessSettings } from '@/types';
-
-// قيم افتراضية لإعدادات المطعم
-const defaultSettings: BusinessSettings = {
-  name: "مطعم الذواق",
-  nameAr: "مطعم الذواق",
-  taxNumber: "300000000000003",
-  address: "شارع الملك فهد، الرياض، المملكة العربية السعودية",
-  addressAr: "شارع الملك فهد، الرياض، المملكة العربية السعودية",
-  phone: "+966 50 000 0000",
-  email: "info@restaurant.com",
-  taxRate: 15,
-  taxIncluded: false, // الضريبة غير مضمنة في السعر افتراضيًا
-  commercialRegister: "1010000000",
-  commercialRegisterAr: "١٠١٠٠٠٠٠٠٠",
-  invoiceNotes: "شكراً لزيارتكم، نتمنى أن تزورونا مرة أخرى",
-  invoiceNotesAr: "شكراً لزيارتكم، نتمنى أن تزورونا مرة أخرى",
-};
+import { useState, useEffect } from "react";
+import { BusinessSettings } from "@/types";
+import databaseService from "@/services/DatabaseService";
 
 export const useBusinessSettings = () => {
-  const [settings, setSettings] = useState<BusinessSettings>(() => {
-    // محاولة استرداد الإعدادات من التخزين المحلي
-    const savedSettings = localStorage.getItem('businessSettings');
-    return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+  const [settings, setSettings] = useState<BusinessSettings>({
+    name: "مطعم الذواق",
+    nameAr: "مطعم الذواق",
+    taxNumber: "300000000000003",
+    address: "الرياض، المملكة العربية السعودية",
+    addressAr: "الرياض، المملكة العربية السعودية",
+    phone: "966500000000",
+    email: "info@example.com",
+    taxRate: 15,
+    taxIncluded: false,
+    invoiceNotesAr: "شكراً لزيارتكم"
   });
+  
+  const [loading, setLoading] = useState(true);
 
-  // حفظ الإعدادات في التخزين المحلي عند تغييرها
   useEffect(() => {
-    localStorage.setItem('businessSettings', JSON.stringify(settings));
-  }, [settings]);
+    const loadSettings = async () => {
+      try {
+        setLoading(true);
+        const loadedSettings = await databaseService.getSettings();
+        if (loadedSettings) {
+          setSettings(loadedSettings);
+        }
+      } catch (error) {
+        console.error("Error loading business settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const updateSettings = (newSettings: Partial<BusinessSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+    loadSettings();
+  }, []);
+
+  const updateSettings = async (newSettings: BusinessSettings) => {
+    try {
+      setLoading(true);
+      const result = await databaseService.saveSettings(newSettings);
+      
+      if (result.success) {
+        setSettings(newSettings);
+        return true;
+      } else {
+        console.error("Failed to save settings:", result.error);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return { settings, updateSettings };
+  return {
+    settings,
+    loading,
+    updateSettings
+  };
 };

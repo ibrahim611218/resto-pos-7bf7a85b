@@ -1,175 +1,128 @@
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Invoice } from "@/types";
-import { mockInvoices } from "../data/mockInvoices";
-import { format } from "date-fns";
-import { toast } from "sonner";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/LanguageContext";
+import databaseService from "@/services/DatabaseService";
 
 export const useInvoices = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>(
-    // Sort invoices by date (newest first)
-    [...mockInvoices].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  );
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const { user, hasPermission } = useAuth();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load invoices from localStorage
-  const loadInvoicesFromStorage = useCallback(() => {
+  // Fetch invoices on mount
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        setLoading(true);
+        const data = await databaseService.getInvoices();
+        setInvoices(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching invoices:", err);
+        setError(isArabic ? "حدث خطأ أثناء تحميل الفواتير" : "Error loading invoices");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInvoices();
+  }, [isArabic]);
+
+  // Add a new invoice
+  const addNewInvoice = useCallback(async (invoice: Invoice) => {
     try {
-      const storedInvoices = localStorage.getItem('invoices');
-      if (storedInvoices) {
-        const parsedInvoices = JSON.parse(storedInvoices);
-        // Combine with mock invoices and sort by date (newest first)
-        setInvoices(prev => {
-          // Create a map of existing invoice IDs to avoid duplicates
-          const existingIds = new Map(prev.map(invoice => [invoice.id, true]));
-          
-          // Filter out duplicates from parsedInvoices
-          const newInvoices = parsedInvoices.filter((invoice: Invoice) => !existingIds.has(invoice.id));
-          
-          // Combine and sort
-          return [...newInvoices, ...prev].sort((a, b) => 
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
-        });
+      const result = await databaseService.saveInvoice(invoice);
+      
+      if (result.success) {
+        setInvoices(prev => [invoice, ...prev]);
+        return true;
+      } else {
+        console.error("Failed to save invoice:", result.error);
+        return false;
       }
     } catch (error) {
-      console.error("Failed to load invoices from localStorage:", error);
+      console.error("Error adding invoice:", error);
+      return false;
     }
   }, []);
 
-  // Load invoices from localStorage on initial render
-  useEffect(() => {
-    loadInvoicesFromStorage();
-  }, [loadInvoicesFromStorage]);
-
-  const filteredInvoices = searchTerm
-    ? invoices.filter((invoice) => 
-        invoice.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (invoice.customer?.name && invoice.customer.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        invoice.cashierName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : invoices;
-
-  const getInvoiceById = (id: string) => {
-    return invoices.find((invoice) => invoice.id === id) || null;
-  };
-
-  const viewInvoiceDetails = (id: string) => {
-    const invoice = getInvoiceById(id);
-    setSelectedInvoice(invoice);
-  };
-
-  const closeInvoiceDetails = () => {
-    setSelectedInvoice(null);
-  };
-
-  const formatInvoiceDate = (date: Date): string => {
-    return format(date, 'yyyy-MM-dd');
-  };
-
-  const getStatusBadgeColor = (status: "completed" | "cancelled" | "refunded" | "pending") => {
-    switch (status) {
-      case "completed":
-        return "bg-green-500";
-      case "cancelled":
-        return "bg-amber-500";
-      case "refunded":
-        return "bg-red-500";
-      case "pending":
-        return "bg-blue-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
-
-  const printInvoice = (invoice: Invoice) => {
-    console.log("Printing invoice:", invoice);
-    toast.success(`طباعة الفاتورة رقم ${invoice.number}`);
-  };
-
-  const cancelInvoice = (invoiceId: string) => {
-    if (!hasPermission(["admin", "supervisor"])) {
-      toast.error("ليس لديك صلاحية لإلغاء الفواتير");
+  // Refund an invoice
+  const refundInvoice = useCallback(async (invoiceId: string) => {
+    // Find the invoice to refund
+    const invoiceToRefund = invoices.find(inv => inv.id === invoiceId);
+    
+    if (!invoiceToRefund) {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "لم يتم العثور على الفاتورة" : "Invoice not found",
+        variant: "destructive",
+      });
       return false;
     }
-
-    setInvoices(prev => 
-      prev.map(invoice => 
-        invoice.id === invoiceId 
-          ? { ...invoice, status: "cancelled" }
-          : invoice
-      )
-    );
-
-    if (selectedInvoice?.id === invoiceId) {
-      setSelectedInvoice(prev => prev ? { ...prev, status: "cancelled" } : null);
-    }
-
-    toast.success("تم إلغاء الفاتورة بنجاح");
-    return true;
-  };
-
-  const refundInvoice = (invoiceId: string) => {
-    if (!hasPermission(["admin", "supervisor"])) {
-      toast.error("ليس لديك صلاحية لإرجاع الفواتير");
+    
+    if (invoiceToRefund.status === "refunded") {
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "تم استرجاع هذه الفاتورة بالفعل" : "This invoice has already been refunded",
+        variant: "destructive",
+      });
       return false;
     }
-
-    setInvoices(prev => 
-      prev.map(invoice => 
-        invoice.id === invoiceId 
-          ? { ...invoice, status: "refunded" }
-          : invoice
-      )
-    );
-
-    if (selectedInvoice?.id === invoiceId) {
-      setSelectedInvoice(prev => prev ? { ...prev, status: "refunded" } : null);
-    }
-
-    // Update localStorage
+    
     try {
-      const storedInvoices = localStorage.getItem('invoices');
-      if (storedInvoices) {
-        const parsedInvoices = JSON.parse(storedInvoices);
-        const updatedInvoices = parsedInvoices.map((invoice: Invoice) => 
-          invoice.id === invoiceId ? { ...invoice, status: "refunded" } : invoice
+      // Create a copy of the invoice with refunded status
+      const refundedInvoice: Invoice = {
+        ...invoiceToRefund,
+        status: "refunded"
+      };
+      
+      // Update the invoice in the database
+      const result = await databaseService.updateInvoice(refundedInvoice);
+      
+      if (result.success) {
+        // Update the invoice in the state
+        setInvoices(prevInvoices => 
+          prevInvoices.map(inv => 
+            inv.id === invoiceId ? {...inv, status: "refunded"} : inv
+          )
         );
-        localStorage.setItem('invoices', JSON.stringify(updatedInvoices));
+        
+        toast({
+          title: isArabic ? "تم إرجاع الفاتورة" : "Invoice Refunded",
+          description: isArabic 
+            ? `تم إرجاع الفاتورة رقم ${invoiceToRefund.number} بنجاح` 
+            : `Invoice #${invoiceToRefund.number} has been refunded successfully`,
+          variant: "default",
+        });
+        
+        return true;
+      } else {
+        toast({
+          title: isArabic ? "خطأ" : "Error",
+          description: result.error || (isArabic ? "فشل استرجاع الفاتورة" : "Failed to refund invoice"),
+          variant: "destructive",
+        });
+        return false;
       }
     } catch (error) {
-      console.error("Failed to update invoice in localStorage:", error);
+      console.error("Error refunding invoice:", error);
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic ? "حدث خطأ أثناء استرجاع الفاتورة" : "Error refunding invoice",
+        variant: "destructive",
+      });
+      return false;
     }
-
-    toast.success("تم إرجاع الفاتورة بنجاح");
-    return true;
-  };
-
-  const addNewInvoice = (invoice: Invoice) => {
-    // Add new invoice at the beginning of the array (newest first)
-    setInvoices(prev => [invoice, ...prev]);
-  };
+  }, [invoices, isArabic]);
 
   return {
     invoices,
-    filteredInvoices,
-    selectedInvoice,
-    searchTerm,
-    setSearchTerm,
-    viewInvoiceDetails,
-    closeInvoiceDetails,
-    formatInvoiceDate,
-    getStatusBadgeColor,
-    printInvoice,
-    cancelInvoice,
-    refundInvoice,
+    loading,
+    error,
     addNewInvoice,
-    loadInvoicesFromStorage
+    refundInvoice
   };
 };
