@@ -29,7 +29,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
 
   return (
     <AnimatedTransition animation="slide-up" delay={index * 50}>
-      <div className={`flex justify-between items-center ${isLightTheme ? 'bg-secondary/20 hover:bg-secondary/30' : 'bg-secondary hover:bg-secondary/80'} p-3 rounded-xl border border-border/50 transition-colors duration-200`}>
+      <div className={`flex justify-between items-center ${isLightTheme ? 'bg-secondary/20 hover:bg-secondary/30' : 'bg-secondary hover:bg-secondary/80'} p-4 rounded-xl border border-border/50 transition-colors duration-200`}>
         <ItemDetails
           name={item.name}
           nameAr={item.nameAr}
@@ -39,7 +39,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
           isArabic={isArabic}
           sizeLabel={getSizeLabel(item.size)}
         />
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-2">
           <QuantityControls
             quantity={item.quantity}
             onDecrease={() => updateQuantity(item.id, -1)}

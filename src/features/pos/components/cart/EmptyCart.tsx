@@ -13,14 +13,14 @@ const EmptyCart: React.FC = () => {
 
   return (
     <AnimatedTransition animation="fade">
-      <div className="flex flex-col items-center justify-center h-48 text-muted-foreground py-10">
-        <div className={`w-20 h-20 rounded-full ${isLightTheme ? 'bg-primary/10' : 'bg-primary/20'} flex items-center justify-center mb-4`}>
-          <ShoppingCartIcon className="h-10 w-10 text-primary/70" />
+      <div className="flex flex-col items-center justify-center h-60 text-muted-foreground py-12">
+        <div className={`w-24 h-24 rounded-full ${isLightTheme ? 'bg-primary/10' : 'bg-primary/20'} flex items-center justify-center mb-4`}>
+          <ShoppingCartIcon className="h-12 w-12 text-primary/70" />
         </div>
-        <p className="text-lg font-medium text-muted-foreground">
+        <p className="text-xl font-medium text-muted-foreground">
           {isArabic ? "السلة فارغة" : "Your cart is empty"}
         </p>
-        <p className="text-sm mt-1 text-muted-foreground/70 text-center max-w-[200px]">
+        <p className="text-base mt-2 text-muted-foreground/70 text-center max-w-[250px]">
           {isArabic 
             ? "أضف بعض العناصر إلى السلة للبدء"
             : "Add some items to get started"

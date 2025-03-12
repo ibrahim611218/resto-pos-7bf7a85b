@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "./hooks/useCart";
@@ -69,14 +68,14 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`pos-container ${
+      className={`pos-container h-screen max-h-screen overflow-hidden ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
       <PosHeader />
 
-      <div className="pos-content">
+      <div className="pos-content overflow-hidden">
         <PosContent 
           cartItems={cartItems}
           isArabic={isArabic}

@@ -27,11 +27,11 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
 
   return (
     <div className="flex-1">
-      <p className="font-medium mb-1">
+      <p className="font-medium text-base mb-1">
         {isArabic ? nameAr || name : name}
       </p>
       <div className="flex items-center">
-        <span className={`text-xs mr-2 ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full`}>
+        <span className={`text-sm mr-2 ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full`}>
           {sizeLabel}
         </span>
         <p className="text-sm text-muted-foreground">
