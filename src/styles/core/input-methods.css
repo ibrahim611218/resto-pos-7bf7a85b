@@ -1,0 +1,41 @@
+
+/* Touch-friendly UI adjustments */
+.touch-ui button,
+.touch-ui input,
+.touch-ui select {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.touch-ui .clickable {
+  cursor: pointer;
+  padding: 10px;
+  margin: 4px;
+}
+
+.touch-ui .card {
+  padding: 1.5rem;
+}
+
+.touch-ui .form-control {
+  margin-bottom: 1rem;
+}
+
+/* Mouse-friendly UI adjustments */
+.mouse-ui .hover-effect:hover {
+  filter: brightness(0.9);
+}
+
+.mouse-ui button,
+.mouse-ui input,
+.mouse-ui select {
+  min-height: 32px;
+}
+
+.mouse-ui .card {
+  padding: 1rem;
+}
+
+.mouse-ui .form-control {
+  margin-bottom: 0.75rem;
+}

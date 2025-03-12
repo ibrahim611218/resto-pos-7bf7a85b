@@ -1,0 +1,14 @@
+
+/* Ensure proper alignment in flex containers */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+
+.flex-item {
+  flex: 1 1 auto;
+  min-width: 0; /* Prevents flex items from overflowing */
+}

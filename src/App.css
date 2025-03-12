@@ -1,5 +1,10 @@
 
-
+@import "./styles/core/scrollbar.css";
+@import "./styles/core/containers.css";
+@import "./styles/core/responsive.css";
+@import "./styles/core/aspect-ratio.css";
+@import "./styles/core/input-methods.css";
+@import "./styles/core/flex.css";
 
 #root {
   width: 100%;
@@ -14,9 +19,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -36,25 +43,7 @@
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-/* Ensure full width display for main container elements */
-.full-width-container {
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-/* Remove any default margins and padding in POS screen */
+/* POS specific styles */
 .pos-screen {
   margin: 0 !important;
   padding: 0 !important;
@@ -62,173 +51,3 @@
   height: 100vh;
   overflow: hidden;
 }
-
-/* Screen size display options */
-.screen-size-standard {
-  width: 100%;
-  height: 100%;
-  font-size: 1rem;
-}
-
-.screen-size-compact {
-  width: 100%;
-  height: 100%;
-  font-size: 0.9rem;
-}
-
-.screen-size-large {
-  width: 100%;
-  height: 100%;
-  font-size: 1.1rem;
-}
-
-/* Container size options with improved proportions */
-.container-standard {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
-  height: auto;
-}
-
-.container-compact {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  height: auto;
-}
-
-.container-large {
-  max-width: 1536px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  box-sizing: border-box;
-  height: auto;
-}
-
-/* Touch-friendly UI adjustments */
-.touch-ui button, 
-.touch-ui input, 
-.touch-ui select {
-  min-height: 48px;
-  min-width: 48px;
-}
-
-.touch-ui .clickable {
-  cursor: pointer;
-  padding: 10px;
-  margin: 4px;
-}
-
-.touch-ui .card {
-  padding: 1.5rem;
-}
-
-.touch-ui .form-control {
-  margin-bottom: 1rem;
-}
-
-/* Mouse-friendly UI adjustments */
-.mouse-ui .hover-effect:hover {
-  filter: brightness(0.9);
-}
-
-.mouse-ui button, 
-.mouse-ui input, 
-.mouse-ui select {
-  min-height: 32px;
-}
-
-.mouse-ui .card {
-  padding: 1rem;
-}
-
-.mouse-ui .form-control {
-  margin-bottom: 0.75rem;
-}
-
-/* Responsive container classes with improved aspect ratio handling */
-@media (max-width: 640px) {
-  .container-standard, .container-compact, .container-large {
-    padding: 0.5rem;
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .touch-ui button, 
-  .touch-ui input, 
-  .touch-ui select {
-    min-height: 44px;
-  }
-}
-
-/* Fix content overflow issues */
-.content-container {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
-/* Improved display proportions */
-.proportional-container {
-  aspect-ratio: 16/9;
-  max-height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* Maintain aspect ratio for media elements */
-.maintain-ratio {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-}
-
-.maintain-ratio-16-9 {
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-}
-
-.maintain-ratio-4-3 {
-  padding-bottom: 75%; /* 4:3 aspect ratio */
-}
-
-.maintain-ratio-1-1 {
-  padding-bottom: 100%; /* 1:1 aspect ratio (square) */
-}
-
-.maintain-ratio > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Ensure proper alignment in flex containers */
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 1rem;
-  width: 100%;
-}
-
-.flex-item {
-  flex: 1 1 auto;
-  min-width: 0; /* Prevents flex items from overflowing */
-}
-
-/* Hide scrollbars but keep functionality */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
-}
-

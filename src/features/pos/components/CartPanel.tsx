@@ -11,6 +11,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 interface CartPanelProps {
   cartItems: CartItemType[];

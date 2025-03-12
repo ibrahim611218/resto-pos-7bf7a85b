@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
@@ -7,6 +6,13 @@ import CategoryList from "./CategoryList";
 import ProductsList from "./ProductsList";
 import SizeSelectionDialog from "./SizeSelectionDialog";
 import SearchBox from "@/features/invoices/components/SearchBox";
+
+interface SearchBoxProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  placeholder: string;
+  className?: string;
+}
 
 interface ProductsPanelProps {
   searchTerm: string;
