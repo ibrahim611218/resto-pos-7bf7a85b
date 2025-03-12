@@ -40,7 +40,7 @@ const CustomersReport: React.FC = () => {
     const data = filteredData.map(item => [
       item.id,
       item.name,
-      item.phone,
+      item.phone || "",
       item.email || "",
       item.invoiceCount.toString(),
       item.totalSpent.toString(),
@@ -87,7 +87,7 @@ const CustomersReport: React.FC = () => {
               {filteredData.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell>{customer.name}</TableCell>
-                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>{customer.phone || "-"}</TableCell>
                   <TableCell>{customer.email || "-"}</TableCell>
                   <TableCell>{customer.invoiceCount}</TableCell>
                   <TableCell>{customer.totalSpent} ريال</TableCell>
