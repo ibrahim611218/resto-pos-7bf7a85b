@@ -106,6 +106,12 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
           padding: 10px;
           background-color: #f9f9f9;
         }
+        .software-info {
+          margin-top: 30px;
+          text-align: center;
+          font-size: 10px;
+          color: #999;
+        }
       </style>
     </head>
     <body>
@@ -180,6 +186,10 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
       <div class="invoice-footer">
         <p>${businessSettings.invoiceNotesAr || businessSettings.invoiceNotes || ''}</p>
         <p>شكراً لزيارتكم</p>
+      </div>
+
+      <div class="software-info">
+        <p>تم إنشاء هذه الفاتورة بواسطة نظام RestoPOS - أنظمة نقاط البيع للمطاعم</p>
       </div>
 
       <script>

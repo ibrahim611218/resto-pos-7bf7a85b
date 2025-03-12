@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 interface SidebarHeaderProps {
   collapsed: boolean;
@@ -11,6 +12,8 @@ interface SidebarHeaderProps {
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
+  const { settings } = useBusinessSettings();
+  
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b">
       {!collapsed ? (

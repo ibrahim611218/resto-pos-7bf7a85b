@@ -39,10 +39,11 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logo, isArabic, onLogoChang
             />
           ) : (
             <div className="flex flex-col items-center">
-              <img src="/assets/restopos-logo.png" alt="Default Logo" className="h-16 w-16 mb-2" />
-              <div className="text-sm text-center">
-                <span className="text-[#004d40] font-bold">Resto</span>
-                <span className="text-orange-500 font-bold">POS</span>
+              <div className="text-gray-400 text-center mb-2">
+                {isArabic ? "لا يوجد شعار" : "No Logo"}
+              </div>
+              <div className="text-xs text-center text-gray-400">
+                {isArabic ? "قم برفع شعار المطعم" : "Upload your restaurant logo"}
               </div>
             </div>
           )}
