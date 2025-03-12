@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 interface CategoryListProps {
   categories: { id: string; name: string; nameAr?: string }[];
   activeCategory: string | null;
-  onCategoryClick: (categoryId: string) => void;
+  onCategoryClick?: (categoryId: string) => void;
   isArabic: boolean;
   setActiveCategory?: (id: string | null) => void;
 }
@@ -21,7 +21,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   const handleCategoryClick = (categoryId: string) => {
     if (setActiveCategory) {
       setActiveCategory(categoryId === "all" ? null : categoryId);
-    } else {
+    } else if (onCategoryClick) {
       onCategoryClick(categoryId);
     }
   };
