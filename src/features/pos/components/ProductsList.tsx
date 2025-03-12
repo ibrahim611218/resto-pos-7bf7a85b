@@ -1,8 +1,7 @@
 
 import React from "react";
-import { Product } from "@/types";
+import { Product, Size } from "@/types";
 import ProductCard from "./ProductCard";
-import GlassCard from "@/components/ui-custom/GlassCard";
 
 interface ProductsListProps {
   products: Product[];
@@ -24,9 +23,9 @@ const ProductsList: React.FC<ProductsListProps> = ({
   const displayProducts = searchTerm ? searchResults : products;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-2">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
       {displayProducts && displayProducts.length > 0 ? (
-        displayProducts.map((product, index) => (
+        displayProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}

@@ -8,7 +8,7 @@ import { Tag, Plus } from "lucide-react";
 
 const Categories = () => {
   return (
-    <div className="w-full">
+    <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">التصنيفات</h1>
         <Button>
@@ -16,11 +16,11 @@ const Categories = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sampleCategories.map((category) => (
-          <Card key={category.id} className="overflow-hidden h-full">
+          <Card key={category.id} className="overflow-hidden">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center text-sm sm:text-base">
+              <CardTitle className="flex items-center">
                 <Tag className="ml-2" size={18} />
                 {category.nameAr || category.name}
               </CardTitle>
@@ -29,11 +29,11 @@ const Categories = () => {
               <img
                 src={category.image || "/placeholder.svg"}
                 alt={category.nameAr || category.name}
-                className="w-full h-32 sm:h-40 object-cover"
+                className="w-full h-40 object-cover"
               />
             </CardContent>
             <CardFooter className="pt-4 flex justify-between">
-              <Button asChild variant="outline" size="sm" className="text-xs sm:text-sm">
+              <Button asChild variant="outline">
                 <Link to={`/products?category=${category.id}`}>تصفح المنتجات</Link>
               </Button>
               <Button variant="ghost" size="icon">

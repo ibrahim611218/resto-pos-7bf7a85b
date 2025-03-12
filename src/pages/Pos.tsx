@@ -4,7 +4,7 @@ import Pos from "@/features/pos/Pos";
 
 const PosPage: React.FC = () => {
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#0f1729] dark:bg-[#0f1729] fixed top-0 left-0 z-20">
+    <div className="h-screen w-screen overflow-hidden m-0 p-0 pos-screen">
       <Pos />
     </div>
   );
