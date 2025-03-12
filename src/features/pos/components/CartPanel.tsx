@@ -63,18 +63,17 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setPaymentMethod,
 }) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
-  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
+  // Use callbacks to prevent recreating functions on each render
   const handleCreateInvoice = useCallback(() => {
     setShowPaymentMethodDialog(true);
   }, []);
 
   const handlePaymentMethodSelected = useCallback((customerName?: string, customerTaxNumber?: string) => {
     const invoice = createInvoice(customerName, customerTaxNumber);
-    setCurrentInvoice(invoice);
     console.log(`Order ${invoice.number} automatically sent to kitchen`);
     setShowPaymentMethodDialog(false);
     return invoice;

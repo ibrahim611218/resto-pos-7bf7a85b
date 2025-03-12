@@ -37,6 +37,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
+  // Use callbacks to prevent recreating functions on each render
   const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsDialogOpen(true);
@@ -47,7 +48,10 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     setSelectedProduct(null);
   }, []);
 
+  // Memoize expensive product categorization
   const productsByCategory = React.useMemo(() => {
+    if (activeCategory || searchTerm) return {}; // Don't compute if not needed
+    
     return filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
       if (!acc[product.categoryId]) {
         acc[product.categoryId] = [];
@@ -55,7 +59,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
       acc[product.categoryId].push(product);
       return acc;
     }, {});
-  }, [filteredProducts]);
+  }, [filteredProducts, activeCategory, searchTerm]);
 
   return (
     <div className="flex-grow h-full flex flex-col overflow-hidden border-r border-border">

@@ -76,7 +76,7 @@ const PosPage: React.FC = () => {
   );
   
   return (
-    <div className="h-screen w-screen overflow-hidden bg-background">
+    <div className="h-screen w-full overflow-hidden bg-background">
       <div 
         className="h-full w-full overflow-hidden flex flex-col"
         dir={isArabic ? "rtl" : "ltr"}

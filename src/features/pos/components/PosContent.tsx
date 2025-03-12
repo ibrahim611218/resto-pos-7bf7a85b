@@ -68,10 +68,9 @@ const PosContent: React.FC<PosContentProps> = ({
   searchedProducts,
   getSizeLabel,
 }) => {
-  // Ensure createInvoice doesn't trigger rerendering unless it actually changes
+  // Prevent recreation of the invoice creation function on each render
   const handleCreateInvoice = React.useCallback((customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
-    return invoice;
+    return createInvoice(customerName, customerTaxNumber);
   }, [createInvoice]);
 
   return (
