@@ -4,6 +4,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { sampleCategories } from "@/data/sampleData";
+import { products } from "@/features/pos/data/mockData";
+import { mockInvoices } from "@/features/invoices/data/mockInvoices";
+import { mockCustomers } from "@/features/customers/hooks/useCustomers";
 
 type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all";
 
@@ -22,41 +25,56 @@ export const useDataManagement = () => {
   };
 
   const deleteAllProducts = () => {
-    // Clear products from localStorage
+    // حذف المنتجات من الذاكرة المحلية
     localStorage.removeItem('products');
+    // حذف المنتجات من المصفوفة الافتراضية
+    products.length = 0;
   };
 
   const deleteAllCategories = () => {
-    // Clear categories from localStorage and sampleCategories array
+    // حذف التصنيفات من الذاكرة المحلية
     localStorage.removeItem('categories');
+    // حذف التصنيفات من المصفوفة الافتراضية
     sampleCategories.length = 0;
   };
 
   const deleteAllInventory = () => {
-    // Clear inventory from localStorage
+    // حذف المخزون من الذاكرة المحلية
     localStorage.removeItem('inventory');
+    // حذف بيانات المخزون الافتراضية إذا وجدت
+    localStorage.removeItem('defaultInventory');
   };
 
   const deleteAllInvoices = () => {
-    // Clear invoices from localStorage
+    // حذف الفواتير من الذاكرة المحلية
     localStorage.removeItem('invoices');
+    // حذف الفواتير من المصفوفة الافتراضية
+    mockInvoices.length = 0;
   };
 
   const deleteAllCustomers = () => {
-    // Clear customers from localStorage
+    // حذف العملاء من الذاكرة المحلية
     localStorage.removeItem('customers');
+    // حذف العملاء من المصفوفة الافتراضية
+    mockCustomers.length = 0;
   };
 
   const deleteAllData = () => {
-    // Clear all data from localStorage
+    // حذف جميع البيانات
     deleteAllProducts();
     deleteAllCategories();
     deleteAllInventory();
     deleteAllInvoices();
     deleteAllCustomers();
-    // Clear any other relevant data
+    
+    // حذف الإعدادات
     localStorage.removeItem('business-settings');
     localStorage.removeItem('display-settings');
+    
+    // حذف أي بيانات إضافية
+    localStorage.removeItem('defaultProducts');
+    localStorage.removeItem('defaultCategories');
+    localStorage.removeItem('defaultInventory');
   };
 
   const confirmDelete = async () => {
