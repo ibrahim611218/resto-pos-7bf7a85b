@@ -9,6 +9,7 @@ export interface CartSummaryProps {
   discountType: "percentage" | "fixed";
   total: number;
   isMobile?: boolean;
+  isArabic?: boolean;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -17,7 +18,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discount,
   discountType,
   total,
-  isMobile = false
+  isMobile = false,
+  isArabic = false
 }) => {
   // Calculate discount amount
   const discountAmount = discountType === "percentage" 
@@ -32,38 +34,38 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     <div className={`${spacingClass} ${textSizeClass}`}>
       <div className="flex justify-between">
         <span className="text-muted-foreground">
-          المجموع الفرعي
+          {isArabic ? "المجموع الفرعي" : "Subtotal"}
         </span>
         <span>
-          {formatCurrency(subtotal, "ar-SA", "SAR")}
+          {formatCurrency(subtotal, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
       <div className="flex justify-between">
         <span className="text-muted-foreground">
-          ضريبة القيمة المضافة (15%)
+          {isArabic ? "ضريبة القيمة المضافة (15%)" : "VAT (15%)"}
         </span>
         <span>
-          {formatCurrency(taxAmount, "ar-SA", "SAR")}
+          {formatCurrency(taxAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
       
       {discount > 0 && (
         <div className="flex justify-between text-green-600">
           <span>
-            الخصم {discountType === 'percentage' ? `(${discount}%)` : ''}
+            {isArabic ? "الخصم" : "Discount"} {discountType === 'percentage' ? `(${discount}%)` : ''}
           </span>
           <span>
-            - {formatCurrency(discountAmount, "ar-SA", "SAR")}
+            - {formatCurrency(discountAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
           </span>
         </div>
       )}
       
       <div className={`flex justify-between font-bold ${totalSizeClass} pt-1`}>
         <span>
-          الإجمالي
+          {isArabic ? "الإجمالي" : "Total"}
         </span>
         <span>
-          {formatCurrency(total, "ar-SA", "SAR")}
+          {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
     </div>

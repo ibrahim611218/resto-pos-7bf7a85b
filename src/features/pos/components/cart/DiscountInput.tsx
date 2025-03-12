@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,7 @@ export interface DiscountInputProps {
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
   isMobile?: boolean;
+  isArabic?: boolean;
 }
 
 const DiscountInput: React.FC<DiscountInputProps> = ({
@@ -20,7 +20,8 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   discountType,
   setDiscount,
   setDiscountType,
-  isMobile = false
+  isMobile = false,
+  isArabic = false
 }) => {
   const [inputValue, setInputValue] = useState<string>(
     discount > 0 ? discount.toString() : ""

@@ -8,12 +8,14 @@ interface CartActionsProps {
   handleCreateInvoice: () => void;
   clearCart: () => void; 
   isMobile?: boolean;
+  isArabic?: boolean;
 }
 
 const CartActions: React.FC<CartActionsProps> = ({
   cartItems,
   handleCreateInvoice,
-  isMobile = false
+  isMobile = false,
+  isArabic = false
 }) => {
   const isEmpty = cartItems.length === 0;
 
@@ -25,8 +27,8 @@ const CartActions: React.FC<CartActionsProps> = ({
         disabled={isEmpty}
       >
         <div className="flex items-center">
-          <CreditCard className={`ml-1 ${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
-          إنشاء فاتورة
+          <CreditCard className={`${isArabic ? 'ml-1' : 'mr-1'} ${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
+          {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>
       </Button>
     </div>
