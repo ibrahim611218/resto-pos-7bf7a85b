@@ -26,7 +26,7 @@ const MainLayout = () => {
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 ${
-            !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
+            !sidebarCollapsed && !isMobile ? "md:ml-64" : ""
           }`}
         >
           <div className="h-screen w-full overflow-auto m-0 p-0">
