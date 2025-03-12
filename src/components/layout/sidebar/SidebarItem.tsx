@@ -10,6 +10,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { SidebarLink } from "./types";
+import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 
 interface SidebarItemProps {
   link: SidebarLink;
@@ -49,14 +50,18 @@ const SidebarItem = ({
           <Button
             variant="ghost"
             className={cn(
-              "w-full justify-between",
+              "w-full justify-between transition-all duration-200 ease-in-out",
               (anyChildActive) && "bg-accent text-accent-foreground",
               collapsed && "justify-center"
             )}
           >
             <span className="flex items-center">
               {link.icon}
-              {!collapsed && <span className="mr-3">{link.name}</span>}
+              {!collapsed && (
+                <AnimatedTransition animation="fade">
+                  <span className="mr-3">{link.name}</span>
+                </AnimatedTransition>
+              )}
             </span>
             {!collapsed && (
               <ChevronRight
@@ -78,14 +83,16 @@ const SidebarItem = ({
                 key={child.path}
                 to={child.path}
                 className={cn(
-                  "flex items-center rounded-md px-3 py-2 transition-colors",
+                  "flex items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out",
                   isActive(child.path)
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-accent hover:text-accent-foreground",
                 )}
               >
                 {child.icon}
-                <span className="mr-3">{child.name}</span>
+                <AnimatedTransition animation="fade">
+                  <span className="mr-3">{child.name}</span>
+                </AnimatedTransition>
               </Link>
             ))}
           </CollapsibleContent>
@@ -100,7 +107,7 @@ const SidebarItem = ({
       key={link.path}
       to={link.path}
       className={cn(
-        "flex items-center rounded-md px-3 py-2 transition-colors",
+        "flex items-center rounded-md px-3 py-2 transition-all duration-200 ease-in-out",
         isActive(link.path)
           ? "bg-primary text-primary-foreground"
           : "hover:bg-accent hover:text-accent-foreground",
@@ -109,7 +116,9 @@ const SidebarItem = ({
     >
       {link.icon}
       {!collapsed && (
-        <span className="mr-3 transition-opacity">{link.name}</span>
+        <AnimatedTransition animation="fade">
+          <span className="mr-3">{link.name}</span>
+        </AnimatedTransition>
       )}
     </Link>
   );

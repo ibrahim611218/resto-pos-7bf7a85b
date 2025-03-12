@@ -22,6 +22,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const { user, logout, hasPermission } = useAuth();
   const { language, toggleLanguage } = useLanguage();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Initialize open categories based on current path
   useEffect(() => {
@@ -45,6 +46,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     }
     
     setOpenCategories(categoriesState);
+    setIsInitialized(true);
   }, [location.pathname]);
 
   const toggleCategory = (category: string) => {
@@ -107,16 +109,18 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
   if (isMobile && collapsed) return null;
 
+  const sidebarTransition = collapsed ? "w-20" : "w-64";
+
   return (
-    <AnimatedTransition animation="fade">
+    <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 right-0 z-30 flex h-screen flex-col glass border-l",
-          collapsed ? "w-20" : "w-64",
+          "fixed lg:relative inset-y-0 right-0 z-30 flex h-screen flex-col glass border-l shadow-md",
+          sidebarTransition,
           "transition-all duration-300 ease-in-out"
         )}
       >
-        <div className="flex items-center justify-between p-4 h-16">
+        <div className="flex items-center justify-between p-4 h-16 border-b">
           {!collapsed && (
             <AnimatedTransition animation="fade">
               <h2 className="text-xl font-bold">نظام المطاعم</h2>
@@ -125,33 +129,41 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="mr-auto"
+            className={cn(
+              "transition-all duration-200",
+              collapsed ? "mr-auto" : "mr-auto"
+            )}
             onClick={onToggle}
           >
-            {collapsed ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+            {collapsed ? 
+              <ChevronLeft className="animate-pulse-subtle" size={18} /> : 
+              <ChevronRight className="animate-pulse-subtle" size={18} />
+            }
           </Button>
         </div>
 
         {user && (
           <div className={cn(
-            "flex items-center px-4 py-3 border-b",
+            "flex items-center px-4 py-3 border-b transition-all duration-300 ease-in-out",
             collapsed ? "justify-center" : "justify-start gap-3"
           )}>
-            <Avatar>
+            <Avatar className="transition-all duration-300 ease-in-out">
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {user.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
             
             {!collapsed && (
-              <div className="flex flex-col">
-                <span className="font-medium">{user.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  {user.role === "admin" ? "مدير" : 
-                   user.role === "cashier" ? "محاسب" : 
-                   user.role === "kitchen" ? "مطبخ" : "مستخدم"}
-                </span>
-              </div>
+              <AnimatedTransition animation="fade">
+                <div className="flex flex-col">
+                  <span className="font-medium">{user.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {user.role === "admin" ? "مدير" : 
+                     user.role === "cashier" ? "محاسب" : 
+                     user.role === "kitchen" ? "مطبخ" : "مستخدم"}
+                  </span>
+                </div>
+              </AnimatedTransition>
             )}
           </div>
         )}
@@ -181,13 +193,17 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           <Button 
             variant="outline"
             className={cn(
-              "w-full",
+              "w-full transition-all duration-300 ease-in-out",
               collapsed ? "justify-center" : "justify-start"
             )}
             onClick={handleLogout}
           >
             <LogOut size={18} />
-            {!collapsed && <span className="mr-2">تسجيل الخروج</span>}
+            {!collapsed && (
+              <AnimatedTransition animation="fade">
+                <span className="mr-2">تسجيل الخروج</span>
+              </AnimatedTransition>
+            )}
           </Button>
         </div>
       </aside>
