@@ -39,11 +39,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logo, isArabic, onLogoChang
             />
           ) : (
             <div className="flex flex-col items-center">
-              <img src="/assets/restopos-logo.png" alt="Default Logo" className="h-16 w-16 mb-2" />
-              <div className="text-sm text-center">
-                <span className="text-[#00825A] font-bold">Resto</span>
-                <span className="text-[#FF6B00] font-bold">POS</span>
-              </div>
+              <img src="/lovable-uploads/b8da0625-ebda-4a08-8f51-5ebf33b24b30.png" alt="Default Logo" className="h-20 w-20 mb-2" />
             </div>
           )}
         </div>
