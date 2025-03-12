@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { User } from "@/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 
