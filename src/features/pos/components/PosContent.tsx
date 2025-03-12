@@ -4,6 +4,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
 import CartPanel from "./CartPanel";
 import ProductsPanel from "./ProductsPanel";
+import { useScreenSize } from "@/hooks/use-mobile";
 
 interface PosContentProps {
   cartItems: any[];
@@ -68,53 +69,118 @@ const PosContent: React.FC<PosContentProps> = ({
   searchedProducts,
   getSizeLabel,
 }) => {
+  const { width, height, isMobile, isTablet } = useScreenSize();
+  
   const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
     const invoice = createInvoice(customerName, customerTaxNumber);
     return invoice;
   };
 
+  // Dynamic layout adjustments based on screen size
+  const cartWidthClass = isMobile 
+    ? "w-full" 
+    : isTablet 
+      ? "w-1/3" 
+      : "w-1/4";
+  
+  const productsWidthClass = isMobile 
+    ? "w-full" 
+    : isTablet 
+      ? "w-2/3" 
+      : "w-3/4";
+
+  // On mobile, we'll use a flex column layout instead of row
   return (
-    <div className="flex flex-col md:flex-row h-full w-full overflow-hidden m-0 p-0">
-      <div className="flex-1 md:w-3/4 lg:w-3/4 h-full">
-        <ProductsPanel 
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          categories={categories}
-          filteredProducts={filteredProducts}
-          searchedProducts={searchedProducts}
-          onAddToCart={addToCart}
-          isArabic={isArabic}
-          getSizeLabel={getSizeLabel}
-        />
-      </div>
-      
-      <div className="md:w-1/4 lg:w-1/4 h-full">
-        <CartPanel 
-          cartItems={cartItems}
-          isArabic={isArabic}
-          language={language}
-          subtotal={subtotal}
-          taxAmount={taxAmount}
-          total={total}
-          discount={discount}
-          discountType={discountType}
-          orderType={orderType}
-          tableNumber={tableNumber}
-          paymentMethod={paymentMethod}
-          createInvoice={handleCreateInvoice}
-          clearCart={clearCart}
-          getSizeLabel={getSizeLabel}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-          setDiscount={setDiscount}
-          setDiscountType={setDiscountType}
-          setOrderType={setOrderType}
-          setTableNumber={setTableNumber}
-          setPaymentMethod={setPaymentMethod}
-        />
-      </div>
+    <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full overflow-hidden m-0 p-0`}>
+      {/* For mobile: Products panel appears first, followed by cart panel */}
+      {isMobile ? (
+        <>
+          <div className="flex-1 w-full h-1/2 overflow-hidden">
+            <ProductsPanel 
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+              categories={categories}
+              filteredProducts={filteredProducts}
+              searchedProducts={searchedProducts}
+              onAddToCart={addToCart}
+              isArabic={isArabic}
+              getSizeLabel={getSizeLabel}
+            />
+          </div>
+          
+          <div className="w-full h-1/2 overflow-hidden">
+            <CartPanel 
+              cartItems={cartItems}
+              isArabic={isArabic}
+              language={language}
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              total={total}
+              discount={discount}
+              discountType={discountType}
+              orderType={orderType}
+              tableNumber={tableNumber}
+              paymentMethod={paymentMethod}
+              createInvoice={handleCreateInvoice}
+              clearCart={clearCart}
+              getSizeLabel={getSizeLabel}
+              updateQuantity={updateQuantity}
+              removeItem={removeItem}
+              setDiscount={setDiscount}
+              setDiscountType={setDiscountType}
+              setOrderType={setOrderType}
+              setTableNumber={setTableNumber}
+              setPaymentMethod={setPaymentMethod}
+            />
+          </div>
+        </>
+      ) : (
+        // For tablets and desktop: Products panel on left, cart on right
+        <>
+          <div className={`flex-1 ${productsWidthClass} h-full`}>
+            <ProductsPanel 
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+              categories={categories}
+              filteredProducts={filteredProducts}
+              searchedProducts={searchedProducts}
+              onAddToCart={addToCart}
+              isArabic={isArabic}
+              getSizeLabel={getSizeLabel}
+            />
+          </div>
+          
+          <div className={`${cartWidthClass} h-full`}>
+            <CartPanel 
+              cartItems={cartItems}
+              isArabic={isArabic}
+              language={language}
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              total={total}
+              discount={discount}
+              discountType={discountType}
+              orderType={orderType}
+              tableNumber={tableNumber}
+              paymentMethod={paymentMethod}
+              createInvoice={handleCreateInvoice}
+              clearCart={clearCart}
+              getSizeLabel={getSizeLabel}
+              updateQuantity={updateQuantity}
+              removeItem={removeItem}
+              setDiscount={setDiscount}
+              setDiscountType={setDiscountType}
+              setOrderType={setOrderType}
+              setTableNumber={setTableNumber}
+              setPaymentMethod={setPaymentMethod}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

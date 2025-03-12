@@ -7,26 +7,28 @@ import { useLanguage } from "@/context/LanguageContext";
 interface CartActionsProps {
   cartItems: any[];
   handleCreateInvoice: () => void;
-  clearCart: () => void; // We'll keep this in the interface for now to avoid breaking existing code
+  clearCart: () => void; 
+  isMobile?: boolean;
 }
 
 const CartActions: React.FC<CartActionsProps> = ({
   cartItems,
   handleCreateInvoice,
+  isMobile = false
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="mt-3">
+    <div className={isMobile ? "mt-2" : "mt-3"}>
       <Button 
-        className="w-full h-10 flex items-center justify-center gap-1 text-base" 
+        className={`w-full ${isMobile ? 'h-9 text-sm' : 'h-10 text-base'} flex items-center justify-center gap-1`}
         onClick={handleCreateInvoice}
         disabled={isEmpty}
       >
         <div className="flex items-center">
-          <CreditCard className={`${isArabic ? 'ml-1' : 'mr-1'} h-4 w-4`} />
+          <CreditCard className={`${isArabic ? 'ml-1' : 'mr-1'} ${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
           {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>
       </Button>

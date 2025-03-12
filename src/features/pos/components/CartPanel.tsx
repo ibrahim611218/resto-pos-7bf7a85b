@@ -12,6 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useScreenSize } from "@/hooks/use-mobile";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -62,6 +63,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
 }) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
+  const { isMobile, isTablet } = useScreenSize();
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -80,29 +82,34 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   const isEmpty = cartItems.length === 0;
 
+  // Adjust styles for different screen sizes
+  const headerClass = isMobile ? "p-1 text-sm" : "p-2";
+  const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
+  const footerClass = isMobile ? "p-1" : "p-2";
+
   return (
     <div className="flex flex-col h-full border-r border-l bg-card shadow-md overflow-hidden">
-      <div className="p-2 flex-shrink-0 flex justify-between items-center border-b">
-        <h2 className="text-lg font-bold">
+      <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
+        <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
           variant="ghost" 
-          size="sm"
-          className="text-muted-foreground hover:text-destructive" 
+          size={isMobile ? "xs" : "sm"}
+          className="text-muted-foreground hover:text-destructive h-auto py-1" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto px-2 pb-1 min-h-0">
+      <div className={`flex-grow overflow-y-auto ${itemsContainerClass} min-h-0`}>
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-2 pt-2">
+          <div className={`space-y-${isMobile ? "1" : "2"} pt-2`}>
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -118,14 +125,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-2 border-t bg-card flex-shrink-0">
-        <Separator className="mb-2" />
+      <div className={`${footerClass} border-t bg-card flex-shrink-0`}>
+        <Separator className={isMobile ? "mb-1" : "mb-2"} />
         
         <OrderTypeSelector
           orderType={orderType}
           tableNumber={tableNumber}
           setOrderType={setOrderType}
           setTableNumber={setTableNumber}
+          isMobile={isMobile}
         />
         
         <DiscountInput
@@ -133,6 +141,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
           discountType={discountType}
           setDiscount={setDiscount}
           setDiscountType={setDiscountType}
+          isMobile={isMobile}
         />
         
         <CartSummary
@@ -141,12 +150,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
           discount={discount}
           discountType={discountType}
           total={total}
+          isMobile={isMobile}
         />
         
         <CartActions
           cartItems={cartItems}
           handleCreateInvoice={handleCreateInvoice}
           clearCart={clearCart}
+          isMobile={isMobile}
         />
       </div>
 
