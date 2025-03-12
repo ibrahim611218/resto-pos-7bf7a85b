@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -67,10 +66,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
     }
   };
   
-  // تغيير لون السعر للون الأبيض في الوضع الفاتح
-  const priceClassName = isLightTheme 
-    ? "text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block"
-    : "text-sm mt-1 text-white font-semibold bg-orange-600/90 rounded-full px-2 py-0.5 inline-block";
+  // Updated: Always use white text color for price in both light and dark modes
+  const priceClassName = "text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block";
   
   return (
     <Card 
