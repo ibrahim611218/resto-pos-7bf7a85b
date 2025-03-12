@@ -1,10 +1,13 @@
 
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Product, Invoice, Size } from "@/types";
-import CartPanel from "./CartPanel";
-import ProductsPanel from "./ProductsPanel";
+import { Product, Invoice } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
+import PosLayout from "./layout/PosLayout";
+import MobilePosLayout from "./layout/MobilePosLayout";
+import DesktopPosLayout from "./layout/DesktopPosLayout";
+import PosProductsRenderer from "./PosProductsRenderer";
+import PosCartRenderer from "./PosCartRenderer";
 
 interface PosContentProps {
   cartItems: any[];
@@ -40,161 +43,70 @@ interface PosContentProps {
   setShowAllProducts?: (show: boolean) => void;
 }
 
-const PosContent: React.FC<PosContentProps> = ({
-  cartItems,
-  isArabic,
-  language,
-  subtotal,
-  taxAmount,
-  total,
-  discount,
-  discountType,
-  orderType,
-  tableNumber,
-  paymentMethod,
-  addToCart,
-  updateQuantity,
-  removeItem,
-  clearCart,
-  createInvoice,
-  setDiscount,
-  setDiscountType,
-  setOrderType,
-  setTableNumber,
-  setPaymentMethod,
-  searchTerm,
-  setSearchTerm,
-  activeCategory,
-  setActiveCategory,
-  categories,
-  filteredProducts,
-  searchedProducts,
-  getSizeLabel,
-  showAllProducts = false,
-  setShowAllProducts = () => {},
-}) => {
-  const { width, height, isMobile, isTablet } = useScreenSize();
-  
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
-    return invoice;
-  };
+const PosContent: React.FC<PosContentProps> = (props) => {
+  const { isMobile } = useScreenSize();
 
-  // Dynamic layout adjustments based on screen size
-  const cartWidthClass = isMobile 
-    ? "w-full" 
-    : isTablet 
-      ? "w-1/3" 
-      : "w-1/4";
-  
-  const productsWidthClass = isMobile 
-    ? "w-full" 
-    : isTablet 
-      ? "w-2/3" 
-      : "w-3/4";
+  // Prepare product panel component
+  const productsPanel = (
+    <PosProductsRenderer
+      searchTerm={props.searchTerm}
+      setSearchTerm={props.setSearchTerm}
+      activeCategory={props.activeCategory}
+      setActiveCategory={props.setActiveCategory}
+      categories={props.categories}
+      filteredProducts={props.filteredProducts}
+      searchedProducts={props.searchedProducts}
+      onAddToCart={props.addToCart}
+      isArabic={props.isArabic}
+      getSizeLabel={props.getSizeLabel}
+      showAllProducts={props.showAllProducts}
+      setShowAllProducts={props.setShowAllProducts}
+    />
+  );
 
-  // Determine the order of panels based on language
-  // For Arabic, cart should be on the right side
-  const cartOrder = isArabic ? "order-1" : "order-2";
-  const productsOrder = isArabic ? "order-2" : "order-1";
+  // Prepare cart panel component
+  const cartPanel = (
+    <PosCartRenderer
+      cartItems={props.cartItems}
+      isArabic={props.isArabic}
+      language={props.language}
+      subtotal={props.subtotal}
+      taxAmount={props.taxAmount}
+      total={props.total}
+      discount={props.discount}
+      discountType={props.discountType}
+      orderType={props.orderType}
+      tableNumber={props.tableNumber}
+      paymentMethod={props.paymentMethod}
+      createInvoice={props.createInvoice}
+      clearCart={props.clearCart}
+      getSizeLabel={props.getSizeLabel}
+      updateQuantity={props.updateQuantity}
+      removeItem={props.removeItem}
+      setDiscount={props.setDiscount}
+      setDiscountType={props.setDiscountType}
+      setOrderType={props.setOrderType}
+      setTableNumber={props.setTableNumber}
+      setPaymentMethod={props.setPaymentMethod}
+    />
+  );
 
-  // On mobile, we'll use a flex column layout instead of row
   return (
-    <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full overflow-hidden m-0 p-0`}>
-      {/* For mobile: Order changes based on language */}
+    <PosLayout isArabic={props.isArabic}>
       {isMobile ? (
-        <>
-          <div className={`flex-1 w-full h-1/2 overflow-hidden ${isArabic ? 'order-2' : 'order-1'}`}>
-            <ProductsPanel 
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-              categories={categories}
-              filteredProducts={filteredProducts}
-              searchedProducts={searchedProducts}
-              onAddToCart={addToCart}
-              isArabic={isArabic}
-              getSizeLabel={getSizeLabel}
-              showAllProducts={showAllProducts}
-              setShowAllProducts={setShowAllProducts}
-            />
-          </div>
-          
-          <div className={`w-full h-1/2 overflow-hidden ${isArabic ? 'order-1' : 'order-2'}`}>
-            <CartPanel 
-              cartItems={cartItems}
-              isArabic={isArabic}
-              language={language}
-              subtotal={subtotal}
-              taxAmount={taxAmount}
-              total={total}
-              discount={discount}
-              discountType={discountType}
-              orderType={orderType}
-              tableNumber={tableNumber}
-              paymentMethod={paymentMethod}
-              createInvoice={handleCreateInvoice}
-              clearCart={clearCart}
-              getSizeLabel={getSizeLabel}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-              setDiscount={setDiscount}
-              setDiscountType={setDiscountType}
-              setOrderType={setOrderType}
-              setTableNumber={setTableNumber}
-              setPaymentMethod={setPaymentMethod}
-            />
-          </div>
-        </>
+        <MobilePosLayout
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
       ) : (
-        // For tablets and desktop: Order based on language
-        <>
-          <div className={`flex-1 h-full ${productsOrder}`}>
-            <ProductsPanel 
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-              categories={categories}
-              filteredProducts={filteredProducts}
-              searchedProducts={searchedProducts}
-              onAddToCart={addToCart}
-              isArabic={isArabic}
-              getSizeLabel={getSizeLabel}
-              showAllProducts={showAllProducts}
-              setShowAllProducts={setShowAllProducts}
-            />
-          </div>
-          
-          <div className={`h-full ${cartOrder}`}>
-            <CartPanel 
-              cartItems={cartItems}
-              isArabic={isArabic}
-              language={language}
-              subtotal={subtotal}
-              taxAmount={taxAmount}
-              total={total}
-              discount={discount}
-              discountType={discountType}
-              orderType={orderType}
-              tableNumber={tableNumber}
-              paymentMethod={paymentMethod}
-              createInvoice={handleCreateInvoice}
-              clearCart={clearCart}
-              getSizeLabel={getSizeLabel}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-              setDiscount={setDiscount}
-              setDiscountType={setDiscountType}
-              setOrderType={setOrderType}
-              setTableNumber={setTableNumber}
-              setPaymentMethod={setPaymentMethod}
-            />
-          </div>
-        </>
+        <DesktopPosLayout
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
       )}
-    </div>
+    </PosLayout>
   );
 };
 
