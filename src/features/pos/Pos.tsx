@@ -9,7 +9,6 @@ import CartPanel from "./components/CartPanel";
 import { useLanguage } from "@/context/LanguageContext";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { Invoice } from "@/types";
-import { formatCurrency } from "@/utils/invoice";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
@@ -77,7 +76,7 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row-reverse ${
+      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row-reverse overflow-hidden ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}

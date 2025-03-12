@@ -75,69 +75,75 @@ const CartPanel: React.FC<CartPanelProps> = ({
   };
 
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 bg-card border-l p-5 overflow-y-auto">
-      <h2 className="text-2xl font-bold mb-5">
-        {isArabic ? "السلة" : "Cart"}
-      </h2>
+    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col h-full border-l">
+      <div className="p-4 flex-shrink-0">
+        <h2 className="text-2xl font-bold mb-3">
+          {isArabic ? "السلة" : "Cart"}
+        </h2>
+      </div>
       
-      {cartItems.length === 0 ? (
-        <EmptyCart />
-      ) : (
-        <div className="space-y-5">
-          {cartItems.map((item, index) => (
-            <CartItemComponent
-              key={item.id}
-              item={item}
-              index={index}
-              isArabic={isArabic}
-              getSizeLabel={getSizeLabel}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex-1 overflow-y-auto px-4 pb-2">
+        {cartItems.length === 0 ? (
+          <EmptyCart />
+        ) : (
+          <div className="space-y-3">
+            {cartItems.map((item, index) => (
+              <CartItemComponent
+                key={item.id}
+                item={item}
+                index={index}
+                isArabic={isArabic}
+                getSizeLabel={getSizeLabel}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            ))}
+          </div>
+        )}
+      </div>
       
-      <Separator className="my-5" />
-      
-      {/* Order Type Selector */}
-      <OrderTypeSelector
-        orderType={orderType}
-        tableNumber={tableNumber}
-        setOrderType={setOrderType}
-        setTableNumber={setTableNumber}
-      />
-      
-      {/* Payment Method Selector */}
-      <PaymentMethodSelector 
-        value={paymentMethod}
-        onChange={setPaymentMethod}
-      />
-      
-      {/* Discount Input */}
-      <DiscountInput
-        discount={discount}
-        discountType={discountType}
-        setDiscount={setDiscount}
-        setDiscountType={setDiscountType}
-      />
-      
-      {/* Cart Summary */}
-      <CartSummary
-        subtotal={subtotal}
-        taxAmount={taxAmount}
-        discount={discount}
-        discountType={discountType}
-        total={total}
-      />
-      
-      {/* Cart Actions */}
-      <CartActions
-        cartItems={cartItems}
-        handleCreateInvoice={handleCreateInvoice}
-        clearCart={clearCart}
-        onSendToKitchen={handleSendToKitchen}
-      />
+      <div className="p-4 border-t bg-card flex-shrink-0">
+        <Separator className="mb-4" />
+        
+        {/* Order Type Selector */}
+        <OrderTypeSelector
+          orderType={orderType}
+          tableNumber={tableNumber}
+          setOrderType={setOrderType}
+          setTableNumber={setTableNumber}
+        />
+        
+        {/* Payment Method Selector */}
+        <PaymentMethodSelector 
+          value={paymentMethod}
+          onChange={setPaymentMethod}
+        />
+        
+        {/* Discount Input */}
+        <DiscountInput
+          discount={discount}
+          discountType={discountType}
+          setDiscount={setDiscount}
+          setDiscountType={setDiscountType}
+        />
+        
+        {/* Cart Summary */}
+        <CartSummary
+          subtotal={subtotal}
+          taxAmount={taxAmount}
+          discount={discount}
+          discountType={discountType}
+          total={total}
+        />
+        
+        {/* Cart Actions */}
+        <CartActions
+          cartItems={cartItems}
+          handleCreateInvoice={handleCreateInvoice}
+          clearCart={clearCart}
+          onSendToKitchen={handleSendToKitchen}
+        />
+      </div>
 
       {/* Kitchen Assignment Dialog */}
       <KitchenAssignmentDialog
