@@ -14,8 +14,8 @@ interface ProductCardProps {
 }
 
 // Function to get background color based on product category
-const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string => {
-  if (isLightTheme) {
+const getBackgroundColor = (categoryId: string, theme: string): string => {
+  if (theme === "light") {
     switch (categoryId) {
       case "cat1": // Main dishes
         return "bg-[#F2FCE2] hover:bg-[#E5F5D5] border-green-200";
@@ -30,8 +30,24 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
       default:
         return "bg-[#FDE1D3] hover:bg-[#FACEB8] border-orange-200";
     }
+  } else if (theme === "dark") {
+    // Dark theme colors - black variations
+    switch (categoryId) {
+      case "cat1": // Main dishes
+        return "bg-black/80 hover:bg-black/90 border-gray-800";
+      case "cat2": // Sides
+        return "bg-gray-900/80 hover:bg-gray-900/90 border-gray-800";
+      case "cat3": // Drinks
+        return "bg-black/70 hover:bg-black/85 border-gray-800";
+      case "cat4": // Desserts
+        return "bg-gray-900/70 hover:bg-gray-900/85 border-gray-800";
+      case "cat5": // Combos
+        return "bg-black/60 hover:bg-black/75 border-gray-800";
+      default:
+        return "bg-gray-900/60 hover:bg-gray-900/75 border-gray-800";
+    }
   } else {
-    // Dark theme colors
+    // Saudi theme colors
     switch (categoryId) {
       case "cat1": // Main dishes
         return "bg-green-900/40 hover:bg-green-900/60 border-green-800";
@@ -51,13 +67,12 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, onAddToCart, getSizeLabel }) => {
   const { theme } = useTheme();
-  const isLightTheme = theme === "light";
   
   const displayPrice = product.variants.length > 0 
     ? `${product.variants[0].price.toFixed(2)}+` 
     : "-";
   
-  const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
+  const bgColorClass = getBackgroundColor(product.categoryId, theme);
   
   const handleClick = () => {
     if (onClick) {
@@ -89,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         )}
       </div>
       <CardContent className="p-3">
-        <div className={`font-medium truncate ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
+        <div className={`font-medium truncate ${theme === "dark" ? 'text-gray-100' : 'text-gray-800'}`}>
           {isArabic && product.nameAr ? product.nameAr : product.name}
         </div>
         <div className="text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block">

@@ -1,6 +1,8 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -62,6 +64,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // RestoPOS specific colors
         restopos: {
           primary: "#004d40",
           secondary: "#00695c",
