@@ -23,7 +23,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 
   const handleDelete = () => {
     onDeleteUser();
-    // مربع الحوار سيتم إغلاقه تلقائيًا من خلال onDeleteUser
+    onOpenChange(false); // إغلاق مربع الحوار بعد الحذف مباشرة
   };
 
   return (
