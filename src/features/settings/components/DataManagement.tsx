@@ -5,16 +5,19 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Trash2, Package, Tag, ShoppingCart, Users, Database } from "lucide-react";
+import { Trash2, Package, Tag, ShoppingCart, Users, Database, ArrowRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const DataManagement: React.FC = () => {
   const { language } = useLanguage();
   const { user, hasPermission } = useAuth();
   const isArabic = language === "ar";
+  const navigate = useNavigate();
   
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [actionType, setActionType] = useState<"products" | "categories" | "inventory" | "invoices" | "customers" | "all">("all");
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const isAdmin = user?.role === "admin" || user?.role === "manager";
   
@@ -31,39 +34,76 @@ const DataManagement: React.FC = () => {
     setShowConfirmDialog(true);
   };
   
-  const confirmDelete = () => {
-    // In a real app, this would make API calls to delete data
-    // For demonstration, we'll just show toast messages
+  const confirmDelete = async () => {
+    setIsDeleting(true);
     
-    let successMessage = "";
-    
-    switch(actionType) {
-      case "products":
-        successMessage = isArabic ? "تم حذف جميع المنتجات بنجاح" : "All products have been deleted successfully";
-        break;
-      case "categories":
-        successMessage = isArabic ? "تم حذف جميع التصنيفات بنجاح" : "All categories have been deleted successfully";
-        break;
-      case "inventory":
-        successMessage = isArabic ? "تم حذف جميع بيانات المخزون بنجاح" : "All inventory data has been deleted successfully";
-        break;
-      case "invoices":
-        successMessage = isArabic ? "تم حذف جميع الفواتير بنجاح" : "All invoices have been deleted successfully";
-        break;
-      case "customers":
-        successMessage = isArabic ? "تم حذف جميع العملاء بنجاح" : "All customers have been deleted successfully";
-        break;
-      case "all":
-        successMessage = isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully";
-        break;
+    try {
+      // Simulate API calls with setTimeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      let successMessage = "";
+      let redirectPath = null;
+      
+      switch(actionType) {
+        case "products":
+          // Logic to delete all products would go here
+          // Example: await deleteAllProducts();
+          successMessage = isArabic ? "تم حذف جميع المنتجات بنجاح" : "All products have been deleted successfully";
+          redirectPath = "/products";
+          break;
+        case "categories":
+          // Logic to delete all categories would go here
+          // Example: await deleteAllCategories();
+          successMessage = isArabic ? "تم حذف جميع التصنيفات بنجاح" : "All categories have been deleted successfully";
+          redirectPath = "/categories";
+          break;
+        case "inventory":
+          // Logic to delete all inventory data would go here
+          // Example: await deleteAllInventory();
+          successMessage = isArabic ? "تم حذف جميع بيانات المخزون بنجاح" : "All inventory data has been deleted successfully";
+          redirectPath = "/inventory";
+          break;
+        case "invoices":
+          // Logic to delete all invoices would go here
+          // Example: await deleteAllInvoices();
+          successMessage = isArabic ? "تم حذف جميع الفواتير بنجاح" : "All invoices have been deleted successfully";
+          redirectPath = "/invoices";
+          break;
+        case "customers":
+          // Logic to delete all customers would go here
+          // Example: await deleteAllCustomers();
+          successMessage = isArabic ? "تم حذف جميع العملاء بنجاح" : "All customers have been deleted successfully";
+          redirectPath = "/customers";
+          break;
+        case "all":
+          // Logic to delete all data would go here
+          // Example: await deleteAllData();
+          successMessage = isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully";
+          break;
+      }
+      
+      toast({
+        title: isArabic ? "تم الحذف بنجاح" : "Deleted Successfully",
+        description: successMessage,
+      });
+      
+      // Redirect to relevant page if specified
+      if (redirectPath) {
+        setTimeout(() => {
+          navigate(redirectPath);
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Delete operation failed:", error);
+      toast({
+        variant: "destructive",
+        title: isArabic ? "فشل في الحذف" : "Delete Failed",
+        description: isArabic ? "حدث خطأ أثناء عملية الحذف" : "An error occurred during deletion",
+      });
+    } finally {
+      setIsDeleting(false);
+      setShowConfirmDialog(false);
     }
-    
-    toast({
-      title: isArabic ? "تم الحذف بنجاح" : "Deleted Successfully",
-      description: successMessage,
-    });
-    
-    setShowConfirmDialog(false);
   };
   
   const getConfirmationMessage = () => {
@@ -131,7 +171,7 @@ const DataManagement: React.FC = () => {
               {isArabic ? "المنتجات" : "Products"}
             </CardTitle>
           </CardHeader>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button 
               variant="destructive" 
               className="w-full"
@@ -139,6 +179,14 @@ const DataManagement: React.FC = () => {
             >
               <Trash2 className="mr-2" size={16} />
               {isArabic ? "حذف جميع المنتجات" : "Delete All Products"}
+            </Button>
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/products")}
+              title={isArabic ? "الذهاب إلى المنتجات" : "Go to Products"}
+            >
+              <ArrowRight size={16} />
             </Button>
           </CardFooter>
         </Card>
@@ -150,7 +198,7 @@ const DataManagement: React.FC = () => {
               {isArabic ? "التصنيفات" : "Categories"}
             </CardTitle>
           </CardHeader>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button 
               variant="destructive" 
               className="w-full"
@@ -158,6 +206,14 @@ const DataManagement: React.FC = () => {
             >
               <Trash2 className="mr-2" size={16} />
               {isArabic ? "حذف جميع التصنيفات" : "Delete All Categories"}
+            </Button>
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/categories")}
+              title={isArabic ? "الذهاب إلى التصنيفات" : "Go to Categories"}
+            >
+              <ArrowRight size={16} />
             </Button>
           </CardFooter>
         </Card>
@@ -169,7 +225,7 @@ const DataManagement: React.FC = () => {
               {isArabic ? "الفواتير" : "Invoices"}
             </CardTitle>
           </CardHeader>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button 
               variant="destructive" 
               className="w-full"
@@ -177,6 +233,14 @@ const DataManagement: React.FC = () => {
             >
               <Trash2 className="mr-2" size={16} />
               {isArabic ? "حذف جميع الفواتير" : "Delete All Invoices"}
+            </Button>
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/invoices")}
+              title={isArabic ? "الذهاب إلى الفواتير" : "Go to Invoices"}
+            >
+              <ArrowRight size={16} />
             </Button>
           </CardFooter>
         </Card>
@@ -188,7 +252,7 @@ const DataManagement: React.FC = () => {
               {isArabic ? "العملاء" : "Customers"}
             </CardTitle>
           </CardHeader>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button 
               variant="destructive" 
               className="w-full"
@@ -196,6 +260,14 @@ const DataManagement: React.FC = () => {
             >
               <Trash2 className="mr-2" size={16} />
               {isArabic ? "حذف جميع العملاء" : "Delete All Customers"}
+            </Button>
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/customers")}
+              title={isArabic ? "الذهاب إلى العملاء" : "Go to Customers"}
+            >
+              <ArrowRight size={16} />
             </Button>
           </CardFooter>
         </Card>
@@ -212,11 +284,17 @@ const DataManagement: React.FC = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>
               {isArabic ? "إلغاء" : "Cancel"}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground">
-              {isArabic ? "نعم، قم بالحذف" : "Yes, Delete"}
+            <AlertDialogAction 
+              onClick={confirmDelete} 
+              className="bg-destructive text-destructive-foreground"
+              disabled={isDeleting}
+            >
+              {isDeleting ? 
+                (isArabic ? "جاري الحذف..." : "Deleting...") : 
+                (isArabic ? "نعم، قم بالحذف" : "Yes, Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
