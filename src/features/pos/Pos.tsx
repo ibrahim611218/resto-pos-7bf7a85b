@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "./hooks/useCart";
@@ -69,7 +68,7 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`h-screen flex flex-col ${
+      className={`h-screen flex flex-col w-full ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}

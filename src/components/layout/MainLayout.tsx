@@ -22,7 +22,7 @@ const MainLayout = () => {
             !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
           }`}
         >
-          <div className="p-4 md:p-6 h-screen overflow-hidden">
+          <div className="h-screen overflow-hidden">
             <Outlet />
           </div>
         </div>
