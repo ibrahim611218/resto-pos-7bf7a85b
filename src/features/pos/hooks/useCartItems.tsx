@@ -62,6 +62,13 @@ export const useCartItems = () => {
     } 
     // Handle products without variants (simple products)
     else {
+      console.log("Adding simple product:", product.name, "with price:", product.price);
+      
+      if (!product.price) {
+        console.error("Simple product has no price:", product);
+        return;
+      }
+      
       setCartItems((prev) => {
         const existingItemIndex = prev.findIndex(
           (item) => item.productId === product.id && item.variantId === "simple"
@@ -87,11 +94,13 @@ export const useCartItems = () => {
           variantId: "simple", // For simple products we use a "simple" identifier
           name: product.name,
           nameAr: product.nameAr,
-          price: product.price || 0,
+          price: product.price,
           size: "medium" as Size, // Use "medium" as the default size for simple products
           quantity: 1,
           taxable: product.taxable,
         };
+        
+        console.log("Created new cart item for simple product:", newItem);
         
         toast({
           title: isArabic ? "تمت الإضافة إلى السلة" : "Added to cart",
