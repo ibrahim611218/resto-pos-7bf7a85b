@@ -58,51 +58,56 @@ export const exportInvoiceToPDF = (
   invoice: Invoice,
   businessSettings: BusinessSettings
 ): void => {
-  const printableContent = generatePrintablePDF(invoice, businessSettings);
-  
-  const printIframe = document.createElement('iframe');
-  printIframe.style.position = 'fixed';
-  printIframe.style.right = '-9999px';
-  printIframe.style.bottom = '-9999px';
-  printIframe.style.width = '0';
-  printIframe.style.height = '0';
-  printIframe.style.border = '0';
-  
-  document.body.appendChild(printIframe);
-  
-  printIframe.contentDocument.write(printableContent);
-  printIframe.contentDocument.close();
-  
-  printIframe.onload = () => {
-    try {
-      const blob = new Blob([printableContent], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `invoice-${invoice.number}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        document.body.removeChild(printIframe);
-      }, 100);
-      
+  try {
+    const printContent = generatePrintablePDF(invoice, businessSettings);
+    
+    const printWindow = window.open('', '_blank');
+    
+    if (!printWindow) {
       toast({
-        title: "تم تصدير الفاتورة",
-        description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
-      });
-    } catch (error) {
-      console.error("Error exporting PDF:", error);
-      toast({
-        title: "خطأ في تصدير الفاتورة",
-        description: "حدث خطأ أثناء تصدير الفاتورة إلى PDF",
+        title: "تنبيه",
+        description: "يرجى السماح بالنوافذ المنبثقة للتصدير",
         variant: "destructive",
       });
+      return;
     }
-  };
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    printWindow.onload = function() {
+      try {
+        printWindow.document.title = `invoice-${invoice.number}.pdf`;
+        
+        setTimeout(() => {
+          printWindow.print();
+          // Close after printing (some browsers might do this automatically)
+          // printWindow.close();
+        }, 500);
+        
+        toast({
+          title: "تم تصدير الفاتورة",
+          description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
+        });
+      } catch (error) {
+        console.error("Error during PDF export:", error);
+        printWindow.close();
+        
+        toast({
+          title: "خطأ في تصدير الفاتورة",
+          description: "حدث خطأ أثناء تصدير الفاتورة إلى PDF",
+          variant: "destructive",
+        });
+      }
+    };
+  } catch (error) {
+    console.error("Error in exportInvoiceToPDF:", error);
+    toast({
+      title: "خطأ في تصدير الفاتورة",
+      description: "حدث خطأ أثناء تصدير الفاتورة إلى PDF",
+      variant: "destructive",
+    });
+  }
 };
 
 const generatePrintablePDF = (invoice: Invoice, businessSettings: BusinessSettings): string => {
@@ -284,7 +289,6 @@ export const handleInvoiceExport = (
         
         setTimeout(() => {
           printWindow.print();
-          
           // Close after printing (some browsers might do this automatically)
           // printWindow.close();
         }, 500);
