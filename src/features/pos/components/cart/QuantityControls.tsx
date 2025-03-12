@@ -15,20 +15,20 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   onDecrease,
 }) => {
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex items-center space-x-1 bg-secondary/50 rounded-full p-1">
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7"
+        className="h-7 w-7 rounded-full hover:bg-primary hover:text-white"
         onClick={onDecrease}
       >
         <Minus className="h-3 w-3" />
       </Button>
-      <span className="w-6 text-center">{quantity}</span>
+      <span className="w-6 text-center font-medium">{quantity}</span>
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7"
+        className="h-7 w-7 rounded-full hover:bg-primary hover:text-white"
         onClick={onIncrease}
       >
         <Plus className="h-3 w-3" />

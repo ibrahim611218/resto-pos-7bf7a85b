@@ -31,18 +31,15 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   return (
-    <div className="flex overflow-x-auto no-scrollbar pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
+    <div className="flex overflow-x-auto no-scrollbar py-2 gap-3 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
       <Button
-        variant={isLightTheme ? "outline" : "secondary"}
+        variant="default"
+        size="lg"
         className={cn(
-          "flex-shrink-0 whitespace-nowrap",
-          isLightTheme 
-            ? (!activeCategory 
-                ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-            : (!activeCategory 
-                ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                : "")
+          "flex-shrink-0 whitespace-nowrap rounded-full shadow-sm transition-all duration-200",
+          !activeCategory 
+            ? "bg-primary text-white hover:bg-primary/90 hover:scale-105 transform" 
+            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
         )}
         onClick={() => handleCategoryClick("all")}
       >
@@ -52,16 +49,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
       {categories.map((category) => (
         <Button
           key={category.id}
-          variant={isLightTheme ? "outline" : "secondary"}
+          variant="default"
+          size="lg"
           className={cn(
-            "flex-shrink-0 whitespace-nowrap",
-            isLightTheme 
-              ? (activeCategory === category.id
-                  ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                  : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-              : (activeCategory === category.id 
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                  : "")
+            "flex-shrink-0 whitespace-nowrap rounded-full shadow-sm transition-all duration-200",
+            activeCategory === category.id
+              ? "bg-primary text-white hover:bg-primary/90 hover:scale-105 transform" 
+              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           )}
           onClick={() => handleCategoryClick(category.id)}
         >

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -11,7 +10,7 @@ import CartActions from "./cart/CartActions";
 import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -82,9 +81,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col h-full border-r bg-card shadow-md">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
+      <div className="p-4 flex-shrink-0 flex justify-between items-center bg-muted/30">
+        <h2 className="text-2xl font-bold flex items-center">
+          <ShoppingCart className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
           {isArabic ? "السلة" : "Cart"}
+          {!isEmpty && (
+            <span className="ml-2 text-sm bg-primary text-white rounded-full px-2 py-0.5">
+              {cartItems.length}
+            </span>
+          )}
         </h2>
         <Button 
           variant="ghost" 
@@ -102,7 +107,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 pt-3">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}

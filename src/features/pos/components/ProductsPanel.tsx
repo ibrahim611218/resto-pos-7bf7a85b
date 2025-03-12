@@ -57,65 +57,63 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <div className="p-4">
+      <div className="p-4 pb-0">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
+          className="mb-3"
+        />
+        
+        <CategoryList
+          categories={categories}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          isArabic={isArabic}
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto no-scrollbar p-4 pt-0">
-        <Tabs defaultValue="categories" className="mb-4">
-          <TabsList className="grid grid-cols-2 mb-4">
-            <TabsTrigger value="categories" className="text-base">
-              {isArabic ? "الفئات" : "Categories"}
-            </TabsTrigger>
-            <TabsTrigger value="all" className="text-base">
-              {isArabic ? "كل المنتجات" : "All Products"}
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="categories" className="mt-2">
-            <CategoryList
-              categories={categories}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-              isArabic={isArabic}
-            />
-            
-            {activeCategory && (
-              <div className="mt-4">
-                <h3 className="font-bold mb-3 text-lg">
-                  {isArabic 
-                    ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
-                    : categories.find(c => c.id === activeCategory)?.name || "Products"}
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                  {searchedProducts.map((product, index) => (
-                    <GlassCard
-                      key={product.id}
-                      animation="fade"
-                      delay={index * 50}
-                      className="cursor-pointer hover:shadow-md bg-secondary/30"
-                      onClick={() => handleProductClick(product)}
-                    >
-                      <div className="text-center py-2">
-                        <p className="font-medium truncate">
-                          {isArabic ? product.nameAr : product.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
-                        </p>
-                      </div>
-                    </GlassCard>
-                  ))}
-                </div>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="all" className="mt-2 space-y-6 overflow-y-auto no-scrollbar">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 pt-2">
+        {searchTerm ? (
+          <div className="mt-2 space-y-2">
+            <h3 className="font-bold text-lg mb-3">
+              {isArabic ? "نتائج البحث" : "Search Results"}
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {searchedProducts.map((product, index) => (
+                <ProductCard 
+                  key={product.id}
+                  product={product}
+                  onClick={() => handleProductClick(product)}
+                  index={index}
+                  isArabic={isArabic}
+                />
+              ))}
+            </div>
+          </div>
+        ) : activeCategory ? (
+          <div className="mt-2 space-y-2">
+            <h3 className="font-bold text-lg mb-3">
+              {isArabic 
+                ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
+                : categories.find(c => c.id === activeCategory)?.name || "Products"}
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {filteredProducts
+                .filter(product => product.categoryId === activeCategory)
+                .map((product, index) => (
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    onClick={() => handleProductClick(product)}
+                    index={index}
+                    isArabic={isArabic}
+                  />
+                ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-2 space-y-6 overflow-y-auto no-scrollbar">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-6">
@@ -124,29 +122,20 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {productsByCategory[category.id]?.map((product, index) => (
-                      <GlassCard
+                      <ProductCard 
                         key={product.id}
-                        animation="fade"
-                        delay={index * 50}
-                        className="cursor-pointer hover:shadow-md bg-secondary/30"
+                        product={product}
                         onClick={() => handleProductClick(product)}
-                      >
-                        <div className="text-center py-2">
-                          <p className="font-medium truncate">
-                            {isArabic ? product.nameAr : product.name}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
-                          </p>
-                        </div>
-                      </GlassCard>
+                        index={index}
+                        isArabic={isArabic}
+                      />
                     ))}
                   </div>
                 </div>
               )
             ))}
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
       </div>
       
       <SizeSelectionDialog
@@ -159,5 +148,29 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     </div>
   );
 };
+
+// Create a separate ProductCard component for better organization
+const ProductCard: React.FC<{
+  product: Product;
+  onClick: () => void;
+  index: number;
+  isArabic: boolean;
+}> = ({ product, onClick, index, isArabic }) => (
+  <GlassCard
+    animation="fade"
+    delay={index * 50}
+    className="cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 bg-secondary/30"
+    onClick={onClick}
+  >
+    <div className="text-center py-3 px-2">
+      <p className="font-medium truncate">
+        {isArabic ? product.nameAr : product.name}
+      </p>
+      <p className="text-sm text-muted-foreground mt-1 font-bold">
+        {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
+      </p>
+    </div>
+  </GlassCard>
+);
 
 export default ProductsPanel;
