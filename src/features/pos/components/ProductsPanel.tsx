@@ -56,7 +56,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   }, {});
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
+    <div className="flex-1 flex flex-col h-full overflow-hidden max-w-full">
       <div className="p-4 pb-2">
         <SearchBox
           searchTerm={searchTerm}
@@ -77,7 +77,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           </TabsList>
           
           <TabsContent value="categories" className="mt-1 h-[calc(100vh-170px)] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
               <div className="md:col-span-1">
                 <CategoryList
                   categories={categories}
@@ -88,13 +88,13 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
               </div>
               
               {activeCategory && (
-                <div className="md:col-span-2 lg:col-span-3 h-full overflow-y-auto">
+                <div className="md:col-span-3 h-full overflow-y-auto">
                   <h3 className="font-bold mb-2 text-lg">
                     {isArabic 
                       ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                       : categories.find(c => c.id === activeCategory)?.name || "Products"}
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
                     {searchedProducts.map((product, index) => (
                       <GlassCard
                         key={product.id}
@@ -126,7 +126,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                   <h3 className="font-bold mb-2 text-lg border-b pb-1">
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
                     {productsByCategory[category.id]?.map((product, index) => (
                       <GlassCard
                         key={product.id}

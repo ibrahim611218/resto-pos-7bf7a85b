@@ -13,14 +13,14 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background overflow-hidden">
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div 
         className={`flex-1 transition-all duration-300 ${
           !sidebarCollapsed && !isMobile ? "ml-64" : "ml-0"
-        }`}
+        } max-w-full`}
       >
-        <div className="p-4 md:p-6">
+        <div className="w-full h-full max-w-full">
           <Outlet />
         </div>
       </div>
