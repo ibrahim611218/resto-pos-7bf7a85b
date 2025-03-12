@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
+import { Trash2, ShoppingCart } from "lucide-react";
 import CartItemComponent from "./CartItem";
 import EmptyCart from "./cart/EmptyCart";
 import OrderTypeSelector from "./cart/OrderTypeSelector";
@@ -10,8 +11,6 @@ import CartActions from "./cart/CartActions";
 import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
-import { Trash2 } from "lucide-react";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -71,7 +70,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
     const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
     
-    // Automatically send to kitchen - this happens behind the scenes now
     console.log(`Order ${invoice.number} automatically sent to kitchen`);
     
     setShowPaymentMethodDialog(false);
