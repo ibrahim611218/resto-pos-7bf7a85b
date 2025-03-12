@@ -15,8 +15,17 @@ src/
 │   │   ├── aspect-ratio.css    - Aspect ratio helpers
 │   │   ├── input-methods.css   - Touch/mouse input optimizations
 │   │   └── flex.css            - Flexbox utilities
+│   ├── guide/                  - Style guide documentation
+│   │   ├── README.md           - Style guide index
+│   │   ├── colors.md           - Color system documentation
+│   │   ├── typography.md       - Typography guidelines
+│   │   ├── layout.md           - Layout and spacing guidelines
+│   │   ├── components.md       - Component styling guidelines
+│   │   ├── responsive.md       - Responsive design guidelines
+│   │   ├── accessibility.md    - Accessibility guidelines
+│   │   ├── organization.md     - CSS organization guidelines
+│   │   └── best-practices.md   - Coding standards and best practices
 │   ├── saudi-theme.css         - Saudi Arabia themed styles
-│   ├── StyleGuide.md           - Comprehensive styling guidelines
 │   └── README.md               - This file
 ├── index.css                   - Global styles and CSS imports
 └── App.css                     - Application styles and core CSS imports
@@ -36,7 +45,7 @@ src/
 
 ## Best Practices
 
-1. Follow the [Style Guide](./StyleGuide.md) for detailed guidelines
+1. Follow the [Style Guide](./guide/README.md) for detailed guidelines
 2. Use Tailwind utility classes whenever possible
 3. Keep custom CSS to a minimum
 4. Maintain RTL support for all UI elements
@@ -57,4 +66,4 @@ The application is designed to support RTL (Right-to-Left) layouts for Arabic la
 
 ## Questions?
 
-If you have questions about the styling system, refer to the [Style Guide](./StyleGuide.md) or contact the development team.
+If you have questions about the styling system, refer to the [Style Guide](./guide/README.md) or contact the development team.
