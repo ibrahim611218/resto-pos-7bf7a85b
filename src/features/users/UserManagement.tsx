@@ -3,46 +3,21 @@ import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { mockUsers } from "@/features/auth/data/mockUsers";
-import { User, UserRole } from "@/types";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { PlusCircle, Edit, Trash, Key, ShieldAlert, ShieldCheck } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-
-// Extend User type to include password for the form
-interface UserWithPassword extends User {
-  password: string;
-}
+import { UserWithPassword } from "./types";
+import UsersList from "./components/UsersList";
+import AddUserDialog from "./components/AddUserDialog";
+import EditUserDialog from "./components/EditUserDialog";
+import PasswordDialog from "./components/PasswordDialog";
+import DeleteDialog from "./components/DeleteDialog";
 
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { user: currentUser, isOwner } = useAuth();
+  const { isOwner } = useAuth();
   
   const [users, setUsers] = useState<UserWithPassword[]>(
     mockUsers.map(user => ({ ...user, password: "********" }))
@@ -51,7 +26,7 @@ const UserManagement: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserWithPassword | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserWithPassword | null>(null);
   const [newUser, setNewUser] = useState<UserWithPassword>({
     id: "",
     name: "",
@@ -125,10 +100,10 @@ const UserManagement: React.FC = () => {
   };
   
   const handleEditUser = () => {
-    if (!currentUser) return;
+    if (!selectedUser) return;
     
     // Basic validation
-    if (!currentUser.name || !currentUser.email) {
+    if (!selectedUser.name || !selectedUser.email) {
       toast({
         title: isArabic ? "خطأ" : "Error",
         description: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields",
@@ -138,7 +113,7 @@ const UserManagement: React.FC = () => {
     }
     
     // Check if trying to edit to admin/owner without permission
-    if ((currentUser.role === 'admin' || currentUser.role === 'owner') && !canManageAdmins) {
+    if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
         title: isArabic ? "خطأ" : "Error",
         description: isArabic ? "ليس لديك صلاحية لتعديل المستخدم إلى هذا الدور" : "You don't have permission to change user to this role",
@@ -149,11 +124,11 @@ const UserManagement: React.FC = () => {
     
     // Update user
     setUsers(users.map(user => 
-      user.id === currentUser.id ? { ...currentUser } : user
+      user.id === selectedUser.id ? { ...selectedUser } : user
     ));
     
     setIsEditDialogOpen(false);
-    setCurrentUser(null);
+    setSelectedUser(null);
     
     toast({
       title: isArabic ? "تم تحديث المستخدم" : "User Updated",
@@ -162,7 +137,7 @@ const UserManagement: React.FC = () => {
   };
   
   const handleChangePassword = () => {
-    if (!currentUser) return;
+    if (!selectedUser) return;
     
     // Basic validation
     if (!newPassword || !confirmPassword) {
@@ -194,11 +169,11 @@ const UserManagement: React.FC = () => {
     
     // Update password
     setUsers(users.map(user => 
-      user.id === currentUser.id ? { ...user, password: newPassword } : user
+      user.id === selectedUser.id ? { ...user, password: newPassword } : user
     ));
     
     setIsPasswordDialogOpen(false);
-    setCurrentUser(null);
+    setSelectedUser(null);
     setNewPassword("");
     setConfirmPassword("");
     
@@ -209,10 +184,10 @@ const UserManagement: React.FC = () => {
   };
   
   const handleDeleteUser = () => {
-    if (!currentUser) return;
+    if (!selectedUser) return;
     
     // Check if trying to delete admin/owner without permission
-    if ((currentUser.role === 'admin' || currentUser.role === 'owner') && !canManageAdmins) {
+    if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
         title: isArabic ? "خطأ" : "Error",
         description: isArabic ? "ليس لديك صلاحية لحذف مستخدم بهذا الدور" : "You don't have permission to delete a user with this role",
@@ -223,45 +198,15 @@ const UserManagement: React.FC = () => {
     }
     
     // Delete user
-    setUsers(users.filter(user => user.id !== currentUser.id));
+    setUsers(users.filter(user => user.id !== selectedUser.id));
     
     setIsDeleteDialogOpen(false);
-    setCurrentUser(null);
+    setSelectedUser(null);
     
     toast({
       title: isArabic ? "تم حذف المستخدم" : "User Deleted",
       description: isArabic ? "تم حذف المستخدم بنجاح" : "User has been deleted successfully"
     });
-  };
-  
-  const getRoleName = (role: UserRole): string => {
-    switch (role) {
-      case "admin":
-        return isArabic ? "مدير" : "Admin";
-      case "owner":
-        return isArabic ? "مالك" : "Owner";
-      case "supervisor":
-        return isArabic ? "مشرف" : "Supervisor";
-      case "cashier":
-        return isArabic ? "كاشير" : "Cashier";
-      case "kitchen":
-        return isArabic ? "مطبخ" : "Kitchen";
-      default:
-        return role;
-    }
-  };
-  
-  const getRoleBadge = (role: UserRole) => {
-    switch (role) {
-      case "owner":
-        return <ShieldAlert className="h-4 w-4 text-purple-500" />;
-      case "admin":
-        return <ShieldAlert className="h-4 w-4 text-red-500" />;
-      case "supervisor":
-        return <ShieldCheck className="h-4 w-4 text-blue-500" />;
-      default:
-        return null;
-    }
   };
   
   return (
@@ -275,267 +220,68 @@ const UserManagement: React.FC = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{isArabic ? "الاسم" : "Name"}</TableHead>
-                  <TableHead>{isArabic ? "البريد الإلكتروني" : "Email"}</TableHead>
-                  <TableHead>{isArabic ? "الدور" : "Role"}</TableHead>
-                  <TableHead className="text-right">{isArabic ? "الإجراءات" : "Actions"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell className="flex items-center gap-2">
-                      {getRoleBadge(user.role)}
-                      {getRoleName(user.role)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            setCurrentUser(user);
-                            setIsEditDialogOpen(true);
-                          }}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            setCurrentUser(user);
-                            setIsPasswordDialogOpen(true);
-                          }}
-                        >
-                          <Key className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            setCurrentUser(user);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <UsersList 
+            users={users}
+            onEditUser={(user) => {
+              setSelectedUser(user);
+              setIsEditDialogOpen(true);
+            }}
+            onChangePassword={(user) => {
+              setSelectedUser(user);
+              setIsPasswordDialogOpen(true);
+            }}
+            onDeleteUser={(user) => {
+              setSelectedUser(user);
+              setIsDeleteDialogOpen(true);
+            }}
+            isArabic={isArabic}
+          />
         </CardContent>
       </Card>
       
       {/* Add User Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{isArabic ? "إضافة مستخدم جديد" : "Add New User"}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="name">{isArabic ? "الاسم" : "Name"}</Label>
-              <Input
-                id="name"
-                value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">{isArabic ? "البريد الإلكتروني" : "Email"}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">{isArabic ? "كلمة المرور" : "Password"}</Label>
-              <Input
-                id="password"
-                type="password"
-                value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">{isArabic ? "الدور" : "Role"}</Label>
-              <Select
-                value={newUser.role}
-                onValueChange={(value: UserRole) => setNewUser({ ...newUser, role: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={isArabic ? "اختر الدور" : "Select role"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {canManageAdmins && (
-                    <>
-                      <SelectItem value="owner">{isArabic ? "مالك" : "Owner"}</SelectItem>
-                      <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
-                    </>
-                  )}
-                  <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
-                  <SelectItem value="cashier">{isArabic ? "كاشير" : "Cashier"}</SelectItem>
-                  <SelectItem value="kitchen">{isArabic ? "مطبخ" : "Kitchen"}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-              {isArabic ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={handleAddUser}>
-              {isArabic ? "إضافة" : "Add"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddUserDialog 
+        isOpen={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        newUser={newUser}
+        setNewUser={setNewUser}
+        onAddUser={handleAddUser}
+        isArabic={isArabic}
+        canManageAdmins={canManageAdmins}
+      />
       
       {/* Edit User Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{isArabic ? "تعديل المستخدم" : "Edit User"}</DialogTitle>
-          </DialogHeader>
-          {currentUser && (
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name">{isArabic ? "الاسم" : "Name"}</Label>
-                <Input
-                  id="edit-name"
-                  value={currentUser.name}
-                  onChange={(e) => setCurrentUser({ ...currentUser, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-email">{isArabic ? "البريد الإلكتروني" : "Email"}</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  value={currentUser.email}
-                  onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-role">{isArabic ? "الدور" : "Role"}</Label>
-                <Select
-                  value={currentUser.role}
-                  onValueChange={(value: UserRole) => setCurrentUser({ ...currentUser, role: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {canManageAdmins && (
-                      <>
-                        <SelectItem value="owner">{isArabic ? "مالك" : "Owner"}</SelectItem>
-                        <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
-                      </>
-                    )}
-                    <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
-                    <SelectItem value="cashier">{isArabic ? "كاشير" : "Cashier"}</SelectItem>
-                    <SelectItem value="kitchen">{isArabic ? "مطبخ" : "Kitchen"}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              {isArabic ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={handleEditUser}>
-              {isArabic ? "حفظ" : "Save"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EditUserDialog 
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        selectedUser={selectedUser}
+        onUserChange={setSelectedUser}
+        onEditUser={handleEditUser}
+        isArabic={isArabic}
+        canManageAdmins={canManageAdmins}
+      />
       
       {/* Change Password Dialog */}
-      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {isArabic ? "تغيير كلمة المرور" : "Change Password"}
-            </DialogTitle>
-            <DialogDescription>
-              {isArabic 
-                ? `تغيير كلمة المرور للمستخدم: ${currentUser?.name}`
-                : `Change password for user: ${currentUser?.name}`
-              }
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="new-password">
-                {isArabic ? "كلمة المرور الجديدة" : "New Password"}
-              </Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">
-                {isArabic ? "تأكيد كلمة المرور" : "Confirm Password"}
-              </Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsPasswordDialogOpen(false)}>
-              {isArabic ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={handleChangePassword}>
-              {isArabic ? "تغيير" : "Change"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PasswordDialog 
+        isOpen={isPasswordDialogOpen}
+        onOpenChange={setIsPasswordDialogOpen}
+        selectedUser={selectedUser}
+        newPassword={newPassword}
+        setNewPassword={setNewPassword}
+        confirmPassword={confirmPassword}
+        setConfirmPassword={setConfirmPassword}
+        onChangePassword={handleChangePassword}
+        isArabic={isArabic}
+      />
       
       {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {isArabic ? "تأكيد الحذف" : "Confirm Deletion"}
-            </DialogTitle>
-            <DialogDescription>
-              {isArabic 
-                ? `هل أنت متأكد من حذف المستخدم: ${currentUser?.name}؟`
-                : `Are you sure you want to delete user: ${currentUser?.name}?`
-              }
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              {isArabic ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteUser}>
-              {isArabic ? "حذف" : "Delete"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteDialog 
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        selectedUser={selectedUser}
+        onDeleteUser={handleDeleteUser}
+        isArabic={isArabic}
+      />
     </div>
   );
 };
