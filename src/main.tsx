@@ -1,7 +1,6 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { LanguageProvider } from "./context/LanguageContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -11,17 +10,15 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <App />
-            <Toaster position="top-center" />
-            <div className="saudi-decoration"></div>
-            <div className="saudi-decoration-top"></div>
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <App />
+          <Toaster position="top-center" />
+          <div className="saudi-decoration"></div>
+          <div className="saudi-decoration-top"></div>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
