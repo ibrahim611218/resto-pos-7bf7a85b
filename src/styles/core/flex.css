@@ -1,5 +1,5 @@
 
-/* Ensure proper alignment in flex containers */
+/* Base flex containers */
 .flex-container {
   display: flex;
   flex-wrap: wrap;
@@ -10,7 +10,7 @@
 
 .flex-item {
   flex: 1 1 auto;
-  min-width: 0; /* Prevents flex items from overflowing */
+  min-width: 0;
 }
 
 /* Centered flex containers */
@@ -31,65 +31,103 @@
   width: 100%;
 }
 
-/* POS specific flex layouts */
-.pos-products-grid {
+/* Layout system */
+.app-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
-  width: 100%;
-  padding: 1rem;
-  justify-content: center;
-}
-
-.pos-cart-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: var(--card);
-  border-left: 2px solid var(--border);
-  box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-}
-
-.pos-cart-items {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-}
-
-.pos-cart-footer {
-  border-top: 2px solid var(--border);
-  padding: 1rem;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   background-color: var(--background);
 }
 
+.app-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 1.5rem;
+}
+
+.app-section {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Grid layouts */
+.grid-container {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.grid-cols-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
 /* Enhanced layout classes */
-.pos-flex-row {
+.flex-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.75rem;
 }
 
-.pos-flex-between {
+.flex-between {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.pos-flex-center {
+.flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
 }
 
-.pos-flex-grow {
+.flex-grow {
   flex-grow: 1;
 }
 
-.pos-grid-container {
-  display: grid;
+/* Table layouts */
+.table-container {
   width: 100%;
-  height: 100%;
+  overflow-x: auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
+
+.table-wrapper {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+/* Card layouts */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.card-container {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.card-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
