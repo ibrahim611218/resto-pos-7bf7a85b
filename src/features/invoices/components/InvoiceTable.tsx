@@ -9,7 +9,7 @@ interface InvoiceTableProps {
   invoices: Invoice[];
   isArabic: boolean;
   formatInvoiceDate: (date: Date) => string;
-  getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded") => string;
+  getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
   filteredStatus?: "completed" | "refunded" | null;
@@ -66,7 +66,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
                         ? "مكتملة" 
                         : invoice.status === "cancelled" 
                           ? "ملغاة" 
-                          : "مستردة"
+                          : invoice.status === "pending"
+                            ? "معلقة"
+                            : "مستردة"
                       : invoice.status}
                   </span>
                 </td>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Invoice } from "@/types";
 import { mockInvoices } from "../data/mockInvoices";
@@ -40,7 +39,7 @@ export const useInvoices = () => {
     return format(date, 'yyyy-MM-dd');
   };
 
-  const getStatusBadgeColor = (status: "completed" | "cancelled" | "refunded") => {
+  const getStatusBadgeColor = (status: "completed" | "cancelled" | "refunded" | "pending") => {
     switch (status) {
       case "completed":
         return "bg-green-500";
@@ -48,19 +47,19 @@ export const useInvoices = () => {
         return "bg-amber-500";
       case "refunded":
         return "bg-red-500";
+      case "pending":
+        return "bg-blue-500";
       default:
         return "bg-gray-500";
     }
   };
 
   const printInvoice = (invoice: Invoice) => {
-    // In a real app, this would connect to a printer
     console.log("Printing invoice:", invoice);
     toast.success(isArabic ? `طباعة الفاتورة رقم ${invoice.number}` : `Printing invoice #${invoice.number}`);
   };
 
   const cancelInvoice = (invoiceId: string) => {
-    // Check if user has admin permissions
     if (!hasPermission("admin")) {
       toast.error(isArabic ? "ليس لديك صلاحية لإلغاء الفواتير" : "You don't have permission to cancel invoices");
       return false;
@@ -74,7 +73,6 @@ export const useInvoices = () => {
       )
     );
 
-    // If the canceled invoice is currently selected, update it
     if (selectedInvoice?.id === invoiceId) {
       setSelectedInvoice(prev => prev ? { ...prev, status: "cancelled" } : null);
     }
@@ -84,7 +82,6 @@ export const useInvoices = () => {
   };
 
   const refundInvoice = (invoiceId: string) => {
-    // Check if user has admin permissions
     if (!hasPermission("admin")) {
       toast.error(isArabic ? "ليس لديك صلاحية لإرجاع الفواتير" : "You don't have permission to refund invoices");
       return false;
@@ -98,7 +95,6 @@ export const useInvoices = () => {
       )
     );
 
-    // If the refunded invoice is currently selected, update it
     if (selectedInvoice?.id === invoiceId) {
       setSelectedInvoice(prev => prev ? { ...prev, status: "refunded" } : null);
     }

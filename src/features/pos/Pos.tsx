@@ -21,6 +21,7 @@ const Pos: React.FC = () => {
     discountType,
     orderType,
     tableNumber,
+    paymentMethod,
     addToCart,
     updateQuantity,
     removeItem,
@@ -30,16 +31,8 @@ const Pos: React.FC = () => {
     setDiscountType,
     setOrderType,
     setTableNumber,
+    setPaymentMethod,
   } = useCart();
-  
-  const {
-    searchTerm,
-    setSearchTerm,
-    activeCategory,
-    setActiveCategory,
-    filteredProducts,
-    searchedProducts,
-  } = useProductFiltering(products);
   
   // Function for consistent size labels
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
@@ -75,6 +68,7 @@ const Pos: React.FC = () => {
         discountType={discountType}
         orderType={orderType}
         tableNumber={tableNumber}
+        paymentMethod={paymentMethod}
         createInvoice={createInvoice}
         clearCart={clearCart}
         getSizeLabel={getSizeLabelFn}
@@ -84,6 +78,7 @@ const Pos: React.FC = () => {
         setDiscountType={setDiscountType}
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
+        setPaymentMethod={setPaymentMethod}
       />
     </div>
   );
