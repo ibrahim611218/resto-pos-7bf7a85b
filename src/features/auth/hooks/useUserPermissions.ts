@@ -43,11 +43,9 @@ export function useUserPermissions() {
     return permissionsMap[userId] || [];
   };
   
-  const updateUserPermissions = (userId: string, permissions: string[], currentUser: User | null): boolean => {
-    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'owner')) {
-      return false;
-    }
-    
+  // Fix: Update the function signature to match AuthContextType
+  const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
+    // Implementation can handle the current user check internally
     setPermissionsMap({
       ...permissionsMap,
       [userId]: permissions

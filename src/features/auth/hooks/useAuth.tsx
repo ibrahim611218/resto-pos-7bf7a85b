@@ -95,8 +95,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user?.role === 'supervisor' || user?.role === 'admin' || user?.role === 'owner';
   };
 
+  // Fix: Update the updateUserPermissions function to match the interface
   const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
-    return updatePermissions(userId, permissions, user);
+    // We can handle the user check here and then call updatePermissions
+    if (!user || (user.role !== 'admin' && user.role !== 'owner')) {
+      return false;
+    }
+    
+    return updatePermissions(userId, permissions);
   };
 
   // Don't render children until we've checked localStorage

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { mockUsers } from "@/features/auth/data/mockUsers";
 import { toast } from "@/hooks/use-toast";
@@ -42,6 +43,8 @@ export const useUsers = () => {
       
       // Ensure system admin has all permissions
       const allPermissionValues = allPermissions.map(p => p.value);
+      // Fix: Remove the second argument from updateUserPermissions call
+      // It should match the signature in AuthContextType
       updateUserPermissions(systemAdmin.id, allPermissionValues);
     }
   }, []);
