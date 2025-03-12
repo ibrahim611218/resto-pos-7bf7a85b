@@ -13,11 +13,12 @@ import AddUserDialog from "./components/AddUserDialog";
 import EditUserDialog from "./components/EditUserDialog";
 import PasswordDialog from "./components/PasswordDialog";
 import DeleteDialog from "./components/DeleteDialog";
+import PermissionsDialog from "./components/PermissionsDialog";
 
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { isOwner } = useAuth();
+  const { isOwner, allPermissions, getUserPermissions, updateUserPermissions } = useAuth();
   
   const [users, setUsers] = useState<UserWithPassword[]>(
     mockUsers.map(user => ({ ...user, password: "********" }))
@@ -26,7 +27,9 @@ const UserManagement: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserWithPassword | null>(null);
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [newUser, setNewUser] = useState<UserWithPassword>({
     id: "",
     name: "",
@@ -43,8 +46,8 @@ const UserManagement: React.FC = () => {
     // Basic validation
     if (!newUser.name || !newUser.email || !newUser.password) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields",
+        title: "خطأ",
+        description: "يرجى ملء جميع الحقول المطلوبة",
         variant: "destructive"
       });
       return;
@@ -52,8 +55,8 @@ const UserManagement: React.FC = () => {
     
     if (newUser.password.length < 6) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل" : "Password must be at least 6 characters long",
+        title: "خطأ",
+        description: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
         variant: "destructive"
       });
       return;
@@ -62,8 +65,8 @@ const UserManagement: React.FC = () => {
     // Check if email already exists
     if (users.some(user => user.email === newUser.email)) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "البريد الإلكتروني موجود بالفعل" : "Email already exists",
+        title: "خطأ",
+        description: "البريد الإلكتروني موجود بالفعل",
         variant: "destructive"
       });
       return;
@@ -72,8 +75,8 @@ const UserManagement: React.FC = () => {
     // Check if trying to create admin/owner without permission
     if ((newUser.role === 'admin' || newUser.role === 'owner') && !canManageAdmins) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "ليس لديك صلاحية لإنشاء مستخدم بهذا الدور" : "You don't have permission to create a user with this role",
+        title: "خطأ",
+        description: "ليس لديك صلاحية لإنشاء مستخدم بهذا الدور",
         variant: "destructive"
       });
       return;
@@ -94,8 +97,8 @@ const UserManagement: React.FC = () => {
     });
     
     toast({
-      title: isArabic ? "تم إضافة المستخدم" : "User Added",
-      description: isArabic ? "تمت إضافة المستخدم بنجاح" : "User has been added successfully"
+      title: "تم إضافة المستخدم",
+      description: "تمت إضافة المستخدم بنجاح"
     });
   };
   
@@ -105,8 +108,8 @@ const UserManagement: React.FC = () => {
     // Basic validation
     if (!selectedUser.name || !selectedUser.email) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields",
+        title: "خطأ",
+        description: "يرجى ملء جميع الحقول المطلوبة",
         variant: "destructive"
       });
       return;
@@ -115,8 +118,8 @@ const UserManagement: React.FC = () => {
     // Check if trying to edit to admin/owner without permission
     if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "ليس لديك صلاحية لتعديل المستخدم إلى هذا الدور" : "You don't have permission to change user to this role",
+        title: "خطأ",
+        description: "ليس لديك صلاحية لتعديل المستخدم إلى هذا الدور",
         variant: "destructive"
       });
       return;
@@ -131,8 +134,8 @@ const UserManagement: React.FC = () => {
     setSelectedUser(null);
     
     toast({
-      title: isArabic ? "تم تحديث المستخدم" : "User Updated",
-      description: isArabic ? "تم تحديث بيانات المستخدم بنجاح" : "User has been updated successfully"
+      title: "تم تحديث المستخدم",
+      description: "تم تحديث بيانات المستخدم بنجاح"
     });
   };
   
@@ -142,8 +145,8 @@ const UserManagement: React.FC = () => {
     // Basic validation
     if (!newPassword || !confirmPassword) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields",
+        title: "خطأ",
+        description: "يرجى ملء جميع الحقول المطلوبة",
         variant: "destructive"
       });
       return;
@@ -151,8 +154,8 @@ const UserManagement: React.FC = () => {
     
     if (newPassword.length < 6) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل" : "Password must be at least 6 characters long",
+        title: "خطأ",
+        description: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
         variant: "destructive"
       });
       return;
@@ -160,8 +163,8 @@ const UserManagement: React.FC = () => {
     
     if (newPassword !== confirmPassword) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "كلمات المرور غير متطابقة" : "Passwords do not match",
+        title: "خطأ",
+        description: "كلمات المرور غير متطابقة",
         variant: "destructive"
       });
       return;
@@ -178,8 +181,8 @@ const UserManagement: React.FC = () => {
     setConfirmPassword("");
     
     toast({
-      title: isArabic ? "تم تغيير كلمة المرور" : "Password Changed",
-      description: isArabic ? "تم تغيير كلمة المرور بنجاح" : "Password has been changed successfully"
+      title: "تم تغيير كلمة المرور",
+      description: "تم تغيير كلمة المرور بنجاح"
     });
   };
   
@@ -189,8 +192,8 @@ const UserManagement: React.FC = () => {
     // Check if trying to delete admin/owner without permission
     if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "ليس لديك صلاحية لحذف مستخدم بهذا الدور" : "You don't have permission to delete a user with this role",
+        title: "خطأ",
+        description: "ليس لديك صلاحية لحذف مستخدم بهذا الدور",
         variant: "destructive"
       });
       setIsDeleteDialogOpen(false);
@@ -204,19 +207,50 @@ const UserManagement: React.FC = () => {
     setSelectedUser(null);
     
     toast({
-      title: isArabic ? "تم حذف المستخدم" : "User Deleted",
-      description: isArabic ? "تم حذف المستخدم بنجاح" : "User has been deleted successfully"
+      title: "تم حذف المستخدم",
+      description: "تم حذف المستخدم بنجاح"
     });
+  };
+
+  const handleEditPermissions = (user: UserWithPassword) => {
+    setSelectedUser(user);
+    if (user.id) {
+      const permissions = getUserPermissions(user.id);
+      setSelectedPermissions(permissions);
+      setIsPermissionsDialogOpen(true);
+    }
+  };
+
+  const handleSavePermissions = () => {
+    if (!selectedUser) return;
+    
+    const success = updateUserPermissions(selectedUser.id, selectedPermissions);
+    
+    if (success) {
+      toast({
+        title: "تم تحديث الصلاحيات",
+        description: "تم تحديث صلاحيات المستخدم بنجاح"
+      });
+    } else {
+      toast({
+        title: "خطأ",
+        description: "لا يمكن تحديث صلاحيات المستخدم",
+        variant: "destructive"
+      });
+    }
+    
+    setIsPermissionsDialogOpen(false);
+    setSelectedUser(null);
   };
   
   return (
-    <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="container p-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{isArabic ? "إدارة المستخدمين" : "User Management"}</CardTitle>
+          <CardTitle>إدارة المستخدمين</CardTitle>
           <Button onClick={() => setIsAddDialogOpen(true)}>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            {isArabic ? "إضافة مستخدم" : "Add User"}
+            <PlusCircle className="h-4 w-4 ml-2" />
+            إضافة مستخدم
           </Button>
         </CardHeader>
         <CardContent>
@@ -234,6 +268,7 @@ const UserManagement: React.FC = () => {
               setSelectedUser(user);
               setIsDeleteDialogOpen(true);
             }}
+            onEditPermissions={handleEditPermissions}
             isArabic={isArabic}
           />
         </CardContent>
@@ -280,6 +315,18 @@ const UserManagement: React.FC = () => {
         onOpenChange={setIsDeleteDialogOpen}
         selectedUser={selectedUser}
         onDeleteUser={handleDeleteUser}
+        isArabic={isArabic}
+      />
+
+      {/* Permissions Dialog */}
+      <PermissionsDialog
+        isOpen={isPermissionsDialogOpen}
+        onOpenChange={setIsPermissionsDialogOpen}
+        selectedUser={selectedUser}
+        permissions={allPermissions}
+        selectedPermissions={selectedPermissions}
+        setSelectedPermissions={setSelectedPermissions}
+        onSavePermissions={handleSavePermissions}
         isArabic={isArabic}
       />
     </div>

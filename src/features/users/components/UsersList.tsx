@@ -2,7 +2,7 @@
 import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash, Key, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Edit, Trash, Key, ShieldAlert, ShieldCheck, Shield } from "lucide-react";
 import { UserRole } from "@/types";
 import { UserWithPassword } from "../types";
 
@@ -11,6 +11,7 @@ interface UsersListProps {
   onEditUser: (user: UserWithPassword) => void;
   onChangePassword: (user: UserWithPassword) => void;
   onDeleteUser: (user: UserWithPassword) => void;
+  onEditPermissions: (user: UserWithPassword) => void;
   isArabic: boolean;
 }
 
@@ -19,20 +20,21 @@ const UsersList: React.FC<UsersListProps> = ({
   onEditUser,
   onChangePassword,
   onDeleteUser,
+  onEditPermissions,
   isArabic,
 }) => {
   const getRoleName = (role: UserRole): string => {
     switch (role) {
       case "admin":
-        return isArabic ? "مدير" : "Admin";
+        return "مدير";
       case "owner":
-        return isArabic ? "مالك" : "Owner";
+        return "مالك";
       case "supervisor":
-        return isArabic ? "مشرف" : "Supervisor";
+        return "مشرف";
       case "cashier":
-        return isArabic ? "كاشير" : "Cashier";
+        return "كاشير";
       case "kitchen":
-        return isArabic ? "مطبخ" : "Kitchen";
+        return "مطبخ";
       default:
         return role;
     }
@@ -56,10 +58,10 @@ const UsersList: React.FC<UsersListProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{isArabic ? "الاسم" : "Name"}</TableHead>
-            <TableHead>{isArabic ? "البريد الإلكتروني" : "Email"}</TableHead>
-            <TableHead>{isArabic ? "الدور" : "Role"}</TableHead>
-            <TableHead className="text-right">{isArabic ? "الإجراءات" : "Actions"}</TableHead>
+            <TableHead>الاسم</TableHead>
+            <TableHead>البريد الإلكتروني</TableHead>
+            <TableHead>الدور</TableHead>
+            <TableHead className="text-left">الإجراءات</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -71,7 +73,7 @@ const UsersList: React.FC<UsersListProps> = ({
                 {getRoleBadge(user.role)}
                 {getRoleName(user.role)}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-left">
                 <div className="flex justify-end gap-2">
                   <Button 
                     variant="ghost" 
@@ -86,6 +88,13 @@ const UsersList: React.FC<UsersListProps> = ({
                     onClick={() => onChangePassword(user)}
                   >
                     <Key className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => onEditPermissions(user)}
+                  >
+                    <Shield className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 

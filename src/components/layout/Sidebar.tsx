@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -80,12 +81,12 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       return hasPermission(["admin", "kitchen"]);
     }
     
-    if (
-      (link.name === "الأصناف" || 
-       link.name === "المخزون" || 
-       link.name === "التقارير")
-    ) {
-      return hasPermission("admin");
+    if (link.name === "الأصناف" || link.name === "المخزون") {
+      return hasPermission(["admin", "supervisor"]);
+    }
+    
+    if (link.name === "التقارير") {
+      return hasPermission(["admin", "supervisor", "cashier"]);
     }
     
     if (link.path === "/settings") {

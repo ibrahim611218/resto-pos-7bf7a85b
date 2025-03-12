@@ -58,12 +58,22 @@ export const useInvoiceCreation = (
     };
     
     toast({
-      title: isArabic ? "تم إنشاء الفاتورة" : "Invoice created",
-      description: isArabic 
-        ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`
-        : `Invoice #${invoiceId} has been created successfully`,
+      title: "تم إنشاء الفاتورة",
+      description: `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`,
       variant: "default",
     });
+
+    // Store invoice in localStorage for demonstration
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      let invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
+      invoices = [invoice, ...invoices]; // Add new invoice at the beginning
+      
+      // Save back to localStorage
+      localStorage.setItem('invoices', JSON.stringify(invoices));
+    } catch (error) {
+      console.error("Failed to save invoice to localStorage:", error);
+    }
     
     return invoice;
   }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber]);

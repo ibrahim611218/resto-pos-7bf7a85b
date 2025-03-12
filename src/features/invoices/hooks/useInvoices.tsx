@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Invoice } from "@/types";
 import { mockInvoices } from "../data/mockInvoices";
@@ -7,7 +8,10 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const useInvoices = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>(mockInvoices);
+  const [invoices, setInvoices] = useState<Invoice[]>(
+    // Sort invoices by date (newest first)
+    [...mockInvoices].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  );
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { user, hasPermission } = useAuth();
@@ -17,7 +21,7 @@ export const useInvoices = () => {
   const filteredInvoices = searchTerm
     ? invoices.filter((invoice) => 
         invoice.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.customer?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (invoice.customer?.name && invoice.customer.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         invoice.cashierName.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : invoices;
@@ -56,12 +60,12 @@ export const useInvoices = () => {
 
   const printInvoice = (invoice: Invoice) => {
     console.log("Printing invoice:", invoice);
-    toast.success(isArabic ? `طباعة الفاتورة رقم ${invoice.number}` : `Printing invoice #${invoice.number}`);
+    toast.success(`طباعة الفاتورة رقم ${invoice.number}`);
   };
 
   const cancelInvoice = (invoiceId: string) => {
-    if (!hasPermission("admin")) {
-      toast.error(isArabic ? "ليس لديك صلاحية لإلغاء الفواتير" : "You don't have permission to cancel invoices");
+    if (!hasPermission(["admin", "supervisor"])) {
+      toast.error("ليس لديك صلاحية لإلغاء الفواتير");
       return false;
     }
 
@@ -77,13 +81,13 @@ export const useInvoices = () => {
       setSelectedInvoice(prev => prev ? { ...prev, status: "cancelled" } : null);
     }
 
-    toast.success(isArabic ? "تم إلغاء الفاتورة بنجاح" : "Invoice cancelled successfully");
+    toast.success("تم إلغاء الفاتورة بنجاح");
     return true;
   };
 
   const refundInvoice = (invoiceId: string) => {
-    if (!hasPermission("admin")) {
-      toast.error(isArabic ? "ليس لديك صلاحية لإرجاع الفواتير" : "You don't have permission to refund invoices");
+    if (!hasPermission(["admin", "supervisor"])) {
+      toast.error("ليس لديك صلاحية لإرجاع الفواتير");
       return false;
     }
 
@@ -99,8 +103,13 @@ export const useInvoices = () => {
       setSelectedInvoice(prev => prev ? { ...prev, status: "refunded" } : null);
     }
 
-    toast.success(isArabic ? "تم إرجاع الفاتورة بنجاح" : "Invoice refunded successfully");
+    toast.success("تم إرجاع الفاتورة بنجاح");
     return true;
+  };
+
+  const addNewInvoice = (invoice: Invoice) => {
+    // Add new invoice at the beginning of the array (newest first)
+    setInvoices(prev => [invoice, ...prev]);
   };
 
   return {
@@ -115,6 +124,7 @@ export const useInvoices = () => {
     getStatusBadgeColor,
     printInvoice,
     cancelInvoice,
-    refundInvoice
+    refundInvoice,
+    addNewInvoice
   };
 };
