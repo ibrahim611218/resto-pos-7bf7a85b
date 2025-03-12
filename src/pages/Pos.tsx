@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { useProductFiltering } from "@/features/pos/hooks/useProductFiltering";
@@ -54,18 +54,26 @@ const PosPage: React.FC = () => {
     searchedProducts,
   } = useProductFiltering(products);
   
-  const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
+  // Memoize getSizeLabel function to prevent unnecessary recreation
+  const getSizeLabelFn = useMemo(() => (size: string) => getSizeLabel(size, language), [language]);
   
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
-    setCurrentInvoice(invoice);
-    setShowInvoiceModal(true);
-    return invoice;
-  };
+  // Memoize handlers to prevent unnecessary recreations on each render
+  const handleCreateInvoice = useMemo(() => 
+    (customerName?: string, customerTaxNumber?: string) => {
+      const invoice = createInvoice(customerName, customerTaxNumber);
+      setCurrentInvoice(invoice);
+      setShowInvoiceModal(true);
+      return invoice;
+    }, 
+    [createInvoice, setCurrentInvoice, setShowInvoiceModal]
+  );
   
-  const handlePrintInvoice = (invoice: any) => {
-    window.print();
-  };
+  const handlePrintInvoice = useMemo(() => 
+    (invoice: any) => {
+      window.print();
+    }, 
+    []
+  );
   
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">

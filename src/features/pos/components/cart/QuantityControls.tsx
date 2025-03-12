@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/context/ThemeContext";
@@ -41,4 +41,5 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   );
 };
 
-export default QuantityControls;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(QuantityControls);

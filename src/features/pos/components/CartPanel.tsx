@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
 import { Trash2, ShoppingCart, Receipt, ChevronDown, ChevronUp } from "lucide-react";
@@ -68,19 +68,17 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
-  const handleCreateInvoice = () => {
+  const handleCreateInvoice = useCallback(() => {
     setShowPaymentMethodDialog(true);
-  };
+  }, []);
 
-  const handlePaymentMethodSelected = (customerName?: string, customerTaxNumber?: string) => {
+  const handlePaymentMethodSelected = useCallback((customerName?: string, customerTaxNumber?: string) => {
     const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
-    
     console.log(`Order ${invoice.number} automatically sent to kitchen`);
-    
     setShowPaymentMethodDialog(false);
     return invoice;
-  };
+  }, [createInvoice]);
 
   const isEmpty = cartItems.length === 0;
 
@@ -190,4 +188,5 @@ const CartPanel: React.FC<CartPanelProps> = ({
   );
 };
 
-export default CartPanel;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(CartPanel);

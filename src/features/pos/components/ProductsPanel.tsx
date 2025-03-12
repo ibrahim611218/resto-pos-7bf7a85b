@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { Product, Category } from "@/types";
 import CategoryList from "./CategoryList";
 import ProductCard from "./ProductCard";
@@ -37,23 +37,25 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsDialogOpen(true);
-  };
+  }, []);
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     setIsDialogOpen(false);
     setSelectedProduct(null);
-  };
+  }, []);
 
-  const productsByCategory = filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
-    if (!acc[product.categoryId]) {
-      acc[product.categoryId] = [];
-    }
-    acc[product.categoryId].push(product);
-    return acc;
-  }, {});
+  const productsByCategory = React.useMemo(() => {
+    return filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
+      if (!acc[product.categoryId]) {
+        acc[product.categoryId] = [];
+      }
+      acc[product.categoryId].push(product);
+      return acc;
+    }, {});
+  }, [filteredProducts]);
 
   return (
     <div className="flex-grow h-full flex flex-col overflow-hidden border-r border-border">
@@ -148,4 +150,5 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   );
 };
 
-export default ProductsPanel;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(ProductsPanel);

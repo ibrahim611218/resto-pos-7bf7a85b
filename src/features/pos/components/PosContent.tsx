@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
 import CartPanel from "./CartPanel";
@@ -68,10 +68,11 @@ const PosContent: React.FC<PosContentProps> = ({
   searchedProducts,
   getSizeLabel,
 }) => {
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
+  // Ensure createInvoice doesn't trigger rerendering unless it actually changes
+  const handleCreateInvoice = React.useCallback((customerName?: string, customerTaxNumber?: string) => {
     const invoice = createInvoice(customerName, customerTaxNumber);
     return invoice;
-  };
+  }, [createInvoice]);
 
   return (
     <div className="flex-1 flex w-full h-full overflow-hidden">
@@ -115,4 +116,5 @@ const PosContent: React.FC<PosContentProps> = ({
   );
 };
 
-export default PosContent;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(PosContent);

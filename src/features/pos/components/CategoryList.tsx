@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
@@ -69,4 +69,5 @@ const CategoryList: React.FC<CategoryListProps> = ({
   );
 };
 
-export default CategoryList;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(CategoryList);

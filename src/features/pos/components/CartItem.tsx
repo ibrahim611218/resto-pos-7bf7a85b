@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { CartItem as CartItemType } from "@/types";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import ItemDetails from "./cart/ItemDetails";
@@ -52,4 +52,5 @@ const CartItemComponent: React.FC<CartItemProps> = ({
   );
 };
 
-export default CartItemComponent;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(CartItemComponent);

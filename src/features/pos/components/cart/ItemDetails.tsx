@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { useTheme } from "@/context/ThemeContext";
 
 interface ItemDetailsProps {
@@ -43,4 +43,5 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   );
 };
 
-export default ItemDetails;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(ItemDetails);

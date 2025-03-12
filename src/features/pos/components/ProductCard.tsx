@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
@@ -110,4 +110,5 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   );
 };
 
-export default ProductCard;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(ProductCard);

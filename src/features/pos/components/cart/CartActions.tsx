@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { CreditCard, Trash2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -51,4 +51,5 @@ const CartActions: React.FC<CartActionsProps> = ({
   );
 };
 
-export default CartActions;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(CartActions);

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { formatCurrency } from "@/utils/invoice";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -69,4 +69,5 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   );
 };
 
-export default CartSummary;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(CartSummary);
