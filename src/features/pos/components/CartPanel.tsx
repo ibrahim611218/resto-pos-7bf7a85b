@@ -85,9 +85,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className={`w-full md:w-2/5 lg:w-1/3 flex flex-col h-full ${isLightTheme ? 'bg-white shadow-lg' : 'bg-card shadow-md'} border-r text-center`}>
-      <div className={`p-5 flex-shrink-0 flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/30'} border-b`}>
-        <h2 className="text-2xl font-bold flex items-center justify-center mx-auto">
+    <div className="pos-cart-panel">
+      <div className={`p-3 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/50'}`}>
+        <h2 className="text-xl font-bold flex items-center justify-center mx-auto">
           <ShoppingCart className={`${isArabic ? 'ml-3' : 'mr-3'} h-6 w-6 text-primary`} />
           {isArabic ? "السلة" : "Cart"}
           {!isEmpty && (
@@ -108,11 +108,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto no-scrollbar px-4 pb-2 max-h-[calc(100vh-300px)] text-center">
+      <div className="pos-cart-items">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-4 pt-4">
+          <div className="space-y-3 pt-2">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -128,10 +128,10 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className={`p-5 border-t ${isLightTheme ? 'bg-white' : 'bg-card'} flex-shrink-0 text-center`}>
+      <div className="pos-cart-footer">
         <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
           <div className="flex items-center justify-center mb-3">
-            <div className="flex items-center gap-2 text-primary font-medium text-lg">
+            <div className="flex items-center gap-2 text-primary font-bold text-lg">
               <Receipt className="h-5 w-5" />
               {isArabic ? "ملخص الطلب" : "Order Summary"}
             </div>
@@ -146,7 +146,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
           </div>
           
           <CollapsibleContent>
-            <Separator className="mb-5" />
+            <Separator className="mb-3" />
             
             <OrderTypeSelector
               orderType={orderType}

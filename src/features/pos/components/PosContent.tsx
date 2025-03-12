@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
@@ -73,7 +74,7 @@ const PosContent: React.FC<PosContentProps> = ({
   };
 
   return (
-    <div className="flex flex-1 h-full overflow-hidden">
+    <div className="pos-content">
       <ProductsPanel 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

@@ -43,13 +43,17 @@
   max-height: 100vh;
   overflow: hidden;
   text-align: center;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .pos-content {
   width: 100%;
-  height: calc(100vh - 64px);
+  height: 100%;
   overflow: hidden;
   text-align: center;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 }
 
 /* Touch device optimizations for POS */

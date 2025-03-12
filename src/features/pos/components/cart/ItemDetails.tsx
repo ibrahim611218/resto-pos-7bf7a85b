@@ -27,15 +27,16 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
 
   return (
     <div className="flex-1 text-center">
-      <p className="font-medium text-base mb-1">
+      <p className="font-bold text-base mb-1">
         {isArabic ? nameAr || name : name}
       </p>
-      <div className="flex items-center justify-center">
-        <span className={`text-sm mr-2 ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full`}>
+      <div className="flex items-center justify-center space-x-2">
+        <span className={`text-sm ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full font-medium`}>
           {sizeLabel}
         </span>
-        <p className="text-sm text-muted-foreground">
-          {price.toFixed(2)} {isArabic ? "ر.س" : "SAR"} x {quantity} = <span className="font-semibold text-foreground">{totalPrice.toFixed(2)}</span>
+        <p className="text-sm">
+          <span className="text-muted-foreground">{price.toFixed(2)} {isArabic ? "ر.س" : "SAR"} x {quantity} = </span>
+          <span className="font-bold text-foreground">{totalPrice.toFixed(2)}</span>
         </p>
       </div>
     </div>
