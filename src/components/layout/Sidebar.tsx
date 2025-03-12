@@ -1,19 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { getSidebarLinks } from "./sidebar/sidebarLinks";
-import SidebarItem from "./sidebar/SidebarItem";
 import { SidebarProps } from "./sidebar/types";
-import ThemeToggle from "../ui-custom/ThemeToggle";
-import LanguageToggle from "../ui-custom/LanguageToggle";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import SidebarHeader from "./sidebar/SidebarHeader";
+import SidebarUserProfile from "./sidebar/SidebarUserProfile";
+import SidebarNavigation from "./sidebar/SidebarNavigation";
+import SidebarFooter from "./sidebar/SidebarFooter";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
@@ -120,92 +118,20 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           "transition-all duration-300 ease-in-out"
         )}
       >
-        <div className="flex items-center justify-between p-4 h-16 border-b">
-          {!collapsed && (
-            <AnimatedTransition animation="fade">
-              <h2 className="text-xl font-bold">نظام المطاعم</h2>
-            </AnimatedTransition>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "transition-all duration-200",
-              collapsed ? "mr-auto" : "mr-auto"
-            )}
-            onClick={onToggle}
-          >
-            {collapsed ? 
-              <ChevronLeft className="animate-pulse-subtle" size={18} /> : 
-              <ChevronRight className="animate-pulse-subtle" size={18} />
-            }
-          </Button>
-        </div>
-
-        {user && (
-          <div className={cn(
-            "flex items-center px-4 py-3 border-b transition-all duration-300 ease-in-out",
-            collapsed ? "justify-center" : "justify-start gap-3"
-          )}>
-            <Avatar className="transition-all duration-300 ease-in-out">
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                {user.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            
-            {!collapsed && (
-              <AnimatedTransition animation="fade">
-                <div className="flex flex-col">
-                  <span className="font-medium">{user.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {user.role === "admin" ? "مدير" : 
-                     user.role === "cashier" ? "محاسب" : 
-                     user.role === "kitchen" ? "مطبخ" : "مستخدم"}
-                  </span>
-                </div>
-              </AnimatedTransition>
-            )}
-          </div>
-        )}
-
-        <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto">
-          {mainLinks.map((link) => (
-            <SidebarItem
-              key={link.name}
-              link={link}
-              collapsed={collapsed}
-              isOpen={openCategories[link.path.replace("/", "")] || false}
-              currentPath={location.pathname}
-              onToggleCategory={toggleCategory}
-            />
-          ))}
-        </nav>
-        
-        <div className="border-t p-3 space-y-2">
-          <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
-          <LanguageToggle 
-            collapsed={collapsed} 
-            className="w-full justify-start" 
-            language={language}
-            onToggle={toggleLanguage}
-          />
-          
-          <Button 
-            variant="outline"
-            className={cn(
-              "w-full transition-all duration-300 ease-in-out",
-              collapsed ? "justify-center" : "justify-start"
-            )}
-            onClick={handleLogout}
-          >
-            <LogOut size={18} />
-            {!collapsed && (
-              <AnimatedTransition animation="fade">
-                <span className="mr-2">تسجيل الخروج</span>
-              </AnimatedTransition>
-            )}
-          </Button>
-        </div>
+        <SidebarHeader collapsed={collapsed} onToggle={onToggle} />
+        <SidebarUserProfile user={user} collapsed={collapsed} />
+        <SidebarNavigation 
+          links={mainLinks} 
+          collapsed={collapsed} 
+          openCategories={openCategories}
+          onToggleCategory={toggleCategory}
+        />
+        <SidebarFooter 
+          collapsed={collapsed} 
+          language={language} 
+          onToggleLanguage={toggleLanguage} 
+          onLogout={handleLogout}
+        />
       </aside>
     </AnimatedTransition>
   );
