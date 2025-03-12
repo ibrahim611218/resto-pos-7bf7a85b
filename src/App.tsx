@@ -10,6 +10,7 @@ import MainLayout from "./components/layout/MainLayout";
 import Categories from "./pages/Categories";
 import Products from "./pages/Products";
 import ProductForm from "./components/ProductForm";
+import CategoryForm from "./components/CategoryForm";
 import Pos from "./pages/Pos";
 import Invoices from "./pages/Invoices";
 import RetrieveInvoice from "./pages/RetrieveInvoice";
@@ -63,6 +64,8 @@ function App() {
                 <Route path="/products/add" element={<ProductForm />} />
                 <Route path="/products/edit/:id" element={<ProductForm />} />
                 <Route path="/categories" element={<Categories />} />
+                <Route path="/categories/add" element={<CategoryForm />} />
+                <Route path="/categories/edit/:id" element={<CategoryForm />} />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/settings" element={<BusinessSettings />} />
                 <Route path="/reports/sales" element={<SalesReport />} />
