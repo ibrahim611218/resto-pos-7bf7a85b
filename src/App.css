@@ -82,23 +82,29 @@
   font-size: 1.1rem;
 }
 
-/* Container size options */
+/* Container size options with improved proportions */
 .container-standard {
   max-width: 1280px;
   margin: 0 auto;
   padding: 1rem;
+  box-sizing: border-box;
+  height: auto;
 }
 
 .container-compact {
   max-width: 1024px;
   margin: 0 auto;
   padding: 0.5rem;
+  box-sizing: border-box;
+  height: auto;
 }
 
 .container-large {
   max-width: 1536px;
   margin: 0 auto;
   padding: 1.5rem;
+  box-sizing: border-box;
+  height: auto;
 }
 
 /* Touch-friendly UI adjustments */
@@ -142,11 +148,12 @@
   margin-bottom: 0.75rem;
 }
 
-/* Responsive container classes */
+/* Responsive container classes with improved aspect ratio handling */
 @media (max-width: 640px) {
   .container-standard, .container-compact, .container-large {
     padding: 0.5rem;
     width: 100%;
+    max-width: 100%;
   }
   
   .touch-ui button, 
@@ -162,5 +169,56 @@
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Improved display proportions */
+.proportional-container {
+  aspect-ratio: 16/9;
+  max-height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Maintain aspect ratio for media elements */
+.maintain-ratio {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+}
+
+.maintain-ratio-16-9 {
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.maintain-ratio-4-3 {
+  padding-bottom: 75%; /* 4:3 aspect ratio */
+}
+
+.maintain-ratio-1-1 {
+  padding-bottom: 100%; /* 1:1 aspect ratio (square) */
+}
+
+.maintain-ratio > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ensure proper alignment in flex containers */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+
+.flex-item {
+  flex: 1 1 auto;
+  min-width: 0; /* Prevents flex items from overflowing */
 }
 

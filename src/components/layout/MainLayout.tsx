@@ -20,6 +20,10 @@ const MainLayout = () => {
         document.body.classList.remove('screen-size-standard', 'screen-size-compact', 'screen-size-large');
         document.body.classList.add(`screen-size-${screenSize}`);
         
+        // Apply container class
+        document.body.classList.remove('container-standard', 'container-compact', 'container-large');
+        document.body.classList.add(`container-${screenSize}`);
+        
         // Apply input method
         if (autoDetectInputMethod) {
           const isTouchDevice = 'ontouchstart' in window || 

@@ -12,7 +12,7 @@ const BusinessSettings = () => {
   const isArabic = language === "ar";
   
   return (
-    <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="container content-container p-4" dir={isArabic ? "rtl" : "ltr"}>
       <Tabs defaultValue="business" className="w-full">
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
           <TabsTrigger value="business">
@@ -26,23 +26,29 @@ const BusinessSettings = () => {
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="business">
-          <BusinessSettingsForm language={language} />
+        <TabsContent value="business" className="w-full flex justify-center">
+          <div className="w-full max-w-4xl">
+            <BusinessSettingsForm language={language} />
+          </div>
         </TabsContent>
         
-        <TabsContent value="display">
-          <DisplaySettingsComponent />
+        <TabsContent value="display" className="w-full flex justify-center">
+          <div className="w-full">
+            <DisplaySettingsComponent />
+          </div>
         </TabsContent>
         
-        <TabsContent value="data">
-          <Card>
-            <CardHeader>
-              <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DataManagement />
-            </CardContent>
-          </Card>
+        <TabsContent value="data" className="w-full flex justify-center">
+          <div className="w-full max-w-4xl">
+            <Card>
+              <CardHeader>
+                <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DataManagement />
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
