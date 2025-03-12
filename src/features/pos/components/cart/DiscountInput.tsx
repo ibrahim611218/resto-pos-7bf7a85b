@@ -12,6 +12,7 @@ interface DiscountInputProps {
   discountType: "percentage" | "fixed";
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
+  isMobile?: boolean;
 }
 
 const DiscountInput: React.FC<DiscountInputProps> = ({
@@ -19,21 +20,24 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   discountType,
   setDiscount,
   setDiscountType,
+  isMobile = false
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="mb-3">
+    <div className={`mb-${isMobile ? '2' : '3'}`}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
         <div className="flex items-center justify-between">
-          <Label className="text-base font-medium">{isArabic ? "الخصم" : "Discount"}</Label>
+          <Label className={`${isMobile ? 'text-sm' : 'text-base'} font-medium`}>
+            {isArabic ? "الخصم" : "Discount"}
+          </Label>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <Button variant="ghost" size={isMobile ? "xs" : "sm"} className={`h-${isMobile ? '6' : '7'} w-${isMobile ? '6' : '7'} p-0`}>
               {isOpen ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
+                <ChevronUp className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} /> : 
+                <ChevronDown className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
               }
             </Button>
           </CollapsibleTrigger>
@@ -48,10 +52,10 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
                   min="0"
                   value={discount}
                   onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                  className="w-full pr-8 text-base p-3"
+                  className={`w-full pr-8 ${isMobile ? 'text-sm p-2' : 'text-base p-3'}`}
                   placeholder={isArabic ? "قيمة الخصم" : "Discount value"}
                 />
-                <div className="absolute inset-y-0 right-3 flex items-center text-base">
+                <div className={`absolute inset-y-0 right-3 flex items-center ${isMobile ? 'text-sm' : 'text-base'}`}>
                   {discountType === "percentage" ? "%" : "ر.س"}
                 </div>
               </div>
@@ -59,9 +63,10 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
             <Button
               variant="outline"
               className="px-3"
+              size={isMobile ? "xs" : "default"}
               onClick={() => setDiscountType(discountType === "percentage" ? "fixed" : "percentage")}
             >
-              {discountType === "percentage" ? <Percent size={18} /> : <DollarSign size={18} />}
+              {discountType === "percentage" ? <Percent size={isMobile ? 16 : 18} /> : <DollarSign size={isMobile ? 16 : 18} />}
             </Button>
           </div>
         </CollapsibleContent>

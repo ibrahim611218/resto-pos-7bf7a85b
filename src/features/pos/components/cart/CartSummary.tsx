@@ -9,6 +9,7 @@ interface CartSummaryProps {
   discount: number;
   discountType: "percentage" | "fixed";
   total: number;
+  isMobile?: boolean;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -17,6 +18,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discount,
   discountType,
   total,
+  isMobile = false
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -26,8 +28,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
+  const textSizeClass = isMobile ? 'text-sm' : 'text-base';
+  const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
+  const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
+
   return (
-    <div className="space-y-3 text-base">
+    <div className={`${spacingClass} ${textSizeClass}`}>
       <div className="flex justify-between">
         <span className="text-muted-foreground">
           {isArabic ? "المجموع الفرعي" : "Subtotal"}
@@ -57,7 +63,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         </div>
       )}
       
-      <div className="flex justify-between font-bold text-lg pt-1">
+      <div className={`flex justify-between font-bold ${totalSizeClass} pt-1`}>
         <span>
           {isArabic ? "الإجمالي" : "Total"}
         </span>
