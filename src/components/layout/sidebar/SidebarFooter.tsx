@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import ThemeToggle from "../../ui-custom/ThemeToggle";
 import LanguageToggle from "../../ui-custom/LanguageToggle";
+import { Language } from "@/types";
 
 interface SidebarFooterProps {
   collapsed: boolean;
-  language: string;
+  language: Language;
   onToggleLanguage: () => void;
   onLogout: () => void;
 }

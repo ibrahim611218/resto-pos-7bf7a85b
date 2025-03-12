@@ -1,0 +1,78 @@
+
+import { useCallback, useState } from "react";
+import { Invoice, PaymentMethod, Customer } from "@/types";
+import { toast } from "@/hooks/use-toast";
+import { generateInvoiceNumber } from "@/utils/invoice";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
+
+export const useInvoiceCreation = (
+  cartItems: any[],
+  subtotal: number,
+  taxAmount: number,
+  total: number,
+  discount: number,
+  discountType: "percentage" | "fixed",
+  orderType: "takeaway" | "dineIn",
+  tableNumber: string,
+  paymentMethod: PaymentMethod,
+  clearCart: () => void
+) => {
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
+  const { settings } = useBusinessSettings();
+  const { user } = useAuth();
+  
+  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+
+  const createInvoice = useCallback((customerName?: string, customerTaxNumber?: string): Invoice => {
+    const invoiceId = generateInvoiceNumber();
+    
+    let customer: Customer | undefined;
+    if (customerName) {
+      customer = {
+        name: customerName,
+        taxNumber: customerTaxNumber
+      };
+    }
+    
+    const invoice: Invoice = {
+      id: Math.random().toString(36).substring(2, 9),
+      number: invoiceId,
+      date: new Date(),
+      items: [...cartItems],
+      subtotal: subtotal,
+      taxAmount: taxAmount,
+      total: total,
+      discount: discount,
+      discountType: discountType,
+      paymentMethod: paymentMethod === "cash" ? "نقدي" : "شبكة",
+      cashierId: user?.id || "unknown",
+      cashierName: user?.name || "كاشير",
+      status: "completed",
+      orderType: orderType,
+      tableNumber: orderType === "dineIn" ? tableNumber : undefined,
+      customer: customer
+    };
+    
+    toast({
+      title: isArabic ? "تم إنشاء الفاتورة" : "Invoice created",
+      description: isArabic 
+        ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح`
+        : `Invoice #${invoiceId} has been created successfully`,
+      variant: "default",
+    });
+    
+    return invoice;
+  }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber]);
+
+  return {
+    createInvoice,
+    currentInvoice,
+    setCurrentInvoice,
+    showInvoiceModal,
+    setShowInvoiceModal
+  };
+};

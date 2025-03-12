@@ -15,29 +15,34 @@ const Pos: React.FC = () => {
   const isArabic = language === "ar";
   
   const {
+    // Cart items
     cartItems,
-    subtotal,
-    taxAmount,
-    total,
-    discount,
-    discountType,
-    orderType,
-    tableNumber,
-    paymentMethod,
     addToCart,
     updateQuantity,
     removeItem,
     clearCart,
-    createInvoice,
-    setDiscount,
-    setDiscountType,
+    
+    // Order configuration
+    orderType,
+    tableNumber,
+    discount,
+    discountType,
+    paymentMethod,
     setOrderType,
     setTableNumber,
+    setDiscount,
+    setDiscountType,
     setPaymentMethod,
+    
+    // Invoice
+    subtotal,
+    taxAmount,
+    total,
+    createInvoice,
     currentInvoice,
     setCurrentInvoice,
     showInvoiceModal,
-    setShowInvoiceModal,
+    setShowInvoiceModal
   } = useCart();
   
   const {
