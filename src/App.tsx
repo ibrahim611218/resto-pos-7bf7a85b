@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
@@ -27,71 +27,65 @@ import UserManagement from "./pages/UserManagement";
 
 const queryClient = new QueryClient();
 
-const AppRoutes = () => {
-  const { language } = useLanguage();
-  
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<Login language={language} />} />
-        <Route path="/unauthorized" element={<Unauthorized language={language} />} />
-        
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Index language={language} />} />
-            
-            {/* Routes accessible to cashiers and admins */}
-            <Route element={<ProtectedRoute allowedRoles={["admin", "cashier"]} />}>
-              <Route path="/pos" element={<Pos />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/customers" element={<Customers />} />
-            </Route>
-            
-            {/* Routes accessible to kitchen staff and admins */}
-            <Route element={<ProtectedRoute allowedRoles={["admin", "kitchen"]} />}>
-              <Route path="/kitchen" element={<Kitchen />} />
-            </Route>
-            
-            {/* Routes accessible only to admins */}
-            <Route element={<ProtectedRoute allowedRoles="admin" />}>
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/add" element={<ProductForm />} />
-              <Route path="/products/edit/:id" element={<ProductForm />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="/settings" element={<BusinessSettings />} />
-              <Route path="/reports/sales" element={<SalesReport />} />
-              <Route path="/users" element={<UserManagement />} />
-              {/* Placeholder routes */}
-              <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
-              <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
-            </Route>
-          </Route>
-        </Route>
-        
-        {/* Catch-all route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/login" element={<Login language="ar" />} />
+                  <Route path="/unauthorized" element={<Unauthorized language="ar" />} />
+                  
+                  {/* Protected routes */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route element={<MainLayout />}>
+                      <Route path="/" element={<Index language="ar" />} />
+                      
+                      {/* Routes accessible to cashiers and admins */}
+                      <Route element={<ProtectedRoute allowedRoles={["admin", "cashier"]} />}>
+                        <Route path="/pos" element={<Pos />} />
+                        <Route path="/invoices" element={<Invoices />} />
+                        <Route path="/customers" element={<Customers />} />
+                      </Route>
+                      
+                      {/* Routes accessible to kitchen staff and admins */}
+                      <Route element={<ProtectedRoute allowedRoles={["admin", "kitchen"]} />}>
+                        <Route path="/kitchen" element={<Kitchen />} />
+                      </Route>
+                      
+                      {/* Routes accessible only to admins */}
+                      <Route element={<ProtectedRoute allowedRoles="admin" />}>
+                        <Route path="/products" element={<Products />} />
+                        <Route path="/products/add" element={<ProductForm />} />
+                        <Route path="/products/edit/:id" element={<ProductForm />} />
+                        <Route path="/categories" element={<Categories />} />
+                        <Route path="/inventory" element={<Inventory />} />
+                        <Route path="/settings" element={<BusinessSettings />} />
+                        <Route path="/reports/sales" element={<SalesReport />} />
+                        <Route path="/users" element={<UserManagement />} />
+                        {/* Placeholder routes */}
+                        <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
+                        <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
+                      </Route>
+                    </Route>
+                  </Route>
+                  
+                  {/* Catch-all route */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+}
 
 export default App;
