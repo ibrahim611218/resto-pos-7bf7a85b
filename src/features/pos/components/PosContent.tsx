@@ -36,6 +36,8 @@ interface PosContentProps {
   filteredProducts: Product[];
   searchedProducts: Product[];
   getSizeLabel: (size: string) => string;
+  showAllProducts?: boolean;
+  setShowAllProducts?: (show: boolean) => void;
 }
 
 const PosContent: React.FC<PosContentProps> = ({
@@ -68,6 +70,8 @@ const PosContent: React.FC<PosContentProps> = ({
   filteredProducts,
   searchedProducts,
   getSizeLabel,
+  showAllProducts = false,
+  setShowAllProducts = () => {},
 }) => {
   const { width, height, isMobile, isTablet } = useScreenSize();
   
@@ -112,6 +116,8 @@ const PosContent: React.FC<PosContentProps> = ({
               onAddToCart={addToCart}
               isArabic={isArabic}
               getSizeLabel={getSizeLabel}
+              showAllProducts={showAllProducts}
+              setShowAllProducts={setShowAllProducts}
             />
           </div>
           
@@ -144,7 +150,7 @@ const PosContent: React.FC<PosContentProps> = ({
       ) : (
         // For tablets and desktop: Order based on language
         <>
-          <div className={`flex-1 ${productsWidthClass} h-full ${productsOrder}`}>
+          <div className={`flex-1 h-full ${productsOrder}`}>
             <ProductsPanel 
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
@@ -156,10 +162,12 @@ const PosContent: React.FC<PosContentProps> = ({
               onAddToCart={addToCart}
               isArabic={isArabic}
               getSizeLabel={getSizeLabel}
+              showAllProducts={showAllProducts}
+              setShowAllProducts={setShowAllProducts}
             />
           </div>
           
-          <div className={`${cartWidthClass} h-full ${cartOrder}`}>
+          <div className={`h-full ${cartOrder}`}>
             <CartPanel 
               cartItems={cartItems}
               isArabic={isArabic}

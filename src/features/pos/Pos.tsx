@@ -53,6 +53,8 @@ const Pos: React.FC = () => {
     setSearchTerm,
     activeCategory,
     setActiveCategory,
+    showAllProducts,
+    setShowAllProducts,
     filteredProducts,
     searchedProducts,
   } = useProductFiltering(products);
@@ -111,6 +113,8 @@ const Pos: React.FC = () => {
           filteredProducts={filteredProducts}
           searchedProducts={searchedProducts}
           getSizeLabel={getSizeLabelFn}
+          showAllProducts={showAllProducts}
+          setShowAllProducts={setShowAllProducts}
         />
       </div>
 

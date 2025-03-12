@@ -23,6 +23,7 @@ interface CartFooterProps {
   setDiscountType: (type: "percentage" | "fixed") => void;
   handleCreateInvoice: () => void;
   clearCart: () => void;
+  isArabic: boolean;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -41,6 +42,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
   setDiscountType,
   handleCreateInvoice,
   clearCart,
+  isArabic,
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
@@ -54,6 +56,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         isMobile={isMobile}
+        isArabic={isArabic}
       />
       
       <DiscountInput
@@ -62,6 +65,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         setDiscount={setDiscount}
         setDiscountType={setDiscountType}
         isMobile={isMobile}
+        isArabic={isArabic}
       />
       
       <CartSummary
@@ -71,6 +75,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         discountType={discountType}
         total={total}
         isMobile={isMobile}
+        isArabic={isArabic}
       />
       
       <CartActions
@@ -78,6 +83,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
         isMobile={isMobile}
+        isArabic={isArabic}
       />
     </div>
   );

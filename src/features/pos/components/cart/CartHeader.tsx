@@ -9,6 +9,7 @@ interface CartHeaderProps {
   isEmpty: boolean;
   toggleExpand: () => void;
   clearCart: () => void;
+  isArabic: boolean;
 }
 
 const CartHeader: React.FC<CartHeaderProps> = ({
@@ -17,13 +18,14 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   isEmpty,
   toggleExpand,
   clearCart,
+  isArabic,
 }) => {
   const headerClass = isMobile ? "p-1 text-sm" : "p-2";
 
   return (
     <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
       <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
-        السلة
+        {isArabic ? "السلة" : "Cart"}
       </h2>
       <div className="flex items-center gap-1">
         {isMobile && (
@@ -33,9 +35,9 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             className="h-8 w-8 p-0"
             onClick={toggleExpand}
           >
-            {expanded ? 
-              <ChevronRight className="h-4 w-4" /> : 
-              <ChevronLeft className="h-4 w-4" />
+            {isArabic ? 
+              (expanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />) : 
+              (expanded ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />)
             }
           </Button>
         )}
@@ -45,10 +47,10 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           className="h-auto py-1" 
           onClick={clearCart}
           disabled={isEmpty}
-          title="مسح السلة"
+          title={isArabic ? "مسح السلة" : "Clear cart"}
         >
           <Trash2 className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
-          {!isMobile && <span className="mr-1">مسح</span>}
+          {!isMobile && <span className={isArabic ? "mr-1" : "ml-1"}>{isArabic ? "مسح" : "Clear"}</span>}
         </Button>
       </div>
     </div>

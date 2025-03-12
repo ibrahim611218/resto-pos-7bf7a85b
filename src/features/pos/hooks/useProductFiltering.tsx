@@ -5,13 +5,15 @@ import { Product } from "@/types";
 export const useProductFiltering = (products: Product[]) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [showAllProducts, setShowAllProducts] = useState(false);
 
   // Filter products by active category
   const filteredProducts = useMemo(() => {
+    if (showAllProducts) return products;
     return activeCategory
       ? products.filter((product) => product.categoryId === activeCategory)
       : products;
-  }, [products, activeCategory]);
+  }, [products, activeCategory, showAllProducts]);
 
   // Filter products by search term
   const searchedProducts = useMemo(() => {
@@ -29,6 +31,8 @@ export const useProductFiltering = (products: Product[]) => {
     setSearchTerm,
     activeCategory,
     setActiveCategory,
+    showAllProducts,
+    setShowAllProducts,
     filteredProducts,
     searchedProducts,
   };
