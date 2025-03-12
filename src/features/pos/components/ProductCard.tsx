@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
+import { useTheme } from "@/context/ThemeContext";
 
 interface ProductCardProps {
   product: Product;
@@ -13,29 +14,50 @@ interface ProductCardProps {
 }
 
 // Function to get background color based on product category
-const getBackgroundColor = (categoryId: string): string => {
-  switch (categoryId) {
-    case "cat1": // Main dishes
-      return "bg-[#F2FCE2] hover:bg-[#E5F5D5]";
-    case "cat2": // Sides
-      return "bg-[#FEF7CD] hover:bg-[#FDF0A6]";
-    case "cat3": // Drinks
-      return "bg-[#D3E4FD] hover:bg-[#C0D6F7]";
-    case "cat4": // Desserts
-      return "bg-[#FFDEE2] hover:bg-[#FFC7CD]";
-    case "cat5": // Combos
-      return "bg-[#E5DEFF] hover:bg-[#D5CEFF]";
-    default:
-      return "bg-[#FDE1D3] hover:bg-[#FACEB8]";
+const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string => {
+  if (isLightTheme) {
+    switch (categoryId) {
+      case "cat1": // Main dishes
+        return "bg-[#F2FCE2] hover:bg-[#E5F5D5] border-green-200";
+      case "cat2": // Sides
+        return "bg-[#FEF7CD] hover:bg-[#FDF0A6] border-yellow-200";
+      case "cat3": // Drinks
+        return "bg-[#D3E4FD] hover:bg-[#C0D6F7] border-blue-200";
+      case "cat4": // Desserts
+        return "bg-[#FFDEE2] hover:bg-[#FFC7CD] border-pink-200";
+      case "cat5": // Combos
+        return "bg-[#E5DEFF] hover:bg-[#D5CEFF] border-purple-200";
+      default:
+        return "bg-[#FDE1D3] hover:bg-[#FACEB8] border-orange-200";
+    }
+  } else {
+    // Dark theme colors
+    switch (categoryId) {
+      case "cat1": // Main dishes
+        return "bg-green-900/40 hover:bg-green-900/60 border-green-800";
+      case "cat2": // Sides
+        return "bg-yellow-900/40 hover:bg-yellow-900/60 border-yellow-800";
+      case "cat3": // Drinks
+        return "bg-blue-900/40 hover:bg-blue-900/60 border-blue-800";
+      case "cat4": // Desserts
+        return "bg-pink-900/40 hover:bg-pink-900/60 border-pink-800";
+      case "cat5": // Combos
+        return "bg-purple-900/40 hover:bg-purple-900/60 border-purple-800";
+      default:
+        return "bg-orange-900/40 hover:bg-orange-900/60 border-orange-800";
+    }
   }
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, onAddToCart, getSizeLabel }) => {
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
+  
   const displayPrice = product.variants.length > 0 
     ? `${product.variants[0].price.toFixed(2)}+` 
     : "-";
   
-  const bgColorClass = getBackgroundColor(product.categoryId);
+  const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
   const handleClick = () => {
     if (onClick) {
@@ -48,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   return (
     <Card 
       className={cn(
-        "cursor-pointer transition-all duration-200 hover:shadow-md border overflow-hidden h-full",
+        "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full",
         bgColorClass
       )} 
       onClick={handleClick}
@@ -67,10 +89,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         )}
       </div>
       <CardContent className="p-3">
-        <div className="font-medium truncate">
+        <div className={`font-medium truncate ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
           {isArabic && product.nameAr ? product.nameAr : product.name}
         </div>
-        <div className="text-sm text-muted-foreground mt-1">
+        <div className={`text-sm mt-1 ${isLightTheme ? 'text-gray-600 font-semibold' : 'text-gray-300'}`}>
           {displayPrice} {isArabic ? "ر.س" : "SAR"}
         </div>
       </CardContent>

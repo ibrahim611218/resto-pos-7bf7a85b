@@ -9,6 +9,8 @@ export const getInvoiceStyles = (): string => {
       margin: 0; 
       padding: 20px; 
       direction: rtl;
+      color: #333333;
+      background-color: #ffffff;
     }
     .invoice-header { 
       text-align: center; 
@@ -41,55 +43,113 @@ export const getInvoiceStyles = (): string => {
     }
     .invoice-details { 
       margin-bottom: 20px; 
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
     }
     .invoice-table { 
       width: 100%; 
       border-collapse: collapse; 
       margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .invoice-table th, .invoice-table td { 
       border: 1px solid #ddd; 
-      padding: 8px; 
+      padding: 12px; 
       text-align: right; 
     }
     .invoice-table th { 
-      background-color: #f2f2f2; 
+      background-color: #004d40; 
+      color: white;
+      font-weight: bold;
+    }
+    .invoice-table tr:nth-child(even) {
+      background-color: #f2f2f2;
     }
     .invoice-summary { 
       margin-top: 20px; 
       text-align: left;
       width: 50%;
       margin-left: auto;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
     }
     .invoice-summary p {
       display: flex;
       justify-content: space-between;
+      margin: 8px 0;
     }
     .qr-code { 
       text-align: center; 
       margin-top: 20px; 
+      padding: 10px;
+      background-color: white;
+      display: inline-block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
     }
     .invoice-footer { 
       margin-top: 30px; 
       text-align: center; 
       font-size: 12px;
       color: #666;
+      padding-top: 15px;
+      border-top: 1px dashed #ddd;
     }
     .total-row {
       font-weight: bold;
       font-size: 1.2em;
+      background-color: #f0f7f4 !important;
     }
     .customer-info {
       margin-top: 10px;
       border: 1px solid #ddd;
       padding: 10px;
       background-color: #f9f9f9;
+      border-radius: 8px;
     }
     .software-info {
       margin-top: 30px;
       text-align: center;
       font-size: 10px;
       color: #999;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    /* Print-specific styles */
+    @media print {
+      body {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+      }
+      .invoice-details,
+      .invoice-summary {
+        background-color: #f9f9f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .invoice-table th {
+        background-color: #004d40 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .invoice-table tr:nth-child(even) {
+        background-color: #f2f2f2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .total-row {
+        background-color: #f0f7f4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
     }
   `;
 };

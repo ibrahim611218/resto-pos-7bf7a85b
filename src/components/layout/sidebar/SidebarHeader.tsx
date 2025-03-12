@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useTheme } from "@/context/ThemeContext";
 
 interface SidebarHeaderProps {
   collapsed: boolean;
@@ -13,6 +14,8 @@ interface SidebarHeaderProps {
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
   const { settings } = useBusinessSettings();
+  const { theme } = useTheme();
+  const isDark = theme !== "light";
   
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b">
@@ -25,7 +28,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
                 <span className="text-[#00825A]">Resto</span>
                 <span className="text-[#FF6B00]">POS</span>
               </h2>
-              <span className="text-xs text-muted-foreground">نظام المطاعم</span>
+              <span className={`text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>نظام المطاعم</span>
             </div>
           </div>
         </AnimatedTransition>
@@ -42,8 +45,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
         onClick={onToggle}
       >
         {collapsed ? 
-          <ChevronLeft className="animate-pulse-subtle text-white" size={18} /> : 
-          <ChevronRight className="animate-pulse-subtle text-white" size={18} />
+          <ChevronLeft className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-primary'}`} size={18} /> : 
+          <ChevronRight className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-primary'}`} size={18} />
         }
       </Button>
     </div>

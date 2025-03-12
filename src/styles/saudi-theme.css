@@ -31,7 +31,7 @@
 }
 
 .saudi .card {
-  @apply bg-white border-green-100 shadow;
+  @apply bg-white border-green-100 shadow-sm hover:shadow transition-shadow duration-200;
 }
 
 .saudi .button-primary {
@@ -47,7 +47,7 @@
 }
 
 .saudi .search-box {
-  @apply bg-white border border-green-200 focus-within:border-[#004d40] shadow;
+  @apply bg-white border border-green-200 focus-within:border-[#004d40] shadow-sm;
 }
 
 .saudi nav.main-navigation {

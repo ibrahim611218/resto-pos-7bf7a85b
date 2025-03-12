@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 interface CategoryListProps {
   categories: { id: string; name: string; nameAr?: string }[];
@@ -18,6 +19,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
   isArabic,
   setActiveCategory,
 }) => {
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
+
   const handleCategoryClick = (categoryId: string) => {
     if (setActiveCategory) {
       setActiveCategory(categoryId === "all" ? null : categoryId);
@@ -29,11 +33,16 @@ const CategoryList: React.FC<CategoryListProps> = ({
   return (
     <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
       <Button
-        variant="outline"
+        variant={isLightTheme ? "outline" : "secondary"}
         className={cn(
           "flex-shrink-0 whitespace-nowrap",
-          "bg-gray-50 hover:bg-gray-100",
-          !activeCategory && "bg-primary text-primary-foreground hover:bg-primary/90"
+          isLightTheme 
+            ? (!activeCategory 
+                ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
+                : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
+            : (!activeCategory 
+                ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                : "")
         )}
         onClick={() => handleCategoryClick("all")}
       >
@@ -43,11 +52,16 @@ const CategoryList: React.FC<CategoryListProps> = ({
       {categories.map((category) => (
         <Button
           key={category.id}
-          variant="outline"
+          variant={isLightTheme ? "outline" : "secondary"}
           className={cn(
             "flex-shrink-0 whitespace-nowrap",
-            "bg-gray-50 hover:bg-gray-100", 
-            activeCategory === category.id && "bg-primary text-primary-foreground hover:bg-primary/90"
+            isLightTheme 
+              ? (activeCategory === category.id
+                  ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
+                  : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
+              : (activeCategory === category.id 
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                  : "")
           )}
           onClick={() => handleCategoryClick(category.id)}
         >

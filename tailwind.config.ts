@@ -64,6 +64,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // RestoPOS specific colors
+        restopos: {
+          primary: "#004d40",
+          secondary: "#00695c",
+          accent: "#ff5722",
+          light: "#e0f2f1",
+          dark: "#002419",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -95,6 +103,10 @@ export default {
           from: { transform: "scale(0.95)", opacity: "0" },
           to: { transform: "scale(1)", opacity: "1" },
         },
+        "pulse-subtle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -103,9 +115,11 @@ export default {
         "slide-in-up": "slideInUp 0.3s ease-out",
         "scale-in": "scaleIn 0.2s ease-out",
         shimmer: "shimmer 2s linear infinite",
+        "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
