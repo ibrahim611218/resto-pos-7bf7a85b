@@ -56,8 +56,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   }, {});
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <div className="p-4">
+    <div className="flex flex-col h-full overflow-hidden border-r">
+      <div className="p-4 border-b">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -67,7 +67,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
       
       <div className="flex-1 overflow-y-auto p-4 pt-0">
         <Tabs defaultValue="categories" className="mb-4">
-          <TabsList className="grid grid-cols-2 mb-4">
+          <TabsList className="grid grid-cols-2 mb-4 sticky top-0 z-10">
             <TabsTrigger value="categories" className="text-base">
               {isArabic ? "الفئات" : "Categories"}
             </TabsTrigger>
@@ -86,12 +86,12 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             
             {activeCategory && (
               <div className="mt-4">
-                <h3 className="font-bold mb-3 text-lg">
+                <h3 className="font-bold mb-3 text-lg sticky top-12 bg-background py-2 z-10">
                   {isArabic 
                     ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                     : categories.find(c => c.id === activeCategory)?.name || "Products"}
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                   {searchedProducts.map((product, index) => (
                     <GlassCard
                       key={product.id}
@@ -119,10 +119,10 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-6">
-                  <h3 className="font-bold mb-3 text-lg border-b pb-2">
+                  <h3 className="font-bold mb-3 text-lg border-b pb-2 sticky top-12 bg-background z-10">
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {productsByCategory[category.id]?.map((product, index) => (
                       <GlassCard
                         key={product.id}

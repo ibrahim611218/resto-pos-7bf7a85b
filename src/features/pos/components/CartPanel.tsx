@@ -81,8 +81,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col h-full border-r bg-card shadow-md">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center">
+    <div className="flex flex-col h-full border-r border-l bg-card shadow-md overflow-hidden">
+      <div className="p-4 flex-shrink-0 flex justify-between items-center border-b">
         <h2 className="text-2xl font-bold">
           {isArabic ? "السلة" : "Cart"}
         </h2>
@@ -98,11 +98,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-280px)]">
+      <div className="flex-grow overflow-y-auto px-4 pb-2 min-h-0">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 pt-3">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}

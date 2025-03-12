@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
@@ -74,42 +75,46 @@ const PosContent: React.FC<PosContentProps> = ({
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden m-0 p-0">
-      <ProductsPanel 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        onAddToCart={addToCart}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
-      />
+      <div className="flex-1 md:w-3/5 lg:w-2/3 h-full">
+        <ProductsPanel 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          categories={categories}
+          filteredProducts={filteredProducts}
+          searchedProducts={searchedProducts}
+          onAddToCart={addToCart}
+          isArabic={isArabic}
+          getSizeLabel={getSizeLabel}
+        />
+      </div>
       
-      <CartPanel 
-        cartItems={cartItems}
-        isArabic={isArabic}
-        language={language}
-        subtotal={subtotal}
-        taxAmount={taxAmount}
-        total={total}
-        discount={discount}
-        discountType={discountType}
-        orderType={orderType}
-        tableNumber={tableNumber}
-        paymentMethod={paymentMethod}
-        createInvoice={handleCreateInvoice}
-        clearCart={clearCart}
-        getSizeLabel={getSizeLabel}
-        updateQuantity={updateQuantity}
-        removeItem={removeItem}
-        setDiscount={setDiscount}
-        setDiscountType={setDiscountType}
-        setOrderType={setOrderType}
-        setTableNumber={setTableNumber}
-        setPaymentMethod={setPaymentMethod}
-      />
+      <div className="md:w-2/5 lg:w-1/3 h-full">
+        <CartPanel 
+          cartItems={cartItems}
+          isArabic={isArabic}
+          language={language}
+          subtotal={subtotal}
+          taxAmount={taxAmount}
+          total={total}
+          discount={discount}
+          discountType={discountType}
+          orderType={orderType}
+          tableNumber={tableNumber}
+          paymentMethod={paymentMethod}
+          createInvoice={handleCreateInvoice}
+          clearCart={clearCart}
+          getSizeLabel={getSizeLabel}
+          updateQuantity={updateQuantity}
+          removeItem={removeItem}
+          setDiscount={setDiscount}
+          setDiscountType={setDiscountType}
+          setOrderType={setOrderType}
+          setTableNumber={setTableNumber}
+          setPaymentMethod={setPaymentMethod}
+        />
+      </div>
     </div>
   );
 };

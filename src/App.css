@@ -58,4 +58,21 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* POS cart styles */
+.pos-cart {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.pos-cart-items {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
