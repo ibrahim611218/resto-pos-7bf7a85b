@@ -13,23 +13,34 @@ interface SidebarHeaderProps {
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b">
-      {!collapsed && (
+      {!collapsed ? (
         <AnimatedTransition animation="fade">
-          <h2 className="text-xl font-bold">نظام المطاعم</h2>
+          <div className="flex items-center">
+            <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-8 w-8 ml-2" />
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold">
+                <span className="text-white">Resto</span>
+                <span className="text-orange-500">POS</span>
+              </h2>
+              <span className="text-xs text-muted-foreground">نظام المطاعم</span>
+            </div>
+          </div>
         </AnimatedTransition>
+      ) : (
+        <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-8 w-8" />
       )}
       <Button
         variant="ghost"
         size="icon"
         className={cn(
           "transition-all duration-200",
-          collapsed ? "mr-auto" : "mr-auto"
+          collapsed ? "mr-auto" : ""
         )}
         onClick={onToggle}
       >
         {collapsed ? 
-          <ChevronLeft className="animate-pulse-subtle" size={18} /> : 
-          <ChevronRight className="animate-pulse-subtle" size={18} />
+          <ChevronLeft className="animate-pulse-subtle text-white" size={18} /> : 
+          <ChevronRight className="animate-pulse-subtle text-white" size={18} />
         }
       </Button>
     </div>

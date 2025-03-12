@@ -23,10 +23,10 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
 }) => {
   return (
     <div className="border-t p-3 space-y-2">
-      <ThemeToggle collapsed={collapsed} className="w-full justify-start" />
+      <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
       <LanguageToggle 
         collapsed={collapsed} 
-        className="w-full justify-start" 
+        className="w-full justify-start text-white" 
         language={language}
         onToggle={onToggleLanguage}
       />
@@ -34,7 +34,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
       <Button 
         variant="outline"
         className={cn(
-          "w-full transition-all duration-300 ease-in-out",
+          "w-full transition-all duration-300 ease-in-out bg-transparent border-orange-500 text-orange-500 hover:text-white hover:bg-orange-600",
           collapsed ? "justify-center" : "justify-start"
         )}
         onClick={onLogout}

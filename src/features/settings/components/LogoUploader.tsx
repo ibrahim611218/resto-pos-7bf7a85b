@@ -38,11 +38,17 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({ logo, isArabic, onLogoChang
               className="max-h-full max-w-full object-contain"
             />
           ) : (
-            <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+            <div className="flex flex-col items-center">
+              <img src="/assets/restopos-logo.png" alt="Default Logo" className="h-16 w-16 mb-2" />
+              <div className="text-sm text-center">
+                <span className="text-[#004d40] font-bold">Resto</span>
+                <span className="text-orange-500 font-bold">POS</span>
+              </div>
+            </div>
           )}
         </div>
       </div>
-      <Button type="button" variant="outline" className="mt-2" onClick={() => document.getElementById('logo-upload')?.click()}>
+      <Button type="button" variant="outline" className="mt-2 border-[#004d40] text-[#004d40] hover:bg-[#004d40] hover:text-white" onClick={() => document.getElementById('logo-upload')?.click()}>
         <Upload className="ml-2" size={16} />
         {isArabic ? "رفع شعار" : "Upload Logo"}
       </Button>

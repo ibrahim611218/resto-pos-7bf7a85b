@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +7,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
 
 @layer base {
   :root {
@@ -18,7 +20,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     
-    --primary: 220 70% 50%;
+    --primary: 167 100% 15%;
     --primary-foreground: 0 0% 98%;
     
     --secondary: 240 4.8% 95.9%;
@@ -27,8 +29,8 @@
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
     
-    --accent: 220 70% 97%;
-    --accent-foreground: 220 70% 50%;
+    --accent: 167 100% 95%;
+    --accent-foreground: 167 100% 15%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -38,31 +40,31 @@
     
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 220 70% 50%;
+    --ring: 167 100% 15%;
     
     --radius: 0.75rem;
   }
  
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 167 100% 6%;
     --foreground: 0 0% 98%;
     
-    --card: 240 10% 3.9%;
+    --card: 167 100% 6%;
     --card-foreground: 0 0% 98%;
     
-    --popover: 240 10% 3.9%;
+    --popover: 167 100% 6%;
     --popover-foreground: 0 0% 98%;
     
-    --primary: 220 70% 50%;
+    --primary: 167 100% 15%;
     --primary-foreground: 0 0% 98%;
     
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 167 30% 15%;
     --secondary-foreground: 0 0% 98%;
     
-    --muted: 240 3.7% 15.9%;
+    --muted: 167 30% 15%;
     --muted-foreground: 240 5% 64.9%;
     
-    --accent: 240 3.7% 15.9%;
+    --accent: 167 30% 15%;
     --accent-foreground: 0 0% 98%;
     
     --destructive: 0 62.8% 30.6%;
@@ -71,8 +73,8 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 98%;
     
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: 167 30% 15%;
+    --input: 167 30% 15%;
     --ring: 240 4.9% 83.9%;
   }
 }
@@ -89,13 +91,13 @@
   
   body {
     @apply bg-background text-foreground transition-colors duration-300;
-    font-family: 'Cairo', 'Inter', sans-serif;
+    font-family: 'Tajawal', 'Cairo', 'Inter', sans-serif;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-white/20 dark:border-slate-700/20 shadow-lg;
+    @apply bg-[#004d40]/80 dark:bg-[#004d40]/90 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg text-white;
   }
   
   .slide-in {
@@ -129,4 +131,29 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .restopos-gradient {
+    @apply bg-gradient-to-r from-[#004d40] to-[#00695c];
+  }
+
+  .restopos-accent {
+    @apply text-[#ff5722];
+  }
+}
+
+/* RestoPOS Specific Styles */
+.restopos-header {
+  @apply bg-[#004d40] text-white;
+}
+
+.restopos-btn-primary {
+  @apply bg-[#004d40] hover:bg-[#00352c] text-white;
+}
+
+.restopos-btn-accent {
+  @apply bg-[#ff5722] hover:bg-[#e64a19] text-white;
+}
+
+.restopos-sidebar {
+  @apply bg-[#004d40] text-white border-r border-[#00695c];
 }

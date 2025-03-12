@@ -17,11 +17,19 @@ export const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({
   return (
     <DialogHeader>
       <div className="flex flex-col items-center mb-4">
-        {settings.logo && (
+        {settings.logo ? (
           <img src={settings.logo} alt="شعار المطعم" className="h-16 mb-2" />
+        ) : (
+          <div className="flex items-center mb-2">
+            <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-12 w-12" />
+            <div>
+              <span className="text-[#004d40] font-bold text-xl">Resto</span>
+              <span className="text-orange-500 font-bold text-xl">POS</span>
+            </div>
+          </div>
         )}
         <DialogTitle className="text-xl text-center">
-          {settings.nameAr || settings.name}
+          {settings.nameAr || settings.name || "RestoPOS"}
         </DialogTitle>
         <DialogDescription className="text-center">
           {settings.taxNumber && <div>الرقم الضريبي: {settings.taxNumber}</div>}

@@ -28,7 +28,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
       <meta charset="UTF-8">
       <style>
         body { 
-          font-family: Arial, sans-serif; 
+          font-family: 'Tajawal', Arial, sans-serif; 
           margin: 0; 
           padding: 20px; 
           direction: rtl;
@@ -42,6 +42,23 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
           max-height: 80px; 
           margin: 0 auto;
           display: block;
+        }
+        .brand-logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+        }
+        .brand-name {
+          font-size: 24px;
+          font-weight: bold;
+          display: inline-block;
+        }
+        .brand-name-primary {
+          color: #004d40;
+        }
+        .brand-name-accent {
+          color: #ff5722;
         }
         .invoice-details { 
           margin-bottom: 20px; 
@@ -93,8 +110,15 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
     </head>
     <body>
       <div class="invoice-header">
-        ${businessSettings.logo ? `<img src="${businessSettings.logo}" class="logo" alt="شعار المطعم">` : ''}
-        <h1>${businessSettings.nameAr || businessSettings.name}</h1>
+        ${businessSettings.logo ? 
+          `<img src="${businessSettings.logo}" class="logo" alt="شعار المطعم">` : 
+          `<div class="brand-logo">
+             <span class="brand-name">
+               <span class="brand-name-primary">Resto</span><span class="brand-name-accent">POS</span>
+             </span>
+           </div>`
+        }
+        <h1>${businessSettings.nameAr || businessSettings.name || "RestoPOS"}</h1>
         ${businessSettings.taxNumber ? `<p>الرقم الضريبي: ${businessSettings.taxNumber}</p>` : ''}
         ${businessSettings.addressAr ? `<p>${businessSettings.addressAr}</p>` : ''}
         ${businessSettings.phone ? `<p>هاتف: ${businessSettings.phone}</p>` : ''}
