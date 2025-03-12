@@ -19,7 +19,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
       {!collapsed ? (
         <AnimatedTransition animation="fade">
           <div className="flex items-center">
-            <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-10 w-10 ml-2" />
+            <img src="/lovable-uploads/b8da0625-ebda-4a08-8f51-5ebf33b24b30.png" alt="RestoPOS" className="h-10 w-10 ml-2" />
             <div className="flex flex-col">
               <h2 className="text-xl font-bold">
                 <span className="text-[#00825A]">Resto</span>
@@ -30,7 +30,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
           </div>
         </AnimatedTransition>
       ) : (
-        <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-10 w-10" />
+        <img src="/lovable-uploads/b8da0625-ebda-4a08-8f51-5ebf33b24b30.png" alt="RestoPOS" className="h-10 w-10" />
       )}
       <Button
         variant="ghost"
