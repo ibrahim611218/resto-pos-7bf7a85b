@@ -10,20 +10,25 @@ const mockCustomers: Customer[] = [
     id: "cust-1",
     name: "محمد عبدالله",
     phone: "0555123456",
-    email: "mohammed@example.com"
+    email: "mohammed@example.com",
+    commercialRegister: "1234567890",
+    address: "الرياض، حي الملز"
   },
   {
     id: "cust-2",
     name: "أحمد محمد",
     phone: "0555987654",
     email: "ahmed@example.com",
-    taxNumber: "300123456700003"
+    taxNumber: "300123456700003",
+    commercialRegister: "9876543210",
+    address: "جدة، حي الروضة"
   },
   {
     id: "cust-3",
     name: "سارة خالد",
     phone: "0555111222",
-    email: "sarah@example.com"
+    email: "sarah@example.com",
+    address: "الدمام، حي الشاطئ"
   }
 ];
 
@@ -39,7 +44,9 @@ export const useCustomers = () => {
           customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (customer.phone && customer.phone.includes(searchTerm)) ||
           (customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (customer.taxNumber && customer.taxNumber.includes(searchTerm))
+          (customer.taxNumber && customer.taxNumber.includes(searchTerm)) ||
+          (customer.commercialRegister && customer.commercialRegister.includes(searchTerm)) ||
+          (customer.address && customer.address.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : customers;
 

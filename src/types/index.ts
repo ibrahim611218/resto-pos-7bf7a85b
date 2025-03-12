@@ -1,3 +1,4 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -61,6 +62,8 @@ export interface Customer {
   phone?: string;
   email?: string;
   taxNumber?: string;
+  commercialRegister?: string;
+  address?: string;
 }
 
 export interface Invoice {

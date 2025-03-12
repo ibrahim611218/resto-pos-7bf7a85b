@@ -27,7 +27,9 @@ const CustomerDialog: React.FC<CustomerDialogProps> = ({
     name: "",
     phone: "",
     email: "",
-    taxNumber: ""
+    taxNumber: "",
+    commercialRegister: "",
+    address: ""
   });
 
   // Reset form when dialog opens or customer changes
@@ -39,7 +41,9 @@ const CustomerDialog: React.FC<CustomerDialogProps> = ({
         name: "",
         phone: "",
         email: "",
-        taxNumber: ""
+        taxNumber: "",
+        commercialRegister: "",
+        address: ""
       });
     }
   }, [customer, isOpen]);
@@ -121,6 +125,32 @@ const CustomerDialog: React.FC<CustomerDialogProps> = ({
                 value={formData.taxNumber || ""}
                 onChange={handleInputChange}
                 placeholder={isArabic ? "أدخل الرقم الضريبي" : "Enter tax number"}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="commercialRegister">
+                {isArabic ? "السجل التجاري" : "Commercial Register"}
+              </Label>
+              <Input
+                id="commercialRegister"
+                name="commercialRegister"
+                value={formData.commercialRegister || ""}
+                onChange={handleInputChange}
+                placeholder={isArabic ? "أدخل رقم السجل التجاري" : "Enter commercial register number"}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">
+                {isArabic ? "العنوان" : "Address"}
+              </Label>
+              <Input
+                id="address"
+                name="address"
+                value={formData.address || ""}
+                onChange={handleInputChange}
+                placeholder={isArabic ? "أدخل العنوان" : "Enter address"}
               />
             </div>
           </div>

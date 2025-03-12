@@ -29,14 +29,23 @@ export const useInvoiceCreation = (
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
-  const createInvoice = useCallback((customerName?: string, customerTaxNumber?: string): Invoice => {
+  const createInvoice = useCallback((
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string,
+    commercialRegister?: string,
+    address?: string
+  ): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
     let customer: Customer | undefined;
-    if (customerName) {
+    if (customerName || customerId) {
       customer = {
-        name: customerName,
-        taxNumber: customerTaxNumber
+        id: customerId,
+        name: customerName || "",
+        taxNumber: customerTaxNumber,
+        commercialRegister: commercialRegister,
+        address: address
       };
     }
     

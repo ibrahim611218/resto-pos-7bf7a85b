@@ -6,7 +6,7 @@ import PaymentMethodDialog from "../PaymentMethodDialog";
 interface PaymentDialogHandlerProps {
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
-  createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => Invoice;
   setCurrentInvoice: (invoice: Invoice | null) => void;
 }
 
@@ -23,8 +23,14 @@ export const usePaymentDialog = ({
     setShowPaymentMethodDialog(true);
   };
 
-  const handlePaymentMethodSelected = (customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
+  const handlePaymentMethodSelected = (
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string,
+    commercialRegister?: string,
+    address?: string
+  ) => {
+    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address);
     setCurrentInvoice(invoice);
     setShowPaymentMethodDialog(false);
     return invoice;

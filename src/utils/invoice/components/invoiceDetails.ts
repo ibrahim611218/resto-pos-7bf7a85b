@@ -18,6 +18,8 @@ export const generateInvoiceDetails = (invoice: Invoice): string => {
         <div class="customer-info">
           <p><strong>العميل:</strong> ${invoice.customer.name}</p>
           ${invoice.customer.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${invoice.customer.taxNumber}</p>` : ''}
+          ${invoice.customer.commercialRegister ? `<p><strong>السجل التجاري:</strong> ${invoice.customer.commercialRegister}</p>` : ''}
+          ${invoice.customer.address ? `<p><strong>العنوان:</strong> ${invoice.customer.address}</p>` : ''}
         </div>
       ` : ''}
     </div>
