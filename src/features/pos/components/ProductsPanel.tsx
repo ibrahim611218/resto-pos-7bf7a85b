@@ -70,7 +70,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <div className="flex flex-col h-full overflow-hidden border-r">
-      <div className="container mx-auto p-2 border-b">
+      <div className="container mx-auto px-4 py-2 border-b">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -78,7 +78,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         />
       </div>
       
-      <div className="container mx-auto flex-1 overflow-y-auto py-4 pb-24">
+      <div className="container mx-auto flex-1 overflow-y-auto px-4 py-4 pb-24">
         <Tabs defaultValue="categories" className="mb-2">
           <TabsList className="grid grid-cols-2 mb-2 sticky top-0 z-10">
             <TabsTrigger value="categories" className={isMobile ? "text-sm" : "text-base"}>
