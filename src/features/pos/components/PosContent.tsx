@@ -74,7 +74,7 @@ const PosContent: React.FC<PosContentProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-full w-full overflow-hidden m-0 p-0 flex-1">
+    <div className="flex flex-1 h-full overflow-hidden">
       <ProductsPanel 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

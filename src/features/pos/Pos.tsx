@@ -69,44 +69,46 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`h-screen w-screen flex flex-col m-0 p-0 overflow-hidden ${
+      className={`pos-container ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
       <PosHeader />
 
-      <PosContent 
-        cartItems={cartItems}
-        isArabic={isArabic}
-        language={language}
-        subtotal={subtotal}
-        taxAmount={taxAmount}
-        total={total}
-        discount={discount}
-        discountType={discountType}
-        orderType={orderType}
-        tableNumber={tableNumber}
-        paymentMethod={paymentMethod}
-        addToCart={addToCart}
-        updateQuantity={updateQuantity}
-        removeItem={removeItem}
-        clearCart={clearCart}
-        createInvoice={handleCreateInvoice}
-        setDiscount={setDiscount}
-        setDiscountType={setDiscountType}
-        setOrderType={setOrderType}
-        setTableNumber={setTableNumber}
-        setPaymentMethod={setPaymentMethod}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        getSizeLabel={getSizeLabelFn}
-      />
+      <div className="pos-content">
+        <PosContent 
+          cartItems={cartItems}
+          isArabic={isArabic}
+          language={language}
+          subtotal={subtotal}
+          taxAmount={taxAmount}
+          total={total}
+          discount={discount}
+          discountType={discountType}
+          orderType={orderType}
+          tableNumber={tableNumber}
+          paymentMethod={paymentMethod}
+          addToCart={addToCart}
+          updateQuantity={updateQuantity}
+          removeItem={removeItem}
+          clearCart={clearCart}
+          createInvoice={handleCreateInvoice}
+          setDiscount={setDiscount}
+          setDiscountType={setDiscountType}
+          setOrderType={setOrderType}
+          setTableNumber={setTableNumber}
+          setPaymentMethod={setPaymentMethod}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          categories={categories}
+          filteredProducts={filteredProducts}
+          searchedProducts={searchedProducts}
+          getSizeLabel={getSizeLabelFn}
+        />
+      </div>
 
       <InvoiceDetailsModal 
         invoice={currentInvoice}

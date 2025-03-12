@@ -35,10 +35,27 @@
 
 /* Full width container elements */
 .full-width-container {
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+
+/* POS specific container */
+.pos-container {
+  width: 100%;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* POS content container */
+.pos-content {
+  flex: 1;
+  display: flex;
   overflow: hidden;
 }
