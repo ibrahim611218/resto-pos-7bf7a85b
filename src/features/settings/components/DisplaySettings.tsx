@@ -51,20 +51,42 @@ const DisplaySettings = () => {
     }
   }, [settings]);
 
+  // تطبيق حجم النافذة المحفوظ عند تحميل المكون
+  useEffect(() => {
+    if (settings.width && settings.height) {
+      try {
+        resizeWindow(settings.width, settings.height);
+      } catch (error) {
+        console.error("Error applying saved window size:", error);
+      }
+    }
+  }, []);
+
   // تغيير حجم النافذة
   const applyWindowSize = () => {
     const newWidth = parseInt(width);
     const newHeight = parseInt(height);
     
     if (!isNaN(newWidth) && !isNaN(newHeight)) {
-      window.resizeTo(newWidth, newHeight);
-      setSettings({ ...settings, width: newWidth, height: newHeight });
-      toast({
-        title: isArabic ? "تم تغيير الحجم" : "Size Changed",
-        description: isArabic 
-          ? `تم تغيير حجم النافذة إلى ${newWidth}×${newHeight}`
-          : `Window resized to ${newWidth}×${newHeight}`,
-      });
+      try {
+        resizeWindow(newWidth, newHeight);
+        setSettings({ ...settings, width: newWidth, height: newHeight });
+        toast({
+          title: isArabic ? "تم تغيير الحجم" : "Size Changed",
+          description: isArabic 
+            ? `تم تغيير حجم النافذة إلى ${newWidth}×${newHeight}`
+            : `Window resized to ${newWidth}×${newHeight}`,
+        });
+      } catch (error) {
+        console.error("Error resizing window:", error);
+        toast({
+          variant: "destructive",
+          title: isArabic ? "خطأ" : "Error",
+          description: isArabic 
+            ? "فشل في تغيير حجم النافذة. قد تكون المتصفح يمنع هذه العملية."
+            : "Failed to resize window. The browser may be blocking this operation.",
+        });
+      }
     } else {
       toast({
         variant: "destructive",
@@ -76,25 +98,72 @@ const DisplaySettings = () => {
     }
   };
 
+  // طريقة آمنة لتغيير حجم النافذة
+  const resizeWindow = (width: number, height: number) => {
+    if (typeof window.resizeTo === 'function') {
+      window.resizeTo(width, height);
+    } else {
+      // بديل في حالة عدم دعم resizeTo
+      const resizeScript = document.createElement('script');
+      resizeScript.innerHTML = `
+        try {
+          window.open('', '_self');
+          window.resizeTo(${width}, ${height});
+        } catch(e) {
+          console.error('Resize failed:', e);
+        }
+      `;
+      document.body.appendChild(resizeScript);
+      document.body.removeChild(resizeScript);
+    }
+    
+    // تطبيق CSS على عناصر الصفحة للتحكم بالحجم
+    document.documentElement.style.width = `${width}px`;
+    document.documentElement.style.height = `${height}px`;
+    document.body.style.width = `${width}px`;
+    document.body.style.minWidth = `${width}px`;
+    document.body.style.maxWidth = `${width}px`;
+    document.body.style.height = `${height}px`;
+    document.body.style.minHeight = `${height}px`;
+    document.body.style.overflow = 'auto';
+  };
+
   // تكبير النافذة للشاشة الكاملة
   const maximizeWindow = () => {
-    window.moveTo(0, 0);
-    window.resizeTo(screen.availWidth, screen.availHeight);
-    
-    setWidth(screen.availWidth.toString());
-    setHeight(screen.availHeight.toString());
-    setSettings({
-      ...settings,
-      width: screen.availWidth,
-      height: screen.availHeight
-    });
-    
-    toast({
-      title: isArabic ? "تم التكبير" : "Maximized",
-      description: isArabic 
-        ? "تم تكبير النافذة إلى الحجم الأقصى"
-        : "Window maximized to full available size",
-    });
+    try {
+      if (typeof window.moveTo === 'function') {
+        window.moveTo(0, 0);
+      }
+      
+      const maxWidth = screen.availWidth;
+      const maxHeight = screen.availHeight;
+      
+      resizeWindow(maxWidth, maxHeight);
+      
+      setWidth(maxWidth.toString());
+      setHeight(maxHeight.toString());
+      setSettings({
+        ...settings,
+        width: maxWidth,
+        height: maxHeight
+      });
+      
+      toast({
+        title: isArabic ? "تم التكبير" : "Maximized",
+        description: isArabic 
+          ? "تم تكبير النافذة إلى الحجم الأقصى"
+          : "Window maximized to full available size",
+      });
+    } catch (error) {
+      console.error("Error maximizing window:", error);
+      toast({
+        variant: "destructive",
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic 
+          ? "فشل في تكبير النافذة"
+          : "Failed to maximize window",
+      });
+    }
   };
 
   // تحديث وضع اللمس

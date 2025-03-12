@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import BusinessSettingsForm from "@/features/settings/BusinessSettingsForm";
 import { useLanguage } from "@/context/LanguageContext";
 import DataManagement from "@/features/settings/components/DataManagement";
@@ -10,6 +10,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const BusinessSettings = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  
+  // تطبيق أي إعدادات عرض محفوظة عند تحميل الصفحة
+  useEffect(() => {
+    const storedSettings = localStorage.getItem("display-settings");
+    if (storedSettings) {
+      try {
+        const settings = JSON.parse(storedSettings);
+        if (settings.touchMode) {
+          document.body.classList.add("touch-target-fix");
+        }
+      } catch (error) {
+        console.error("Error loading stored display settings:", error);
+      }
+    }
+  }, []);
   
   return (
     <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
