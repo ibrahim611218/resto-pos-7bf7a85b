@@ -51,8 +51,8 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
       <Label className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
         {isArabic ? "الخصم" : "Discount"}
       </Label>
-      <div className="flex">
-        <div className="flex-1">
+      <div className="flex space-x-2 rtl:space-x-reverse">
+        <div className="flex-1 flex">
           <Input
             value={inputValue}
             onChange={handleInputChange}
@@ -63,8 +63,7 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
             className={`flex-1 ${isMobile ? 'text-sm' : 'text-base'}`}
           />
         </div>
-        {/* Hidden discount type buttons */}
-        <div className="hidden">
+        <div className="flex space-x-1 rtl:space-x-reverse">
           <Button
             type="button"
             variant={discountType === "percentage" ? "default" : "outline"}

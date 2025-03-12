@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
-import GlassCard from "@/components/ui/card";
+import GlassCard from "@/components/ui-custom/GlassCard";
 import CategoryList from "./CategoryList";
 import ProductsList from "./ProductsList";
 import SizeSelectionDialog from "./SizeSelectionDialog";
@@ -37,33 +37,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { width, isMobile, isTablet } = useScreenSize();
-  const [containerWidth, setContainerWidth] = useState(width);
-
-  // Update container width when sidebar collapses or expands
-  useEffect(() => {
-    const checkSidebarState = () => {
-      // Check if we have the pos-fullwidth class which indicates the sidebar is collapsed
-      const hasPosFullWidth = document.querySelector('.pos-fullwidth') !== null;
-      setContainerWidth(width);
-    };
-
-    // Check on mount and whenever width changes
-    checkSidebarState();
-    window.addEventListener('resize', checkSidebarState);
-
-    // Check whenever the DOM changes (for when sidebar toggles)
-    const observer = new MutationObserver(checkSidebarState);
-    observer.observe(document.body, { 
-      attributes: true, 
-      subtree: true, 
-      attributeFilter: ['class'] 
-    });
-
-    return () => {
-      window.removeEventListener('resize', checkSidebarState);
-      observer.disconnect();
-    };
-  }, [width]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -75,15 +48,15 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     setSelectedProduct(null);
   };
 
-  // Calculate grid columns based on container width
+  // Calculate grid columns based on screen size
   const getGridCols = () => {
-    if (containerWidth < 500) return "grid-cols-2";
-    if (containerWidth < 640) return "grid-cols-3";
-    if (containerWidth < 768) return "grid-cols-3";
-    if (containerWidth < 1024) return "grid-cols-4";
-    if (containerWidth < 1280) return "grid-cols-5";
-    if (containerWidth < 1536) return "grid-cols-6";
-    return "grid-cols-7";
+    if (width < 500) return "grid-cols-2";
+    if (width < 640) return "grid-cols-3";
+    if (width < 768) return "grid-cols-3";
+    if (width < 1024) return "grid-cols-4";
+    if (width < 1280) return "grid-cols-5";
+    if (width < 1536) return "grid-cols-6";
+    return "grid-cols-8";
   };
 
   // Group products by category for better organization

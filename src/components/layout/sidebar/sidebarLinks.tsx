@@ -12,18 +12,11 @@ import {
   ChefHat,
   Store,
   FileSearch,
-  Home,
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
 export const getSidebarLinks = (): SidebarLink[] => {
   return [
-    {
-      name: "لوحة التحكم",
-      name_en: "Dashboard",
-      path: "/",
-      icon: <Home size={20} />,
-    },
     {
       name: "نقاط البيع",
       name_en: "POS",
