@@ -5,16 +5,21 @@ import { BusinessSettings } from "@/types";
  * Generates HTML for the invoice header section
  */
 export const generateInvoiceHeader = (settings: BusinessSettings): string => {
+  // Use the static RestoPOS logo as a fallback when no business logo is available
+  const restoposLogoHtml = `
+    <div class="brand-logo">
+      <img src="/assets/restopos-logo.png" width="80" height="80" alt="RestoPOS">
+      <span class="brand-name">
+        <span class="brand-name-primary">Resto</span><span class="brand-name-accent">POS</span>
+      </span>
+    </div>
+  `;
+
   return `
     <div class="invoice-header">
       ${settings.logo ? 
         `<img src="${settings.logo}" class="logo" alt="شعار المطعم">` : 
-        `<div class="brand-logo">
-           <img src="/assets/restopos-logo.png" width="80" height="80" alt="RestoPOS">
-           <span class="brand-name">
-             <span class="brand-name-primary">Resto</span><span class="brand-name-accent">POS</span>
-           </span>
-         </div>`
+        restoposLogoHtml
       }
       <h1>${settings.nameAr || settings.name || "RestoPOS"}</h1>
       ${settings.taxNumber ? `<p>الرقم الضريبي: ${settings.taxNumber}</p>` : ''}

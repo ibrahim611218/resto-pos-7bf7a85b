@@ -22,6 +22,7 @@ export const getInvoiceStyles = (): string => {
     }
     .brand-logo {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       margin-bottom: 10px;
@@ -30,6 +31,7 @@ export const getInvoiceStyles = (): string => {
       font-size: 24px;
       font-weight: bold;
       display: inline-block;
+      margin-top: 5px;
     }
     .brand-name-primary {
       color: #00825A;
