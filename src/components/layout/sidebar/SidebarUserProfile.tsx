@@ -3,7 +3,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
-import { User } from "@/features/auth/hooks/useAuth";
+import { User } from "@/types"; // Import User type from our types file instead
 
 interface SidebarUserProfileProps {
   user: User | null;
