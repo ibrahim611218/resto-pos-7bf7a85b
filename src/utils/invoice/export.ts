@@ -33,8 +33,6 @@ export const exportInvoiceToPDF = (
         
         setTimeout(() => {
           printWindow.print();
-          // Close after printing (some browsers might do this automatically)
-          // printWindow.close();
         }, 500);
         
         toast({
@@ -97,12 +95,11 @@ export const handleInvoiceExport = (
       if (printWindow) {
         printWindow.document.write(printContent);
         printWindow.document.close();
-        printWindow.focus();
         
+        // Ensure document is fully loaded before printing
         setTimeout(() => {
+          printWindow.focus();
           printWindow.print();
-          // Close after printing (some browsers might do this automatically)
-          // printWindow.close();
         }, 500);
       } else {
         toast({

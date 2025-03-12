@@ -1,38 +1,45 @@
 
 import React from "react";
-import { Product } from "@/types";
-import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
+import { Product, Size } from "@/types";
 import ProductCard from "./ProductCard";
+import { Grid } from "@/components/ui/grid";
 
 interface ProductsListProps {
   products: Product[];
+  searchResults?: Product[];
+  searchTerm?: string;
   onAddToCart: (product: Product, variantId: string) => void;
   isArabic: boolean;
   getSizeLabel: (size: string) => string;
 }
 
-const ProductsList: React.FC<ProductsListProps> = ({
-  products,
+const ProductsList: React.FC<ProductsListProps> = ({ 
+  products, 
+  searchResults, 
+  searchTerm,
   onAddToCart,
   isArabic,
   getSizeLabel
 }) => {
+  const displayProducts = searchTerm ? searchResults : products;
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {products.map((product, index) => (
-        <AnimatedTransition
-          key={product.id}
-          animation="fade"
-          delay={index * 50}
-        >
-          <ProductCard 
-            product={product} 
-            onAddToCart={onAddToCart} 
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
+      {displayProducts && displayProducts.length > 0 ? (
+        displayProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
             isArabic={isArabic}
+            onAddToCart={onAddToCart}
             getSizeLabel={getSizeLabel}
           />
-        </AnimatedTransition>
-      ))}
+        ))
+      ) : (
+        <div className="col-span-full text-center p-6 border rounded-lg border-dashed text-muted-foreground">
+          {isArabic ? "لا توجد منتجات" : "No products found"}
+        </div>
+      )}
     </div>
   );
 };

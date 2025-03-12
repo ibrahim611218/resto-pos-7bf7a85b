@@ -2,8 +2,8 @@
 import React from "react";
 import CustomersList from "@/features/customers/CustomersList";
 
-const Customers: React.FC = () => {
+const CustomersPage: React.FC = () => {
   return <CustomersList />;
 };
 
-export default Customers;
+export default CustomersPage;
