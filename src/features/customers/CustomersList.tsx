@@ -10,6 +10,7 @@ import CustomerDialog from "./components/CustomerDialog";
 import DeleteConfirmationDialog from "./components/DeleteConfirmationDialog";
 import { useCustomers } from "./hooks/useCustomers";
 import { useLanguage } from "@/context/LanguageContext";
+import BrandLogo from "@/components/ui-custom/BrandLogo";
 
 const CustomersList: React.FC = () => {
   const { language } = useLanguage();
@@ -74,31 +75,38 @@ const CustomersList: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle>
-            {isArabic ? "العملاء" : "Customers"}
-          </CardTitle>
-          <Button onClick={handleAddClick} size="sm">
+    <div className="h-[calc(100vh-4rem)] p-4 flex flex-col">
+      <Card className="flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div className="flex items-center gap-4">
+            <BrandLogo size={40} />
+            <CardTitle>
+              {isArabic ? "العملاء" : "Customers"}
+            </CardTitle>
+          </div>
+          <Button 
+            onClick={handleAddClick} 
+            size="sm"
+            className="bg-[#F97316] hover:bg-[#EA580C] text-white"
+          >
             <Plus className="mr-2 h-4 w-4" />
             {isArabic ? "إضافة عميل" : "Add Customer"}
           </Button>
         </CardHeader>
-        <CardContent>
-          <div className="relative mb-4">
+        <CardContent className="flex-1 overflow-hidden flex flex-col gap-4">
+          <div className="relative">
             <Search className={`absolute ${isArabic ? 'right-3' : 'left-3'} top-3 text-muted-foreground h-4 w-4`} />
             <Input
               placeholder={isArabic ? "البحث عن عميل..." : "Search customers..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`${isArabic ? 'pr-10' : 'pl-10'}`}
+              className={`${isArabic ? 'pr-10' : 'pl-10'} border-[#0D7C39] focus-visible:ring-[#0D7C39]`}
             />
           </div>
           
-          <div className="rounded-md border">
+          <div className="flex-1 overflow-auto border rounded-md">
             <Table>
-              <TableHeader>
+              <TableHeader className="sticky top-0 bg-card z-10">
                 <TableRow>
                   <TableHead>{isArabic ? "الاسم" : "Name"}</TableHead>
                   <TableHead>{isArabic ? "رقم الهاتف" : "Phone"}</TableHead>
@@ -121,12 +129,22 @@ const CustomersList: React.FC = () => {
                       <TableCell>{customer.phone || "-"}</TableCell>
                       <TableCell>{customer.email || "-"}</TableCell>
                       <TableCell>{customer.taxNumber || "-"}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleEditClick(customer)}>
+                      <TableCell>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-[#0D7C39] hover:text-[#0D7C39] hover:bg-green-50"
+                            onClick={() => handleEditClick(customer)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(customer.id || "")}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-red-500 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => handleDeleteClick(customer.id || "")}
+                          >
                             <Trash className="h-4 w-4" />
                           </Button>
                         </div>
