@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Product, Size } from "@/types";
 import ProductCard from "./ProductCard";
@@ -23,7 +22,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
   const displayProducts = searchTerm ? searchResults : products;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3 pb-20 pl-6 pr-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-4 pb-24">
       {displayProducts && displayProducts.length > 0 ? (
         displayProducts.map((product) => (
           <ProductCard
