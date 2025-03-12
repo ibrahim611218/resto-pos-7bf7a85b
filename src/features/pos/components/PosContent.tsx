@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Product, Invoice, Size } from "@/types";
+import { Product, Invoice } from "@/types";
 import CartPanel from "./CartPanel";
 import ProductsPanel from "./ProductsPanel";
 
@@ -74,7 +74,22 @@ const PosContent: React.FC<PosContentProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+    <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden bg-[#0f1729]">
+        <ProductsPanel 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          categories={categories}
+          filteredProducts={filteredProducts}
+          searchedProducts={searchedProducts}
+          onAddToCart={addToCart}
+          isArabic={isArabic}
+          getSizeLabel={getSizeLabel}
+        />
+      </div>
+      
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}
@@ -97,19 +112,7 @@ const PosContent: React.FC<PosContentProps> = ({
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
-      />
-      
-      <ProductsPanel 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        onAddToCart={addToCart}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
+        className="w-[400px] bg-[#0f1729] border-l border-gray-800"
       />
     </div>
   );

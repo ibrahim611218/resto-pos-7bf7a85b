@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -35,6 +34,7 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  className?: string;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -59,6 +59,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
+  className = "",
 }) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
@@ -71,7 +72,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
     const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
     
-    // Automatically send to kitchen - this happens behind the scenes now
     console.log(`Order ${invoice.number} automatically sent to kitchen`);
     
     setShowPaymentMethodDialog(false);
@@ -81,15 +81,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="w-full md:w-1/3 lg:w-2/5 flex flex-col h-full border-l bg-card shadow-md">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
+    <div className={`flex flex-col h-full ${className}`}>
+      <div className="p-4 flex-shrink-0 flex justify-between items-center border-b border-gray-800">
+        <h2 className="text-xl font-semibold text-white">
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-destructive" 
+          className="text-gray-400 hover:text-white hover:bg-gray-800" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
@@ -118,7 +118,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-4 border-t bg-card flex-shrink-0">
+      <div className="p-4 border-t border-gray-800 bg-[#0f1729] flex-shrink-0">
         <Separator className="mb-4" />
         
         <OrderTypeSelector
