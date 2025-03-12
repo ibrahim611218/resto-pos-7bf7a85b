@@ -23,7 +23,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
   const displayProducts = searchTerm ? searchResults : products;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 p-2">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
       {displayProducts && displayProducts.length > 0 ? (
         displayProducts.map((product) => (
           <ProductCard
