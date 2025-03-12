@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Printer, FilePdf, RotateCcw, ChevronLeft, Mail } from "lucide-react";
+import { MoreVertical, Printer, FileText, RotateCcw, ChevronLeft, Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Invoice } from "@/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -64,7 +63,7 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
                 {isArabic ? "طباعة" : "Print"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport("pdf")}>
-                <FilePdf className="mr-2" size={14} />
+                <FileText className="mr-2" size={14} />
                 {isArabic ? "تصدير PDF" : "Export PDF"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport("email")}>
