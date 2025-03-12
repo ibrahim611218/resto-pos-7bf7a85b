@@ -1,12 +1,12 @@
-
-import React, { useState } from "react";
-import { InventoryItem, Language } from "@/types";
+import React, { useState, useEffect } from "react";
+import { InventoryItem, Language, Product } from "@/types";
 import InventoryList from "./components/InventoryList";
 import InventoryForm from "./components/InventoryForm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { mockInventoryItems } from "./data/mockInventory";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { sampleProducts } from "@/data/sampleData";
 
 interface InventoryManagerProps {
   language: Language;
@@ -14,7 +14,26 @@ interface InventoryManagerProps {
 
 const InventoryManager: React.FC<InventoryManagerProps> = ({ language }) => {
   const isArabic = language === "ar";
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(mockInventoryItems);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => {
+    const existingItems = mockInventoryItems;
+    
+    const productIds = new Set(existingItems.map(item => item.productId));
+    const missingProducts = sampleProducts.filter(product => !productIds.has(product.id));
+    
+    const newItems = missingProducts.map(product => ({
+      id: `inv-${product.id}`,
+      productId: product.id,
+      productName: product.name,
+      productNameAr: product.nameAr,
+      quantity: 0,
+      lowStockThreshold: 5,
+      lastUpdated: new Date(),
+      categoryId: product.categoryId,
+    }));
+    
+    return [...existingItems, ...newItems];
+  });
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");

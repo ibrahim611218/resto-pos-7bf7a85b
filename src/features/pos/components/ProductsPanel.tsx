@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
@@ -117,8 +117,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                         <p className="font-medium truncate text-sm">
                           {isArabic ? product.nameAr : product.name}
                         </p>
-                        <p className="text-xs text-white mt-0.5 bg-black/50 rounded-full px-2 py-0.5 inline-block">
-                          {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
+                        <p className="text-xs text-white mt-0.5 bg-black/70 rounded-full px-2 py-0.5 inline-block">
+                          {product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
                         </p>
                       </div>
                     </GlassCard>
@@ -154,8 +154,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                           <p className="font-medium truncate text-sm">
                             {isArabic ? product.nameAr : product.name}
                           </p>
-                          <p className="text-xs text-white mt-0.5 bg-black/50 rounded-full px-2 py-0.5 inline-block">
-                            {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
+                          <p className="text-xs text-white mt-0.5 bg-black/70 rounded-full px-2 py-0.5 inline-block">
+                            {product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
                           </p>
                         </div>
                       </GlassCard>
