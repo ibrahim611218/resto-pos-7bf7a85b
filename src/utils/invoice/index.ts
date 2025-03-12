@@ -1,5 +1,5 @@
 
-import { Invoice, CartItem } from "@/types";
+import { Invoice, CartItem, Customer } from "@/types";
 import { generateInvoiceTemplate } from "./template";
 import { calculateInvoiceAmounts, calculateDiscountAmount, formatCurrency, generateInvoiceNumber } from "./calculations";
 import { generateInvoiceQRCodeData } from "./qrcode";
@@ -33,8 +33,17 @@ export const createInvoiceObject = (
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
+  // Create customer object if customer details are provided
+  let customer: Customer | undefined;
+  if (customerName) {
+    customer = {
+      name: customerName,
+      taxNumber: customerTaxNumber
+    };
+  }
+
   return {
-    id: Math.random().toString(36).substring(2, 9), // Generate a random ID as string
+    id: Math.random().toString(36).substring(2, 9),
     number: invoiceNumber,
     date: invoiceDate,
     items: cartItems,
@@ -43,8 +52,7 @@ export const createInvoiceObject = (
     discount: discountAmount,
     total: total,
     paymentMethod: paymentMethod,
-    customerName: customerName,
-    customerTaxNumber: customerTaxNumber,
+    customer: customer,
     cashierId: "unknown",
     cashierName: "Cashier",
     status: "completed" as const,
@@ -52,8 +60,7 @@ export const createInvoiceObject = (
 };
 
 export const createInvoicePdf = async (invoice: Invoice): Promise<string> => {
-  const invoiceHTML = generateInvoiceTemplate(invoice);
-  return invoiceHTML;
+  return generateInvoiceTemplate(invoice);
 };
 
 export const printInvoice = (invoice: Invoice): void => {
@@ -63,7 +70,7 @@ export const printInvoice = (invoice: Invoice): void => {
     printWindow.document.open();
     printWindow.document.write(invoiceHTML);
     printWindow.document.close();
-    printWindow.focus(); // Required for IE
+    printWindow.focus();
     printWindow.print();
     printWindow.close();
   } else {
@@ -71,7 +78,6 @@ export const printInvoice = (invoice: Invoice): void => {
   }
 };
 
-// Create a handleInvoiceExport function that was missing
 export const handleInvoiceExport = (
   type: "print" | "pdf" | "email", 
   invoice: Invoice, 
@@ -83,10 +89,9 @@ export const handleInvoiceExport = (
       printInvoice(invoice);
       break;
     case "pdf":
-      // In a real app, this would generate and download a PDF
       console.log("Generating PDF for invoice:", invoice.number);
-      const pdfContent = createInvoicePdf(invoice);
-      // Simulate download by opening in new window
+      // Remove async/await here since we're just writing to a new window
+      const pdfContent = generateInvoiceTemplate(invoice);
       const pdfWindow = window.open('', '_blank');
       if (pdfWindow) {
         pdfWindow.document.write(pdfContent);
@@ -99,7 +104,6 @@ export const handleInvoiceExport = (
         return;
       }
       console.log(`Sending invoice ${invoice.number} to ${email}`);
-      // In a real app, this would send the invoice via email
       break;
   }
 };
