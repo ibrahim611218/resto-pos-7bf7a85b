@@ -21,7 +21,8 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     closeInvoiceDetails,
     formatInvoiceDate,
     getStatusBadgeColor,
-    printInvoice
+    printInvoice,
+    refundInvoice
   } = useInvoices();
 
   return (
@@ -94,6 +95,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         onClose={closeInvoiceDetails}
         formatInvoiceDate={formatInvoiceDate}
         onPrint={printInvoice}
+        onRefund={refundInvoice}
       />
     </div>
   );

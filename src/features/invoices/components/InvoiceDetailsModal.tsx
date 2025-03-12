@@ -21,6 +21,7 @@ interface InvoiceDetailsModalProps {
   onClose: () => void;
   formatInvoiceDate: (date: Date) => string;
   onPrint: (invoice: Invoice) => void;
+  onRefund?: (invoiceId: string) => boolean;
 }
 
 const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
@@ -28,7 +29,8 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   open,
   onClose,
   formatInvoiceDate,
-  onPrint
+  onPrint,
+  onRefund
 }) => {
   const { settings } = useBusinessSettings();
   const [showEmailDialog, setShowEmailDialog] = React.useState(false);
@@ -76,6 +78,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
           settings={settings}
           onPrint={onPrint}
           onShowEmailDialog={() => setShowEmailDialog(true)}
+          onRefund={onRefund}
         />
         
         <EmailDialog 

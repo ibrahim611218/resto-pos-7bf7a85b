@@ -2,23 +2,35 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import { PrinterIcon, DownloadIcon, MailIcon } from "lucide-react";
+import { PrinterIcon, DownloadIcon, MailIcon, ReceiptMinus } from "lucide-react";
 import { Invoice, BusinessSettings } from "@/types";
 import { handleInvoiceExport } from "@/utils/invoice";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface InvoiceActionsProps {
   invoice: Invoice;
   settings: BusinessSettings;
   onPrint: (invoice: Invoice) => void;
   onShowEmailDialog: () => void;
+  onRefund?: (invoiceId: string) => boolean;
 }
 
 export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   invoice,
   settings,
   onPrint,
-  onShowEmailDialog
+  onShowEmailDialog,
+  onRefund
 }) => {
+  const { hasPermission } = useAuth();
+  const canRefund = hasPermission("admin") && invoice.status !== "refunded" && onRefund;
+  
+  const handleRefund = () => {
+    if (onRefund) {
+      onRefund(invoice.id);
+    }
+  };
+
   return (
     <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-6">
       <Button 
@@ -44,6 +56,16 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
         <MailIcon className="mr-2 h-4 w-4" />
         إرسال بالبريد
       </Button>
+      {canRefund && (
+        <Button 
+          variant="destructive"
+          className="flex-1"
+          onClick={handleRefund}
+        >
+          <ReceiptMinus className="mr-2 h-4 w-4" />
+          إرجاع الفاتورة
+        </Button>
+      )}
     </DialogFooter>
   );
 };
