@@ -12,6 +12,7 @@ import Products from "./pages/Products";
 import ProductForm from "./components/ProductForm";
 import Pos from "./pages/Pos";
 import Invoices from "./pages/Invoices";
+import RetrieveInvoice from "./pages/RetrieveInvoice";
 import Login from "./features/auth/Login";
 import Unauthorized from "./pages/Unauthorized";
 import { AuthProvider } from "./features/auth/hooks/useAuth";
@@ -44,6 +45,7 @@ function App() {
               {/* Routes accessible to cashiers and admins */}
               <Route element={<ProtectedRoute allowedRoles={["admin", "cashier"]} />}>
                 <Route path="/pos" element={<Pos />} />
+                <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
                 <Route path="/invoices" element={<Invoices />} />
                 <Route path="/customers" element={<Customers />} />
               </Route>

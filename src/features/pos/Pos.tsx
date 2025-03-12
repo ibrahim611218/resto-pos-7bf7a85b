@@ -6,7 +6,6 @@ import { useProductFiltering } from "./hooks/useProductFiltering";
 import { getSizeLabel } from "./utils/sizeLabels";
 import { categories, products } from "./data/mockData";
 import { formatInvoiceDate } from "./utils/formatters";
-import { useInvoiceSearch } from "./hooks/useInvoiceSearch";
 import PosHeader from "./components/PosHeader";
 import PosContent from "./components/PosContent";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
@@ -14,17 +13,6 @@ import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsMo
 const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  
-  const {
-    invoiceNumber,
-    setInvoiceNumber,
-    currentInvoice,
-    setCurrentInvoice,
-    showInvoiceModal,
-    setShowInvoiceModal,
-    handleInvoiceSearch,
-    handleRefundInvoice,
-  } = useInvoiceSearch();
   
   const {
     cartItems,
@@ -46,6 +34,10 @@ const Pos: React.FC = () => {
     setOrderType,
     setTableNumber,
     setPaymentMethod,
+    currentInvoice,
+    setCurrentInvoice,
+    showInvoiceModal,
+    setShowInvoiceModal,
   } = useCart();
   
   const {
@@ -77,11 +69,7 @@ const Pos: React.FC = () => {
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <PosHeader
-        invoiceNumber={invoiceNumber}
-        setInvoiceNumber={setInvoiceNumber}
-        handleInvoiceSearch={handleInvoiceSearch}
-      />
+      <PosHeader />
 
       <PosContent 
         cartItems={cartItems}
@@ -121,7 +109,6 @@ const Pos: React.FC = () => {
         onClose={() => setShowInvoiceModal(false)}
         formatInvoiceDate={(date) => formatInvoiceDate(date, language)}
         onPrint={handlePrintInvoice}
-        onRefund={handleRefundInvoice}
       />
     </div>
   );

@@ -1,19 +1,8 @@
 
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import InvoiceSearchBar from "./InvoiceSearchBar";
 
-interface PosHeaderProps {
-  invoiceNumber: string;
-  setInvoiceNumber: (value: string) => void;
-  handleInvoiceSearch: () => void;
-}
-
-const PosHeader: React.FC<PosHeaderProps> = ({
-  invoiceNumber,
-  setInvoiceNumber,
-  handleInvoiceSearch,
-}) => {
+const PosHeader: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
 
@@ -22,11 +11,6 @@ const PosHeader: React.FC<PosHeaderProps> = ({
       <div className="flex-1 text-xl font-semibold">
         {isArabic ? "نقاط البيع" : "Point of Sale"}
       </div>
-      <InvoiceSearchBar
-        invoiceNumber={invoiceNumber}
-        setInvoiceNumber={setInvoiceNumber}
-        handleInvoiceSearch={handleInvoiceSearch}
-      />
     </div>
   );
 };

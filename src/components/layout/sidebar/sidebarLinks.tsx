@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   ChefHat,
   Store,
+  FileSearch,
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
@@ -27,6 +28,12 @@ export const getSidebarLinks = (): SidebarLink[] => {
           name_en: "Point of Sale",
           path: "/pos",
           icon: <ShoppingCart size={18} />,
+        },
+        {
+          name: "استرجاع الفاتورة",
+          name_en: "Retrieve Invoice",
+          path: "/retrieve-invoice",
+          icon: <FileSearch size={18} />,
         },
         {
           name: "الفواتير",
