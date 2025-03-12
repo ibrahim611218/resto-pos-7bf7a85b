@@ -147,6 +147,21 @@ export const useProductForm = () => {
       variants: product.type === "sized" ? variants : [],
     };
 
+    // هنا نقوم بحفظ المنتج في قائمة المنتجات
+    if (isEditing) {
+      // تحديث المنتج الموجود
+      const productIndex = sampleProducts.findIndex(p => p.id === updatedProduct.id);
+      if (productIndex !== -1) {
+        sampleProducts[productIndex] = updatedProduct;
+      }
+    } else {
+      // إضافة منتج جديد
+      sampleProducts.push(updatedProduct);
+    }
+
+    console.log("Product saved:", updatedProduct);
+    console.log("Updated products list:", sampleProducts);
+
     const successMessage = isEditing 
       ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
       : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
