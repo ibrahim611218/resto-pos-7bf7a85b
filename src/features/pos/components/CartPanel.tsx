@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -85,13 +84,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="pos-cart-layout">
-      <div className={`p-3 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/90'} shadow-sm`}>
-        <h2 className="text-xl font-bold flex items-center justify-center mx-auto">
-          <ShoppingCart className={`${isArabic ? 'ml-3' : 'mr-3'} h-6 w-6 text-primary`} />
+    <div className="w-[400px] h-full flex flex-col overflow-hidden bg-card shadow-md">
+      <div className={`p-2 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/90'}`}>
+        <h2 className="text-lg font-bold flex items-center justify-center mx-auto">
+          <ShoppingCart className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
           {isArabic ? "السلة" : "Cart"}
           {!isEmpty && (
-            <span className="ml-2 text-sm bg-primary text-white rounded-full px-2.5 py-0.5">
+            <span className="ml-2 text-sm bg-primary text-white rounded-full px-2 py-0.5">
               {cartItems.length}
             </span>
           )}
@@ -99,16 +98,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
         <Button 
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-10 w-10" 
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
-          <Trash2 className="h-5 w-5" />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
       
-      <div className="pos-cart-items">
+      <div className="flex-1 overflow-y-auto p-2">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
@@ -128,7 +127,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="pos-cart-footer">
+      <div className="p-2 border-t">
         <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
           <div className="flex items-center justify-center mb-3">
             <div className="flex items-center gap-2 text-primary font-bold text-lg">

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Product, Category } from "@/types";
 import CategoryList from "./CategoryList";
@@ -47,7 +46,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     setSelectedProduct(null);
   };
 
-  // Group products by category for better organization
   const productsByCategory = filteredProducts.reduce((acc: Record<string, Product[]>, product) => {
     if (!acc[product.categoryId]) {
       acc[product.categoryId] = [];
@@ -57,16 +55,16 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   }, {});
 
   return (
-    <div className="pos-products-panel shadow-sm">
-      <div className={`p-3 text-center border-b ${isLightTheme ? 'bg-background' : 'bg-card/80'}`}>
+    <div className="flex-grow h-full flex flex-col overflow-hidden border-r border-border">
+      <div className={`p-2 border-b ${isLightTheme ? 'bg-background' : 'bg-card/80'}`}>
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
-          className="mb-3 mx-auto max-w-md"
+          className="mb-2 mx-auto max-w-md"
         />
         
-        <div className={`pos-categories rounded-lg ${isLightTheme ? 'bg-muted/50' : 'bg-muted/30'}`}>
+        <div className={`overflow-x-auto flex gap-2 p-2 rounded-lg ${isLightTheme ? 'bg-muted/50' : 'bg-muted/30'}`}>
           <CategoryList
             categories={categories}
             activeCategory={activeCategory}
@@ -76,7 +74,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         </div>
       </div>
       
-      <div className="pos-products-grid">
+      <div className="flex-1 overflow-y-auto p-2">
         {searchTerm ? (
           <div className="mt-2 space-y-2 w-full">
             <h3 className="font-bold text-lg mb-3 centered-text">

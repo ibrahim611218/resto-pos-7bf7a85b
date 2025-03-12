@@ -69,7 +69,7 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className="pos-container"
+      className="h-full w-full overflow-hidden flex flex-col"
       dir={isArabic ? "rtl" : "ltr"}
     >
       <PosHeader />
