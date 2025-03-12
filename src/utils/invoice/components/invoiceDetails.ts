@@ -14,12 +14,13 @@ export const generateInvoiceDetails = (invoice: Invoice): string => {
       ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
       <p><strong>طريقة الدفع:</strong> ${invoice.paymentMethod}</p>
       
-      ${invoice.customer ? `
-        <div class="customer-info">
-          <p><strong>العميل:</strong> ${invoice.customer.name}</p>
-          ${invoice.customer.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${invoice.customer.taxNumber}</p>` : ''}
-        </div>
-      ` : ''}
+      <div class="customer-info" style="margin-top: 15px; padding: 10px; border: 1px dashed #ccc; border-radius: 5px;">
+        <h3 style="margin-top: 0; margin-bottom: 10px; text-align: center; font-size: 16px;">بيانات العميل</h3>
+        <p><strong>اسم العميل:</strong> ${invoice.customer?.name || "عميل نقدي"}</p>
+        ${invoice.customer?.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${invoice.customer.taxNumber}</p>` : ''}
+        ${invoice.customer?.phone ? `<p><strong>رقم الجوال:</strong> ${invoice.customer.phone}</p>` : ''}
+        ${invoice.customer?.email ? `<p><strong>البريد الإلكتروني:</strong> ${invoice.customer.email}</p>` : ''}
+      </div>
     </div>
   `;
 };
