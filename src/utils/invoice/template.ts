@@ -1,9 +1,15 @@
+
 import { Invoice, BusinessSettings } from "@/types";
 import { QRCodeCanvas } from "qrcode.react";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { generateInvoiceQRCodeData } from "./qrcode";
-import { calculateDiscountAmount } from "./calculations";
+import { getInvoiceStyles } from "./styles";
+import { generateInvoiceHeader } from "./components/invoiceHeader";
+import { generateInvoiceDetails } from "./components/invoiceDetails";
+import { generateInvoiceItemsTable } from "./components/invoiceItems";
+import { generateInvoiceSummary } from "./components/invoiceSummary";
+import { generateInvoiceFooter } from "./components/invoiceFooter";
 
 /**
  * Generates HTML content for printable invoice
@@ -12,13 +18,6 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
   const qrCodeElement = React.createElement(QRCodeCanvas, { value: generateInvoiceQRCodeData(invoice), size: 100 });
   const qrCodeString = renderToString(qrCodeElement);
   
-  const discountAmount = calculateDiscountAmount(
-    invoice.subtotal,
-    invoice.taxAmount,
-    invoice.discount || 0,
-    invoice.discountType || "percentage"
-  );
-  
   const htmlContent = `
     <!DOCTYPE html>
     <html dir="rtl">
@@ -26,171 +25,23 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
       <title>فاتورة ${invoice.number}</title>
       <meta charset="UTF-8">
       <style>
-        body { 
-          font-family: 'Tajawal', Arial, sans-serif; 
-          margin: 0; 
-          padding: 20px; 
-          direction: rtl;
-        }
-        .invoice-header { 
-          text-align: center; 
-          margin-bottom: 20px; 
-        }
-        .logo { 
-          max-width: 150px; 
-          max-height: 80px; 
-          margin: 0 auto;
-          display: block;
-        }
-        .brand-logo {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 10px;
-        }
-        .brand-name {
-          font-size: 24px;
-          font-weight: bold;
-          display: inline-block;
-        }
-        .brand-name-primary {
-          color: #00825A;
-        }
-        .brand-name-accent {
-          color: #FF6B00;
-        }
-        .invoice-details { 
-          margin-bottom: 20px; 
-        }
-        .invoice-table { 
-          width: 100%; 
-          border-collapse: collapse; 
-          margin: 20px 0;
-        }
-        .invoice-table th, .invoice-table td { 
-          border: 1px solid #ddd; 
-          padding: 8px; 
-          text-align: right; 
-        }
-        .invoice-table th { 
-          background-color: #f2f2f2; 
-        }
-        .invoice-summary { 
-          margin-top: 20px; 
-          text-align: left;
-          width: 50%;
-          margin-left: auto;
-        }
-        .invoice-summary p {
-          display: flex;
-          justify-content: space-between;
-        }
-        .qr-code { 
-          text-align: center; 
-          margin-top: 20px; 
-        }
-        .invoice-footer { 
-          margin-top: 30px; 
-          text-align: center; 
-          font-size: 12px;
-          color: #666;
-        }
-        .total-row {
-          font-weight: bold;
-          font-size: 1.2em;
-        }
-        .customer-info {
-          margin-top: 10px;
-          border: 1px solid #ddd;
-          padding: 10px;
-          background-color: #f9f9f9;
-        }
-        .software-info {
-          margin-top: 30px;
-          text-align: center;
-          font-size: 10px;
-          color: #999;
-        }
+        ${getInvoiceStyles()}
       </style>
     </head>
     <body>
-      <div class="invoice-header">
-        ${businessSettings.logo ? 
-          `<img src="${businessSettings.logo}" class="logo" alt="شعار المطعم">` : 
-          `<div class="brand-logo">
-             <img src="/assets/restopos-logo.png" width="80" height="80" alt="RestoPOS">
-             <span class="brand-name">
-               <span class="brand-name-primary">Resto</span><span class="brand-name-accent">POS</span>
-             </span>
-           </div>`
-        }
-        <h1>${businessSettings.nameAr || businessSettings.name || "RestoPOS"}</h1>
-        ${businessSettings.taxNumber ? `<p>الرقم الضريبي: ${businessSettings.taxNumber}</p>` : ''}
-        ${businessSettings.addressAr ? `<p>${businessSettings.addressAr}</p>` : ''}
-        ${businessSettings.phone ? `<p>هاتف: ${businessSettings.phone}</p>` : ''}
-        ${businessSettings.commercialRegisterAr ? `<p>السجل التجاري: ${businessSettings.commercialRegisterAr}</p>` : ''}
-      </div>
+      ${generateInvoiceHeader(businessSettings)}
       
-      <div class="invoice-details">
-        <h2 style="text-align: center;">فاتورة رقم #${invoice.number}</h2>
-        <p><strong>التاريخ:</strong> ${new Date(invoice.date).toLocaleDateString('ar-SA')}</p>
-        <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
-        <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
-        ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
-        <p><strong>طريقة الدفع:</strong> ${invoice.paymentMethod}</p>
-        
-        ${invoice.customer ? `
-          <div class="customer-info">
-            <p><strong>العميل:</strong> ${invoice.customer.name}</p>
-            ${invoice.customer.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${invoice.customer.taxNumber}</p>` : ''}
-          </div>
-        ` : ''}
-      </div>
+      ${generateInvoiceDetails(invoice)}
       
-      <table class="invoice-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>الصنف</th>
-            <th>السعر</th>
-            <th>الكمية</th>
-            <th>الإجمالي</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${invoice.items.map((item, index) => `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${item.nameAr || item.name} (${item.size})</td>
-              <td>${item.price.toFixed(2)} ر.س</td>
-              <td>${item.quantity}</td>
-              <td>${(item.price * item.quantity).toFixed(2)} ر.س</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
+      ${generateInvoiceItemsTable(invoice)}
       
-      <div class="invoice-summary">
-        <p><strong>المجموع الفرعي:</strong> <span>${invoice.subtotal.toFixed(2)} ر.س</span></p>
-        <p><strong>ضريبة القيمة المضافة (${businessSettings.taxRate}%):</strong> <span>${invoice.taxAmount.toFixed(2)} ر.س</span></p>
-        ${invoice.discount ? `<p><strong>الخصم${invoice.discountType === 'percentage' ? ` (${invoice.discount}%)` : ''}:</strong> <span>${
-          discountAmount.toFixed(2)
-        } ر.س</span></p>` : ''}
-        <p class="total-row"><strong>الإجمالي:</strong> <span>${invoice.total.toFixed(2)} ر.س</span></p>
-      </div>
+      ${generateInvoiceSummary(invoice, businessSettings)}
       
       <div class="qr-code">
         ${qrCodeString}
       </div>
       
-      <div class="invoice-footer">
-        <p>${businessSettings.invoiceNotesAr || businessSettings.invoiceNotes || ''}</p>
-        <p>شكراً لزيارتكم</p>
-      </div>
-
-      <div class="software-info">
-        <p>تم إنشاء هذه الفاتورة بواسطة نظام RestoPOS - أنظمة نقاط البيع للمطاعم</p>
-      </div>
+      ${generateInvoiceFooter(businessSettings)}
 
       <script>
         window.onload = function() {
