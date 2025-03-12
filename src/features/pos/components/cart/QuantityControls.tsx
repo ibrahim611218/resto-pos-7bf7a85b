@@ -1,8 +1,7 @@
 
-import React, { memo } from "react";
+import React from "react";
 import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/context/ThemeContext";
 
 interface QuantityControlsProps {
   quantity: number;
@@ -15,31 +14,27 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   onIncrease,
   onDecrease,
 }) => {
-  const { theme } = useTheme();
-  const isLightTheme = theme === "light";
-
   return (
-    <div className={`flex items-center space-x-2 ${isLightTheme ? 'bg-primary/5' : 'bg-secondary/50'} rounded-full p-1.5`}>
+    <div className="flex items-center space-x-1">
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full hover:bg-primary hover:text-white"
+        className="h-7 w-7"
         onClick={onDecrease}
       >
-        <Minus className="h-4 w-4" />
+        <Minus className="h-3 w-3" />
       </Button>
-      <span className="w-6 text-center font-medium text-base">{quantity}</span>
+      <span className="w-6 text-center">{quantity}</span>
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-full hover:bg-primary hover:text-white"
+        className="h-7 w-7"
         onClick={onIncrease}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-3 w-3" />
       </Button>
     </div>
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
-export default memo(QuantityControls);
+export default QuantityControls;

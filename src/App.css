@@ -1,16 +1,8 @@
-
-@import "./styles/core/scrollbar.css";
-@import "./styles/core/containers.css";
-@import "./styles/core/responsive.css";
-@import "./styles/core/aspect-ratio.css";
-@import "./styles/core/input-methods.css";
-@import "./styles/core/flex.css";
-
 #root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
 .logo {
@@ -19,11 +11,9 @@
   will-change: filter;
   transition: filter 300ms;
 }
-
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
-
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -43,128 +33,10 @@
   }
 }
 
-/* POS specific styles */
-.pos-screen {
-  height: 100vh;
-  width: 100vw;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.card {
+  padding: 2em;
 }
 
-.centered-text {
-  text-align: center;
-}
-
-/* Utility classes for full-height display */
-.h-full-fixed {
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-}
-
-/* Sidebar styles */
-.sidebar-container {
-  height: 100%;
-  background-color: var(--card);
-  border-right: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.sidebar-visible {
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-hidden {
-  box-shadow: none;
-}
-
-.sidebar-item {
-  padding: 10px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
-  font-weight: 500;
-}
-
-.sidebar-item:hover {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
-}
-
-/* Single-page layout */
-.single-page-layout {
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.single-page-header {
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background-color: var(--card);
-}
-
-.single-page-content {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-}
-
-.single-page-main {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.scrollable-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.5rem;
-}
-
-.compact-grid {
-  display: grid;
-  gap: 0.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-}
-
-.compact-form {
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.compact-form .form-row {
-  margin-bottom: 0.5rem;
-}
-
-.compact-card {
-  padding: 0.75rem;
-}
-
-.compact-table {
-  font-size: 0.875rem;
-}
-
-.compact-table th, 
-.compact-table td {
-  padding: 0.5rem 0.75rem;
-}
-
-.compact-tabs .tab {
-  padding: 0.5rem 0.75rem;
-}
-
-/* Collapsible sidebar */
-.main-content-with-sidebar {
-  transition: margin-left 0.3s ease, width 0.3s ease;
+.read-the-docs {
+  color: #888;
 }

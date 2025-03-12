@@ -1,5 +1,5 @@
 
-import React, { memo } from "react";
+import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
 import CartPanel from "./CartPanel";
@@ -68,25 +68,13 @@ const PosContent: React.FC<PosContentProps> = ({
   searchedProducts,
   getSizeLabel,
 }) => {
-  const handleCreateInvoice = React.useCallback((customerName?: string, customerTaxNumber?: string) => {
-    return createInvoice(customerName, customerTaxNumber);
-  }, [createInvoice]);
+  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
+    const invoice = createInvoice(customerName, customerTaxNumber);
+    return invoice;
+  };
 
   return (
-    <main className="flex flex-1 h-full overflow-hidden">
-      <ProductsPanel 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        onAddToCart={addToCart}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
-      />
-      
+    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}
@@ -110,8 +98,21 @@ const PosContent: React.FC<PosContentProps> = ({
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
       />
-    </main>
+      
+      <ProductsPanel 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categories={categories}
+        filteredProducts={filteredProducts}
+        searchedProducts={searchedProducts}
+        onAddToCart={addToCart}
+        isArabic={isArabic}
+        getSizeLabel={getSizeLabel}
+      />
+    </div>
   );
 };
 
-export default memo(PosContent);
+export default PosContent;

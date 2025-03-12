@@ -1,5 +1,5 @@
 
-import React, { memo } from "react";
+import React from "react";
 import { formatCurrency } from "@/utils/invoice";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -27,7 +27,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     : discount;
 
   return (
-    <div className="space-y-3 text-base text-center mx-auto max-w-sm">
+    <div className="space-y-3 text-base">
       <div className="flex justify-between">
         <span className="text-muted-foreground">
           {isArabic ? "المجموع الفرعي" : "Subtotal"}
@@ -69,5 +69,4 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
-export default memo(CartSummary);
+export default CartSummary;

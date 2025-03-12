@@ -3,7 +3,6 @@ import React from "react";
 import BusinessSettingsForm from "@/features/settings/BusinessSettingsForm";
 import { useLanguage } from "@/context/LanguageContext";
 import DataManagement from "@/features/settings/components/DataManagement";
-import DisplaySettingsComponent from "@/features/settings/components/DisplaySettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -12,43 +11,28 @@ const BusinessSettings = () => {
   const isArabic = language === "ar";
   
   return (
-    <div className="container content-container p-4" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
       <Tabs defaultValue="business" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
           <TabsTrigger value="business">
             {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
-          </TabsTrigger>
-          <TabsTrigger value="display">
-            {isArabic ? "إعدادات العرض" : "Display Settings"}
           </TabsTrigger>
           <TabsTrigger value="data">
             {isArabic ? "إدارة البيانات" : "Data Management"}
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="business" className="w-full flex justify-center">
-          <div className="w-full max-w-4xl">
-            <BusinessSettingsForm language={language} />
-          </div>
+        <TabsContent value="business">
+          <BusinessSettingsForm language={language} />
         </TabsContent>
-        
-        <TabsContent value="display" className="w-full flex justify-center">
-          <div className="w-full">
-            <DisplaySettingsComponent />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="data" className="w-full flex justify-center">
-          <div className="w-full max-w-4xl">
-            <Card>
-              <CardHeader>
-                <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DataManagement />
-              </CardContent>
-            </Card>
-          </div>
+        <TabsContent value="data">
+          <Card>
+            <CardHeader>
+              <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DataManagement />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
