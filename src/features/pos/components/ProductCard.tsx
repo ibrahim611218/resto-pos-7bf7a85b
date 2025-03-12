@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -73,9 +72,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         onClick?.();
       }
       // 3. Products without variants (simple products) - add directly using product id as variantId
-      else {
-        // For products without variants, we'll use the product id as the variantId
-        onAddToCart(product, product.id);
+      else if (product.variants.length === 0 && product.price) {
+        onAddToCart(product, "simple");
       }
     }
   };

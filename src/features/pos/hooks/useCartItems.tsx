@@ -10,7 +10,7 @@ export const useCartItems = () => {
   const isArabic = language === "ar";
 
   const addToCart = useCallback((product: Product, variantId: string) => {
-    // Handle products with variants
+    // Handle products with variants (sized products)
     if (product.variants.length > 0) {
       const variant = product.variants.find((v) => v.id === variantId);
       
