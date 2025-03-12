@@ -15,7 +15,8 @@ interface SidebarHeaderProps {
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
   const { settings } = useBusinessSettings();
   const { theme } = useTheme();
-  const isDark = theme !== "light";
+  const isDark = theme === "dark";
+  const isSaudi = theme === "saudi";
   
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b">
@@ -28,7 +29,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
                 <span className="text-[#00825A]">Resto</span>
                 <span className="text-[#FF6B00]">POS</span>
               </h2>
-              <span className={`text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>نظام المطاعم</span>
+              <span className={`text-xs ${isDark ? 'text-gray-300' : isSaudi ? 'text-gray-600' : 'text-gray-600'}`}>نظام المطاعم</span>
             </div>
           </div>
         </AnimatedTransition>
