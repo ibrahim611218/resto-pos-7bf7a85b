@@ -1,16 +1,29 @@
-
 import { CartItem } from "@/types";
 
 /**
- * Generates a unique invoice number with a prefix, timestamp and random digits
+ * Generates a numeric invoice number
  */
 export const generateInvoiceNumber = (): string => {
-  const prefix = "INV";
-  const timestamp = Date.now().toString().slice(-8);
-  const random = Math.floor(Math.random() * 1000)
-    .toString()
-    .padStart(3, "0");
-  return `${prefix}-${timestamp}-${random}`;
+  // Get existing invoices from localStorage to find the highest invoice number
+  let nextInvoiceNumber = 1;
+  try {
+    const storedInvoices = localStorage.getItem('invoices');
+    if (storedInvoices) {
+      const invoices = JSON.parse(storedInvoices);
+      // Find the highest invoice number
+      const highestNumber = invoices.reduce((max: number, invoice: any) => {
+        const invoiceNum = parseInt(invoice.number);
+        return isNaN(invoiceNum) ? max : Math.max(max, invoiceNum);
+      }, 0);
+      nextInvoiceNumber = highestNumber + 1;
+    }
+  } catch (error) {
+    console.error("Error getting next invoice number:", error);
+    // Default to 1 if there's an error
+    nextInvoiceNumber = 1;
+  }
+  
+  return nextInvoiceNumber.toString();
 };
 
 /**

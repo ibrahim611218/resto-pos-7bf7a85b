@@ -47,6 +47,8 @@ export const useDataManagement = () => {
   const deleteAllInvoices = () => {
     // حذف الفواتير من الذاكرة المحلية
     localStorage.removeItem('invoices');
+    // إعادة تعيين أرقام الفواتير (ببدء العد من 1 في المرة القادمة)
+    localStorage.setItem('lastInvoiceNumber', '0');
     // حذف الفواتير من المصفوفة الافتراضية
     mockInvoices.length = 0;
   };
@@ -74,6 +76,7 @@ export const useDataManagement = () => {
     localStorage.removeItem('defaultProducts');
     localStorage.removeItem('defaultCategories');
     localStorage.removeItem('defaultInventory');
+    localStorage.removeItem('lastInvoiceNumber');
   };
 
   const confirmDelete = async () => {

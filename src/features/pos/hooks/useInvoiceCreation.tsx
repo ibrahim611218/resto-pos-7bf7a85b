@@ -2,7 +2,7 @@
 import { useCallback, useState } from "react";
 import { Invoice, PaymentMethod, Customer } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { generateInvoiceNumber } from "@/utils/invoice";
+import { generateInvoiceNumber } from "@/utils/invoice/calculations";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";

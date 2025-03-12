@@ -12,10 +12,22 @@ export const useInvoiceSearch = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const findInvoiceByNumber = (number: string): Invoice | null => {
+    // Try to find the invoice in localStorage
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        const invoices = JSON.parse(storedInvoices);
+        return invoices.find((inv: Invoice) => inv.number === number) || null;
+      }
+    } catch (error) {
+      console.error("Error searching for invoice:", error);
+    }
+    
+    // If not found in localStorage, check mock data
     const mockInvoices = [
       {
         id: "inv123",
-        number: "INV-20230001",
+        number: "1", // Updated to use numeric format
         date: new Date(),
         items: [
           { 
