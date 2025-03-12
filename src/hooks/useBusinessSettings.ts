@@ -12,6 +12,7 @@ const defaultSettings: BusinessSettings = {
   phone: "+966 50 000 0000",
   email: "info@restaurant.com",
   taxRate: 15,
+  taxIncluded: false, // الضريبة غير مضمنة في السعر افتراضيًا
   commercialRegister: "1010000000",
   commercialRegisterAr: "١٠١٠٠٠٠٠٠٠",
   invoiceNotes: "شكراً لزيارتكم، نتمنى أن تزورونا مرة أخرى",

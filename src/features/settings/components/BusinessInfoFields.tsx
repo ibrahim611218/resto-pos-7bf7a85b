@@ -1,18 +1,30 @@
-
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2, Phone, Mail, Hash, FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { BusinessSettings } from "@/types";
+import TaxInclusionToggle from "./TaxInclusionToggle";
 
 interface BusinessInfoFieldsProps {
   settings: BusinessSettings;
   isArabic: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onSwitchChange?: (name: string, checked: boolean) => void;
 }
 
-const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({ settings, isArabic, onChange }) => {
+const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({ 
+  settings, 
+  isArabic, 
+  onChange,
+  onSwitchChange 
+}) => {
+  const handleTaxInclusionChange = (checked: boolean) => {
+    if (onSwitchChange) {
+      onSwitchChange('taxIncluded', checked);
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -70,6 +82,12 @@ const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({ settings, isAra
           />
         </div>
       </div>
+      
+      <TaxInclusionToggle 
+        taxIncluded={settings.taxIncluded}
+        isArabic={isArabic}
+        onChange={handleTaxInclusionChange}
+      />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">

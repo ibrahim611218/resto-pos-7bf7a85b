@@ -5,8 +5,6 @@ export type UserRole = "admin" | "manager" | "cashier" | "kitchen";
 
 export type Size = "small" | "medium" | "large";
 
-export type ProductType = "sized" | "single";
-
 export interface User {
   id: string;
   name: string;
@@ -93,6 +91,7 @@ export interface BusinessSettings {
   email: string;
   logo?: string;
   taxRate: number;
+  taxIncluded: boolean; // إضافة خيار جديد للتحكم في طريقة حساب الضريبة
   commercialRegister?: string;
   commercialRegisterAr?: string;
   invoiceNotes?: string;

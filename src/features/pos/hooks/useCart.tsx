@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Product, CartItem, Invoice, PaymentMethod } from "@/types";
 import { toast } from "@/hooks/use-toast";
@@ -29,12 +28,10 @@ export const useCart = () => {
     }
     
     setCartItems((prev) => {
-      // Check if this product variant already exists in cart
       const existingItemIndex = prev.findIndex(
         (item) => item.productId === product.id && item.variantId === variantId
       );
       
-      // If found, increment quantity
       if (existingItemIndex >= 0) {
         const newItems = [...prev];
         newItems[existingItemIndex].quantity += 1;
@@ -49,7 +46,6 @@ export const useCart = () => {
         return newItems;
       }
       
-      // Otherwise add new item
       const newItem: CartItem = {
         id: `${product.id}-${variantId}-${Date.now()}`,
         productId: product.id,
@@ -103,27 +99,17 @@ export const useCart = () => {
     setPaymentMethod("cash");
   }, []);
 
-  // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+  const { subtotal, taxAmount, total } = calculateInvoiceAmounts(
+    cartItems,
+    settings.taxRate,
+    discount,
+    discountType,
+    settings.taxIncluded
   );
-  
-  const taxRate = settings.taxRate / 100 || 0.15; // Use tax rate from settings
-  const taxAmount = subtotal * taxRate;
-  
-  // Calculate discount amount
-  const discountAmount = discountType === "percentage" 
-    ? (subtotal + taxAmount) * (discount / 100)
-    : discount;
-  
-  // Calculate final total after discount
-  const total = Math.max(0, subtotal + taxAmount - discountAmount);
 
   const createInvoice = useCallback((): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
-    // Create the invoice object with all needed data
     const invoice: Invoice = {
       id: Math.random().toString(36).substring(2, 9),
       number: invoiceId,
@@ -142,7 +128,6 @@ export const useCart = () => {
       tableNumber: orderType === "dineIn" ? tableNumber : undefined
     };
     
-    // In a real app, you'd save the invoice to a database here
     toast({
       title: isArabic ? "تم إنشاء الفاتورة" : "Invoice created",
       description: isArabic 

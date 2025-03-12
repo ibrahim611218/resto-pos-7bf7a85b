@@ -25,6 +25,12 @@ const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language })
     });
   };
   
+  const handleSwitchChange = (name: string, checked: boolean) => {
+    updateSettings({
+      [name]: checked
+    });
+  };
+  
   const handleLogoChange = (logoData: string) => {
     updateSettings({
       logo: logoData
@@ -63,6 +69,7 @@ const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language })
               settings={settings} 
               isArabic={isArabic} 
               onChange={handleInputChange} 
+              onSwitchChange={handleSwitchChange}
             />
           </CardContent>
           <CardFooter>
