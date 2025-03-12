@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 
 // Mock customers data
-const mockCustomers: Customer[] = [
+export const mockCustomers: Customer[] = [
   {
     id: "cust-1",
     name: "محمد عبدالله",
