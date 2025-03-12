@@ -78,7 +78,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         />
       </div>
       
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-2 pb-16">
         <Tabs defaultValue="categories" className="mb-2">
           <TabsList className="grid grid-cols-2 mb-2 sticky top-0 z-10">
             <TabsTrigger value="categories" className={isMobile ? "text-sm" : "text-base"}>
@@ -89,7 +89,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="categories" className="mt-2">
+          <TabsContent value="categories" className="mt-2 px-1">
             <CategoryList
               categories={categories}
               activeCategory={activeCategory}
@@ -104,7 +104,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                     ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                     : categories.find(c => c.id === activeCategory)?.name || "Products"}
                 </h3>
-                <div className={`grid ${getGridCols()} gap-2`}>
+                <div className={`grid ${getGridCols()} gap-2 pl-2`}>
                   {searchedProducts.map((product, index) => (
                     <GlassCard
                       key={product.id}
@@ -128,14 +128,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             )}
           </TabsContent>
           
-          <TabsContent value="all" className="mt-2 space-y-3">
+          <TabsContent value="all" className="mt-2 space-y-3 px-1">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-3">
                   <h3 className={`font-bold mb-2 text-sm border-b pb-1 sticky top-12 bg-background z-10 ${isMobile ? "text-xs" : ""}`}>
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className={`grid ${getGridCols()} gap-2`}>
+                  <div className={`grid ${getGridCols()} gap-2 pl-2`}>
                     {productsByCategory[category.id]?.map((product, index) => (
                       <GlassCard
                         key={product.id}
