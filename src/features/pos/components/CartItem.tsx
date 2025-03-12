@@ -23,6 +23,12 @@ const CartItemComponent: React.FC<CartItemProps> = ({
   updateQuantity,
   removeItem,
 }) => {
+  // Function to set quantity directly
+  const setQuantity = (newQuantity: number) => {
+    const change = newQuantity - item.quantity;
+    updateQuantity(item.id, change);
+  };
+
   return (
     <AnimatedTransition animation="slide-up" delay={index * 50}>
       <div className="flex justify-between items-center bg-secondary p-3 rounded-lg">
@@ -40,6 +46,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
             quantity={item.quantity}
             onDecrease={() => updateQuantity(item.id, -1)}
             onIncrease={() => updateQuantity(item.id, 1)}
+            onSetQuantity={(qty) => setQuantity(qty)}
           />
           <RemoveItemButton onRemove={() => removeItem(item.id)} />
         </div>

@@ -71,6 +71,18 @@ export const useCartItems = () => {
     });
   }, []);
 
+  const setQuantity = useCallback((itemId: string, quantity: number) => {
+    setCartItems((prev) => {
+      return prev.map((item) => {
+        if (item.id === itemId) {
+          const newQuantity = Math.max(1, quantity);
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      });
+    });
+  }, []);
+
   const removeItem = useCallback((itemId: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== itemId));
     toast({
@@ -89,6 +101,7 @@ export const useCartItems = () => {
     cartItems,
     addToCart,
     updateQuantity,
+    setQuantity,
     removeItem,
     clearCart
   };
