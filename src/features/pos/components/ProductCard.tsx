@@ -92,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         <div className={`font-medium truncate ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
           {isArabic && product.nameAr ? product.nameAr : product.name}
         </div>
-        <div className={`text-sm mt-1 ${isLightTheme ? 'text-gray-600 font-semibold' : 'text-gray-300'}`}>
+        <div className="text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block">
           {displayPrice} {isArabic ? "ر.س" : "SAR"}
         </div>
       </CardContent>
