@@ -19,10 +19,10 @@ const MainLayout = () => {
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={`flex-1 transition-all duration-300 ease-in-out ${
-            !sidebarCollapsed && !isMobile ? "ml-64" : "ml-0"
+            !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
           }`}
         >
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-6 h-screen overflow-hidden">
             <Outlet />
           </div>
         </div>

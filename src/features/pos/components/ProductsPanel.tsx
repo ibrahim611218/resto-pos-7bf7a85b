@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
@@ -90,7 +91,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                     ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                     : categories.find(c => c.id === activeCategory)?.name || "Products"}
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                   {searchedProducts.map((product, index) => (
                     <GlassCard
                       key={product.id}
@@ -100,7 +101,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                       onClick={() => handleProductClick(product)}
                     >
                       <div className="text-center py-2">
-                        <p className="font-medium">
+                        <p className="font-medium truncate">
                           {isArabic ? product.nameAr : product.name}
                         </p>
                         <p className="text-sm text-muted-foreground mt-1">
@@ -121,7 +122,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                   <h3 className="font-bold mb-3 text-lg border-b pb-2">
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {productsByCategory[category.id]?.map((product, index) => (
                       <GlassCard
                         key={product.id}
@@ -131,7 +132,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                         onClick={() => handleProductClick(product)}
                       >
                         <div className="text-center py-2">
-                          <p className="font-medium">
+                          <p className="font-medium truncate">
                             {isArabic ? product.nameAr : product.name}
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">

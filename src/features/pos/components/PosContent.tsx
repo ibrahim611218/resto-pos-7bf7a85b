@@ -74,7 +74,20 @@ const PosContent: React.FC<PosContentProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+    <div className="flex flex-col md:flex-row h-full overflow-hidden">
+      <ProductsPanel 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categories={categories}
+        filteredProducts={filteredProducts}
+        searchedProducts={searchedProducts}
+        onAddToCart={addToCart}
+        isArabic={isArabic}
+        getSizeLabel={getSizeLabel}
+      />
+      
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}
@@ -97,19 +110,6 @@ const PosContent: React.FC<PosContentProps> = ({
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
-      />
-      
-      <ProductsPanel 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        onAddToCart={addToCart}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
       />
     </div>
   );

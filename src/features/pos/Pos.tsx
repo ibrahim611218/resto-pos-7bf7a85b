@@ -69,7 +69,7 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`h-[calc(100vh-4rem)] flex flex-col ${
+      className={`h-screen flex flex-col ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}
