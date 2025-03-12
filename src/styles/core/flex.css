@@ -12,3 +12,21 @@
   flex: 1 1 auto;
   min-width: 0; /* Prevents flex items from overflowing */
 }
+
+/* Centered flex containers */
+.flex-container-center {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

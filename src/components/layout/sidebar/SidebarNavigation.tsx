@@ -20,7 +20,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const location = useLocation();
 
   return (
-    <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto">
+    <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto text-center">
       {links.map((link) => (
         <SidebarItem
           key={link.name}

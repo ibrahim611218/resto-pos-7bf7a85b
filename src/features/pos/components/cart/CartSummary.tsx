@@ -27,7 +27,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     : discount;
 
   return (
-    <div className="space-y-3 text-base">
+    <div className="space-y-3 text-base text-center mx-auto max-w-sm">
       <div className="flex justify-between">
         <span className="text-muted-foreground">
           {isArabic ? "المجموع الفرعي" : "Subtotal"}

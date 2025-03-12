@@ -23,7 +23,7 @@ const CartActions: React.FC<CartActionsProps> = ({
   const isLightTheme = theme === "light";
 
   return (
-    <div className="mt-6 space-y-4">
+    <div className="mt-6 space-y-4 text-center">
       <Button 
         className={`w-full h-16 flex items-center justify-center gap-2 text-xl shadow-md transition-all duration-200 hover:translate-y-[-2px] transform ${
           isLightTheme ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80' : 'bg-primary hover:bg-primary/90'
@@ -31,7 +31,7 @@ const CartActions: React.FC<CartActionsProps> = ({
         onClick={handleCreateInvoice}
         disabled={isEmpty}
       >
-        <div className="flex items-center">
+        <div className="flex items-center justify-center">
           <CreditCard className={`${isArabic ? 'ml-3' : 'mr-3'} h-6 w-6`} />
           {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>

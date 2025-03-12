@@ -13,7 +13,7 @@ const EmptyCart: React.FC = () => {
 
   return (
     <AnimatedTransition animation="fade">
-      <div className="flex flex-col items-center justify-center h-60 text-muted-foreground py-12">
+      <div className="flex flex-col items-center justify-center h-60 text-muted-foreground py-12 text-center">
         <div className={`w-24 h-24 rounded-full ${isLightTheme ? 'bg-primary/10' : 'bg-primary/20'} flex items-center justify-center mb-4`}>
           <ShoppingCartIcon className="h-12 w-12 text-primary/70" />
         </div>

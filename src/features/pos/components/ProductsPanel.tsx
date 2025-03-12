@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
@@ -63,29 +64,31 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden">
-      <div className="p-4 pb-0">
+      <div className="p-4 pb-0 text-center">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
-          className="mb-3"
+          className="mb-3 mx-auto max-w-md"
         />
         
-        <CategoryList
-          categories={categories}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          isArabic={isArabic}
-        />
+        <div className="centered-flex">
+          <CategoryList
+            categories={categories}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            isArabic={isArabic}
+          />
+        </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto no-scrollbar p-4 pt-2">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 pt-2 text-center">
         {searchTerm ? (
           <div className="mt-2 space-y-2">
-            <h3 className="font-bold text-lg mb-3">
+            <h3 className="font-bold text-lg mb-3 centered-text">
               {isArabic ? "نتائج البحث" : "Search Results"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 place-items-center">
               {searchedProducts.map((product, index) => (
                 <ProductCard 
                   key={product.id}
@@ -99,12 +102,12 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           </div>
         ) : activeCategory ? (
           <div className="mt-2 space-y-2">
-            <h3 className="font-bold text-lg mb-3">
+            <h3 className="font-bold text-lg mb-3 centered-text">
               {isArabic 
                 ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                 : categories.find(c => c.id === activeCategory)?.name || "Products"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 place-items-center">
               {filteredProducts
                 .filter(product => product.categoryId === activeCategory)
                 .map((product, index) => (
@@ -123,10 +126,10 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-6">
-                  <h3 className="font-bold mb-3 text-lg border-b pb-2">
+                  <h3 className="font-bold mb-3 text-lg border-b pb-2 centered-text">
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 place-items-center">
                     {productsByCategory[category.id]?.map((product, index) => (
                       <ProductCard 
                         key={product.id}
@@ -165,7 +168,7 @@ const ProductCard: React.FC<{
   <GlassCard
     animation="fade"
     delay={index * 50}
-    className="cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 bg-secondary/30"
+    className="cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200 bg-secondary/30 text-center w-full"
     onClick={onClick}
   >
     <div className="text-center py-3 px-2">

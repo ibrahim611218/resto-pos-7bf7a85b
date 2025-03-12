@@ -32,7 +32,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   return (
-    <div className="flex overflow-x-auto no-scrollbar py-3 gap-3 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
+    <div className="flex overflow-x-auto no-scrollbar py-3 gap-3 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent justify-center mx-auto">
       <Button
         variant={!activeCategory ? "default" : "outline"}
         size="sm"

@@ -42,15 +42,36 @@
   max-width: 100vw;
   max-height: 100vh;
   overflow: hidden;
+  text-align: center;
 }
 
 .pos-content {
   width: 100%;
   height: calc(100vh - 64px);
   overflow: hidden;
+  text-align: center;
 }
 
 /* Touch device optimizations for POS */
 .touch-ui .pos-container button {
   min-height: 44px;
+}
+
+/* Centered content classes */
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.centered-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

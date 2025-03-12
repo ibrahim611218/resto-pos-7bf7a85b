@@ -50,12 +50,12 @@ const SidebarItem = ({
           <Button
             variant="ghost"
             className={cn(
-              "w-full justify-between transition-all duration-200 ease-in-out",
+              "w-full justify-between transition-all duration-200 ease-in-out text-center",
               (anyChildActive) && "bg-accent text-accent-foreground",
               collapsed && "justify-center"
             )}
           >
-            <span className="flex items-center">
+            <span className="flex items-center justify-center">
               {link.icon}
               {!collapsed && (
                 <AnimatedTransition animation="fade">
@@ -77,13 +77,13 @@ const SidebarItem = ({
         
         {/* Only show submenu items if not collapsed or if a child is active */}
         {(!collapsed || anyChildActive) && (
-          <CollapsibleContent className="space-y-1 mr-6 mt-1">
+          <CollapsibleContent className="space-y-1 mr-6 mt-1 text-center">
             {link.subMenuItems.map((child) => (
               <Link
                 key={child.path}
                 to={child.path}
                 className={cn(
-                  "flex items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out",
+                  "flex items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out justify-center",
                   isActive(child.path)
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-accent hover:text-accent-foreground",
@@ -111,7 +111,7 @@ const SidebarItem = ({
         isActive(link.path)
           ? "bg-primary text-primary-foreground"
           : "hover:bg-accent hover:text-accent-foreground",
-        collapsed ? "justify-center" : "justify-start"
+        collapsed ? "justify-center" : "justify-center"
       )}
     >
       {link.icon}

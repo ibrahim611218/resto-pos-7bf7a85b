@@ -85,9 +85,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className={`w-full md:w-2/5 lg:w-1/3 flex flex-col h-full ${isLightTheme ? 'bg-white shadow-lg' : 'bg-card shadow-md'} border-r`}>
+    <div className={`w-full md:w-2/5 lg:w-1/3 flex flex-col h-full ${isLightTheme ? 'bg-white shadow-lg' : 'bg-card shadow-md'} border-r text-center`}>
       <div className={`p-5 flex-shrink-0 flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/30'} border-b`}>
-        <h2 className="text-2xl font-bold flex items-center">
+        <h2 className="text-2xl font-bold flex items-center justify-center mx-auto">
           <ShoppingCart className={`${isArabic ? 'ml-3' : 'mr-3'} h-6 w-6 text-primary`} />
           {isArabic ? "السلة" : "Cart"}
           {!isEmpty && (
@@ -108,7 +108,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto no-scrollbar px-4 pb-2 max-h-[calc(100vh-300px)]">
+      <div className="flex-grow overflow-y-auto no-scrollbar px-4 pb-2 max-h-[calc(100vh-300px)] text-center">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
@@ -128,15 +128,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className={`p-5 border-t ${isLightTheme ? 'bg-white' : 'bg-card'} flex-shrink-0`}>
+      <div className={`p-5 border-t ${isLightTheme ? 'bg-white' : 'bg-card'} flex-shrink-0 text-center`}>
         <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-center mb-3">
             <div className="flex items-center gap-2 text-primary font-medium text-lg">
               <Receipt className="h-5 w-5" />
               {isArabic ? "ملخص الطلب" : "Order Summary"}
             </div>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 ml-2">
                 {isSummaryCollapsed ? 
                   <ChevronDown className="h-5 w-5" /> : 
                   <ChevronUp className="h-5 w-5" />

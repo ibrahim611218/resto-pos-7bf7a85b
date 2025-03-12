@@ -26,11 +26,11 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   const totalPrice = price * quantity;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 text-center">
       <p className="font-medium text-base mb-1">
         {isArabic ? nameAr || name : name}
       </p>
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <span className={`text-sm mr-2 ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full`}>
           {sizeLabel}
         </span>
