@@ -21,9 +21,14 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 }) => {
   if (!selectedUser) return null;
 
+  const handleDelete = () => {
+    onDeleteUser();
+    // مربع الحوار سيتم إغلاقه تلقائيًا من خلال onDeleteUser
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="dark:border-orange-500/40">
         <DialogHeader>
           <DialogTitle>
             {isArabic ? "تأكيد الحذف" : "Confirm Deletion"}
@@ -39,7 +44,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button variant="destructive" onClick={onDeleteUser}>
+          <Button variant="destructive" onClick={handleDelete}>
             {isArabic ? "حذف" : "Delete"}
           </Button>
         </DialogFooter>

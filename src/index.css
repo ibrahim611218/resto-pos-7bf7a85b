@@ -97,7 +97,7 @@
 
 @layer utilities {
   .glass {
-    @apply bg-[#004d40]/80 dark:bg-[#004d40]/90 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg text-white;
+    @apply bg-[#004d40]/80 dark:bg-[#004d40]/90 backdrop-blur-lg border border-white/20 dark:border-orange-500/40 shadow-lg text-white;
   }
   
   .slide-in {
@@ -155,5 +155,15 @@
 }
 
 .restopos-sidebar {
-  @apply bg-[#004d40] text-white border-r border-[#00695c];
+  @apply bg-[#004d40] text-white border-r border-[#00695c] dark:border-orange-500/40;
+}
+
+/* Dark mode orange border highlights */
+.dark .border {
+  @apply border-orange-500/40;
+}
+
+.dark .card,
+.dark .dialog-content {
+  @apply border-orange-500/40;
 }

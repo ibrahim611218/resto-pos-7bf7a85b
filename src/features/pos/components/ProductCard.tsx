@@ -31,20 +31,20 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
         return "bg-[#FDE1D3] hover:bg-[#FACEB8] border-orange-200";
     }
   } else {
-    // Dark theme colors
+    // Dark theme colors - تغيير الألوان للوضع الداكن إلى برتقالي
     switch (categoryId) {
       case "cat1": // Main dishes
-        return "bg-green-900/40 hover:bg-green-900/60 border-green-800";
+        return "bg-green-900/40 hover:bg-green-900/60 border-orange-500";
       case "cat2": // Sides
-        return "bg-yellow-900/40 hover:bg-yellow-900/60 border-yellow-800";
+        return "bg-yellow-900/40 hover:bg-yellow-900/60 border-orange-500";
       case "cat3": // Drinks
-        return "bg-blue-900/40 hover:bg-blue-900/60 border-blue-800";
+        return "bg-blue-900/40 hover:bg-blue-900/60 border-orange-500";
       case "cat4": // Desserts
-        return "bg-pink-900/40 hover:bg-pink-900/60 border-pink-800";
+        return "bg-pink-900/40 hover:bg-pink-900/60 border-orange-500";
       case "cat5": // Combos
-        return "bg-purple-900/40 hover:bg-purple-900/60 border-purple-800";
+        return "bg-purple-900/40 hover:bg-purple-900/60 border-orange-500";
       default:
-        return "bg-orange-900/40 hover:bg-orange-900/60 border-orange-800";
+        return "bg-orange-900/40 hover:bg-orange-900/60 border-orange-500";
     }
   }
 };
@@ -66,6 +66,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
       onAddToCart(product, product.variants[0].id);
     }
   };
+  
+  // تغيير لون السعر للون الأبيض في الوضع الفاتح
+  const priceClassName = isLightTheme 
+    ? "text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block"
+    : "text-sm mt-1 text-white font-semibold bg-orange-600/90 rounded-full px-2 py-0.5 inline-block";
   
   return (
     <Card 
@@ -92,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         <div className={`font-medium truncate ${isLightTheme ? 'text-gray-800' : 'text-gray-100'}`}>
           {isArabic && product.nameAr ? product.nameAr : product.name}
         </div>
-        <div className="text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block">
+        <div className={priceClassName}>
           {displayPrice} {isArabic ? "ر.س" : "SAR"}
         </div>
       </CardContent>
