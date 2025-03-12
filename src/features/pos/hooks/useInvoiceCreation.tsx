@@ -6,6 +6,7 @@ import { generateInvoiceNumber } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
+import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 
 export const useInvoiceCreation = (
   cartItems: any[],
@@ -23,6 +24,7 @@ export const useInvoiceCreation = (
   const isArabic = language === "ar";
   const { settings } = useBusinessSettings();
   const { user } = useAuth();
+  const { addNewInvoice } = useInvoices();
   
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -71,12 +73,15 @@ export const useInvoiceCreation = (
       
       // Save back to localStorage
       localStorage.setItem('invoices', JSON.stringify(invoices));
+
+      // Add to invoices list for immediate display
+      addNewInvoice(invoice);
     } catch (error) {
       console.error("Failed to save invoice to localStorage:", error);
     }
     
     return invoice;
-  }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber]);
+  }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber, addNewInvoice]);
 
   return {
     createInvoice,

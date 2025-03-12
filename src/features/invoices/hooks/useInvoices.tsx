@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Invoice } from "@/types";
 import { mockInvoices } from "../data/mockInvoices";
 import { format } from "date-fns";
@@ -17,6 +17,36 @@ export const useInvoices = () => {
   const { user, hasPermission } = useAuth();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+
+  // Load invoices from localStorage
+  const loadInvoicesFromStorage = useCallback(() => {
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        const parsedInvoices = JSON.parse(storedInvoices);
+        // Combine with mock invoices and sort by date (newest first)
+        setInvoices(prev => {
+          // Create a map of existing invoice IDs to avoid duplicates
+          const existingIds = new Map(prev.map(invoice => [invoice.id, true]));
+          
+          // Filter out duplicates from parsedInvoices
+          const newInvoices = parsedInvoices.filter((invoice: Invoice) => !existingIds.has(invoice.id));
+          
+          // Combine and sort
+          return [...newInvoices, ...prev].sort((a, b) => 
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+          );
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load invoices from localStorage:", error);
+    }
+  }, []);
+
+  // Load invoices from localStorage on initial render
+  useEffect(() => {
+    loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage]);
 
   const filteredInvoices = searchTerm
     ? invoices.filter((invoice) => 
@@ -103,6 +133,20 @@ export const useInvoices = () => {
       setSelectedInvoice(prev => prev ? { ...prev, status: "refunded" } : null);
     }
 
+    // Update localStorage
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        const parsedInvoices = JSON.parse(storedInvoices);
+        const updatedInvoices = parsedInvoices.map((invoice: Invoice) => 
+          invoice.id === invoiceId ? { ...invoice, status: "refunded" } : invoice
+        );
+        localStorage.setItem('invoices', JSON.stringify(updatedInvoices));
+      }
+    } catch (error) {
+      console.error("Failed to update invoice in localStorage:", error);
+    }
+
     toast.success("تم إرجاع الفاتورة بنجاح");
     return true;
   };
@@ -125,6 +169,7 @@ export const useInvoices = () => {
     printInvoice,
     cancelInvoice,
     refundInvoice,
-    addNewInvoice
+    addNewInvoice,
+    loadInvoicesFromStorage
   };
 };

@@ -9,10 +9,13 @@ import { formatInvoiceDate } from "./utils/formatters";
 import PosHeader from "./components/PosHeader";
 import PosContent from "./components/PosContent";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
+import { handleInvoiceExport } from "@/utils/invoice";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { settings } = useBusinessSettings();
   
   const {
     // Cart items
@@ -64,7 +67,7 @@ const Pos: React.FC = () => {
   };
   
   const handlePrintInvoice = (invoice: any) => {
-    window.print();
+    handleInvoiceExport("print", invoice, settings);
   };
   
   return (

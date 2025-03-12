@@ -1,10 +1,12 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useInvoices } from "./hooks/useInvoices";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvoiceDetailsModal from "./components/InvoiceDetailsModal";
 import SearchBox from "./components/SearchBox";
 import InvoiceTabPanel from "./components/InvoiceTabPanel";
+import { handleInvoiceExport } from "@/utils/invoice";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 interface InvoicesListProps {
   language?: "en" | "ar";
@@ -12,7 +14,9 @@ interface InvoicesListProps {
 
 const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   const isArabic = language === "ar";
+  const { settings } = useBusinessSettings();
   const {
+    invoices,
     filteredInvoices,
     selectedInvoice,
     searchTerm,
@@ -22,8 +26,18 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     formatInvoiceDate,
     getStatusBadgeColor,
     printInvoice,
-    refundInvoice
+    refundInvoice,
+    loadInvoicesFromStorage
   } = useInvoices();
+
+  // Load invoices from localStorage on component mount
+  useEffect(() => {
+    loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage]);
+
+  const handlePrintInvoice = (invoice: any) => {
+    handleInvoiceExport("print", invoice, settings);
+  };
 
   return (
     <div className="container mx-auto py-6" dir={isArabic ? "rtl" : "ltr"}>
@@ -58,7 +72,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
             formatInvoiceDate={formatInvoiceDate}
             getStatusBadgeColor={getStatusBadgeColor}
             viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={printInvoice}
+            printInvoice={handlePrintInvoice}
           />
         </TabsContent>
 
@@ -69,7 +83,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
             formatInvoiceDate={formatInvoiceDate}
             getStatusBadgeColor={getStatusBadgeColor}
             viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={printInvoice}
+            printInvoice={handlePrintInvoice}
             filteredStatus="completed"
             showHeader={false}
           />
@@ -82,7 +96,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
             formatInvoiceDate={formatInvoiceDate}
             getStatusBadgeColor={getStatusBadgeColor}
             viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={printInvoice}
+            printInvoice={handlePrintInvoice}
             filteredStatus="refunded"
             showHeader={false}
           />
@@ -94,7 +108,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         open={!!selectedInvoice}
         onClose={closeInvoiceDetails}
         formatInvoiceDate={formatInvoiceDate}
-        onPrint={printInvoice}
+        onPrint={handlePrintInvoice}
         onRefund={refundInvoice}
       />
     </div>

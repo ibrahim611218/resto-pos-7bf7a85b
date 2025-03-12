@@ -31,12 +31,16 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
     }
   };
 
+  const handlePrint = () => {
+    onPrint(invoice);
+  };
+
   return (
     <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-6">
       <Button 
         variant="outline" 
         className="flex-1"
-        onClick={() => onPrint(invoice)}
+        onClick={handlePrint}
       >
         <PrinterIcon className="mr-2 h-4 w-4" />
         طباعة
