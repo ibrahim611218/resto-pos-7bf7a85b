@@ -74,7 +74,7 @@ const PosContent: React.FC<PosContentProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+    <div className="flex flex-col md:flex-row flex-1 h-[calc(100vh-4rem)] overflow-hidden">
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}

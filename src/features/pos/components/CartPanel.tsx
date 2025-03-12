@@ -82,8 +82,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div className="w-full md:w-1/3 lg:w-2/5 flex flex-col h-full border-l bg-card shadow-md">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">
+      <div className="p-3 flex-shrink-0 flex justify-between items-center">
+        <h2 className="text-xl font-bold">
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
@@ -98,11 +98,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </Button>
       </div>
       
-      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-280px)]">
+      <div className="flex-grow overflow-y-auto px-3 pb-2 max-h-[calc(100vh-210px)]">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -118,8 +118,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-4 border-t bg-card flex-shrink-0">
-        <Separator className="mb-4" />
+      <div className="p-3 border-t bg-card flex-shrink-0">
+        <Separator className="mb-3" />
         
         <OrderTypeSelector
           orderType={orderType}
