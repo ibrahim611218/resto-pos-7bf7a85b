@@ -1,4 +1,3 @@
-
 import React, { useState, memo, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -67,7 +66,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
-  // Use callbacks to prevent recreating functions on each render
   const handleCreateInvoice = useCallback(() => {
     setShowPaymentMethodDialog(true);
   }, []);
@@ -82,7 +80,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="w-[320px] h-full flex flex-col overflow-hidden bg-card shadow-md">
+    <div className="w-[300px] flex flex-col overflow-hidden bg-card shadow-md">
       <div className={`p-2 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/90'}`}>
         <h2 className="text-base font-bold flex items-center justify-center mx-auto">
           <ShoppingCart className={`${isArabic ? 'ml-1' : 'mr-1'} h-4 w-4 text-primary`} />
@@ -109,7 +107,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-2 pt-1">
+          <div className="space-y-1.5">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -127,7 +125,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
       
       <div className="p-1.5 border-t">
         <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
-          <div className="flex items-center justify-center mb-2">
+          <div className="flex items-center justify-center mb-1">
             <div className="flex items-center gap-1 text-primary font-bold text-sm">
               <Receipt className="h-4 w-4" />
               {isArabic ? "ملخص الطلب" : "Order Summary"}
@@ -143,7 +141,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
           </div>
           
           <CollapsibleContent>
-            <Separator className="mb-2" />
+            <Separator className="mb-1.5" />
             
             <OrderTypeSelector
               orderType={orderType}
@@ -187,5 +185,4 @@ const CartPanel: React.FC<CartPanelProps> = ({
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
 export default memo(CartPanel);

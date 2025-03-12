@@ -1,3 +1,4 @@
+
 import React, { useState, memo, useCallback } from "react";
 import { Product, Category } from "@/types";
 import CategoryList from "./CategoryList";
@@ -60,7 +61,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <section className="flex-1 flex flex-col h-full overflow-hidden border-r border-border">
-      <div className={`sticky top-0 z-10 p-2 border-b ${isLightTheme ? 'bg-background' : 'bg-card/80'}`}>
+      <div className="sticky top-0 z-10 p-2 bg-background/95 backdrop-blur-sm border-b">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -84,7 +85,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             <h3 className="font-bold text-lg mb-3 centered-text">
               {isArabic ? "نتائج البحث" : "Search Results"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
               {searchedProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
@@ -102,7 +103,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                 ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                 : categories.find(c => c.id === activeCategory)?.name || "Products"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
               {filteredProducts
                 .filter(product => product.categoryId === activeCategory)
                 .map((product) => (
@@ -123,7 +124,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                   <h3 className={`font-bold mb-2 text-lg border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
                     {productsByCategory[category.id]?.map((product) => (
                       <ProductCard 
                         key={product.id}
