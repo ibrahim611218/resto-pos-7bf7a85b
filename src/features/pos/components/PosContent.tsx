@@ -73,7 +73,7 @@ const PosContent: React.FC<PosContentProps> = ({
   }, [createInvoice]);
 
   return (
-    <main className="flex flex-1 overflow-hidden">
+    <main className="flex flex-1 h-full overflow-hidden">
       <ProductsPanel 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

@@ -81,11 +81,11 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
       
       <div className="flex-1 overflow-y-auto p-2">
         {searchTerm ? (
-          <div className="mt-2 space-y-2 w-full">
-            <h3 className="font-bold text-lg mb-3 centered-text">
+          <div className="mt-1 space-y-1 w-full">
+            <h3 className="font-bold text-lg mb-2 centered-text">
               {isArabic ? "نتائج البحث" : "Search Results"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
               {searchedProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
@@ -97,13 +97,13 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </div>
           </div>
         ) : activeCategory ? (
-          <div className="mt-2 space-y-2 w-full">
-            <h3 className="font-bold text-lg mb-3 centered-text">
+          <div className="mt-1 space-y-1 w-full">
+            <h3 className="font-bold text-lg mb-2 centered-text">
               {isArabic 
                 ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                 : categories.find(c => c.id === activeCategory)?.name || "Products"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
               {filteredProducts
                 .filter(product => product.categoryId === activeCategory)
                 .map((product) => (
@@ -117,14 +117,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </div>
           </div>
         ) : (
-          <div className="mt-2 space-y-4 w-full">
+          <div className="mt-1 space-y-2 w-full">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
-                <div key={category.id} className="mb-4">
-                  <h3 className={`font-bold mb-2 text-lg border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
+                <div key={category.id} className="mb-3">
+                  <h3 className={`font-bold mb-1 text-base border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 place-items-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
                     {productsByCategory[category.id]?.map((product) => (
                       <ProductCard 
                         key={product.id}

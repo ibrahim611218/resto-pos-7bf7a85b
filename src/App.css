@@ -67,3 +67,33 @@
   max-height: 100vh;
   overflow: hidden;
 }
+
+/* Sidebar styles */
+.sidebar-container {
+  height: 100%;
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.sidebar-visible {
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-hidden {
+  box-shadow: none;
+}
+
+.sidebar-item {
+  padding: 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+}
+
+.sidebar-item:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
