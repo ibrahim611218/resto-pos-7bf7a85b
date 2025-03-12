@@ -1,24 +1,30 @@
-import React, { useState } from "react";
+
+import React from "react";
+import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
 import { getSizeLabel } from "./utils/sizeLabels";
 import { categories, products } from "./data/mockData";
-import ProductsPanel from "./components/ProductsPanel";
-import CartPanel from "./components/CartPanel";
-import { useLanguage } from "@/context/LanguageContext";
+import { formatInvoiceDate } from "./utils/formatters";
+import { useInvoiceSearch } from "./hooks/useInvoiceSearch";
+import PosHeader from "./components/PosHeader";
+import PosContent from "./components/PosContent";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Invoice, Size } from "@/types";
-import { toast } from "@/hooks/use-toast";
-import { Receipt } from "lucide-react";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
-  const [invoiceNumber, setInvoiceNumber] = useState("");
+  
+  const {
+    invoiceNumber,
+    setInvoiceNumber,
+    currentInvoice,
+    setCurrentInvoice,
+    showInvoiceModal,
+    setShowInvoiceModal,
+    handleInvoiceSearch,
+    handleRefundInvoice,
+  } = useInvoiceSearch();
   
   const {
     cartItems,
@@ -60,104 +66,8 @@ const Pos: React.FC = () => {
     return invoice;
   };
   
-  const formatInvoiceDate = (date: Date) => {
-    return new Date(date).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-  
-  const handlePrintInvoice = (invoice: Invoice) => {
+  const handlePrintInvoice = (invoice: any) => {
     window.print();
-  };
-
-  const findInvoiceByNumber = (number: string): Invoice | null => {
-    const mockInvoices = [
-      {
-        id: "inv123",
-        number: "INV-20230001",
-        date: new Date(),
-        items: [
-          { 
-            id: "item1", 
-            productId: "prod1", 
-            variantId: "var1", 
-            name: "Espresso", 
-            nameAr: "إسبريسو", 
-            quantity: 2, 
-            price: 10, 
-            size: "medium" as Size, 
-            taxable: true 
-          },
-          { 
-            id: "item2", 
-            productId: "prod2", 
-            variantId: "var2", 
-            name: "Cappuccino", 
-            nameAr: "كابتشينو", 
-            quantity: 1, 
-            price: 15, 
-            size: "large" as Size, 
-            taxable: true 
-          }
-        ],
-        subtotal: 35,
-        taxAmount: 5.25,
-        total: 40.25,
-        discount: 0,
-        discountType: "percentage" as const,
-        paymentMethod: "نقدي",
-        cashierId: "user1",
-        cashierName: "كاشير",
-        status: "completed" as const,
-        orderType: "takeaway" as const,
-        customer: {
-          name: "عميل افتراضي",
-          taxNumber: "123456789"
-        }
-      }
-    ];
-    
-    return mockInvoices.find(inv => inv.number === number) || null;
-  };
-
-  const handleRefundInvoice = (invoiceId: string): boolean => {
-    toast({
-      title: isArabic ? "تم إرجاع الفاتورة" : "Invoice Refunded",
-      description: isArabic 
-        ? `تم إرجاع الفاتورة رقم ${invoiceId} بنجاح` 
-        : `Invoice #${invoiceId} has been refunded successfully`,
-      variant: "default",
-    });
-    
-    return true;
-  };
-
-  const handleInvoiceSearch = () => {
-    if (!invoiceNumber.trim()) {
-      toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "الرجاء إدخال رقم الفاتورة" : "Please enter an invoice number",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    const invoice = findInvoiceByNumber(invoiceNumber.trim());
-    
-    if (invoice) {
-      setCurrentInvoice(invoice);
-      setShowInvoiceModal(true);
-    } else {
-      toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic ? "لم يتم العثور على الفاتورة" : "Invoice not found",
-        variant: "destructive",
-      });
-    }
   };
   
   return (
@@ -167,72 +77,49 @@ const Pos: React.FC = () => {
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <div className="bg-muted/20 p-4 border-b flex flex-col sm:flex-row gap-3 items-center">
-        <div className="flex-1 text-xl font-semibold">
-          {isArabic ? "نقاط البيع" : "Point of Sale"}
-        </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Input
-            value={invoiceNumber}
-            onChange={(e) => setInvoiceNumber(e.target.value)}
-            placeholder={isArabic ? "رقم الفاتورة" : "Invoice Number"}
-            className="flex-1 min-w-[200px]"
-          />
-          <Button
-            variant="outline"
-            onClick={handleInvoiceSearch}
-            className="flex gap-2 items-center whitespace-nowrap"
-          >
-            <Receipt className="h-4 w-4" />
-            {isArabic ? "استرجاع الفاتورة" : "Return Invoice"}
-          </Button>
-        </div>
-      </div>
+      <PosHeader
+        invoiceNumber={invoiceNumber}
+        setInvoiceNumber={setInvoiceNumber}
+        handleInvoiceSearch={handleInvoiceSearch}
+      />
 
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-        <CartPanel 
-          cartItems={cartItems}
-          isArabic={isArabic}
-          language={language}
-          subtotal={subtotal}
-          taxAmount={taxAmount}
-          total={total}
-          discount={discount}
-          discountType={discountType}
-          orderType={orderType}
-          tableNumber={tableNumber}
-          paymentMethod={paymentMethod}
-          createInvoice={handleCreateInvoice}
-          clearCart={clearCart}
-          getSizeLabel={getSizeLabelFn}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-          setDiscount={setDiscount}
-          setDiscountType={setDiscountType}
-          setOrderType={setOrderType}
-          setTableNumber={setTableNumber}
-          setPaymentMethod={setPaymentMethod}
-        />
-        
-        <ProductsPanel 
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          categories={categories}
-          filteredProducts={filteredProducts}
-          searchedProducts={searchedProducts}
-          onAddToCart={addToCart}
-          isArabic={isArabic}
-          getSizeLabel={getSizeLabelFn}
-        />
-      </div>
+      <PosContent 
+        cartItems={cartItems}
+        isArabic={isArabic}
+        language={language}
+        subtotal={subtotal}
+        taxAmount={taxAmount}
+        total={total}
+        discount={discount}
+        discountType={discountType}
+        orderType={orderType}
+        tableNumber={tableNumber}
+        paymentMethod={paymentMethod}
+        addToCart={addToCart}
+        updateQuantity={updateQuantity}
+        removeItem={removeItem}
+        clearCart={clearCart}
+        createInvoice={handleCreateInvoice}
+        setDiscount={setDiscount}
+        setDiscountType={setDiscountType}
+        setOrderType={setOrderType}
+        setTableNumber={setTableNumber}
+        setPaymentMethod={setPaymentMethod}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categories={categories}
+        filteredProducts={filteredProducts}
+        searchedProducts={searchedProducts}
+        getSizeLabel={getSizeLabelFn}
+      />
 
       <InvoiceDetailsModal 
         invoice={currentInvoice}
         open={showInvoiceModal}
         onClose={() => setShowInvoiceModal(false)}
-        formatInvoiceDate={formatInvoiceDate}
+        formatInvoiceDate={(date) => formatInvoiceDate(date, language)}
         onPrint={handlePrintInvoice}
         onRefund={handleRefundInvoice}
       />
