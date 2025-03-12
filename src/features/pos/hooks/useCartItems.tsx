@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from "react";
-import { Product, CartItem } from "@/types";
+import { Product, CartItem, Size } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -88,7 +88,7 @@ export const useCartItems = () => {
           name: product.name,
           nameAr: product.nameAr,
           price: product.price || 0,
-          size: "", // No size for simple products
+          size: "medium" as Size, // Use "medium" as the default size for simple products
           quantity: 1,
           taxable: product.taxable,
         };
