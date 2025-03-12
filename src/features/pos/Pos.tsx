@@ -34,6 +34,16 @@ const Pos: React.FC = () => {
     setPaymentMethod,
   } = useCart();
   
+  // Add the missing useProductFiltering hook
+  const {
+    searchTerm,
+    setSearchTerm,
+    activeCategory,
+    setActiveCategory,
+    filteredProducts,
+    searchedProducts,
+  } = useProductFiltering(products);
+  
   // Function for consistent size labels
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
   

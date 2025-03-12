@@ -58,8 +58,9 @@ const AppRoutes = () => {
               <Route path="/products/add" element={<ProductForm />} />
               <Route path="/products/edit/:id" element={<ProductForm />} />
               <Route path="/categories" element={<Categories />} />
-              <Route path="/inventory" element={<Inventory language={language} />} />
+              <Route path="/inventory" element={<Inventory />} />
               <Route path="/settings" element={<BusinessSettings />} />
+              {/* Remove language prop from these components since they're simple placeholder components */}
               <Route path="/reports/sales" element={<h1 className="text-2xl font-bold">تقارير المبيعات</h1>} />
               <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
               <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
