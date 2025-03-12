@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -71,14 +70,12 @@ function App() {
                 <Route path="/reports/sales" element={<SalesReport />} />
                 <Route path="/users" element={<UserManagement />} />
               </Route>
+              
+              {/* Reports Routes - Move inside MainLayout */}
+              <Route path="/reports/sales" element={<SalesReport />} />
+              <Route path="/reports/inventory" element={<InventoryReportPage />} />
+              <Route path="/reports/customers" element={<CustomersReportPage />} />
             </Route>
-          </Route>
-          
-          {/* Reports Routes */}
-          <Route path="/reports" element={<ProtectedRoute allowedRoles={["admin", "owner", "supervisor"]} />}>
-            <Route path="sales" element={<SalesReport />} />
-            <Route path="inventory" element={<InventoryReportPage />} />
-            <Route path="customers" element={<CustomersReportPage />} />
           </Route>
           
           {/* Catch-all route */}
