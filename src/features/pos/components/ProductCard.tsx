@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   
   const displayPrice = product.variants.length > 0 
     ? `${product.variants[0].price.toFixed(2)}+` 
-    : "-";
+    : product.price ? `${product.price.toFixed(2)}` : "-";
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
@@ -63,12 +63,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
     if (onClick) {
       onClick();
     } else if (onAddToCart) {
-      // If product has only one variant, add it directly to cart
+      // Handling different product types:
+      // 1. Single variant products - add directly to cart
       if (product.variants.length === 1) {
         onAddToCart(product, product.variants[0].id);
-      } else if (product.variants.length > 1) {
-        // If multiple variants, show size selection dialog
+      } 
+      // 2. Multiple variants - show size selection dialog
+      else if (product.variants.length > 1) {
         onClick?.();
+      }
+      // 3. Products without variants (simple products) - add directly using product id as variantId
+      else {
+        // For products without variants, we'll use the product id as the variantId
+        onAddToCart(product, product.id);
       }
     }
   };
