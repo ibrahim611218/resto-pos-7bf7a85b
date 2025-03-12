@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
-import { Monitor, Smartphone, MousePointer, FingerPrint } from "lucide-react";
+import { Monitor, Smartphone, MousePointer, Fingerprint } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -33,7 +32,6 @@ const DisplaySettingsComponent: React.FC = () => {
   
   const [isTouchDevice, setIsTouchDevice] = useState<boolean | null>(null);
   
-  // Detect if device has touch capability
   useEffect(() => {
     const detectTouch = () => {
       return 'ontouchstart' in window || 
@@ -43,7 +41,6 @@ const DisplaySettingsComponent: React.FC = () => {
     
     setIsTouchDevice(detectTouch());
     
-    // Apply input method class to body
     if (settings.autoDetectInputMethod) {
       document.body.classList.remove('touch-ui', 'mouse-ui');
       document.body.classList.add(detectTouch() ? 'touch-ui' : 'mouse-ui');
@@ -52,13 +49,11 @@ const DisplaySettingsComponent: React.FC = () => {
       document.body.classList.add(settings.inputMethod === 'touch' ? 'touch-ui' : 'mouse-ui');
     }
     
-    // Apply screen size class to body
     document.body.classList.remove('screen-size-standard', 'screen-size-compact', 'screen-size-large');
     document.body.classList.add(`screen-size-${settings.screenSize}`);
     
   }, [settings.autoDetectInputMethod, settings.inputMethod, settings.screenSize]);
   
-  // Save settings to localStorage when they change
   useEffect(() => {
     localStorage.setItem("displaySettings", JSON.stringify(settings));
   }, [settings]);
@@ -136,7 +131,7 @@ const DisplaySettingsComponent: React.FC = () => {
             {isTouchDevice !== null && settings.autoDetectInputMethod && (
               <div className="p-4 bg-muted rounded-md">
                 <p className="text-sm flex items-center gap-2">
-                  {isTouchDevice ? <FingerPrint size={16} /> : <MousePointer size={16} />}
+                  {isTouchDevice ? <Fingerprint size={16} /> : <MousePointer size={16} />}
                   {isArabic 
                     ? `تم اكتشاف جهاز ${isTouchDevice ? 'باللمس' : 'بالماوس'}`
                     : `Detected ${isTouchDevice ? 'touch' : 'mouse'} device`
@@ -161,7 +156,7 @@ const DisplaySettingsComponent: React.FC = () => {
               <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <RadioGroupItem value="touch" id="touch" />
                 <Label htmlFor="touch" className="flex items-center gap-2">
-                  <FingerPrint size={16} className="opacity-50" />
+                  <Fingerprint size={16} className="opacity-50" />
                   {isArabic ? "شاشة لمس" : "Touch Screen"}
                 </Label>
               </div>
