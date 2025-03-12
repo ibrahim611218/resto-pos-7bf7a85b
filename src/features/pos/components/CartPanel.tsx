@@ -4,13 +4,13 @@ import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
 import CartItemComponent from "./CartItem";
 import KitchenAssignmentDialog from "./KitchenAssignmentDialog";
-import PaymentMethodSelector from "./PaymentMethodSelector";
 import EmptyCart from "./cart/EmptyCart";
 import OrderTypeSelector from "./cart/OrderTypeSelector";
 import DiscountInput from "./cart/DiscountInput";
 import CartSummary from "./cart/CartSummary";
 import CartActions from "./cart/CartActions";
 import { useLanguage } from "@/context/LanguageContext";
+import PaymentMethodDialog from "./PaymentMethodDialog";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -60,13 +60,19 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setPaymentMethod,
 }) => {
   const [showKitchenDialog, setShowKitchenDialog] = useState(false);
+  const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { language: contextLanguage } = useLanguage();
 
   const handleCreateInvoice = () => {
+    setShowPaymentMethodDialog(true);
+  };
+
+  const handlePaymentMethodSelected = () => {
     const invoice = createInvoice();
     setCurrentInvoice(invoice);
     setShowKitchenDialog(true);
+    setShowPaymentMethodDialog(false);
     return invoice;
   };
 
@@ -113,12 +119,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
           setTableNumber={setTableNumber}
         />
         
-        {/* Payment Method Selector */}
-        <PaymentMethodSelector 
-          value={paymentMethod}
-          onChange={setPaymentMethod}
-        />
-        
         {/* Discount Input */}
         <DiscountInput
           discount={discount}
@@ -152,6 +152,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
         cartItems={cartItems}
         invoiceId={currentInvoice?.number || ""}
         language={language}
+      />
+
+      {/* Payment Method Dialog */}
+      <PaymentMethodDialog
+        isOpen={showPaymentMethodDialog}
+        onClose={() => setShowPaymentMethodDialog(false)}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        onConfirm={handlePaymentMethodSelected}
       />
     </div>
   );

@@ -29,7 +29,7 @@ const CartActions: React.FC<CartActionsProps> = ({
         disabled={isEmpty}
       >
         <div className="flex items-center">
-          <CreditCard className="mr-2 h-5 w-5" />
+          <CreditCard className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
           {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>
       </Button>
@@ -40,7 +40,7 @@ const CartActions: React.FC<CartActionsProps> = ({
         onClick={onSendToKitchen}
         disabled={isEmpty}
       >
-        <Send className="mr-2 h-5 w-5" />
+        <Send className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
         {isArabic ? "إرسال للمطبخ" : "Send to Kitchen"}
       </Button>
       
@@ -50,7 +50,7 @@ const CartActions: React.FC<CartActionsProps> = ({
         onClick={clearCart}
         disabled={isEmpty}
       >
-        <Trash2 className="mr-2 h-5 w-5" />
+        <Trash2 className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
         {isArabic ? "مسح السلة" : "Clear Cart"}
       </Button>
     </div>
