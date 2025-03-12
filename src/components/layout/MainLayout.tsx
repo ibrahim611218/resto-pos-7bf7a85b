@@ -14,15 +14,15 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <AnimatedTransition animation="fade" delay={100}>
         <div 
-          className={`flex-1 transition-all duration-300 ease-in-out ${
-            !sidebarCollapsed && !isMobile ? "ml-64" : "ml-0"
+          className={`flex-1 h-screen overflow-auto transition-all duration-300 ease-in-out ${
+            !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
           }`}
         >
-          <div className="p-4 md:p-6">
+          <div className="p-2 sm:p-4 md:p-6 w-full max-w-full">
             <Outlet />
           </div>
         </div>
