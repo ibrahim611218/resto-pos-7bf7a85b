@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PrinterIcon, DownloadIcon, MailIcon } from "lucide-react";
-import { Invoice, BusinessSettings } from "@/types";
+import { Invoice } from "@/types";
 import { formatCurrency, handleInvoiceExport, generateInvoiceQRCodeData } from "@/utils/invoice";
 import { getSizeLabel } from "@/features/pos/utils/sizeLabels";
 import { QRCodeSVG } from "qrcode.react";
@@ -33,6 +33,11 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
   const qrCodeData = generateInvoiceQRCodeData(invoice);
 
+  // Calculate discount amount
+  const discountAmount = invoice.discountType === "percentage" 
+    ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
+    : invoice.discount;
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -59,7 +64,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
           </div>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4" id="invoice-printable-content">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h3 className="text-sm font-semibold text-muted-foreground">الكاشير</h3>
@@ -116,20 +121,14 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
               <span>{formatCurrency(invoice.subtotal, "ar-SA", "SAR")}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">ضريبة القيمة المضافة (15%)</span>
+              <span className="text-muted-foreground">ضريبة القيمة المضافة ({settings.taxRate}%)</span>
               <span>{formatCurrency(invoice.taxAmount, "ar-SA", "SAR")}</span>
             </div>
             
             {invoice.discount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>الخصم {invoice.discountType === 'percentage' ? `(${invoice.discount}%)` : ''}</span>
-                <span>- {formatCurrency(
-                  invoice.discountType === 'percentage' 
-                    ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
-                    : invoice.discount, 
-                  "ar-SA", 
-                  "SAR"
-                )}</span>
+                <span>- {formatCurrency(discountAmount, "ar-SA", "SAR")}</span>
               </div>
             )}
             

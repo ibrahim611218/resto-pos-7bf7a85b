@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
 import { getSizeLabel } from "./utils/sizeLabels";
@@ -7,10 +7,15 @@ import { categories, products } from "./data/mockData";
 import ProductsPanel from "./components/ProductsPanel";
 import CartPanel from "./components/CartPanel";
 import { useLanguage } from "@/context/LanguageContext";
+import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
+import { Invoice } from "@/types";
+import { formatCurrency } from "@/utils/invoice";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   
   const {
     cartItems,
@@ -34,7 +39,6 @@ const Pos: React.FC = () => {
     setPaymentMethod,
   } = useCart();
   
-  // Add the missing useProductFiltering hook
   const {
     searchTerm,
     setSearchTerm,
@@ -46,6 +50,30 @@ const Pos: React.FC = () => {
   
   // Function for consistent size labels
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
+  
+  // Handler for invoice creation
+  const handleCreateInvoice = () => {
+    const invoice = createInvoice();
+    setCurrentInvoice(invoice);
+    setShowInvoiceModal(true);
+    return invoice;
+  };
+  
+  // Format invoice date
+  const formatInvoiceDate = (date: Date) => {
+    return new Date(date).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+  
+  // Handle printing the invoice
+  const handlePrintInvoice = (invoice: Invoice) => {
+    window.print();
+  };
   
   return (
     <div 
@@ -79,7 +107,7 @@ const Pos: React.FC = () => {
         orderType={orderType}
         tableNumber={tableNumber}
         paymentMethod={paymentMethod}
-        createInvoice={createInvoice}
+        createInvoice={handleCreateInvoice}
         clearCart={clearCart}
         getSizeLabel={getSizeLabelFn}
         updateQuantity={updateQuantity}
@@ -89,6 +117,15 @@ const Pos: React.FC = () => {
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
+      />
+
+      {/* Invoice Details Modal */}
+      <InvoiceDetailsModal 
+        invoice={currentInvoice}
+        open={showInvoiceModal}
+        onClose={() => setShowInvoiceModal(false)}
+        formatInvoiceDate={formatInvoiceDate}
+        onPrint={handlePrintInvoice}
       />
     </div>
   );

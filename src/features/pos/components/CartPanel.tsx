@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { CreditCard, ChefHat, Percent, DollarSign, Home, ShoppingBag, ArrowRight } from "lucide-react";
+import { CreditCard, ChefHat, Percent, DollarSign, Home, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -67,6 +66,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     const invoice = createInvoice();
     setCurrentInvoice(invoice);
     setShowKitchenDialog(true);
+    return invoice;
   };
 
   // Calculate discount amount

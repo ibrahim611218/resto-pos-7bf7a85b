@@ -1,4 +1,3 @@
-
 import { Invoice, BusinessSettings, CartItem, InvoiceExportType } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { QRCodeCanvas } from "qrcode.react";
@@ -31,7 +30,6 @@ export const calculateInvoiceAmounts = (
   
   const taxAmount = +(taxableSubtotal * (taxRate / 100)).toFixed(2);
   
-  // Calculate discount amount
   const discountAmount = discountType === "percentage" 
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
@@ -60,71 +58,138 @@ export const exportInvoiceToPDF = (
   invoice: Invoice,
   businessSettings: BusinessSettings
 ): void => {
-  // For demonstration, show toast message
-  toast({
-    title: "تم تصدير الفاتورة",
-    description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
-  });
+  const printableContent = generatePrintablePDF(invoice, businessSettings);
   
-  // Simulate PDF download
-  setTimeout(() => {
-    // Create a hidden link to trigger download
-    const element = document.createElement('a');
-    
-    // Generate blob URL for PDF (in real app this would be actual PDF data)
-    const pdfData = generatePrintablePDF(invoice, businessSettings);
-    const blob = new Blob([pdfData], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    
-    element.setAttribute('href', url);
-    element.setAttribute('download', `invoice-${invoice.number}.pdf`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(element);
-      URL.revokeObjectURL(url);
-    }, 100);
-  }, 1000);
+  const printIframe = document.createElement('iframe');
+  printIframe.style.position = 'fixed';
+  printIframe.style.right = '-9999px';
+  printIframe.style.bottom = '-9999px';
+  printIframe.style.width = '0';
+  printIframe.style.height = '0';
+  printIframe.style.border = '0';
+  
+  document.body.appendChild(printIframe);
+  
+  printIframe.contentDocument.write(printableContent);
+  printIframe.contentDocument.close();
+  
+  printIframe.onload = () => {
+    try {
+      const blob = new Blob([printableContent], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${invoice.number}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        document.body.removeChild(printIframe);
+      }, 100);
+      
+      toast({
+        title: "تم تصدير الفاتورة",
+        description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
+      });
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+      toast({
+        title: "خطأ في تصدير الفاتورة",
+        description: "حدث خطأ أثناء تصدير الفاتورة إلى PDF",
+        variant: "destructive",
+      });
+    }
+  };
 };
 
-// Helper function to generate PDF content
 const generatePrintablePDF = (invoice: Invoice, businessSettings: BusinessSettings): string => {
-  // In a real app, this would use a PDF library like jsPDF
-  // For now, we'll return simple HTML that would be converted to PDF in a real app
-  
   const qrCodeElement = React.createElement(QRCodeCanvas, { value: generateInvoiceQRCodeData(invoice), size: 100 });
   const qrCodeString = renderToString(qrCodeElement);
   
+  const discountAmount = invoice.discountType === "percentage" 
+    ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
+    : invoice.discount;
+  
   const htmlContent = `
     <!DOCTYPE html>
-    <html>
+    <html dir="rtl">
     <head>
-      <title>Invoice ${invoice.number}</title>
+      <title>فاتورة ${invoice.number}</title>
+      <meta charset="UTF-8">
       <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        .invoice-header { text-align: center; margin-bottom: 20px; }
-        .invoice-details { margin-bottom: 20px; }
-        .invoice-table { width: 100%; border-collapse: collapse; }
-        .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; text-align: right; }
-        .invoice-table th { background-color: #f2f2f2; }
-        .invoice-footer { margin-top: 30px; text-align: center; }
-        .qr-code { text-align: center; margin-top: 20px; }
+        body { 
+          font-family: Arial, sans-serif; 
+          margin: 0; 
+          padding: 20px; 
+          direction: rtl;
+        }
+        .invoice-header { 
+          text-align: center; 
+          margin-bottom: 20px; 
+        }
+        .logo { 
+          max-width: 150px; 
+          max-height: 80px; 
+          margin: 0 auto;
+          display: block;
+        }
+        .invoice-details { 
+          margin-bottom: 20px; 
+        }
+        .invoice-table { 
+          width: 100%; 
+          border-collapse: collapse; 
+          margin: 20px 0;
+        }
+        .invoice-table th, .invoice-table td { 
+          border: 1px solid #ddd; 
+          padding: 8px; 
+          text-align: right; 
+        }
+        .invoice-table th { 
+          background-color: #f2f2f2; 
+        }
+        .invoice-summary { 
+          margin-top: 20px; 
+          text-align: left;
+          width: 50%;
+          margin-left: auto;
+        }
+        .invoice-summary p {
+          display: flex;
+          justify-content: space-between;
+        }
+        .qr-code { 
+          text-align: center; 
+          margin-top: 20px; 
+        }
+        .invoice-footer { 
+          margin-top: 30px; 
+          text-align: center; 
+          font-size: 12px;
+          color: #666;
+        }
+        .total-row {
+          font-weight: bold;
+          font-size: 1.2em;
+        }
       </style>
     </head>
     <body>
       <div class="invoice-header">
+        ${businessSettings.logo ? `<img src="${businessSettings.logo}" class="logo" alt="شعار المطعم">` : ''}
         <h1>${businessSettings.nameAr || businessSettings.name}</h1>
-        <p>${businessSettings.addressAr || businessSettings.address}</p>
-        <p>هاتف: ${businessSettings.phone}</p>
-        <p>الرقم الضريبي: ${businessSettings.taxNumber}</p>
-        <p>السجل التجاري: ${businessSettings.commercialRegisterAr || businessSettings.commercialRegister}</p>
+        ${businessSettings.taxNumber ? `<p>الرقم الضريبي: ${businessSettings.taxNumber}</p>` : ''}
+        ${businessSettings.addressAr ? `<p>${businessSettings.addressAr}</p>` : ''}
+        ${businessSettings.phone ? `<p>هاتف: ${businessSettings.phone}</p>` : ''}
+        ${businessSettings.commercialRegisterAr ? `<p>السجل التجاري: ${businessSettings.commercialRegisterAr}</p>` : ''}
       </div>
       
       <div class="invoice-details">
-        <p><strong>رقم الفاتورة:</strong> ${invoice.number}</p>
+        <h2 style="text-align: center;">فاتورة رقم #${invoice.number}</h2>
         <p><strong>التاريخ:</strong> ${new Date(invoice.date).toLocaleDateString('ar-SA')}</p>
         <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
         <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
@@ -155,15 +220,13 @@ const generatePrintablePDF = (invoice: Invoice, businessSettings: BusinessSettin
         </tbody>
       </table>
       
-      <div class="invoice-summary" style="margin-top: 20px; text-align: left;">
-        <p><strong>المجموع الفرعي:</strong> ${invoice.subtotal.toFixed(2)} ر.س</p>
-        <p><strong>ضريبة القيمة المضافة (${businessSettings.taxRate}%):</strong> ${invoice.taxAmount.toFixed(2)} ر.س</p>
-        ${invoice.discount ? `<p><strong>الخصم${invoice.discountType === 'percentage' ? ` (${invoice.discount}%)` : ''}:</strong> ${
-          invoice.discountType === 'percentage' 
-            ? ((invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)).toFixed(2) 
-            : invoice.discount.toFixed(2)
-        } ر.س</p>` : ''}
-        <p style="font-size: 1.2em;"><strong>الإجمالي:</strong> ${invoice.total.toFixed(2)} ر.س</p>
+      <div class="invoice-summary">
+        <p><strong>المجموع الفرعي:</strong> <span>${invoice.subtotal.toFixed(2)} ر.س</span></p>
+        <p><strong>ضريبة القيمة المضافة (${businessSettings.taxRate}%):</strong> <span>${invoice.taxAmount.toFixed(2)} ر.س</span></p>
+        ${invoice.discount ? `<p><strong>الخصم${invoice.discountType === 'percentage' ? ` (${invoice.discount}%)` : ''}:</strong> <span>${
+          discountAmount.toFixed(2)
+        } ر.س</span></p>` : ''}
+        <p class="total-row"><strong>الإجمالي:</strong> <span>${invoice.total.toFixed(2)} ر.س</span></p>
       </div>
       
       <div class="qr-code">
@@ -174,6 +237,13 @@ const generatePrintablePDF = (invoice: Invoice, businessSettings: BusinessSettin
         <p>${businessSettings.invoiceNotesAr || businessSettings.invoiceNotes || ''}</p>
         <p>شكراً لزيارتكم</p>
       </div>
+
+      <script>
+        window.onload = function() {
+          // Auto print when loaded
+          // window.print();
+        };
+      </script>
     </body>
     </html>
   `;
@@ -186,16 +256,14 @@ export const emailInvoice = async (
   email: string,
   businessSettings: BusinessSettings
 ): Promise<boolean> => {
-  // This would integrate with an email service
   console.log("Email invoice", invoice, email, businessSettings);
   
-  // For demonstration, show toast message
   toast({
     title: "تم إرسال الفاتورة",
     description: `تم إرسال الفاتورة رقم ${invoice.number} إلى ${email} بنجاح`,
   });
   
-  return true; // Successful email sending
+  return true;
 };
 
 export const handleInvoiceExport = (
@@ -206,7 +274,27 @@ export const handleInvoiceExport = (
 ): void => {
   switch (exportType) {
     case "print":
-      window.print();
+      const printContent = generatePrintablePDF(invoice, businessSettings);
+      const printWindow = window.open('', '_blank');
+      
+      if (printWindow) {
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.focus();
+        
+        setTimeout(() => {
+          printWindow.print();
+          
+          // Close after printing (some browsers might do this automatically)
+          // printWindow.close();
+        }, 500);
+      } else {
+        toast({
+          title: "تنبيه",
+          description: "يرجى السماح بالنوافذ المنبثقة للطباعة",
+          variant: "destructive",
+        });
+      }
       break;
     case "pdf":
       exportInvoiceToPDF(invoice, businessSettings);
@@ -225,14 +313,13 @@ export const handleInvoiceExport = (
   }
 };
 
-// Generate QR code data for invoice
 export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
   const data = {
     invoiceNumber: invoice.number,
     total: invoice.total,
     date: invoice.date,
-    businessName: "مطعم الذواق", // يمكن استخدام بيانات المتجر الفعلية
-    taxNumber: "300000000000003", // يمكن استخدام الرقم الضريبي الفعلي
+    businessName: "مطعم الذواق",
+    taxNumber: "300000000000003",
   };
   return JSON.stringify(data);
 };
