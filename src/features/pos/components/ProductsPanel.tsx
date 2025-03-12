@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Product, Category } from "@/types";
 import CategoryList from "./CategoryList";
@@ -80,7 +81,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             <h3 className="font-bold text-lg mb-3 centered-text">
               {isArabic ? "نتائج البحث" : "Search Results"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
               {searchedProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
@@ -98,7 +99,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                 ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                 : categories.find(c => c.id === activeCategory)?.name || "Products"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 place-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
               {filteredProducts
                 .filter(product => product.categoryId === activeCategory)
                 .map((product) => (
@@ -112,14 +113,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </div>
           </div>
         ) : (
-          <div className="mt-2 space-y-6 w-full">
+          <div className="mt-2 space-y-4 w-full">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
-                <div key={category.id} className="mb-6">
-                  <h3 className={`font-bold mb-3 text-lg border-b pb-2 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
+                <div key={category.id} className="mb-4">
+                  <h3 className={`font-bold mb-2 text-lg border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 place-items-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 place-items-center">
                     {productsByCategory[category.id]?.map((product) => (
                       <ProductCard 
                         key={product.id}

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -84,13 +85,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="w-[400px] h-full flex flex-col overflow-hidden bg-card shadow-md">
+    <div className="w-[320px] h-full flex flex-col overflow-hidden bg-card shadow-md">
       <div className={`p-2 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/90'}`}>
-        <h2 className="text-lg font-bold flex items-center justify-center mx-auto">
-          <ShoppingCart className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
+        <h2 className="text-base font-bold flex items-center justify-center mx-auto">
+          <ShoppingCart className={`${isArabic ? 'ml-1' : 'mr-1'} h-4 w-4 text-primary`} />
           {isArabic ? "السلة" : "Cart"}
           {!isEmpty && (
-            <span className="ml-2 text-sm bg-primary text-white rounded-full px-2 py-0.5">
+            <span className="ml-1 text-xs bg-primary text-white rounded-full px-1.5 py-0.5">
               {cartItems.length}
             </span>
           )}
@@ -98,20 +99,20 @@ const CartPanel: React.FC<CartPanelProps> = ({
         <Button 
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8" 
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-1.5">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-3 pt-2">
+          <div className="space-y-2 pt-1">
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}
@@ -127,25 +128,25 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-2 border-t">
+      <div className="p-1.5 border-t">
         <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
-          <div className="flex items-center justify-center mb-3">
-            <div className="flex items-center gap-2 text-primary font-bold text-lg">
-              <Receipt className="h-5 w-5" />
+          <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center gap-1 text-primary font-bold text-sm">
+              <Receipt className="h-4 w-4" />
               {isArabic ? "ملخص الطلب" : "Order Summary"}
             </div>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 ml-2">
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 ml-1">
                 {isSummaryCollapsed ? 
-                  <ChevronDown className="h-5 w-5" /> : 
-                  <ChevronUp className="h-5 w-5" />
+                  <ChevronDown className="h-4 w-4" /> : 
+                  <ChevronUp className="h-4 w-4" />
                 }
               </Button>
             </CollapsibleTrigger>
           </div>
           
           <CollapsibleContent>
-            <Separator className="mb-3" />
+            <Separator className="mb-2" />
             
             <OrderTypeSelector
               orderType={orderType}
