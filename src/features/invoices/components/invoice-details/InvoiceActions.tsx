@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
-import { PrinterIcon, DownloadIcon, MailIcon, ReceiptMinus } from "lucide-react";
+import { PrinterIcon, DownloadIcon, MailIcon, ReceiptText } from "lucide-react";
 import { Invoice, BusinessSettings } from "@/types";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -62,7 +62,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
           className="flex-1"
           onClick={handleRefund}
         >
-          <ReceiptMinus className="mr-2 h-4 w-4" />
+          <ReceiptText className="mr-2 h-4 w-4" />
           إرجاع الفاتورة
         </Button>
       )}
