@@ -85,8 +85,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="pos-cart-panel">
-      <div className={`p-3 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/50'}`}>
+    <div className="pos-cart-layout">
+      <div className={`p-3 border-b flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/90'} shadow-sm`}>
         <h2 className="text-xl font-bold flex items-center justify-center mx-auto">
           <ShoppingCart className={`${isArabic ? 'ml-3' : 'mr-3'} h-6 w-6 text-primary`} />
           {isArabic ? "السلة" : "Cart"}

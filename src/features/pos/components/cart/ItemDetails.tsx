@@ -30,8 +30,8 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
       <p className="font-bold text-base mb-1">
         {isArabic ? nameAr || name : name}
       </p>
-      <div className="flex items-center justify-center space-x-2">
-        <span className={`text-sm ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full font-medium`}>
+      <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse">
+        <span className={`text-sm ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-primary/20 text-primary-foreground'} px-2 py-0.5 rounded-full font-medium`}>
           {sizeLabel}
         </span>
         <p className="text-sm">
