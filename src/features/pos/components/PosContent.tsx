@@ -1,4 +1,3 @@
-
 import React, { memo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Invoice, Size } from "@/types";
@@ -68,13 +67,12 @@ const PosContent: React.FC<PosContentProps> = ({
   searchedProducts,
   getSizeLabel,
 }) => {
-  // Prevent recreation of the invoice creation function on each render
   const handleCreateInvoice = React.useCallback((customerName?: string, customerTaxNumber?: string) => {
     return createInvoice(customerName, customerTaxNumber);
   }, [createInvoice]);
 
   return (
-    <div className="flex-1 flex w-full h-full overflow-hidden">
+    <main className="flex flex-1 h-full overflow-hidden">
       <ProductsPanel 
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -111,9 +109,8 @@ const PosContent: React.FC<PosContentProps> = ({
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
       />
-    </div>
+    </main>
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
 export default memo(PosContent);

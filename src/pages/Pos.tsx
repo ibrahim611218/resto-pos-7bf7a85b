@@ -76,9 +76,9 @@ const PosPage: React.FC = () => {
   );
   
   return (
-    <div className="h-screen w-full overflow-hidden bg-background">
+    <div className="min-h-screen w-full bg-background">
       <div 
-        className="h-full w-full overflow-hidden flex flex-col"
+        className="flex flex-col h-[100dvh]"
         dir={isArabic ? "rtl" : "ltr"}
       >
         <PosHeader />

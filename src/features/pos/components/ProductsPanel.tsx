@@ -1,4 +1,3 @@
-
 import React, { useState, memo, useCallback } from "react";
 import { Product, Category } from "@/types";
 import CategoryList from "./CategoryList";
@@ -37,7 +36,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
 
-  // Use callbacks to prevent recreating functions on each render
   const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsDialogOpen(true);
@@ -48,7 +46,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
     setSelectedProduct(null);
   }, []);
 
-  // Memoize expensive product categorization
   const productsByCategory = React.useMemo(() => {
     if (activeCategory || searchTerm) return {}; // Don't compute if not needed
     
@@ -62,8 +59,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   }, [filteredProducts, activeCategory, searchTerm]);
 
   return (
-    <div className="flex-grow h-full flex flex-col overflow-hidden border-r border-border">
-      <div className={`p-2 border-b ${isLightTheme ? 'bg-background' : 'bg-card/80'}`}>
+    <section className="flex-1 flex flex-col h-full overflow-hidden border-r border-border">
+      <div className={`sticky top-0 z-10 p-2 border-b ${isLightTheme ? 'bg-background' : 'bg-card/80'}`}>
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -150,9 +147,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         onAddToCart={onAddToCart}
         isArabic={isArabic}
       />
-    </div>
+    </section>
   );
 };
 
-// Memoize the component to prevent unnecessary re-renders
 export default memo(ProductsPanel);
