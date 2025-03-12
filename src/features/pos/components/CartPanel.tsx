@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { CartItem as CartItemType, PaymentMethod, Invoice } from "@/types";
+import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
+import { useScreenSize } from "@/hooks/use-mobile";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import CartHeader from "./cart/CartHeader";
