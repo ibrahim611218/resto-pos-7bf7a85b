@@ -12,6 +12,11 @@ export const getInvoiceStyles = (): string => {
       color: #333333;
       background-color: #ffffff;
     }
+    .invoice-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+    }
     .invoice-header { 
       text-align: center; 
       margin-bottom: 20px; 
@@ -121,6 +126,18 @@ export const getInvoiceStyles = (): string => {
       padding-top: 15px;
       border-top: 1px solid #eee;
     }
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      font-size: 96px;
+      color: rgba(255, 0, 0, 0.15);
+      font-weight: bold;
+      z-index: 100;
+      pointer-events: none;
+      white-space: nowrap;
+    }
     /* Print-specific styles */
     @media print {
       body {
@@ -147,6 +164,11 @@ export const getInvoiceStyles = (): string => {
       }
       .total-row {
         background-color: #f0f7f4 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .watermark {
+        color: rgba(255, 0, 0, 0.15) !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }

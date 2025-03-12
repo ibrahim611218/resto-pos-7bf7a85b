@@ -33,6 +33,13 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const qrCodeElement = React.createElement(QRCodeCanvas, { value: generateInvoiceQRCodeData(invoice), size: 100 });
   const qrCodeString = renderToString(qrCodeElement);
   
+  // إضافة العلامة المائية إذا كانت الفاتورة مسترجعة
+  const refundedWatermark = invoice.status === "refunded" ? `
+    <div class="watermark">
+      مسترجعة
+    </div>
+  ` : '';
+  
   const htmlContent = `
     <!DOCTYPE html>
     <html dir="rtl">
@@ -41,22 +48,38 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <meta charset="UTF-8">
       <style>
         ${getInvoiceStyles()}
+        .watermark {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(45deg);
+          font-size: 96px;
+          color: rgba(255, 0, 0, 0.15);
+          font-weight: bold;
+          z-index: 100;
+          pointer-events: none;
+          white-space: nowrap;
+        }
       </style>
     </head>
     <body>
-      ${generateInvoiceHeader(settings)}
-      
-      ${generateInvoiceDetails(invoice)}
-      
-      ${generateInvoiceItemsTable(invoice)}
-      
-      ${generateInvoiceSummary(invoice, settings)}
-      
-      <div class="qr-code">
-        ${qrCodeString}
+      <div class="invoice-container">
+        ${refundedWatermark}
+        
+        ${generateInvoiceHeader(settings)}
+        
+        ${generateInvoiceDetails(invoice)}
+        
+        ${generateInvoiceItemsTable(invoice)}
+        
+        ${generateInvoiceSummary(invoice, settings)}
+        
+        <div class="qr-code">
+          ${qrCodeString}
+        </div>
+        
+        ${generateInvoiceFooter(settings)}
       </div>
-      
-      ${generateInvoiceFooter(settings)}
 
       <script>
         window.onload = function() {

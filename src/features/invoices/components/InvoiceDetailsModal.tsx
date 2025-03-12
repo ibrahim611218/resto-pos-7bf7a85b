@@ -54,7 +54,15 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
           formatInvoiceDate={formatInvoiceDate}
         />
 
-        <div className="space-y-4" id="invoice-printable-content">
+        <div className="space-y-4 relative" id="invoice-printable-content">
+          {invoice.status === "refunded" && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+              <div className="transform rotate-45 text-red-500/20 text-6xl font-bold">
+                مسترجعة
+              </div>
+            </div>
+          )}
+
           <InvoiceSummary 
             invoice={invoice} 
             settings={settings}

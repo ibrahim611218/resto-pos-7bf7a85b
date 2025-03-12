@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/LanguageContext";
+import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 
 export const useInvoiceSearch = () => {
   const { language } = useLanguage();
@@ -10,6 +11,7 @@ export const useInvoiceSearch = () => {
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const { refundInvoice } = useInvoices();
 
   const findInvoiceByNumber = (number: string): Invoice | null => {
     // Try to find the invoice in localStorage
@@ -74,15 +76,25 @@ export const useInvoiceSearch = () => {
   };
 
   const handleRefundInvoice = (invoiceId: string): boolean => {
-    toast({
-      title: isArabic ? "تم إرجاع الفاتورة" : "Invoice Refunded",
-      description: isArabic 
-        ? `تم إرجاع الفاتورة رقم ${invoiceId} بنجاح` 
-        : `Invoice #${invoiceId} has been refunded successfully`,
-      variant: "default",
-    });
+    // استخدام وظيفة استرجاع الفاتورة من useInvoices
+    const result = refundInvoice(invoiceId);
     
-    return true;
+    if (result) {
+      // تحديث الفاتورة الحالية إذا تم استرجاعها بنجاح
+      if (currentInvoice && currentInvoice.id === invoiceId) {
+        setCurrentInvoice(prev => prev ? { ...prev, status: "refunded" } : null);
+      }
+      
+      toast({
+        title: isArabic ? "تم إرجاع الفاتورة" : "Invoice Refunded",
+        description: isArabic 
+          ? `تم إرجاع الفاتورة رقم ${invoiceId} بنجاح` 
+          : `Invoice #${invoiceId} has been refunded successfully`,
+        variant: "default",
+      });
+    }
+    
+    return result;
   };
 
   const handleInvoiceSearch = () => {
