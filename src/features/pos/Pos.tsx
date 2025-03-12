@@ -77,24 +77,11 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row ${
+      className={`h-[calc(100vh-4rem)] flex flex-col md:flex-row-reverse ${
         isArabic ? "font-[system-ui]" : ""
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <ProductsPanel 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categories={categories}
-        filteredProducts={filteredProducts}
-        searchedProducts={searchedProducts}
-        onAddToCart={addToCart}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabelFn}
-      />
-      
       <CartPanel 
         cartItems={cartItems}
         isArabic={isArabic}
@@ -117,6 +104,19 @@ const Pos: React.FC = () => {
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setPaymentMethod={setPaymentMethod}
+      />
+      
+      <ProductsPanel 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categories={categories}
+        filteredProducts={filteredProducts}
+        searchedProducts={searchedProducts}
+        onAddToCart={addToCart}
+        isArabic={isArabic}
+        getSizeLabel={getSizeLabelFn}
       />
 
       {/* Invoice Details Modal */}
