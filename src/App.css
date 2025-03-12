@@ -1,4 +1,5 @@
 
+
 #root {
   width: 100%;
   height: 100%;
@@ -46,9 +47,10 @@
 .full-width-container {
   width: 100vw;
   max-width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Remove any default margins and padding in POS screen */
@@ -58,4 +60,46 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+}
+
+/* Screen size display options */
+.screen-size-standard {
+  width: 100%;
+  height: 100%;
+}
+
+.screen-size-compact {
+  width: 100%;
+  height: 100%;
+  font-size: 0.9rem;
+}
+
+.screen-size-large {
+  width: 100%;
+  height: 100%;
+  font-size: 1.1rem;
+}
+
+/* Touch-friendly UI adjustments */
+.touch-ui button, 
+.touch-ui input, 
+.touch-ui select {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.touch-ui .clickable {
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Mouse-friendly UI adjustments */
+.mouse-ui .hover-effect:hover {
+  filter: brightness(0.9);
+}
+
+.mouse-ui button, 
+.mouse-ui input, 
+.mouse-ui select {
+  min-height: 32px;
 }
