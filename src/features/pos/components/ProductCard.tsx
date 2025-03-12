@@ -6,8 +6,10 @@ import { Product } from "@/types";
 
 interface ProductCardProps {
   product: Product;
-  onClick: () => void;
+  onClick?: () => void;
   isArabic: boolean;
+  onAddToCart?: (product: Product, variantId: string) => void;
+  getSizeLabel?: (size: string) => string;
 }
 
 // Function to get background color based on product category
@@ -28,12 +30,20 @@ const getBackgroundColor = (categoryId: string): string => {
   }
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, onAddToCart, getSizeLabel }) => {
   const displayPrice = product.variants.length > 0 
     ? `${product.variants[0].price.toFixed(2)}+` 
     : "-";
   
   const bgColorClass = getBackgroundColor(product.categoryId);
+  
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (onAddToCart && product.variants.length > 0) {
+      onAddToCart(product, product.variants[0].id);
+    }
+  };
   
   return (
     <Card 
@@ -41,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic })
         "cursor-pointer transition-all duration-200 hover:shadow-md border overflow-hidden h-full",
         bgColorClass
       )} 
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
         {product.image ? (

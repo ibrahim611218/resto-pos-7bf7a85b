@@ -8,6 +8,7 @@ interface CategoryListProps {
   activeCategory: string | null;
   onCategoryClick: (categoryId: string) => void;
   isArabic: boolean;
+  setActiveCategory?: (id: string | null) => void;
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
@@ -15,7 +16,16 @@ const CategoryList: React.FC<CategoryListProps> = ({
   activeCategory,
   onCategoryClick,
   isArabic,
+  setActiveCategory,
 }) => {
+  const handleCategoryClick = (categoryId: string) => {
+    if (setActiveCategory) {
+      setActiveCategory(categoryId === "all" ? null : categoryId);
+    } else {
+      onCategoryClick(categoryId);
+    }
+  };
+
   return (
     <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
       <Button
@@ -25,7 +35,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
           "bg-gray-50 hover:bg-gray-100",
           !activeCategory && "bg-primary text-primary-foreground hover:bg-primary/90"
         )}
-        onClick={() => onCategoryClick("all")}
+        onClick={() => handleCategoryClick("all")}
       >
         {isArabic ? "الكل" : "All"}
       </Button>
@@ -39,7 +49,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
             "bg-gray-50 hover:bg-gray-100", 
             activeCategory === category.id && "bg-primary text-primary-foreground hover:bg-primary/90"
           )}
-          onClick={() => onCategoryClick(category.id)}
+          onClick={() => handleCategoryClick(category.id)}
         >
           {isArabic && category.nameAr ? category.nameAr : category.name}
         </Button>
