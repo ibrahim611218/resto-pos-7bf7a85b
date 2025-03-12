@@ -1,10 +1,7 @@
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useLanguage } from "@/context/LanguageContext";
-import { Percent, DollarSign } from "lucide-react";
 
 export interface DiscountInputProps {
   discount: number;
@@ -21,8 +18,6 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   setDiscountType,
   isMobile = false
 }) => {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
   const [inputValue, setInputValue] = useState<string>(
     discount > 0 ? discount.toString() : ""
   );
@@ -49,7 +44,7 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   return (
     <div className={`mb-${isMobile ? '2' : '3'}`}>
       <Label className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
-        {isArabic ? "الخصم" : "Discount"}
+        الخصم
       </Label>
       <div className="flex">
         <div className="flex-1">
@@ -59,7 +54,7 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
             onBlur={handleBlur}
             type="number"
             min="0"
-            placeholder={isArabic ? "قيمة الخصم" : "Discount value"}
+            placeholder="قيمة الخصم"
             className={`flex-1 ${isMobile ? 'text-sm' : 'text-base'}`}
           />
         </div>

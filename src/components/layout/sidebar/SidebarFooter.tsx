@@ -5,31 +5,22 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import ThemeToggle from "../../ui-custom/ThemeToggle";
-import LanguageToggle from "../../ui-custom/LanguageToggle";
 import { Language } from "@/types";
 
 interface SidebarFooterProps {
   collapsed: boolean;
   language: Language;
-  onToggleLanguage: () => void;
   onLogout: () => void;
 }
 
 const SidebarFooter: React.FC<SidebarFooterProps> = ({ 
   collapsed, 
   language, 
-  onToggleLanguage, 
   onLogout 
 }) => {
   return (
     <div className="border-t p-3 space-y-2">
       <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
-      <LanguageToggle 
-        collapsed={collapsed} 
-        className="w-full justify-start text-white" 
-        language={language}
-        onToggle={onToggleLanguage}
-      />
       
       <Button 
         variant="outline"

@@ -4,7 +4,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ShoppingBag, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/context/LanguageContext";
 
 export interface OrderTypeSelectorProps {
   orderType: "takeaway" | "dineIn";
@@ -21,14 +20,11 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
   setTableNumber,
   isMobile = false
 }) => {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
-
   return (
     <>
       <div className={`mb-${isMobile ? '2' : '3'}`}>
         <Label className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
-          {isArabic ? "نوع الطلب" : "Order Type"}
+          نوع الطلب
         </Label>
         <RadioGroup 
           value={orderType} 
@@ -39,14 +35,14 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
             <RadioGroupItem value="takeaway" id="takeaway" />
             <Label htmlFor="takeaway" className="flex items-center cursor-pointer">
               <ShoppingBag className={`ml-1 h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
-              <span className="text-sm">{isArabic ? "سفري" : "Takeaway"}</span>
+              <span className="text-sm">سفري</span>
             </Label>
           </div>
           <div className={`flex items-center space-x-1 space-x-reverse bg-accent p-${isMobile ? '1' : '2'} rounded-lg border border-accent-foreground/20 flex-1 justify-center`}>
             <RadioGroupItem value="dineIn" id="dineIn" />
             <Label htmlFor="dineIn" className="flex items-center cursor-pointer">
               <Home className={`ml-1 h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
-              <span className="text-sm">{isArabic ? "محلي" : "Dine In"}</span>
+              <span className="text-sm">محلي</span>
             </Label>
           </div>
         </RadioGroup>
@@ -55,14 +51,14 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
       {orderType === "dineIn" && (
         <div className={`mb-${isMobile ? '2' : '3'}`}>
           <Label htmlFor="tableNumber" className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
-            {isArabic ? "رقم الطاولة" : "Table Number"}
+            رقم الطاولة
           </Label>
           <Input
             id="tableNumber"
             value={tableNumber}
             onChange={(e) => setTableNumber(e.target.value)}
             className={`w-full p-${isMobile ? '1.5' : '2'} ${isMobile ? 'text-sm' : 'text-base'}`}
-            placeholder={isArabic ? "أدخل رقم الطاولة" : "Enter table number"}
+            placeholder="أدخل رقم الطاولة"
           />
         </div>
       )}

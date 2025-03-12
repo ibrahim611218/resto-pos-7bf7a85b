@@ -2,7 +2,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
 
 interface CartActionsProps {
   cartItems: any[];
@@ -16,8 +15,6 @@ const CartActions: React.FC<CartActionsProps> = ({
   handleCreateInvoice,
   isMobile = false
 }) => {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
   const isEmpty = cartItems.length === 0;
 
   return (
@@ -28,8 +25,8 @@ const CartActions: React.FC<CartActionsProps> = ({
         disabled={isEmpty}
       >
         <div className="flex items-center">
-          <CreditCard className={`${isArabic ? 'ml-1' : 'mr-1'} ${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
-          {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
+          <CreditCard className={`ml-1 ${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
+          إنشاء فاتورة
         </div>
       </Button>
     </div>

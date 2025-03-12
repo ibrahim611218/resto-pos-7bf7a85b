@@ -65,10 +65,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
-  
-  // Remove the redundant declarations that were causing the error
-  // const { language } = useLanguage();
-  // const isArabic = language === "ar";
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -92,16 +88,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
   const footerClass = isMobile ? "p-1" : "p-2";
 
-  // Adjust border and shadow based on language direction
-  const borderClasses = isArabic 
-    ? "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]" 
-    : "border-r border-l-0 shadow-[2px_0_5px_rgba(0,0,0,0.1)]";
+  // All UI is now in Arabic
+  const borderClasses = "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]";
 
   return (
     <div className={`flex flex-col h-full ${borderClasses} bg-card overflow-hidden`}>
       <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
         <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
-          {isArabic ? "السلة" : "Cart"}
+          السلة
         </h2>
         <Button 
           variant="destructive" 
@@ -109,10 +103,10 @@ const CartPanel: React.FC<CartPanelProps> = ({
           className="h-auto py-1" 
           onClick={clearCart}
           disabled={isEmpty}
-          title={isArabic ? "مسح السلة" : "Clear Cart"}
+          title="مسح السلة"
         >
           <Trash2 className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
-          {!isMobile && <span className="mr-1">{isArabic ? "مسح" : "Clear"}</span>}
+          {!isMobile && <span className="mr-1">مسح</span>}
         </Button>
       </div>
       

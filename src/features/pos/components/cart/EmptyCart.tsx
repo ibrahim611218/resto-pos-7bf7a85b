@@ -1,12 +1,8 @@
 
 import React from "react";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { useLanguage } from "@/context/LanguageContext";
 
 const EmptyCart: React.FC = () => {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
-
   return (
     <AnimatedTransition animation="fade">
       <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
@@ -24,9 +20,7 @@ const EmptyCart: React.FC = () => {
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           />
         </svg>
-        <p className="text-lg">
-          {isArabic ? "السلة فارغة" : "Your cart is empty"}
-        </p>
+        <p className="text-lg">السلة فارغة</p>
       </div>
     </AnimatedTransition>
   );
