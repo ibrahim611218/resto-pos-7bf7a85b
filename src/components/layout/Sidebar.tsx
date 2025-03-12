@@ -113,7 +113,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 right-0 z-30 flex h-screen flex-col glass border-l shadow-md",
+          "fixed lg:relative inset-y-0 right-0 z-40 flex h-screen flex-col glass border-l shadow-md",
           sidebarTransition,
           "transition-all duration-300 ease-in-out"
         )}

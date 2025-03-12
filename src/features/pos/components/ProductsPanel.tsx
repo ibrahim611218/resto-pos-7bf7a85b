@@ -1,5 +1,5 @@
+
 import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product, Category } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
 import SearchBox from "@/features/invoices/components/SearchBox";
@@ -59,7 +59,6 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
-          className="bg-[#1c2537] border-gray-700 text-white"
         />
       </div>
       
