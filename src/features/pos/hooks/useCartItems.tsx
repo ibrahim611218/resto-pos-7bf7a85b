@@ -64,7 +64,7 @@ export const useCartItems = () => {
     else {
       setCartItems((prev) => {
         const existingItemIndex = prev.findIndex(
-          (item) => item.productId === product.id
+          (item) => item.productId === product.id && item.variantId === "simple"
         );
         
         if (existingItemIndex >= 0) {
