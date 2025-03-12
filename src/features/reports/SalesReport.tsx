@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
@@ -12,10 +12,13 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, 
 import { SalesByPaymentMethod, SalesByOrderType, TopSellingProduct, SalesByTimeFrame } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Printer } from "lucide-react";
+import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 
 const SalesReport: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { invoices } = useInvoices();
+  const [uniqueUsers, setUniqueUsers] = useState<{id: string, name: string}[]>([]);
   
   const [startDate, setStartDate] = useState<Date | undefined>(
     new Date(new Date().setDate(new Date().getDate() - 30))
@@ -25,33 +28,54 @@ const SalesReport: React.FC = () => {
   const [orderType, setOrderType] = useState<string | undefined>(undefined);
   const [cashier, setCashier] = useState<string | undefined>(undefined);
   
+  const allInvoices = useMemo(() => {
+    return invoices.length > 0 ? invoices : mockInvoices;
+  }, [invoices]);
+  
+  useEffect(() => {
+    const users = new Map<string, {id: string, name: string}>();
+    
+    allInvoices.forEach(invoice => {
+      if (invoice.cashierId && invoice.cashierName) {
+        users.set(invoice.cashierId, {
+          id: invoice.cashierId,
+          name: invoice.cashierName
+        });
+      }
+    });
+    
+    setUniqueUsers(Array.from(users.values()));
+  }, [allInvoices]);
+  
   const filteredInvoices = useMemo(() => {
-    return mockInvoices.filter((invoice) => {
+    return allInvoices.filter((invoice) => {
       let match = true;
       
       if (startDate) {
-        match = match && new Date(invoice.date) >= startDate;
+        const invoiceDate = new Date(invoice.date);
+        match = match && invoiceDate >= startDate;
       }
       
       if (endDate) {
-        match = match && new Date(invoice.date) <= endDate;
+        const invoiceDate = new Date(invoice.date);
+        match = match && invoiceDate <= endDate;
       }
       
-      if (paymentMethod) {
+      if (paymentMethod && paymentMethod !== "all") {
         match = match && invoice.paymentMethod === paymentMethod;
       }
       
-      if (orderType && invoice.orderType) {
+      if (orderType && orderType !== "all" && invoice.orderType) {
         match = match && invoice.orderType === orderType;
       }
       
-      if (cashier) {
+      if (cashier && cashier !== "all") {
         match = match && invoice.cashierId === cashier;
       }
       
       return match;
     });
-  }, [startDate, endDate, paymentMethod, orderType, cashier]);
+  }, [allInvoices, startDate, endDate, paymentMethod, orderType, cashier]);
   
   const totalSales = useMemo(() => {
     return filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0);
@@ -243,16 +267,19 @@ const SalesReport: React.FC = () => {
             </div>
             <div className="space-y-2">
               <Label>
-                {isArabic ? "الكاشير" : "Cashier"}
+                {isArabic ? "المستخدم" : "User"}
               </Label>
               <Select value={cashier} onValueChange={setCashier}>
                 <SelectTrigger>
-                  <SelectValue placeholder={isArabic ? "جميع الكاشيرية" : "All cashiers"} />
+                  <SelectValue placeholder={isArabic ? "جميع المستخدمين" : "All users"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{isArabic ? "جميع الكاشيرية" : "All cashiers"}</SelectItem>
-                  <SelectItem value="1">{isArabic ? "أحمد محمد" : "Ahmed Mohamed"}</SelectItem>
-                  <SelectItem value="2">{isArabic ? "محمد علي" : "Mohamed Ali"}</SelectItem>
+                  <SelectItem value="all">{isArabic ? "جميع المستخدمين" : "All users"}</SelectItem>
+                  {uniqueUsers.map(user => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -273,7 +300,7 @@ const SalesReport: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{totalSales.toFixed(2)} {isArabic ? "ريال" : "SAR"}</div>
+            <div className="text-3xl font-bold">{filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0).toFixed(2)} {isArabic ? "ريال" : "SAR"}</div>
             <div className="text-sm text-muted-foreground">
               {isArabic ? `${filteredInvoices.length} فاتورة` : `${filteredInvoices.length} invoices`}
             </div>
@@ -289,7 +316,7 @@ const SalesReport: React.FC = () => {
           <CardContent>
             <div className="text-3xl font-bold">
               {filteredInvoices.length > 0 
-                ? (totalSales / filteredInvoices.length).toFixed(2) 
+                ? (filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0) / filteredInvoices.length).toFixed(2) 
                 : "0.00"} {isArabic ? "ريال" : "SAR"}
             </div>
             <div className="text-sm text-muted-foreground">
