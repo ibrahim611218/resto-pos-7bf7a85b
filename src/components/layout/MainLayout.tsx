@@ -26,7 +26,7 @@ const MainLayout = () => {
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 right-4 z-50 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-full w-12 h-12"
+        className="fixed top-4 right-4 z-[100] bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg rounded-full w-12 h-12"
         onClick={toggleSidebar}
       >
         <Menu size={24} />
