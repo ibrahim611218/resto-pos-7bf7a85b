@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Percent, DollarSign, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-interface DiscountInputProps {
+export interface DiscountInputProps {
   discount: number;
   discountType: "percentage" | "fixed";
   setDiscount: (discount: number) => void;

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -6,7 +5,7 @@ import { ShoppingBag, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
 
-interface OrderTypeSelectorProps {
+export interface OrderTypeSelectorProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   setOrderType: (type: "takeaway" | "dineIn") => void;
