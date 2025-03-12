@@ -1,9 +1,7 @@
-
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
 import CartItemComponent from "./CartItem";
-import KitchenAssignmentDialog from "./KitchenAssignmentDialog";
 import EmptyCart from "./cart/EmptyCart";
 import OrderTypeSelector from "./cart/OrderTypeSelector";
 import DiscountInput from "./cart/DiscountInput";
@@ -85,8 +83,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </h2>
       </div>
       
-      {/* Increased the height of the cart items list by changing the flex-1 to flex-grow */}
-      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-330px)]">
+      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-280px)]">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
@@ -109,7 +106,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
       <div className="p-4 border-t bg-card flex-shrink-0">
         <Separator className="mb-4" />
         
-        {/* Order Type Selector */}
         <OrderTypeSelector
           orderType={orderType}
           tableNumber={tableNumber}
@@ -117,7 +113,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
           setTableNumber={setTableNumber}
         />
         
-        {/* Discount Input - Now collapsible */}
         <DiscountInput
           discount={discount}
           discountType={discountType}
@@ -125,7 +120,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
           setDiscountType={setDiscountType}
         />
         
-        {/* Cart Summary */}
         <CartSummary
           subtotal={subtotal}
           taxAmount={taxAmount}
@@ -134,7 +128,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
           total={total}
         />
         
-        {/* Cart Actions */}
         <CartActions
           cartItems={cartItems}
           handleCreateInvoice={handleCreateInvoice}
@@ -142,7 +135,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         />
       </div>
 
-      {/* Payment Method Dialog */}
       <PaymentMethodDialog
         isOpen={showPaymentMethodDialog}
         onClose={() => setShowPaymentMethodDialog(false)}

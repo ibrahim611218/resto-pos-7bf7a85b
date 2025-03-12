@@ -1,26 +1,25 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Trash2 } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface CartActionsProps {
   cartItems: any[];
   handleCreateInvoice: () => void;
-  clearCart: () => void;
+  clearCart: () => void; // We'll keep this in the interface for now to avoid breaking existing code
 }
 
 const CartActions: React.FC<CartActionsProps> = ({
   cartItems,
   handleCreateInvoice,
-  clearCart,
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="mt-6 space-y-3">
+    <div className="mt-6">
       <Button 
         className="w-full h-14 flex items-center justify-center gap-2 text-lg" 
         onClick={handleCreateInvoice}
@@ -30,16 +29,6 @@ const CartActions: React.FC<CartActionsProps> = ({
           <CreditCard className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
           {isArabic ? "إنشاء فاتورة" : "Create Invoice"}
         </div>
-      </Button>
-      
-      <Button 
-        variant="outline" 
-        className="w-full h-12 flex items-center justify-center gap-2"
-        onClick={clearCart}
-        disabled={isEmpty}
-      >
-        <Trash2 className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
-        {isArabic ? "مسح السلة" : "Clear Cart"}
       </Button>
     </div>
   );
