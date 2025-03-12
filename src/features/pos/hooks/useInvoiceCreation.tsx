@@ -30,13 +30,13 @@ export const useInvoiceCreation = (
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
-  const createInvoice = useCallback(async (
+  const createInvoice = useCallback((
     customerName?: string, 
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
     address?: string
-  ): Promise<Invoice> => {
+  ): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
     let customer: Customer | undefined;
@@ -69,30 +69,34 @@ export const useInvoiceCreation = (
       customer: customer
     };
     
-    // Save invoice to the database service
-    const result = await databaseService.saveInvoice(invoice);
-    
-    if (result.success) {
-      toast({
-        title: isArabic ? "تم إنشاء الفاتورة" : "Invoice Created",
-        description: isArabic 
-          ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح` 
-          : `Invoice #${invoiceId} has been created successfully`,
-        variant: "default",
+    // Save invoice to the database service asynchronously
+    databaseService.saveInvoice(invoice)
+      .then(result => {
+        if (result.success) {
+          toast({
+            title: isArabic ? "تم إنشاء الفاتورة" : "Invoice Created",
+            description: isArabic 
+              ? `تم إنشاء الفاتورة رقم ${invoiceId} بنجاح` 
+              : `Invoice #${invoiceId} has been created successfully`,
+            variant: "default",
+          });
+          
+          // Add to invoices list for immediate display
+          addNewInvoice(invoice);
+        } else {
+          toast({
+            title: isArabic ? "خطأ" : "Error",
+            description: isArabic 
+              ? "حدث خطأ أثناء حفظ الفاتورة" 
+              : "Error saving invoice",
+            variant: "destructive",
+          });
+          console.error("Failed to save invoice:", result.error);
+        }
+      })
+      .catch(error => {
+        console.error("Error saving invoice:", error);
       });
-      
-      // Add to invoices list for immediate display
-      addNewInvoice(invoice);
-    } else {
-      toast({
-        title: isArabic ? "خطأ" : "Error",
-        description: isArabic 
-          ? "حدث خطأ أثناء حفظ الفاتورة" 
-          : "Error saving invoice",
-        variant: "destructive",
-      });
-      console.error("Failed to save invoice:", result.error);
-    }
     
     return invoice;
   }, [cartItems, subtotal, taxAmount, total, discount, discountType, paymentMethod, user, isArabic, orderType, tableNumber, addNewInvoice]);

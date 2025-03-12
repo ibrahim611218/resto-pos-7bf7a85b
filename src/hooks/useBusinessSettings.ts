@@ -37,9 +37,12 @@ export const useBusinessSettings = () => {
     loadSettings();
   }, []);
 
-  const updateSettings = async (newSettings: BusinessSettings) => {
+  const updateSettings = async (partialSettings: Partial<BusinessSettings>) => {
     try {
       setLoading(true);
+      // Create a new settings object by merging the current settings with the partial update
+      const newSettings = { ...settings, ...partialSettings };
+      
       const result = await databaseService.saveSettings(newSettings);
       
       if (result.success) {
