@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Percent, DollarSign, ChevronDown, ChevronUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Percent, DollarSign } from "lucide-react";
 
 export interface DiscountInputProps {
   discount: number;
@@ -24,53 +23,67 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<string>(
+    discount > 0 ? discount.toString() : ""
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue)) {
+      setDiscount(numericValue);
+    } else {
+      setDiscount(0);
+    }
+  };
+
+  const handleBlur = () => {
+    if (inputValue === "" || isNaN(parseFloat(inputValue))) {
+      setInputValue("");
+      setDiscount(0);
+    }
+  };
 
   return (
     <div className={`mb-${isMobile ? '2' : '3'}`}>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        <div className="flex items-center justify-between">
-          <Label className={`${isMobile ? 'text-sm' : 'text-base'} font-medium`}>
-            {isArabic ? "الخصم" : "Discount"}
-          </Label>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size={isMobile ? "xs" : "sm"} className={`h-${isMobile ? '6' : '7'} w-${isMobile ? '6' : '7'} p-0`}>
-              {isOpen ? 
-                <ChevronUp className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} /> : 
-                <ChevronDown className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
-              }
-            </Button>
-          </CollapsibleTrigger>
+      <Label className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
+        {isArabic ? "الخصم" : "Discount"}
+      </Label>
+      <div className="flex space-x-2 rtl:space-x-reverse">
+        <div className="flex-1 flex">
+          <Input
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            type="number"
+            min="0"
+            placeholder={isArabic ? "قيمة الخصم" : "Discount value"}
+            className={`flex-1 ${isMobile ? 'text-sm' : 'text-base'}`}
+          />
         </div>
-        
-        <CollapsibleContent className="mt-2">
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <div className="relative">
-                <Input
-                  type="number"
-                  min="0"
-                  value={discount}
-                  onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                  className={`w-full pr-8 ${isMobile ? 'text-sm p-2' : 'text-base p-3'}`}
-                  placeholder={isArabic ? "قيمة الخصم" : "Discount value"}
-                />
-                <div className={`absolute inset-y-0 right-3 flex items-center ${isMobile ? 'text-sm' : 'text-base'}`}>
-                  {discountType === "percentage" ? "%" : "ر.س"}
-                </div>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              className="px-3"
-              size={isMobile ? "xs" : "default"}
-              onClick={() => setDiscountType(discountType === "percentage" ? "fixed" : "percentage")}
-            >
-              {discountType === "percentage" ? <Percent size={isMobile ? 16 : 18} /> : <DollarSign size={isMobile ? 16 : 18} />}
-            </Button>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+        <div className="flex space-x-1 rtl:space-x-reverse">
+          <Button
+            type="button"
+            variant={discountType === "percentage" ? "default" : "outline"}
+            size={isMobile ? "sm" : "default"}
+            onClick={() => setDiscountType("percentage")}
+            className="flex items-center justify-center"
+          >
+            <Percent className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
+          </Button>
+          <Button
+            type="button"
+            variant={discountType === "fixed" ? "default" : "outline"}
+            size={isMobile ? "sm" : "default"}
+            onClick={() => setDiscountType("fixed")}
+            className="flex items-center justify-center"
+          >
+            <DollarSign className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

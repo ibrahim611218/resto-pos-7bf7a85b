@@ -39,7 +39,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {isArabic ? "المجموع الفرعي" : "Subtotal"}
         </span>
         <span>
-          {formatCurrency(subtotal, "ar-SA", "SAR")}
+          {formatCurrency(subtotal, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
       <div className="flex justify-between">
@@ -47,7 +47,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {isArabic ? "ضريبة القيمة المضافة (15%)" : "VAT (15%)"}
         </span>
         <span>
-          {formatCurrency(taxAmount, "ar-SA", "SAR")}
+          {formatCurrency(taxAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
       
@@ -58,7 +58,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
               `Discount ${discountType === 'percentage' ? `(${discount}%)` : ''}`}
           </span>
           <span>
-            - {formatCurrency(discountAmount, "ar-SA", "SAR")}
+            - {formatCurrency(discountAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
           </span>
         </div>
       )}
@@ -68,7 +68,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {isArabic ? "الإجمالي" : "Total"}
         </span>
         <span>
-          {formatCurrency(total, "ar-SA", "SAR")}
+          {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
     </div>

@@ -89,13 +89,18 @@ const PosContent: React.FC<PosContentProps> = ({
       ? "w-2/3" 
       : "w-3/4";
 
+  // Determine the order of panels based on language
+  // For Arabic, cart should be on the right side
+  const cartOrder = isArabic ? "order-1" : "order-2";
+  const productsOrder = isArabic ? "order-2" : "order-1";
+
   // On mobile, we'll use a flex column layout instead of row
   return (
     <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full overflow-hidden m-0 p-0`}>
-      {/* For mobile: Products panel appears first, followed by cart panel */}
+      {/* For mobile: Order changes based on language */}
       {isMobile ? (
         <>
-          <div className="flex-1 w-full h-1/2 overflow-hidden">
+          <div className={`flex-1 w-full h-1/2 overflow-hidden ${isArabic ? 'order-2' : 'order-1'}`}>
             <ProductsPanel 
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
@@ -110,7 +115,7 @@ const PosContent: React.FC<PosContentProps> = ({
             />
           </div>
           
-          <div className="w-full h-1/2 overflow-hidden">
+          <div className={`w-full h-1/2 overflow-hidden ${isArabic ? 'order-1' : 'order-2'}`}>
             <CartPanel 
               cartItems={cartItems}
               isArabic={isArabic}
@@ -137,9 +142,9 @@ const PosContent: React.FC<PosContentProps> = ({
           </div>
         </>
       ) : (
-        // For tablets and desktop: Products panel on left, cart on right
+        // For tablets and desktop: Order based on language
         <>
-          <div className={`flex-1 ${productsWidthClass} h-full`}>
+          <div className={`flex-1 ${productsWidthClass} h-full ${productsOrder}`}>
             <ProductsPanel 
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
@@ -154,7 +159,7 @@ const PosContent: React.FC<PosContentProps> = ({
             />
           </div>
           
-          <div className={`${cartWidthClass} h-full`}>
+          <div className={`${cartWidthClass} h-full ${cartOrder}`}>
             <CartPanel 
               cartItems={cartItems}
               isArabic={isArabic}

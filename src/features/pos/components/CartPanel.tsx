@@ -87,15 +87,20 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
   const footerClass = isMobile ? "p-1" : "p-2";
 
+  // Adjust border and shadow based on language direction
+  const borderClasses = isArabic 
+    ? "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]" 
+    : "border-r border-l-0 shadow-[2px_0_5px_rgba(0,0,0,0.1)]";
+
   return (
-    <div className="flex flex-col h-full border-r border-l bg-card shadow-md overflow-hidden">
+    <div className={`flex flex-col h-full ${borderClasses} bg-card overflow-hidden`}>
       <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
         <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
           variant="ghost" 
-          size={isMobile ? "xs" : "sm"}
+          size={isMobile ? "sm" : "sm"}
           className="text-muted-foreground hover:text-destructive h-auto py-1" 
           onClick={clearCart}
           disabled={isEmpty}
