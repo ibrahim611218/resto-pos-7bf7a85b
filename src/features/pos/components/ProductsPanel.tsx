@@ -129,6 +129,12 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           </TabsContent>
           
           <TabsContent value="all" className="mt-2 space-y-3">
+            <CategoryList
+              categories={categories}
+              activeCategory={null}
+              isArabic={isArabic}
+            />
+            
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
                 <div key={category.id} className="mb-3">
