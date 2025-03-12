@@ -1,3 +1,4 @@
+
 import React from "react";
 import { formatCurrency } from "@/utils/invoice";
 import { useLanguage } from "@/context/LanguageContext";
