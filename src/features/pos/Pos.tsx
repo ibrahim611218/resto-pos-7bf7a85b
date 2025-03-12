@@ -84,8 +84,28 @@ const Pos: React.FC = () => {
         number: "INV-20230001",
         date: new Date(),
         items: [
-          { id: "item1", name: "Espresso", nameAr: "إسبريسو", quantity: 2, price: 10, size: "medium", taxable: true },
-          { id: "item2", name: "Cappuccino", nameAr: "كابتشينو", quantity: 1, price: 15, size: "large", taxable: true }
+          { 
+            id: "item1", 
+            productId: "prod1", 
+            variantId: "var1", 
+            name: "Espresso", 
+            nameAr: "إسبريسو", 
+            quantity: 2, 
+            price: 10, 
+            size: "medium", 
+            taxable: true 
+          },
+          { 
+            id: "item2", 
+            productId: "prod2", 
+            variantId: "var2", 
+            name: "Cappuccino", 
+            nameAr: "كابتشينو", 
+            quantity: 1, 
+            price: 15, 
+            size: "large", 
+            taxable: true 
+          }
         ],
         subtotal: 35,
         taxAmount: 5.25,
