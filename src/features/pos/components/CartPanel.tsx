@@ -64,6 +64,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -99,14 +101,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
           {isArabic ? "السلة" : "Cart"}
         </h2>
         <Button 
-          variant="ghost" 
+          variant="destructive" 
           size={isMobile ? "sm" : "sm"}
-          className="text-muted-foreground hover:text-destructive h-auto py-1" 
+          className="h-auto py-1" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
           <Trash2 className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
+          {!isMobile && <span className="mr-1">{isArabic ? "مسح" : "Clear"}</span>}
         </Button>
       </div>
       
