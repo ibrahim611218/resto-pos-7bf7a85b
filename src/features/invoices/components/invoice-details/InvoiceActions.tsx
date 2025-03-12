@@ -6,6 +6,7 @@ import { PrinterIcon, DownloadIcon, MailIcon, ReceiptText } from "lucide-react";
 import { Invoice, BusinessSettings } from "@/types";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface InvoiceActionsProps {
   invoice: Invoice;
@@ -23,6 +24,8 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   onRefund
 }) => {
   const { hasPermission } = useAuth();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
   const canRefund = hasPermission("admin") && invoice.status !== "refunded" && onRefund;
   
   const handleRefund = () => {
@@ -43,14 +46,14 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
         onClick={handlePrint}
       >
         <PrinterIcon className="mr-2 h-4 w-4" />
-        طباعة
+        {isArabic ? "طباعة" : "Print"}
       </Button>
       <Button 
         className="flex-1"
         onClick={() => handleInvoiceExport("pdf", invoice, settings)}
       >
         <DownloadIcon className="mr-2 h-4 w-4" />
-        تحميل PDF
+        {isArabic ? "تحميل PDF" : "Download PDF"}
       </Button>
       <Button 
         variant="outline"
@@ -58,7 +61,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
         onClick={onShowEmailDialog}
       >
         <MailIcon className="mr-2 h-4 w-4" />
-        إرسال بالبريد
+        {isArabic ? "إرسال بالبريد" : "Send by Email"}
       </Button>
       {canRefund && (
         <Button 
@@ -67,7 +70,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
           onClick={handleRefund}
         >
           <ReceiptText className="mr-2 h-4 w-4" />
-          إرجاع الفاتورة
+          {isArabic ? "إرجاع الفاتورة" : "Refund Invoice"}
         </Button>
       )}
     </DialogFooter>
