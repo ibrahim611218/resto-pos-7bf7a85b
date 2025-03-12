@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -61,8 +62,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   const handleClick = () => {
     if (onClick) {
       onClick();
-    } else if (onAddToCart && product.variants.length > 0) {
-      onAddToCart(product, product.variants[0].id);
+    } else if (onAddToCart) {
+      // If product has only one variant, add it directly to cart
+      if (product.variants.length === 1) {
+        onAddToCart(product, product.variants[0].id);
+      } else if (product.variants.length > 1) {
+        // If multiple variants, show size selection dialog
+        onClick?.();
+      }
     }
   };
   
