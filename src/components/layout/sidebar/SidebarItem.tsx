@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,23 +26,32 @@ const SidebarItem = ({
   currentPath,
   onToggleCategory,
 }: SidebarItemProps) => {
-  if (link.children) {
+  const location = useLocation();
+  
+  // Check if the current link is active (either exact match or contains for submenus)
+  const isActive = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
+  
+  // If this is a parent menu with subMenuItems
+  if (link.subMenuItems && link.subMenuItems.length > 0) {
+    // Check if any child is active to highlight the parent
+    const anyChildActive = link.subMenuItems.some(item => isActive(item.path));
+    
     return (
       <Collapsible 
-        key={link.name}
-        open={isOpen}
+        open={isOpen || anyChildActive}
         onOpenChange={() => onToggleCategory(link.path.replace("/", ""))}
-        className={cn(
-          "w-full",
-          collapsed && "hidden"
-        )}
+        className="w-full"
       >
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
             className={cn(
               "w-full justify-between",
-              currentPath === link.path && "bg-accent text-accent-foreground"
+              (anyChildActive) && "bg-accent text-accent-foreground",
+              collapsed && "justify-center"
             )}
           >
             <span className="flex items-center">
@@ -54,40 +63,45 @@ const SidebarItem = ({
                 size={16}
                 className={cn(
                   "transition-transform duration-200",
-                  isOpen && "transform rotate-90"
+                  (isOpen || anyChildActive) && "transform rotate-90"
                 )}
               />
             )}
           </Button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-1 mr-6 mt-1">
-          {link.children.map((child) => (
-            <Link
-              key={child.path}
-              to={child.path}
-              className={cn(
-                "flex items-center rounded-md px-3 py-2 transition-colors",
-                currentPath === child.path
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-accent hover:text-accent-foreground",
-              )}
-            >
-              {child.icon}
-              <span className="mr-3">{child.name}</span>
-            </Link>
-          ))}
-        </CollapsibleContent>
+        
+        {/* Only show submenu items if not collapsed or if a child is active */}
+        {(!collapsed || anyChildActive) && (
+          <CollapsibleContent className="space-y-1 mr-6 mt-1">
+            {link.subMenuItems.map((child) => (
+              <Link
+                key={child.path}
+                to={child.path}
+                className={cn(
+                  "flex items-center rounded-md px-3 py-2 transition-colors",
+                  isActive(child.path)
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground",
+                )}
+              >
+                {child.icon}
+                <span className="mr-3">{child.name}</span>
+              </Link>
+            ))}
+          </CollapsibleContent>
+        )}
       </Collapsible>
     );
   }
 
+  // For regular menu items without submenu
   return (
     <Link
       key={link.path}
       to={link.path}
       className={cn(
         "flex items-center rounded-md px-3 py-2 transition-colors",
-        currentPath === link.path
+        isActive(link.path)
           ? "bg-primary text-primary-foreground"
           : "hover:bg-accent hover:text-accent-foreground",
         collapsed ? "justify-center" : "justify-start"

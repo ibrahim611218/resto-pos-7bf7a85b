@@ -19,7 +19,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "نقاط البيع",
       name_en: "POS",
-      path: "#",
+      path: "/pos",
       icon: <ShoppingCart size={20} />,
       subMenuItems: [
         {
@@ -51,7 +51,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "الأصناف",
       name_en: "Products",
-      path: "#",
+      path: "/products",
       icon: <Package2 size={20} />,
       subMenuItems: [
         {
@@ -71,7 +71,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "المخزون",
       name_en: "Inventory",
-      path: "#",
+      path: "/inventory",
       icon: <Store size={20} />,
       subMenuItems: [
         {
@@ -85,7 +85,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "التقارير",
       name_en: "Reports",
-      path: "#",
+      path: "/reports/sales",
       icon: <BarChart3 size={20} />,
       subMenuItems: [
         {

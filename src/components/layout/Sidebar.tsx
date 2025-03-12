@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,19 +21,49 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
   const { language, toggleLanguage } = useLanguage();
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
-    products: false,
-    reports: false,
-    inventory: false,
-    pos: false,
-  });
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+
+  // Initialize open categories based on current path
+  useEffect(() => {
+    const path = location.pathname;
+    const categoriesState: Record<string, boolean> = {};
+    
+    if (path.includes('/pos') || path.includes('/invoices') || path.includes('/customers')) {
+      categoriesState['pos'] = true;
+    }
+    
+    if (path.includes('/products') || path.includes('/categories')) {
+      categoriesState['products'] = true;
+    }
+    
+    if (path.includes('/inventory')) {
+      categoriesState['inventory'] = true;
+    }
+    
+    if (path.includes('/reports')) {
+      categoriesState['reports'] = true;
+    }
+    
+    setOpenCategories(categoriesState);
+  }, [location.pathname]);
 
   const toggleCategory = (category: string) => {
-    if (collapsed) return;
-    setOpenCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
+    if (collapsed) {
+      // If sidebar is collapsed and category is clicked, first expand the sidebar
+      onToggle();
+      // Then set the category as open after a small delay
+      setTimeout(() => {
+        setOpenCategories((prev) => ({
+          ...prev,
+          [category]: !prev[category],
+        }));
+      }, 300);
+    } else {
+      setOpenCategories((prev) => ({
+        ...prev,
+        [category]: !prev[category],
+      }));
+    }
   };
 
   const handleLogout = () => {
@@ -50,7 +80,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     if (hasPermission("admin")) return true;
     
     // Filter based on path
-    if (link.path === "/pos" || link.path === "#" && link.name === "نقاط البيع") {
+    if (link.path === "/pos" || link.path.includes("pos")) {
       return hasPermission(["admin", "cashier"]);
     }
     
@@ -60,7 +90,6 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     
     // Hide these sections from non-admins
     if (
-      link.path === "#" && 
       (link.name === "الأصناف" || 
        link.name === "المخزون" || 
        link.name === "التقارير")
@@ -127,7 +156,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           </div>
         )}
 
-        <nav className="mt-4 flex-1 space-y-1 px-3">
+        <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto">
           {mainLinks.map((link) => (
             <SidebarItem
               key={link.name}
