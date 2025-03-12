@@ -63,7 +63,7 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
             className={`flex-1 ${isMobile ? 'text-sm' : 'text-base'}`}
           />
         </div>
-        <div className="hidden">
+        <div className="flex space-x-1 rtl:space-x-reverse">
           <Button
             type="button"
             variant={discountType === "percentage" ? "default" : "outline"}
