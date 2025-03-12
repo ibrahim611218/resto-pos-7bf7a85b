@@ -61,15 +61,15 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
 
   return (
     <section className="flex-1 flex flex-col h-full overflow-hidden border-r border-border">
-      <div className="sticky top-0 z-10 p-2 bg-background/95 backdrop-blur-sm border-b">
+      <div className="sticky top-0 z-10 p-1 bg-background/95 backdrop-blur-sm border-b">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
-          className="mb-2 mx-auto max-w-md"
+          className="mb-1 mx-auto max-w-md"
         />
         
-        <div className={`overflow-x-auto flex gap-2 p-2 rounded-lg ${isLightTheme ? 'bg-muted/50' : 'bg-muted/30'}`}>
+        <div className={`overflow-x-auto flex gap-1 p-1 rounded-lg ${isLightTheme ? 'bg-muted/50' : 'bg-muted/30'}`}>
           <CategoryList
             categories={categories}
             activeCategory={activeCategory}
@@ -79,13 +79,13 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-1">
         {searchTerm ? (
-          <div className="mt-1 space-y-1 w-full">
-            <h3 className="font-bold text-lg mb-2 centered-text">
+          <div className="mt-1 w-full">
+            <h3 className="font-bold text-sm mb-1 centered-text">
               {isArabic ? "نتائج البحث" : "Search Results"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-1 place-items-center">
               {searchedProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
@@ -97,13 +97,13 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </div>
           </div>
         ) : activeCategory ? (
-          <div className="mt-1 space-y-1 w-full">
-            <h3 className="font-bold text-lg mb-2 centered-text">
+          <div className="mt-1 w-full">
+            <h3 className="font-bold text-sm mb-1 centered-text">
               {isArabic 
                 ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
                 : categories.find(c => c.id === activeCategory)?.name || "Products"}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-1 place-items-center">
               {filteredProducts
                 .filter(product => product.categoryId === activeCategory)
                 .map((product) => (
@@ -117,14 +117,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             </div>
           </div>
         ) : (
-          <div className="mt-1 space-y-2 w-full">
+          <div className="mt-1 space-y-1 w-full">
             {categories.map((category) => (
               productsByCategory[category.id]?.length > 0 && (
-                <div key={category.id} className="mb-3">
-                  <h3 className={`font-bold mb-1 text-base border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
+                <div key={category.id} className="mb-2">
+                  <h3 className={`font-bold mb-1 text-xs border-b pb-1 centered-text ${isLightTheme ? 'text-primary' : 'text-primary-foreground'}`}>
                     {isArabic ? category.nameAr : category.name}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 place-items-center">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-1 place-items-center">
                     {productsByCategory[category.id]?.map((product) => (
                       <ProductCard 
                         key={product.id}

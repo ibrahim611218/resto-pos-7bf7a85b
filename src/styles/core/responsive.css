@@ -3,13 +3,13 @@
 .responsive-container {
   width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 }
 
 @media (min-width: 640px) {
   .responsive-container {
     max-width: 640px;
-    padding: 0 1.5rem;
+    padding: 0 0.75rem;
   }
 }
 
@@ -22,7 +22,7 @@
 @media (min-width: 1024px) {
   .responsive-container {
     max-width: 1024px;
-    padding: 0 2rem;
+    padding: 0 1rem;
   }
 }
 
@@ -34,7 +34,7 @@
 
 /* Content areas */
 .content-area {
-  padding: 1.5rem;
+  padding: 0.75rem;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -42,7 +42,7 @@
 
 @media (max-width: 640px) {
   .content-area {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 }
 
@@ -61,7 +61,7 @@
 /* Layout adjustments */
 .layout-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 0.75rem;
   width: 100%;
 }
 
@@ -116,17 +116,17 @@
   
   .responsive-table tr {
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1rem;
+    padding: 0.5rem;
   }
   
   .responsive-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
     border: none;
   }
   
@@ -148,20 +148,62 @@
 
 @media (max-width: 768px) {
   .nav-container {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
 }
 
 /* Form responsiveness */
 .form-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 @media (min-width: 768px) {
   .form-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* Single page layout optimizations */
+.single-page-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.single-page-header {
+  flex-shrink: 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.single-page-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.page-sidebar {
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.3s ease-in-out;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+}
+
+.page-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
 }
 
 /* Print styles */

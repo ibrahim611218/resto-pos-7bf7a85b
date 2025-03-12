@@ -97,3 +97,74 @@
   background-color: var(--accent);
   color: var(--accent-foreground);
 }
+
+/* Single-page layout */
+.single-page-layout {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-page-header {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card);
+}
+
+.single-page-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.single-page-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollable-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.compact-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.compact-form {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.compact-form .form-row {
+  margin-bottom: 0.5rem;
+}
+
+.compact-card {
+  padding: 0.75rem;
+}
+
+.compact-table {
+  font-size: 0.875rem;
+}
+
+.compact-table th, 
+.compact-table td {
+  padding: 0.5rem 0.75rem;
+}
+
+.compact-tabs .tab {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Collapsible sidebar */
+.main-content-with-sidebar {
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
