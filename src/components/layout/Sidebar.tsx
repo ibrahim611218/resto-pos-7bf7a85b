@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -18,11 +17,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
-  const { language, toggleLanguage } = useLanguage();
+  const { language } = useLanguage();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize open categories based on current path
   useEffect(() => {
     const path = location.pathname;
     const categoriesState: Record<string, boolean> = {};
@@ -49,9 +47,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
   const toggleCategory = (category: string) => {
     if (collapsed) {
-      // If sidebar is collapsed and category is clicked, first expand the sidebar
       onToggle();
-      // Then set the category as open after a small delay
       setTimeout(() => {
         setOpenCategories((prev) => ({
           ...prev,
@@ -71,15 +67,11 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     navigate("/login");
   };
 
-  // Get all sidebar links
   const allLinks = getSidebarLinks();
   
-  // Filter links based on user role
   const mainLinks = allLinks.filter(link => {
-    // Admin can see all links
     if (hasPermission("admin")) return true;
     
-    // Filter based on path
     if (link.path === "/pos" || link.path.includes("pos")) {
       return hasPermission(["admin", "cashier"]);
     }
@@ -88,7 +80,6 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       return hasPermission(["admin", "kitchen"]);
     }
     
-    // Hide these sections from non-admins
     if (
       (link.name === "الأصناف" || 
        link.name === "المخزون" || 
@@ -101,7 +92,6 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       return hasPermission("admin");
     }
     
-    // By default, show the link
     return true;
   });
 
@@ -128,8 +118,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
         />
         <SidebarFooter 
           collapsed={collapsed} 
-          language={language} 
-          onToggleLanguage={toggleLanguage} 
+          language={language}
           onLogout={handleLogout}
         />
       </aside>
