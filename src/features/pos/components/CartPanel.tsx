@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -84,7 +85,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </h2>
       </div>
       
-      <div className="flex-1 overflow-y-auto px-4 pb-2">
+      {/* Increased the height of the cart items list by changing the flex-1 to flex-grow */}
+      <div className="flex-grow overflow-y-auto px-4 pb-2 max-h-[calc(100vh-330px)]">
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
@@ -115,7 +117,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
           setTableNumber={setTableNumber}
         />
         
-        {/* Discount Input */}
+        {/* Discount Input - Now collapsible */}
         <DiscountInput
           discount={discount}
           discountType={discountType}

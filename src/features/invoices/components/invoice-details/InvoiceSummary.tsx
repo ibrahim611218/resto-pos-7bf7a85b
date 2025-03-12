@@ -63,7 +63,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
         </div>
         
         {invoice.discount > 0 && (
-          <div className="flex justify-between text-green-600">
+          <div className="flex justify-between text-green-600 text-sm">
             <span>الخصم {invoice.discountType === 'percentage' ? `(${invoice.discount}%)` : ''}</span>
             <span>- {formatCurrency(discountAmount, "ar-SA", "SAR")}</span>
           </div>
