@@ -5,7 +5,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const useSystemAdmin = (
   users: UserWithPassword[],
-  setUsers: (users: UserWithPassword[]) => void
+  setUsers: React.Dispatch<React.SetStateAction<UserWithPassword[]>>
 ) => {
   const { allPermissions, updateUserPermissions } = useAuth();
 
