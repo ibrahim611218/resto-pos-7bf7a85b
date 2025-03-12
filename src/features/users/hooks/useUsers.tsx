@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { mockUsers } from "@/features/auth/data/mockUsers";
 import { toast } from "@/hooks/use-toast";
@@ -227,7 +228,12 @@ export const useUsers = () => {
   const handleSavePermissions = () => {
     if (!selectedUser) return false;
     
-    const success = updateUserPermissions(selectedUser.id, selectedPermissions);
+    // Fix: The updateUserPermissions function expects the permissions as an object
+    // with userId and permissions properties
+    const success = updateUserPermissions({
+      userId: selectedUser.id,
+      permissions: selectedPermissions
+    });
     
     if (success) {
       toast({
