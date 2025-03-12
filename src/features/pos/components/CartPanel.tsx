@@ -1,17 +1,11 @@
+
 import React, { useState, useRef, useEffect } from "react";
-import { Separator } from "@/components/ui/separator";
-import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
-import CartItemComponent from "./CartItem";
-import EmptyCart from "./cart/EmptyCart";
-import OrderTypeSelector from "./cart/OrderTypeSelector";
-import DiscountInput from "./cart/DiscountInput";
-import CartSummary from "./cart/CartSummary";
-import CartActions from "./cart/CartActions";
-import { useLanguage } from "@/context/LanguageContext";
+import { CartItem as CartItemType, PaymentMethod, Invoice } from "@/types";
 import PaymentMethodDialog from "./PaymentMethodDialog";
-import { Button } from "@/components/ui/button";
-import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import { useScreenSize } from "@/hooks/use-mobile";
+import CartResizeHandler from "./cart/CartResizeHandler";
+import CartHeader from "./cart/CartHeader";
+import CartItemsList from "./cart/CartItemsList";
+import CartFooter from "./cart/CartFooter";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -82,20 +76,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const handlePaymentMethodSelected = (customerName?: string, customerTaxNumber?: string) => {
     const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
-    
-    console.log(`Order ${invoice.number} automatically sent to kitchen`);
-    
     setShowPaymentMethodDialog(false);
     return invoice;
   };
-
-  const isEmpty = cartItems.length === 0;
-
-  const headerClass = isMobile ? "p-1 text-sm" : "p-2";
-  const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
-  const footerClass = isMobile ? "p-1" : "p-2";
-
-  const borderClasses = "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]";
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (resizeRef.current) {
@@ -136,6 +119,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
     setExpanded(!expanded);
   };
 
+  const isEmpty = cartItems.length === 0;
+  const borderClasses = "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]";
+
   return (
     <div 
       ref={resizeRef}
@@ -146,101 +132,45 @@ const CartPanel: React.FC<CartPanelProps> = ({
         transition: isMobile ? 'width 0.3s ease' : 'none',
       }}
     >
-      {!isMobile && (
-        <div 
-          className="absolute top-1/2 right-full h-16 w-1 bg-primary opacity-0 hover:opacity-100 cursor-ew-resize -translate-y-1/2"
-          onMouseDown={handleMouseDown}
-          title="سحب لتغيير حجم السلة"
-        />
-      )}
+      <CartResizeHandler 
+        isMobile={isMobile}
+        onMouseDown={handleMouseDown}
+      />
       
-      <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
-        <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
-          السلة
-        </h2>
-        <div className="flex items-center gap-1">
-          {isMobile && (
-            <Button 
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={toggleExpand}
-            >
-              {expanded ? 
-                <ChevronRight className="h-4 w-4" /> : 
-                <ChevronLeft className="h-4 w-4" />
-              }
-            </Button>
-          )}
-          <Button 
-            variant="destructive" 
-            size={isMobile ? "sm" : "sm"}
-            className="h-auto py-1" 
-            onClick={clearCart}
-            disabled={isEmpty}
-            title="مسح السلة"
-          >
-            <Trash2 className={isMobile ? "h-3.5 w-3.5" : "h-4 w-4"} />
-            {!isMobile && <span className="mr-1">مسح</span>}
-          </Button>
-        </div>
-      </div>
+      <CartHeader
+        isMobile={isMobile}
+        expanded={expanded}
+        isEmpty={isEmpty}
+        toggleExpand={toggleExpand}
+        clearCart={clearCart}
+      />
       
-      <div className={`flex-grow overflow-y-auto ${itemsContainerClass} min-h-0`}>
-        {cartItems.length === 0 ? (
-          <EmptyCart />
-        ) : (
-          <div className={`space-y-${isMobile ? "1" : "2"} pt-2`}>
-            {cartItems.map((item, index) => (
-              <CartItemComponent
-                key={item.id}
-                item={item}
-                index={index}
-                isArabic={isArabic}
-                getSizeLabel={getSizeLabel}
-                updateQuantity={updateQuantity}
-                removeItem={removeItem}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      <CartItemsList
+        cartItems={cartItems}
+        isMobile={isMobile}
+        isArabic={isArabic}
+        getSizeLabel={getSizeLabel}
+        updateQuantity={updateQuantity}
+        removeItem={removeItem}
+      />
       
-      <div className={`${footerClass} border-t bg-card flex-shrink-0`}>
-        <Separator className={isMobile ? "mb-1" : "mb-2"} />
-        
-        <OrderTypeSelector
-          orderType={orderType}
-          tableNumber={tableNumber}
-          setOrderType={setOrderType}
-          setTableNumber={setTableNumber}
-          isMobile={isMobile}
-        />
-        
-        <DiscountInput
-          discount={discount}
-          discountType={discountType}
-          setDiscount={setDiscount}
-          setDiscountType={setDiscountType}
-          isMobile={isMobile}
-        />
-        
-        <CartSummary
-          subtotal={subtotal}
-          taxAmount={taxAmount}
-          discount={discount}
-          discountType={discountType}
-          total={total}
-          isMobile={isMobile}
-        />
-        
-        <CartActions
-          cartItems={cartItems}
-          handleCreateInvoice={handleCreateInvoice}
-          clearCart={clearCart}
-          isMobile={isMobile}
-        />
-      </div>
+      <CartFooter
+        isMobile={isMobile}
+        cartItems={cartItems}
+        orderType={orderType}
+        tableNumber={tableNumber}
+        discount={discount}
+        discountType={discountType}
+        subtotal={subtotal}
+        taxAmount={taxAmount}
+        total={total}
+        setOrderType={setOrderType}
+        setTableNumber={setTableNumber}
+        setDiscount={setDiscount}
+        setDiscountType={setDiscountType}
+        handleCreateInvoice={handleCreateInvoice}
+        clearCart={clearCart}
+      />
 
       <PaymentMethodDialog
         isOpen={showPaymentMethodDialog}
