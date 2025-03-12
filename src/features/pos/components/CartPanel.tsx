@@ -40,6 +40,7 @@ interface CartPanelProps {
 
 const CartPanel: React.FC<CartPanelProps> = ({
   cartItems,
+  // We'll use the props directly, not redeclare them
   isArabic,
   language,
   subtotal,
@@ -64,8 +65,10 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
+  
+  // Remove the redundant declarations that were causing the error
+  // const { language } = useLanguage();
+  // const isArabic = language === "ar";
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
