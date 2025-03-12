@@ -23,8 +23,8 @@ export const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({
           <div className="flex items-center mb-2">
             <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-12 w-12" />
             <div>
-              <span className="text-[#004d40] font-bold text-xl">Resto</span>
-              <span className="text-orange-500 font-bold text-xl">POS</span>
+              <span className="text-[#00825A] font-bold text-xl">Resto</span>
+              <span className="text-[#FF6B00] font-bold text-xl">POS</span>
             </div>
           </div>
         )}

@@ -1,4 +1,3 @@
-
 import { Invoice, BusinessSettings } from "@/types";
 import { QRCodeCanvas } from "qrcode.react";
 import React from "react";
@@ -55,10 +54,10 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
           display: inline-block;
         }
         .brand-name-primary {
-          color: #004d40;
+          color: #00825A;
         }
         .brand-name-accent {
-          color: #ff5722;
+          color: #FF6B00;
         }
         .invoice-details { 
           margin-bottom: 20px; 
@@ -119,6 +118,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
         ${businessSettings.logo ? 
           `<img src="${businessSettings.logo}" class="logo" alt="شعار المطعم">` : 
           `<div class="brand-logo">
+             <img src="/assets/restopos-logo.png" width="80" height="80" alt="RestoPOS">
              <span class="brand-name">
                <span class="brand-name-primary">Resto</span><span class="brand-name-accent">POS</span>
              </span>

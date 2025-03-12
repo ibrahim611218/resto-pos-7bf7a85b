@@ -11,10 +11,10 @@ const PosHeader: React.FC = () => {
   return (
     <div className="bg-[#004d40] text-white p-4 border-b flex flex-col sm:flex-row gap-3 items-center">
       <div className="flex items-center gap-2">
-        <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-8 w-8" />
+        <img src="/assets/restopos-logo.png" alt="RestoPOS" className="h-10 w-10" />
         <div>
-          <span className="text-white font-bold">Resto</span>
-          <span className="text-orange-500 font-bold">POS</span>
+          <span className="text-[#00825A] font-bold">Resto</span>
+          <span className="text-[#FF6B00] font-bold">POS</span>
         </div>
       </div>
       <div className="flex-1 text-xl font-semibold flex items-center justify-between">
