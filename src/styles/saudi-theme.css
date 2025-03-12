@@ -16,7 +16,7 @@
   --accent-foreground: 167 100% 15%;
   --destructive: 0 85% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 90%;
+  --border: 30 100% 50%;  /* Updated to orange border */
   --input: 0 0% 90%;
   --ring: 167 100% 15%;
   --radius: 0.75rem;
@@ -27,11 +27,11 @@
 }
 
 .saudi .glass {
-  @apply bg-white/70 backdrop-blur-lg border border-green-100 rounded-2xl shadow-lg;
+  @apply bg-white/70 backdrop-blur-lg border border-orange-400 rounded-2xl shadow-lg;
 }
 
 .saudi .card {
-  @apply bg-white border-green-100 shadow-sm hover:shadow transition-shadow duration-200;
+  @apply bg-white border-orange-200 shadow-sm hover:shadow transition-shadow duration-200;
 }
 
 .saudi .button-primary {
@@ -39,7 +39,7 @@
 }
 
 .saudi .button-secondary {
-  @apply bg-white text-[#004d40] border border-[#004d40] hover:bg-green-50;
+  @apply bg-white text-[#004d40] border border-orange-400 hover:bg-green-50;
 }
 
 .saudi .tag {
@@ -47,15 +47,15 @@
 }
 
 .saudi .search-box {
-  @apply bg-white border border-green-200 focus-within:border-[#004d40] shadow-sm;
+  @apply bg-white border border-orange-300 focus-within:border-[#004d40] shadow-sm;
 }
 
 .saudi nav.main-navigation {
-  @apply bg-gradient-to-r from-[#004d40] to-[#00695c] text-white;
+  @apply bg-gradient-to-r from-[#004d40] to-[#00695c] text-white border-b border-orange-500;
 }
 
 .saudi .sidebar {
-  @apply bg-gradient-to-b from-[#004d40] to-[#00695c] border-r border-green-100 text-white;
+  @apply bg-gradient-to-b from-[#004d40] to-[#00695c] border-r border-orange-500 text-white;
 }
 
 .saudi .sidebar-item.active {
@@ -63,7 +63,7 @@
 }
 
 .saudi .header {
-  @apply bg-white border-b border-green-100;
+  @apply bg-white border-b border-orange-300;
 }
 
 .saudi .badge-primary {
@@ -71,7 +71,7 @@
 }
 
 .saudi .badge-secondary {
-  @apply bg-green-50 text-[#004d40] border border-green-200;
+  @apply bg-green-50 text-[#004d40] border border-orange-300;
 }
 
 .saudi .saudi-pattern {
@@ -131,6 +131,23 @@
 
 .saudi .text-secondary-foreground {
   @apply text-[#004d40];
+}
+
+/* Add orange borders to common components in Saudi theme */
+.saudi .border {
+  @apply border-orange-300;
+}
+
+.saudi .card,
+.saudi .input,
+.saudi select,
+.saudi textarea {
+  @apply border-orange-300;
+}
+
+.saudi .focus\:border-primary:focus,
+.saudi .focus-visible\:border-primary:focus-visible {
+  @apply border-orange-500;
 }
 
 /* Saudi theme decoration elements */

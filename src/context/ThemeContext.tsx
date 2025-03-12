@@ -29,6 +29,28 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const root = document.documentElement;
     root.classList.remove("light", "dark", "saudi");
     root.classList.add(theme);
+    
+    // Apply dark mode specific styles
+    if (theme === "dark") {
+      // Apply black background, white text, blue borders for dark mode
+      document.documentElement.style.setProperty('--background', '0 0% 0%');  // Black background
+      document.documentElement.style.setProperty('--foreground', '0 0% 100%');  // White text
+      document.documentElement.style.setProperty('--border', '210 100% 50%'); // Blue borders
+      document.documentElement.style.setProperty('--card', '0 0% 5%');  // Slightly lighter black for cards
+      document.documentElement.style.setProperty('--input', '210 100% 30%');  // Blue inputs
+      document.documentElement.style.setProperty('--ring', '210 100% 50%');  // Blue focus rings
+    } else if (theme === "saudi") {
+      // Saudi mode uses orange borders defined in the CSS
+      document.documentElement.style.setProperty('--border', '30 100% 50%');  // Orange borders
+    } else {
+      // Light mode - reset to default theme values (if needed)
+      document.documentElement.style.setProperty('--background', '0 0% 100%');
+      document.documentElement.style.setProperty('--foreground', '240 10% 3.9%');
+      document.documentElement.style.setProperty('--border', '240 5.9% 90%');
+      document.documentElement.style.setProperty('--card', '0 0% 100%');
+      document.documentElement.style.setProperty('--input', '240 5.9% 90%');
+      document.documentElement.style.setProperty('--ring', '240 5.9% 10%');
+    }
   }, [theme]);
 
   const toggleTheme = () => {

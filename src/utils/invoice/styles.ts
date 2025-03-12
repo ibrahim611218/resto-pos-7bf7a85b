@@ -121,6 +121,47 @@ export const getInvoiceStyles = (): string => {
       padding-top: 15px;
       border-top: 1px solid #eee;
     }
+    /* Dark Mode Specific Styles */
+    .dark body {
+      background-color: #000;
+      color: #fff;
+    }
+    .dark .invoice-details,
+    .dark .invoice-summary,
+    .dark .customer-info {
+      background-color: #111;
+      border-color: #1E88E5;
+      color: #fff;
+    }
+    .dark .invoice-table th {
+      background-color: #1E88E5;
+    }
+    .dark .invoice-table td,
+    .dark .invoice-table th {
+      border-color: #1E88E5;
+    }
+    .dark .invoice-table tr:nth-child(even) {
+      background-color: #222;
+    }
+    .dark .qr-code {
+      background-color: #111;
+      border-color: #1E88E5;
+    }
+    .dark .invoice-footer {
+      border-top-color: #1E88E5;
+      color: #aaa;
+    }
+    .dark .software-info {
+      color: #777;
+      border-top-color: #1E88E5;
+    }
+    /* Saudi Mode Specific Styles */
+    .saudi .invoice-details,
+    .saudi .invoice-summary,
+    .saudi .customer-info,
+    .saudi .qr-code {
+      border-color: #FF6B00;
+    }
     /* Print-specific styles */
     @media print {
       body {
