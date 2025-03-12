@@ -14,7 +14,22 @@ import { generateInvoiceFooter } from "./components/invoiceFooter";
 /**
  * Generates HTML content for printable invoice
  */
-export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: BusinessSettings): string => {
+export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: BusinessSettings): string => {
+  // Use default settings if none provided
+  const settings = businessSettings || {
+    name: "مطعم الذواق",
+    nameAr: "مطعم الذواق",
+    taxNumber: "300000000000003",
+    address: "الرياض، المملكة العربية السعودية",
+    addressAr: "الرياض، المملكة العربية السعودية",
+    phone: "966500000000",
+    email: "info@example.com",
+    taxRate: 15,
+    taxIncluded: false,
+    invoiceNotesAr: "شكراً لزيارتكم"
+  };
+  
+  // Generate QR code
   const qrCodeElement = React.createElement(QRCodeCanvas, { value: generateInvoiceQRCodeData(invoice), size: 100 });
   const qrCodeString = renderToString(qrCodeElement);
   
@@ -29,19 +44,19 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
       </style>
     </head>
     <body>
-      ${generateInvoiceHeader(businessSettings)}
+      ${generateInvoiceHeader(settings)}
       
       ${generateInvoiceDetails(invoice)}
       
       ${generateInvoiceItemsTable(invoice)}
       
-      ${generateInvoiceSummary(invoice, businessSettings)}
+      ${generateInvoiceSummary(invoice, settings)}
       
       <div class="qr-code">
         ${qrCodeString}
       </div>
       
-      ${generateInvoiceFooter(businessSettings)}
+      ${generateInvoiceFooter(settings)}
 
       <script>
         window.onload = function() {
