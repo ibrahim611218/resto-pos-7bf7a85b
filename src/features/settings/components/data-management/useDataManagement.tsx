@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { sampleCategories } from "@/data/sampleData";
 
 type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all";
 
@@ -20,72 +21,82 @@ export const useDataManagement = () => {
     setShowConfirmDialog(true);
   };
 
+  const deleteAllProducts = () => {
+    // Clear products from localStorage
+    localStorage.removeItem('products');
+  };
+
+  const deleteAllCategories = () => {
+    // Clear categories from localStorage and sampleCategories array
+    localStorage.removeItem('categories');
+    sampleCategories.length = 0;
+  };
+
+  const deleteAllInventory = () => {
+    // Clear inventory from localStorage
+    localStorage.removeItem('inventory');
+  };
+
+  const deleteAllInvoices = () => {
+    // Clear invoices from localStorage
+    localStorage.removeItem('invoices');
+  };
+
+  const deleteAllCustomers = () => {
+    // Clear customers from localStorage
+    localStorage.removeItem('customers');
+  };
+
+  const deleteAllData = () => {
+    // Clear all data from localStorage
+    deleteAllProducts();
+    deleteAllCategories();
+    deleteAllInventory();
+    deleteAllInvoices();
+    deleteAllCustomers();
+    // Clear any other relevant data
+    localStorage.removeItem('business-settings');
+    localStorage.removeItem('display-settings');
+  };
+
   const confirmDelete = async () => {
     setIsDeleting(true);
     
     try {
-      // Simulate API calls with setTimeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      let successMessage = "";
-      let redirectPath = null;
-      
       switch(actionType) {
         case "products":
-          // Logic to delete all products would go here
-          // Example: await deleteAllProducts();
-          successMessage = isArabic ? "تم حذف جميع المنتجات بنجاح" : "All products have been deleted successfully";
-          redirectPath = "/products";
+          deleteAllProducts();
+          toast.success(isArabic ? "تم حذف جميع المنتجات بنجاح" : "All products have been deleted successfully");
+          navigate("/products");
           break;
         case "categories":
-          // Logic to delete all categories would go here
-          // Example: await deleteAllCategories();
-          successMessage = isArabic ? "تم حذف جميع التصنيفات بنجاح" : "All categories have been deleted successfully";
-          redirectPath = "/categories";
+          deleteAllCategories();
+          toast.success(isArabic ? "تم حذف جميع التصنيفات بنجاح" : "All categories have been deleted successfully");
+          navigate("/categories");
           break;
         case "inventory":
-          // Logic to delete all inventory data would go here
-          // Example: await deleteAllInventory();
-          successMessage = isArabic ? "تم حذف جميع بيانات المخزون بنجاح" : "All inventory data has been deleted successfully";
-          redirectPath = "/inventory";
+          deleteAllInventory();
+          toast.success(isArabic ? "تم حذف جميع بيانات المخزون بنجاح" : "All inventory data has been deleted successfully");
+          navigate("/inventory");
           break;
         case "invoices":
-          // Logic to delete all invoices would go here
-          // Example: await deleteAllInvoices();
-          successMessage = isArabic ? "تم حذف جميع الفواتير بنجاح" : "All invoices have been deleted successfully";
-          redirectPath = "/invoices";
+          deleteAllInvoices();
+          toast.success(isArabic ? "تم حذف جميع الفواتير بنجاح" : "All invoices have been deleted successfully");
+          navigate("/invoices");
           break;
         case "customers":
-          // Logic to delete all customers would go here
-          // Example: await deleteAllCustomers();
-          successMessage = isArabic ? "تم حذف جميع العملاء بنجاح" : "All customers have been deleted successfully";
-          redirectPath = "/customers";
+          deleteAllCustomers();
+          toast.success(isArabic ? "تم حذف جميع العملاء بنجاح" : "All customers have been deleted successfully");
+          navigate("/customers");
           break;
         case "all":
-          // Logic to delete all data would go here
-          // Example: await deleteAllData();
-          successMessage = isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully";
+          deleteAllData();
+          toast.success(isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully");
           break;
-      }
-      
-      toast({
-        title: isArabic ? "تم الحذف بنجاح" : "Deleted Successfully",
-        description: successMessage,
-      });
-      
-      // Redirect to relevant page if specified
-      if (redirectPath) {
-        setTimeout(() => {
-          navigate(redirectPath);
-        }, 1500);
       }
     } catch (error) {
       console.error("Delete operation failed:", error);
-      toast({
-        variant: "destructive",
-        title: isArabic ? "فشل في الحذف" : "Delete Failed",
-        description: isArabic ? "حدث خطأ أثناء عملية الحذف" : "An error occurred during deletion",
-      });
+      toast.error(isArabic ? "حدث خطأ أثناء عملية الحذف" : "An error occurred during deletion");
     } finally {
       setIsDeleting(false);
       setShowConfirmDialog(false);
