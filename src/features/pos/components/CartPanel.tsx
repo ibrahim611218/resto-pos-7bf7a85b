@@ -8,6 +8,7 @@ import CartItemsList from "./cart/CartItemsList";
 import CartFooter from "./cart/CartFooter";
 import { useCartResize } from "../hooks/useCartResize";
 import PaymentMethodDialog from "./PaymentMethodDialog";
+import { usePaymentDialog } from "./cart/PaymentDialogHandler";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -56,7 +57,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setTableNumber,
   setPaymentMethod,
 }) => {
-  const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
@@ -68,16 +68,18 @@ const CartPanel: React.FC<CartPanelProps> = ({
     isTablet
   });
 
-  const handleCreateInvoice = () => {
-    setShowPaymentMethodDialog(true);
-  };
-
-  const handlePaymentMethodSelected = (customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
-    setCurrentInvoice(invoice);
-    setShowPaymentMethodDialog(false);
-    return invoice;
-  };
+  // Use the payment dialog hook
+  const { 
+    showPaymentMethodDialog, 
+    setShowPaymentMethodDialog,
+    handleCreateInvoice, 
+    handlePaymentMethodSelected 
+  } = usePaymentDialog({
+    paymentMethod,
+    setPaymentMethod,
+    createInvoice,
+    setCurrentInvoice
+  });
 
   const toggleExpand = () => {
     setExpanded(!expanded);
