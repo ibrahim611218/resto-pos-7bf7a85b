@@ -59,10 +59,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setTableNumber,
   setPaymentMethod,
 }) => {
-  const [showKitchenDialog, setShowKitchenDialog] = useState(false);
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
-  const { language: contextLanguage } = useLanguage();
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -71,13 +69,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const handlePaymentMethodSelected = () => {
     const invoice = createInvoice();
     setCurrentInvoice(invoice);
-    setShowKitchenDialog(true);
+    
+    // Automatically send to kitchen - this happens behind the scenes now
+    console.log(`Order ${invoice.number} automatically sent to kitchen`);
+    
     setShowPaymentMethodDialog(false);
     return invoice;
-  };
-
-  const handleSendToKitchen = () => {
-    setShowKitchenDialog(true);
   };
 
   return (
@@ -141,18 +138,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
           cartItems={cartItems}
           handleCreateInvoice={handleCreateInvoice}
           clearCart={clearCart}
-          onSendToKitchen={handleSendToKitchen}
         />
       </div>
-
-      {/* Kitchen Assignment Dialog */}
-      <KitchenAssignmentDialog
-        isOpen={showKitchenDialog}
-        onClose={() => setShowKitchenDialog(false)}
-        cartItems={cartItems}
-        invoiceId={currentInvoice?.number || ""}
-        language={language}
-      />
 
       {/* Payment Method Dialog */}
       <PaymentMethodDialog
