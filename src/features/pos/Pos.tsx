@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
@@ -10,7 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Invoice } from "@/types";
+import { Invoice, Size } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { Receipt } from "lucide-react";
 
@@ -75,9 +74,7 @@ const Pos: React.FC = () => {
     window.print();
   };
 
-  // Mock function to find an invoice by number
   const findInvoiceByNumber = (number: string): Invoice | null => {
-    // This is a mock implementation. In a real app, you'd fetch from an API
     const mockInvoices = [
       {
         id: "inv123",
@@ -92,7 +89,7 @@ const Pos: React.FC = () => {
             nameAr: "إسبريسو", 
             quantity: 2, 
             price: 10, 
-            size: "medium", 
+            size: "medium" as Size, 
             taxable: true 
           },
           { 
@@ -103,7 +100,7 @@ const Pos: React.FC = () => {
             nameAr: "كابتشينو", 
             quantity: 1, 
             price: 15, 
-            size: "large", 
+            size: "large" as Size, 
             taxable: true 
           }
         ],
@@ -124,8 +121,6 @@ const Pos: React.FC = () => {
   };
 
   const handleRefundInvoice = (invoiceId: string): boolean => {
-    // This is where you'd handle the refund logic
-    // For now, we'll just show a success message
     toast({
       title: isArabic ? "تم إرجاع الفاتورة" : "Invoice Refunded",
       description: isArabic 
@@ -168,7 +163,6 @@ const Pos: React.FC = () => {
       }`}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      {/* Invoice Return Section */}
       <div className="bg-muted/20 p-4 border-b flex flex-col sm:flex-row gap-3 items-center">
         <div className="flex-1 text-xl font-semibold">
           {isArabic ? "نقاط البيع" : "Point of Sale"}
@@ -191,7 +185,6 @@ const Pos: React.FC = () => {
         </div>
       </div>
 
-      {/* Main POS Content */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         <CartPanel 
           cartItems={cartItems}
