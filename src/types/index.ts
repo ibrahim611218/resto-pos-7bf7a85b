@@ -1,9 +1,10 @@
-
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen";
 
 export type Size = "small" | "medium" | "large";
+
+export type ProductType = "food" | "drink" | "dessert" | "other";
 
 export interface User {
   id: string;

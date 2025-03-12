@@ -22,6 +22,8 @@ import BusinessSettings from "./pages/BusinessSettings";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import Customers from "./pages/Customers";
+import SalesReport from "./pages/SalesReport";
+import UserManagement from "./pages/UserManagement";
 
 const queryClient = new QueryClient();
 
@@ -60,8 +62,9 @@ const AppRoutes = () => {
               <Route path="/categories" element={<Categories />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/settings" element={<BusinessSettings />} />
-              {/* Remove language prop from these components since they're simple placeholder components */}
-              <Route path="/reports/sales" element={<h1 className="text-2xl font-bold">تقارير المبيعات</h1>} />
+              <Route path="/reports/sales" element={<SalesReport />} />
+              <Route path="/users" element={<UserManagement />} />
+              {/* Placeholder routes */}
               <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
               <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
             </Route>

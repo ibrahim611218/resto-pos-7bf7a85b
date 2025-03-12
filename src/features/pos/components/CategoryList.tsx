@@ -1,43 +1,48 @@
 
 import React from "react";
-import { Category } from "@/types";
-import GlassCard from "@/components/ui-custom/GlassCard";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface CategoryListProps {
-  categories: Category[];
+  categories: { id: string; name: string; nameAr?: string }[];
   activeCategory: string | null;
-  setActiveCategory: (id: string | null) => void;
+  onCategoryClick: (categoryId: string) => void;
   isArabic: boolean;
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
   categories,
   activeCategory,
-  setActiveCategory,
+  onCategoryClick,
   isArabic,
 }) => {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-2">
-      {categories.map((category, index) => (
-        <GlassCard
+    <div className="flex overflow-x-auto pb-2 gap-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
+      <Button
+        variant="outline"
+        className={cn(
+          "flex-shrink-0 whitespace-nowrap",
+          "bg-gray-50 hover:bg-gray-100",
+          !activeCategory && "bg-primary text-primary-foreground hover:bg-primary/90"
+        )}
+        onClick={() => onCategoryClick("all")}
+      >
+        {isArabic ? "الكل" : "All"}
+      </Button>
+      
+      {categories.map((category) => (
+        <Button
           key={category.id}
-          className={`cursor-pointer transition-colors ${
-            activeCategory === category.id
-              ? "bg-primary text-primary-foreground"
-              : ""
-          }`}
-          animation="fade"
-          delay={index * 50}
-          onClick={() =>
-            setActiveCategory(
-              activeCategory === category.id ? null : category.id
-            )
-          }
+          variant="outline"
+          className={cn(
+            "flex-shrink-0 whitespace-nowrap",
+            "bg-gray-50 hover:bg-gray-100", 
+            activeCategory === category.id && "bg-primary text-primary-foreground hover:bg-primary/90"
+          )}
+          onClick={() => onCategoryClick(category.id)}
         >
-          <div className="text-center py-2">
-            {isArabic ? category.nameAr : category.name}
-          </div>
-        </GlassCard>
+          {isArabic && category.nameAr ? category.nameAr : category.name}
+        </Button>
       ))}
     </div>
   );
