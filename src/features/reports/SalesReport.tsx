@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +11,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer, Cell } from "recharts";
 import { SalesByPaymentMethod, SalesByOrderType, TopSellingProduct, SalesByTimeFrame } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FilePdf, Printer } from "lucide-react";
+import { FileText, Printer } from "lucide-react";
 
 const SalesReport: React.FC = () => {
   const { language } = useLanguage();
@@ -26,7 +25,6 @@ const SalesReport: React.FC = () => {
   const [orderType, setOrderType] = useState<string | undefined>(undefined);
   const [cashier, setCashier] = useState<string | undefined>(undefined);
   
-  // Process invoices based on filters
   const filteredInvoices = useMemo(() => {
     return mockInvoices.filter((invoice) => {
       let match = true;
@@ -55,12 +53,10 @@ const SalesReport: React.FC = () => {
     });
   }, [startDate, endDate, paymentMethod, orderType, cashier]);
   
-  // Calculate total sales
   const totalSales = useMemo(() => {
     return filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0);
   }, [filteredInvoices]);
   
-  // Calculate sales by payment method
   const salesByPaymentMethod: SalesByPaymentMethod[] = useMemo(() => {
     const methodsMap: Map<string, number> = new Map();
     
@@ -88,7 +84,6 @@ const SalesReport: React.FC = () => {
     return result;
   }, [filteredInvoices, totalSales, isArabic]);
   
-  // Calculate sales by order type
   const salesByOrderType: SalesByOrderType[] = useMemo(() => {
     const typesMap: Map<string, number> = new Map();
     
@@ -116,7 +111,6 @@ const SalesReport: React.FC = () => {
     return result;
   }, [filteredInvoices, isArabic]);
   
-  // Get top selling products
   const topSellingProducts: TopSellingProduct[] = useMemo(() => {
     const productsMap: Map<string, { name: string, quantity: number, revenue: number }> = new Map();
     
@@ -146,13 +140,11 @@ const SalesReport: React.FC = () => {
       });
     });
     
-    // Sort by revenue and take top 5
     return productsArray
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5);
   }, [filteredInvoices, isArabic]);
   
-  // Define chart colors
   const CHART_COLORS = [
     "#10B981", // Green
     "#3B82F6", // Blue
@@ -185,7 +177,7 @@ const SalesReport: React.FC = () => {
             {isArabic ? "طباعة" : "Print"}
           </Button>
           <Button>
-            <FilePdf className="h-4 w-4 mr-2" />
+            <FileText className="h-4 w-4 mr-2" />
             {isArabic ? "تصدير PDF" : "Export PDF"}
           </Button>
         </div>
@@ -512,7 +504,6 @@ const SalesReport: React.FC = () => {
         </TabsContent>
       </Tabs>
       
-      {/* Saudi decoration for theme */}
       <div className="saudi-decoration"></div>
       <div className="saudi-decoration-top"></div>
     </div>
