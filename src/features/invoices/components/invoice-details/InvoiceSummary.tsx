@@ -26,6 +26,12 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           <h3 className="text-sm font-semibold text-muted-foreground">العميل</h3>
           <p>{invoice.customer?.name || "عميل عادي"}</p>
           {invoice.customer?.phone && <p className="text-sm">{invoice.customer.phone}</p>}
+          {invoice.customer?.taxNumber && (
+            <p className="text-sm">
+              <span className="text-muted-foreground">الرقم الضريبي: </span>
+              {invoice.customer.taxNumber}
+            </p>
+          )}
         </div>
       </div>
 

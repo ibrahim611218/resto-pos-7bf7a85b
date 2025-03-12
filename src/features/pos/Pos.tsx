@@ -53,8 +53,8 @@ const Pos: React.FC = () => {
   
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
   
-  const handleCreateInvoice = () => {
-    const invoice = createInvoice();
+  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
+    const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
     return invoice;
@@ -113,7 +113,11 @@ const Pos: React.FC = () => {
         cashierId: "user1",
         cashierName: "كاشير",
         status: "completed" as const,
-        orderType: "takeaway" as const
+        orderType: "takeaway" as const,
+        customer: {
+          name: "عميل افتراضي",
+          taxNumber: "123456789"
+        }
       }
     ];
     

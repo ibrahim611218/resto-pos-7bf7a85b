@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
@@ -24,7 +23,7 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
-  createInvoice: () => Invoice; 
+  createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -66,8 +65,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
     setShowPaymentMethodDialog(true);
   };
 
-  const handlePaymentMethodSelected = () => {
-    const invoice = createInvoice();
+  const handlePaymentMethodSelected = (customerName?: string, customerTaxNumber?: string) => {
+    const invoice = createInvoice(customerName, customerTaxNumber);
     setCurrentInvoice(invoice);
     
     // Automatically send to kitchen - this happens behind the scenes now

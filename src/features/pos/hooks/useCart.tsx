@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Product, CartItem, Invoice, PaymentMethod } from "@/types";
+import { Product, CartItem, Invoice, PaymentMethod, Customer } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { generateInvoiceNumber, calculateInvoiceAmounts } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
@@ -107,8 +107,16 @@ export const useCart = () => {
     settings.taxIncluded
   );
 
-  const createInvoice = useCallback((): Invoice => {
+  const createInvoice = useCallback((customerName?: string, customerTaxNumber?: string): Invoice => {
     const invoiceId = generateInvoiceNumber();
+    
+    let customer: Customer | undefined;
+    if (customerName) {
+      customer = {
+        name: customerName,
+        taxNumber: customerTaxNumber
+      };
+    }
     
     const invoice: Invoice = {
       id: Math.random().toString(36).substring(2, 9),
@@ -125,7 +133,8 @@ export const useCart = () => {
       cashierName: user?.name || "كاشير",
       status: "completed",
       orderType: orderType,
-      tableNumber: orderType === "dineIn" ? tableNumber : undefined
+      tableNumber: orderType === "dineIn" ? tableNumber : undefined,
+      customer: customer
     };
     
     toast({

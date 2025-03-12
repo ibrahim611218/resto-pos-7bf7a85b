@@ -83,6 +83,12 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
           font-weight: bold;
           font-size: 1.2em;
         }
+        .customer-info {
+          margin-top: 10px;
+          border: 1px solid #ddd;
+          padding: 10px;
+          background-color: #f9f9f9;
+        }
       </style>
     </head>
     <body>
@@ -102,6 +108,13 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings: Busi
         <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
         ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
         <p><strong>طريقة الدفع:</strong> ${invoice.paymentMethod}</p>
+        
+        ${invoice.customer ? `
+          <div class="customer-info">
+            <p><strong>العميل:</strong> ${invoice.customer.name}</p>
+            ${invoice.customer.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${invoice.customer.taxNumber}</p>` : ''}
+          </div>
+        ` : ''}
       </div>
       
       <table class="invoice-table">

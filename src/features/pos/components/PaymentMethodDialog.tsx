@@ -1,16 +1,15 @@
 
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CreditCard, Banknote, Check } from "lucide-react";
 import { PaymentMethod } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -19,7 +18,7 @@ interface PaymentMethodDialogProps {
   onClose: () => void;
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
-  onConfirm: () => void;
+  onConfirm: (customerName?: string, customerTaxNumber?: string) => void;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -31,47 +30,70 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [customerName, setCustomerName] = useState("");
+  const [customerTaxNumber, setCustomerTaxNumber] = useState("");
+
+  const handleConfirm = () => {
+    onConfirm(customerName, customerTaxNumber);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
-          <DialogTitle className="text-center">
+          <DialogTitle>
             {isArabic ? "اختر طريقة الدفع" : "Select Payment Method"}
           </DialogTitle>
         </DialogHeader>
-        
-        <div className="py-4">
-          <div className="mb-6">
-            <RadioGroup 
-              value={paymentMethod} 
-              onValueChange={(value: PaymentMethod) => setPaymentMethod(value)}
-              className="grid grid-cols-2 gap-4"
+
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              variant={paymentMethod === "cash" ? "default" : "outline"}
+              className="h-14 text-lg"
+              onClick={() => setPaymentMethod("cash")}
             >
-              <div className={`flex items-center space-x-2 ${isArabic ? 'space-x-reverse' : ''} bg-accent p-4 rounded-lg border border-accent-foreground/20 flex-1 justify-center`}>
-                <RadioGroupItem value="cash" id="cash-dialog" />
-                <Label htmlFor="cash-dialog" className="flex items-center cursor-pointer">
-                  <Banknote className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
-                  <span className="text-base">{isArabic ? "نقدي" : "Cash"}</span>
-                </Label>
-              </div>
-              <div className={`flex items-center space-x-2 ${isArabic ? 'space-x-reverse' : ''} bg-accent p-4 rounded-lg border border-accent-foreground/20 flex-1 justify-center`}>
-                <RadioGroupItem value="card" id="card-dialog" />
-                <Label htmlFor="card-dialog" className="flex items-center cursor-pointer">
-                  <CreditCard className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
-                  <span className="text-base">{isArabic ? "شبكة" : "Card"}</span>
-                </Label>
-              </div>
-            </RadioGroup>
+              {isArabic ? "نقدي" : "Cash"}
+            </Button>
+            <Button
+              variant={paymentMethod === "card" ? "default" : "outline"}
+              className="h-14 text-lg"
+              onClick={() => setPaymentMethod("card")}
+            >
+              {isArabic ? "شبكة" : "Card"}
+            </Button>
+          </div>
+
+          <div className="grid gap-2 mt-4">
+            <Label htmlFor="customerName">
+              {isArabic ? "اسم العميل" : "Customer Name"}
+            </Label>
+            <Input
+              id="customerName"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder={isArabic ? "اسم العميل (اختياري)" : "Customer Name (optional)"}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="taxNumber">
+              {isArabic ? "الرقم الضريبي" : "Tax Number"}
+            </Label>
+            <Input
+              id="taxNumber"
+              value={customerTaxNumber}
+              onChange={(e) => setCustomerTaxNumber(e.target.value)}
+              placeholder={isArabic ? "الرقم الضريبي (اختياري)" : "Tax Number (optional)"}
+            />
           </div>
         </div>
-        
-        <DialogFooter className="flex justify-between sm:justify-between">
+
+        <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button onClick={onConfirm}>
-            <Check className={`${isArabic ? 'ml-2' : 'mr-2'} h-4 w-4`} />
+          <Button onClick={handleConfirm}>
             {isArabic ? "تأكيد" : "Confirm"}
           </Button>
         </DialogFooter>
