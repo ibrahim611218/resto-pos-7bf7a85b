@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark" | "saudi";
+type Theme = "light" | "dark";
 
 interface ThemeContextProps {
   theme: Theme;
@@ -27,16 +27,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     
     // Update document class for CSS styling
     const root = document.documentElement;
-    root.classList.remove("light", "dark", "saudi");
+    root.classList.remove("light", "dark");
     root.classList.add(theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      if (prevTheme === "light") return "dark";
-      if (prevTheme === "dark") return "saudi";
-      return "light";
-    });
+    setTheme((prevTheme) => prevTheme === "light" ? "dark" : "light");
   };
 
   return (
