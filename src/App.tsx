@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -66,16 +67,13 @@ function App() {
                 <Route path="/settings" element={<BusinessSettings />} />
                 <Route path="/reports/sales" element={<SalesReport />} />
                 <Route path="/users" element={<UserManagement />} />
-                {/* Placeholder routes */}
-                <Route path="/reports/inventory" element={<h1 className="text-2xl font-bold">تقارير المخزون</h1>} />
-                <Route path="/reports/customers" element={<h1 className="text-2xl font-bold">تقارير العملاء</h1>} />
               </Route>
             </Route>
           </Route>
           
           {/* Reports Routes */}
           <Route path="/reports" element={<ProtectedRoute allowedRoles={["admin", "owner", "supervisor"]} />}>
-            <Route path="sales" element={<SalesReportPage />} />
+            <Route path="sales" element={<SalesReport />} />
             <Route path="inventory" element={<InventoryReportPage />} />
             <Route path="customers" element={<CustomersReportPage />} />
           </Route>

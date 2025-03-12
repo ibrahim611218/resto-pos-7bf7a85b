@@ -42,7 +42,7 @@ export const useUsers = () => {
       
       // Ensure system admin has all permissions
       const allPermissionValues = allPermissions.map(p => p.value);
-      updateUserPermissions("sys-admin-1", allPermissionValues);
+      updateUserPermissions(systemAdmin.id, allPermissionValues);
     }
   }, []);
 
