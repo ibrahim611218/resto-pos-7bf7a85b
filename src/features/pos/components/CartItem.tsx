@@ -5,6 +5,7 @@ import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import ItemDetails from "./cart/ItemDetails";
 import QuantityControls from "./cart/QuantityControls";
 import RemoveItemButton from "./cart/RemoveItemButton";
+import { useTheme } from "@/context/ThemeContext";
 
 interface CartItemProps {
   item: CartItemType;
@@ -23,9 +24,12 @@ const CartItemComponent: React.FC<CartItemProps> = ({
   updateQuantity,
   removeItem,
 }) => {
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
+
   return (
     <AnimatedTransition animation="slide-up" delay={index * 50}>
-      <div className="flex justify-between items-center bg-secondary p-3 rounded-lg">
+      <div className={`flex justify-between items-center ${isLightTheme ? 'bg-secondary/20 hover:bg-secondary/30' : 'bg-secondary hover:bg-secondary/80'} p-3 rounded-xl border border-border/50 transition-colors duration-200`}>
         <ItemDetails
           name={item.name}
           nameAr={item.nameAr}

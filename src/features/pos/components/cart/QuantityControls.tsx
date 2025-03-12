@@ -2,6 +2,7 @@
 import React from "react";
 import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/context/ThemeContext";
 
 interface QuantityControlsProps {
   quantity: number;
@@ -14,8 +15,11 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   onIncrease,
   onDecrease,
 }) => {
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
+
   return (
-    <div className="flex items-center space-x-1 bg-secondary/50 rounded-full p-1">
+    <div className={`flex items-center space-x-1 ${isLightTheme ? 'bg-primary/5' : 'bg-secondary/50'} rounded-full p-1`}>
       <Button
         variant="ghost"
         size="icon"

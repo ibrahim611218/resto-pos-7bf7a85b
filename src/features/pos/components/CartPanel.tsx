@@ -1,7 +1,8 @@
+
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { CartItem as CartItemType, Language, Invoice, PaymentMethod } from "@/types";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, Receipt, ChevronDown, ChevronUp } from "lucide-react";
 import CartItemComponent from "./CartItem";
 import EmptyCart from "./cart/EmptyCart";
 import OrderTypeSelector from "./cart/OrderTypeSelector";
@@ -11,6 +12,8 @@ import CartActions from "./cart/CartActions";
 import { useLanguage } from "@/context/LanguageContext";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/context/ThemeContext";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -61,6 +64,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
 }) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
+  const [isSummaryCollapsed, setIsSummaryCollapsed] = useState(false);
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -79,13 +85,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col h-full border-r bg-card shadow-md">
-      <div className="p-4 flex-shrink-0 flex justify-between items-center bg-muted/30">
-        <h2 className="text-2xl font-bold flex items-center">
-          <ShoppingCart className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5`} />
+    <div className={`w-full md:w-1/3 lg:w-1/4 flex flex-col h-full ${isLightTheme ? 'bg-white shadow-lg' : 'bg-card shadow-md'} border-r`}>
+      <div className={`p-4 flex-shrink-0 flex justify-between items-center ${isLightTheme ? 'bg-primary/5' : 'bg-muted/30'} border-b`}>
+        <h2 className="text-xl font-bold flex items-center">
+          <ShoppingCart className={`${isArabic ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
           {isArabic ? "السلة" : "Cart"}
           {!isEmpty && (
-            <span className="ml-2 text-sm bg-primary text-white rounded-full px-2 py-0.5">
+            <span className="ml-2 text-xs bg-primary text-white rounded-full px-2 py-0.5">
               {cartItems.length}
             </span>
           )}
@@ -93,12 +99,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
         <Button 
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-destructive" 
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10" 
           onClick={clearCart}
           disabled={isEmpty}
           title={isArabic ? "مسح السلة" : "Clear Cart"}
         >
-          <Trash2 className="h-5 w-5" />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
       
@@ -122,30 +128,49 @@ const CartPanel: React.FC<CartPanelProps> = ({
         )}
       </div>
       
-      <div className="p-4 border-t bg-card flex-shrink-0">
-        <Separator className="mb-4" />
-        
-        <OrderTypeSelector
-          orderType={orderType}
-          tableNumber={tableNumber}
-          setOrderType={setOrderType}
-          setTableNumber={setTableNumber}
-        />
-        
-        <DiscountInput
-          discount={discount}
-          discountType={discountType}
-          setDiscount={setDiscount}
-          setDiscountType={setDiscountType}
-        />
-        
-        <CartSummary
-          subtotal={subtotal}
-          taxAmount={taxAmount}
-          discount={discount}
-          discountType={discountType}
-          total={total}
-        />
+      <div className={`p-4 border-t ${isLightTheme ? 'bg-white' : 'bg-card'} flex-shrink-0`}>
+        <Collapsible open={!isSummaryCollapsed} onOpenChange={(open) => setIsSummaryCollapsed(!open)}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-primary font-medium">
+              <Receipt className="h-4 w-4" />
+              {isArabic ? "ملخص الطلب" : "Order Summary"}
+            </div>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                {isSummaryCollapsed ? 
+                  <ChevronDown className="h-4 w-4" /> : 
+                  <ChevronUp className="h-4 w-4" />
+                }
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          
+          <CollapsibleContent>
+            <Separator className="mb-4" />
+            
+            <OrderTypeSelector
+              orderType={orderType}
+              tableNumber={tableNumber}
+              setOrderType={setOrderType}
+              setTableNumber={setTableNumber}
+            />
+            
+            <DiscountInput
+              discount={discount}
+              discountType={discountType}
+              setDiscount={setDiscount}
+              setDiscountType={setDiscountType}
+            />
+            
+            <CartSummary
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              discount={discount}
+              discountType={discountType}
+              total={total}
+            />
+          </CollapsibleContent>
+        </Collapsible>
         
         <CartActions
           cartItems={cartItems}

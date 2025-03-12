@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface ItemDetailsProps {
   name: string;
@@ -20,17 +21,23 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   isArabic,
   sizeLabel,
 }) => {
+  const { theme } = useTheme();
+  const isLightTheme = theme === "light";
+  const totalPrice = price * quantity;
+
   return (
     <div className="flex-1">
-      <p className="font-medium">
+      <p className="font-medium mb-1">
         {isArabic ? nameAr || name : name}
-        <span className="text-xs ml-1 text-muted-foreground">
-          ({sizeLabel})
+      </p>
+      <div className="flex items-center">
+        <span className={`text-xs mr-2 ${isLightTheme ? 'bg-primary/10 text-primary' : 'bg-secondary/50 text-secondary-foreground'} px-2 py-0.5 rounded-full`}>
+          {sizeLabel}
         </span>
-      </p>
-      <p className="text-sm text-muted-foreground">
-        {price} {isArabic ? "ر.س" : "SAR"} x {quantity}
-      </p>
+        <p className="text-sm text-muted-foreground">
+          {price.toFixed(2)} {isArabic ? "ر.س" : "SAR"} x {quantity} = <span className="font-semibold text-foreground">{totalPrice.toFixed(2)}</span>
+        </p>
+      </div>
     </div>
   );
 };

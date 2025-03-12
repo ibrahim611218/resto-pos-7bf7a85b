@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { CreditCard, Trash2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
 interface CartActionsProps {
   cartItems: any[];
@@ -16,13 +17,17 @@ const CartActions: React.FC<CartActionsProps> = ({
   clearCart,
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
   const isArabic = language === "ar";
   const isEmpty = cartItems.length === 0;
+  const isLightTheme = theme === "light";
 
   return (
     <div className="mt-6 space-y-3">
       <Button 
-        className="w-full h-14 flex items-center justify-center gap-2 text-lg bg-primary hover:bg-primary/90 shadow-md transition-all duration-200 hover:scale-[1.02] transform" 
+        className={`w-full h-14 flex items-center justify-center gap-2 text-lg shadow-md transition-all duration-200 hover:translate-y-[-2px] transform ${
+          isLightTheme ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80' : 'bg-primary hover:bg-primary/90'
+        }`}
         onClick={handleCreateInvoice}
         disabled={isEmpty}
       >
