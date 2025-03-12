@@ -117,7 +117,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                         <p className="font-medium truncate text-sm">
                           {isArabic ? product.nameAr : product.name}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs text-white mt-0.5 bg-black/50 rounded-full px-2 py-0.5 inline-block">
                           {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
                         </p>
                       </div>
@@ -154,7 +154,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
                           <p className="font-medium truncate text-sm">
                             {isArabic ? product.nameAr : product.name}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
+                          <p className="text-xs text-white mt-0.5 bg-black/50 rounded-full px-2 py-0.5 inline-block">
                             {product.variants[0].price} {isArabic ? "ر.س" : "SAR"}
                           </p>
                         </div>
