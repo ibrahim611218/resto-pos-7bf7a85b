@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/collapsible";
 import { SidebarLink } from "./types";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
-import { handleDesktopExport } from "@/utils/desktopExport";
+import { handleDesktopExport } from "@/utils/desktop-export";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface SidebarItemProps {
