@@ -15,26 +15,33 @@ export const handleDesktopExport = (language: string = "ar") => {
   }
   
   try {
-    // Generate the download URL
+    // Get the download URL based on platform
     const downloadUrl = getDownloadUrl();
     
-    // Create a blob with the HTML content
+    // Generate the HTML content
     const htmlContent = generateDownloadPageTemplate(language);
+    
+    // Create a blob and a URL for it
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const blobUrl = URL.createObjectURL(blob);
     
-    // Open a new window with the HTML content
-    const installWindow = window.open(blobUrl, '_blank');
+    // Open the blob URL in a new tab
+    const newWindow = window.open(blobUrl, '_blank');
     
-    if (installWindow) {
+    if (newWindow) {
       // Show success notification
       showNotification("download-started", language);
+      
+      // Clean up the blob URL after the window has loaded
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+      }, 5000);
     } else {
-      // Show error notification if popup is blocked
+      // Show popup blocked notification
       showNotification("popup-blocked", language);
     }
   } catch (error) {
-    console.error("Error opening desktop export window:", error);
+    console.error("Desktop export error:", error);
     showNotification("export-error", language);
   }
 };

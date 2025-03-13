@@ -16,14 +16,23 @@ export const isRunningInElectron = (): boolean => {
  */
 export const getDownloadUrl = (): string => {
   const platform = window.navigator.platform.toLowerCase();
+  let url = '';
   
   // Determine the appropriate download URL based on platform
   if (platform.includes('win')) {
-    return DOWNLOAD_URLS.windows;
+    url = DOWNLOAD_URLS.windows;
   } else if (platform.includes('mac')) {
-    return DOWNLOAD_URLS.mac;
+    url = DOWNLOAD_URLS.mac;
   } else {
     // Default to Windows if platform cannot be determined or is Linux
+    url = DOWNLOAD_URLS.windows;
+  }
+  
+  // Make sure we have a valid URL
+  if (!url || url.trim() === '') {
+    console.warn('Invalid download URL, using Windows as fallback');
     return DOWNLOAD_URLS.windows;
   }
+  
+  return url;
 };
