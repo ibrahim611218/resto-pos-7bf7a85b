@@ -24,6 +24,8 @@ export const exportSalesReportPDF = ({
   isArabic
 }: ExportPDFProps) => {
   try {
+    console.log("Starting PDF export, isArabic:", isArabic);
+    
     // Create new PDF document with the appropriate orientation
     const doc = new jsPDF({
       orientation: "p",
@@ -38,6 +40,7 @@ export const exportSalesReportPDF = ({
     
     // Get font styles for the document
     const fontStyles = getFontStylesForPDF(isArabic);
+    console.log("Font styles:", fontStyles);
     
     // Add report title
     doc.setFontSize(18);
@@ -147,16 +150,37 @@ export const exportSalesReportPDF = ({
     const totalX = isArabic ? doc.internal.pageSize.width - 20 : 20;
     doc.text(totalText, totalX, finalY + 10, { align: isArabic ? "right" : "left" });
     
-    // Generate blob and create download link programmatically
-    const pdfBlob = doc.output('blob');
-    const url = URL.createObjectURL(pdfBlob);
-    const downloadLink = document.createElement('a');
-    downloadLink.href = url;
-    downloadLink.download = "sales_report.pdf";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(url);
+    try {
+      // Try using Blob and manual download approach
+      const pdfBlob = doc.output('blob');
+      const url = URL.createObjectURL(pdfBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = "sales_report.pdf";
+      downloadLink.style.display = 'none';
+      document.body.appendChild(downloadLink);
+      
+      console.log("Triggering download...");
+      downloadLink.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+        console.log("Download completed and cleaned up");
+      }, 100);
+    } catch (downloadError) {
+      console.error("Error with blob download method:", downloadError);
+      
+      // Fallback to direct save
+      try {
+        console.log("Trying fallback direct save method");
+        doc.save("sales_report.pdf");
+      } catch (saveError) {
+        console.error("Even fallback save method failed:", saveError);
+        throw saveError;
+      }
+    }
     
     toast({
       title: isArabic ? "تم التصدير بنجاح" : "Export Successful",

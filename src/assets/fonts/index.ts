@@ -12,17 +12,22 @@ import tajawalBold from './Tajawal-Bold.ttf';
 export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   if (isArabic) {
     try {
+      // Convert font data to base64 string if needed
       // Add Tajawal font (supports Arabic)
       doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegular);
       doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBold);
+      
+      // Register the font with the document
       doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
       doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
       
       // Set the font for Arabic
       doc.setFont('Tajawal');
       
-      // Set right-to-left for Arabic
+      // Enable right-to-left for Arabic text
       doc.setR2L(true);
+      
+      console.log('Arabic fonts loaded successfully');
     } catch (error) {
       console.error('Error loading Arabic fonts:', error);
       // Fallback to default font if there's an error
