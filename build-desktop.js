@@ -29,4 +29,4 @@ execSync('cd electron && npm run package', { stdio: 'inherit' });
 console.log('Creating installers...');
 execSync('cd electron && npm run make', { stdio: 'inherit' });
 
-console.log('Build complete!');
+console.log('Build complete! The Windows installer (.exe) is located in electron/out/make/squirrel.windows/x64/');

@@ -1,160 +1,110 @@
 
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { SidebarLink } from "./types";
-import AnimatedTransition from "../../ui-custom/AnimatedTransition";
-import { handleDesktopExport } from "@/utils/desktop-export";
 import { useLanguage } from "@/context/LanguageContext";
+import { handleDesktopExport } from "@/utils/desktop-export";
 
 interface SidebarItemProps {
-  link: SidebarLink;
-  collapsed: boolean;
-  isOpen: boolean;
-  currentPath: string;
-  onToggleCategory: (category: string) => void;
+  item: SidebarLink;
+  isActive: boolean;
+  onClick?: () => void;
 }
 
-const SidebarItem = ({
-  link,
-  collapsed,
-  isOpen,
-  currentPath,
-  onToggleCategory,
-}: SidebarItemProps) => {
-  const location = useLocation();
+const SidebarItem: React.FC<SidebarItemProps> = ({
+  item,
+  isActive,
+  onClick,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { language } = useLanguage();
   
-  // Check if the current link is active (either exact match or contains for submenus)
-  const isActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
-    if (path === "#") return false; // Special case for action items
-    return location.pathname.startsWith(path);
+  const hasSubMenu = item.subMenuItems && item.subMenuItems.length > 0;
+  
+  const handleToggleSubmenu = (e: React.MouseEvent) => {
+    if (hasSubMenu) {
+      e.preventDefault();
+      setIsOpen(!isOpen);
+    }
+    if (onClick) onClick();
   };
   
-  // Handle special actions like desktop export
-  const handleSpecialAction = (e: React.MouseEvent) => {
+  const handleActionClick = (e: React.MouseEvent, action?: string) => {
     e.preventDefault();
-    if (link.action === "desktop-export") {
+    
+    if (action === "desktop-export") {
       handleDesktopExport(language);
     }
+    
+    if (onClick) onClick();
   };
   
-  // If this is a parent menu with subMenuItems
-  if (link.subMenuItems && link.subMenuItems.length > 0) {
-    // Check if any child is active to highlight the parent
-    const anyChildActive = link.subMenuItems.some(item => isActive(item.path));
-    
-    return (
-      <Collapsible 
-        open={isOpen || anyChildActive}
-        onOpenChange={() => onToggleCategory(link.path.replace("/", ""))}
-        className="w-full"
-      >
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full justify-between transition-all duration-200 ease-in-out",
-              (anyChildActive) && "bg-accent text-accent-foreground",
-              collapsed && "justify-center"
-            )}
-          >
-            <span className="flex items-center">
-              {link.icon}
-              {!collapsed && (
-                <AnimatedTransition animation="fade">
-                  <span className="mr-3">{link.name}</span>
-                </AnimatedTransition>
-              )}
-            </span>
-            {!collapsed && (
-              <ChevronRight
-                size={16}
-                className={cn(
-                  "transition-transform duration-200",
-                  (isOpen || anyChildActive) && "transform rotate-90"
-                )}
-              />
-            )}
-          </Button>
-        </CollapsibleTrigger>
-        
-        {/* Only show submenu items if not collapsed or if a child is active */}
-        {(!collapsed || anyChildActive) && (
-          <CollapsibleContent className="space-y-1 mr-6 mt-1">
-            {link.subMenuItems.map((child) => (
-              <Link
-                key={child.path}
-                to={child.path}
-                className={cn(
-                  "flex items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out",
-                  isActive(child.path)
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground",
-                )}
-              >
-                {child.icon}
-                <AnimatedTransition animation="fade">
-                  <span className="mr-3">{child.name}</span>
-                </AnimatedTransition>
-              </Link>
-            ))}
-          </CollapsibleContent>
-        )}
-      </Collapsible>
-    );
-  }
-
-  // For action items (like desktop export)
-  if (link.isAction) {
-    return (
-      <Button
-        variant="ghost"
-        className={cn(
-          "flex w-full items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out",
-          "hover:bg-accent hover:text-accent-foreground",
-          collapsed ? "justify-center" : "justify-start"
-        )}
-        onClick={handleSpecialAction}
-      >
-        {link.icon}
-        {!collapsed && (
-          <AnimatedTransition animation="fade">
-            <span className="mr-3">{link.name}</span>
-          </AnimatedTransition>
-        )}
-      </Button>
-    );
-  }
-
-  // For regular menu items without submenu
+  const itemContent = (
+    <>
+      <span className="mr-2 rtl:ml-2 rtl:mr-0">{item.icon}</span>
+      <span className="text-sm whitespace-nowrap">
+        {language === "ar" ? item.name : item.name_en}
+      </span>
+      {hasSubMenu && (
+        <ChevronDown
+          size={16}
+          className={cn(
+            "ml-auto transition-transform rtl:mr-auto rtl:ml-0",
+            isOpen && "transform rotate-180"
+          )}
+        />
+      )}
+    </>
+  );
+  
   return (
-    <Link
-      key={link.path}
-      to={link.path}
-      className={cn(
-        "flex items-center rounded-md px-3 py-2 transition-all duration-200 ease-in-out",
-        isActive(link.path)
-          ? "bg-primary text-primary-foreground"
-          : "hover:bg-accent hover:text-accent-foreground",
-        collapsed ? "justify-center" : "justify-start"
+    <div className="w-full">
+      {/* Main Item */}
+      {item.isAction ? (
+        <a
+          href="#"
+          className={cn(
+            "flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors",
+            isActive && "bg-gray-100 dark:bg-gray-800"
+          )}
+          onClick={(e) => handleActionClick(e, item.action)}
+        >
+          {itemContent}
+        </a>
+      ) : (
+        <Link
+          to={item.path}
+          className={cn(
+            "flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors",
+            isActive && "bg-gray-100 dark:bg-gray-800"
+          )}
+          onClick={handleToggleSubmenu}
+        >
+          {itemContent}
+        </Link>
       )}
-    >
-      {link.icon}
-      {!collapsed && (
-        <AnimatedTransition animation="fade">
-          <span className="mr-3">{link.name}</span>
-        </AnimatedTransition>
+      
+      {/* Sub Menu Items */}
+      {hasSubMenu && isOpen && (
+        <div className="pl-4 mt-1 space-y-1 rtl:pl-0 rtl:pr-4">
+          {item.subMenuItems?.map((subItem, idx) => (
+            <Link
+              key={idx}
+              to={subItem.path}
+              className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              onClick={onClick}
+            >
+              {subItem.icon && (
+                <span className="mr-2 rtl:ml-2 rtl:mr-0">{subItem.icon}</span>
+              )}
+              <span>{language === "ar" ? subItem.name : subItem.name_en}</span>
+            </Link>
+          ))}
+        </div>
       )}
-    </Link>
+    </div>
   );
 };
 

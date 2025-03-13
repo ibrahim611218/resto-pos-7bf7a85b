@@ -1,13 +1,22 @@
 
-// Category-specific handlers
 function setupCategoryHandlers(ipcMain, db) {
   // Get all categories
-  ipcMain.handle('get-categories', async () => {
+  ipcMain.handle('db:getCategories', async () => {
     try {
-      const categories = db.prepare('SELECT * FROM categories').all();
+      const stmt = db.prepare(`SELECT * FROM categories`);
+      const categories = stmt.all();
+      
+      // Parse the data JSON field for each category
       return categories.map(category => {
-        const fullData = JSON.parse(category.data);
-        return { ...fullData, id: category.id };
+        try {
+          return {
+            ...category,
+            data: JSON.parse(category.data)
+          };
+        } catch (e) {
+          console.error('Error parsing category data:', e);
+          return category;
+        }
       });
     } catch (error) {
       console.error('Error getting categories:', error);
@@ -16,19 +25,22 @@ function setupCategoryHandlers(ipcMain, db) {
   });
   
   // Add a new category
-  ipcMain.handle('add-category', async (event, category) => {
+  ipcMain.handle('db:addCategory', async (event, category) => {
     try {
+      // Convert complex objects to JSON strings
+      const categoryData = JSON.stringify(category);
+      
       const stmt = db.prepare(`
-        INSERT INTO categories (id, name, nameAr, image, data)
+        INSERT INTO categories (id, name, nameAr, image, data) 
         VALUES (?, ?, ?, ?, ?)
       `);
       
       stmt.run(
         category.id,
         category.name,
-        category.nameAr || '',
-        category.image || '',
-        JSON.stringify(category)
+        category.nameAr,
+        category.image || null,
+        categoryData
       );
       
       return { success: true, id: category.id };
@@ -38,23 +50,23 @@ function setupCategoryHandlers(ipcMain, db) {
     }
   });
   
-  // Update existing category
-  ipcMain.handle('update-category', async (event, category) => {
+  // Update an existing category
+  ipcMain.handle('db:updateCategory', async (event, category) => {
     try {
+      // Convert complex objects to JSON strings
+      const categoryData = JSON.stringify(category);
+      
       const stmt = db.prepare(`
         UPDATE categories SET
-          name = ?,
-          nameAr = ?,
-          image = ?,
-          data = ?
+        name = ?, nameAr = ?, image = ?, data = ?
         WHERE id = ?
       `);
       
       stmt.run(
         category.name,
-        category.nameAr || '',
-        category.image || '',
-        JSON.stringify(category),
+        category.nameAr,
+        category.image || null,
+        categoryData,
         category.id
       );
       
@@ -65,28 +77,13 @@ function setupCategoryHandlers(ipcMain, db) {
     }
   });
   
-  // Delete category
-  ipcMain.handle('delete-category', async (event, categoryId) => {
+  // Delete a category
+  ipcMain.handle('db:deleteCategory', async (event, categoryId) => {
     try {
-      // First, check if there are any products using this category
-      const products = db.prepare('SELECT * FROM products WHERE category = ?').all(categoryId);
+      const stmt = db.prepare(`DELETE FROM categories WHERE id = ?`);
+      stmt.run(categoryId);
       
-      if (products.length > 0) {
-        return { 
-          success: false, 
-          error: 'Cannot delete category: it is being used by products', 
-          productsCount: products.length 
-        };
-      }
-      
-      // If no products are using it, delete the category
-      const stmt = db.prepare('DELETE FROM categories WHERE id = ?');
-      const result = stmt.run(categoryId);
-      
-      return { 
-        success: result.changes > 0, 
-        deleted: result.changes > 0 
-      };
+      return { success: true };
     } catch (error) {
       console.error('Error deleting category:', error);
       return { success: false, error: error.message };

@@ -21,8 +21,10 @@ module.exports = {
         name: 'resto-pos',
         authors: 'Resto POS',
         description: 'Restaurant POS System',
-        iconUrl: './public/assets/restopos-logo.png',
-        setupIcon: './public/assets/restopos-logo.png'
+        setupIcon: './public/assets/restopos-logo.png',
+        loadingGif: './public/assets/installer-loading.gif',
+        noMsi: false,
+        setupExe: 'resto-pos-setup.exe'
       }
     },
     {

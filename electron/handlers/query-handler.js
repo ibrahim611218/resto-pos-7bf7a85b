@@ -1,17 +1,31 @@
 
-// Generic query handler
 function setupQueryHandler(ipcMain, db) {
-  // General query handler
-  ipcMain.handle('db-query', async (event, { sql, params }) => {
+  // Generic query handler for custom SQL queries
+  ipcMain.handle('db:query', async (event, sql, params = []) => {
     try {
-      const stmt = db.prepare(sql);
-      if (sql.trim().toLowerCase().startsWith('select')) {
-        return stmt.all(params);
+      console.log('Executing query:', sql);
+      console.log('With params:', params);
+      
+      // Determine if this is a select query or a modification query
+      const isSelectQuery = sql.trim().toLowerCase().startsWith('select');
+      
+      if (isSelectQuery) {
+        const stmt = db.prepare(sql);
+        if (params && params.length > 0) {
+          return stmt.all(...params);
+        } else {
+          return stmt.all();
+        }
       } else {
-        return stmt.run(params);
+        const stmt = db.prepare(sql);
+        if (params && params.length > 0) {
+          return stmt.run(...params);
+        } else {
+          return stmt.run();
+        }
       }
     } catch (error) {
-      console.error('Database query error:', error);
+      console.error('Error executing query:', error);
       throw error;
     }
   });

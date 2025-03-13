@@ -1,38 +1,48 @@
 
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, screen } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-let mainWindow;
+let mainWindow = null;
 
 function createWindow() {
-  // Create the browser window
+  // Get the screen dimensions
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  
+  // Create the browser window with proper dimensions
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: Math.min(1280, width),
+    height: Math.min(800, height),
+    minWidth: 800,
+    minHeight: 600,
+    icon: path.join(__dirname, '../public/assets/restopos-logo.png'),
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: false // Required for better-sqlite3
     }
   });
   
-  // Load the app
-  const startUrl = isDev
-    ? 'http://localhost:8080' // Development URL
-    : `file://${path.join(__dirname, '../dist/index.html')}`; // Production URL
-  
-  mainWindow.loadURL(startUrl);
-  
-  // Open DevTools in development mode
+  // Load the correct URL depending on environment
   if (isDev) {
+    // In development, we load from the dev server
+    console.log('Loading from dev server in development mode');
+    mainWindow.loadURL('http://localhost:8080');
+    
+    // Open DevTools
     mainWindow.webContents.openDevTools();
+  } else {
+    // In production, we load from the built files
+    console.log('Loading from built files in production mode');
+    mainWindow.loadURL(`file://${path.join(__dirname, 'dist/index.html')}`);
   }
   
+  // Emitted when the window is closed
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
+  
   return mainWindow;
 }
 

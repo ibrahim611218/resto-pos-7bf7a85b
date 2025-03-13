@@ -1,13 +1,22 @@
 
-// Product-specific handlers
 function setupProductHandlers(ipcMain, db) {
-  // Get products
-  ipcMain.handle('get-products', async () => {
+  // Get all products
+  ipcMain.handle('db:getProducts', async () => {
     try {
-      const products = db.prepare('SELECT * FROM products').all();
+      const stmt = db.prepare(`SELECT * FROM products`);
+      const products = stmt.all();
+      
+      // Parse the data JSON field for each product
       return products.map(product => {
-        const fullData = JSON.parse(product.data);
-        return { ...fullData };
+        try {
+          return {
+            ...product,
+            data: JSON.parse(product.data)
+          };
+        } catch (e) {
+          console.error('Error parsing product data:', e);
+          return product;
+        }
       });
     } catch (error) {
       console.error('Error getting products:', error);

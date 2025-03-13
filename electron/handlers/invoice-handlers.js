@@ -1,33 +1,47 @@
 
-// Invoice-specific handlers
 function setupInvoiceHandlers(ipcMain, db) {
   // Get all invoices
-  ipcMain.handle('get-invoices', async () => {
+  ipcMain.handle('db:getInvoices', async () => {
     try {
-      const invoices = db.prepare('SELECT * FROM invoices ORDER BY date DESC').all();
+      const stmt = db.prepare(`SELECT * FROM invoices ORDER BY date DESC`);
+      const invoices = stmt.all();
+      
+      // Parse the data JSON field for each invoice
       return invoices.map(invoice => {
-        const fullData = JSON.parse(invoice.data);
-        return { ...fullData, id: invoice.id, number: invoice.number };
+        try {
+          return {
+            ...invoice,
+            data: JSON.parse(invoice.data)
+          };
+        } catch (e) {
+          console.error('Error parsing invoice data:', e);
+          return invoice;
+        }
       });
     } catch (error) {
       console.error('Error getting invoices:', error);
       return [];
     }
   });
-  
-  // Save invoice
-  ipcMain.handle('save-invoice', async (event, invoice) => {
+
+  // Save a new invoice
+  ipcMain.handle('db:saveInvoice', async (event, invoice) => {
     try {
+      // Convert complex objects to JSON strings
+      const invoiceData = JSON.stringify(invoice);
+      
       const stmt = db.prepare(`
-        INSERT INTO invoices (id, number, date, subtotal, taxAmount, total, discount, discountType, 
-        paymentMethod, cashierId, cashierName, status, orderType, tableNumber, data)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO invoices 
+        (id, number, date, subtotal, taxAmount, total, discount, discountType, 
+         paymentMethod, cashierId, cashierName, status, orderType, tableNumber, data) 
+        VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       
       stmt.run(
         invoice.id,
         invoice.number,
-        invoice.date.toString(),
+        invoice.date,
         invoice.subtotal,
         invoice.taxAmount,
         invoice.total,
@@ -39,7 +53,7 @@ function setupInvoiceHandlers(ipcMain, db) {
         invoice.status,
         invoice.orderType,
         invoice.tableNumber || null,
-        JSON.stringify(invoice)
+        invoiceData
       );
       
       return { success: true, id: invoice.id };
@@ -48,20 +62,36 @@ function setupInvoiceHandlers(ipcMain, db) {
       return { success: false, error: error.message };
     }
   });
-  
-  // Update invoice (for refunds, etc.)
-  ipcMain.handle('update-invoice', async (event, invoice) => {
+
+  // Update an existing invoice
+  ipcMain.handle('db:updateInvoice', async (event, invoice) => {
     try {
+      // Convert complex objects to JSON strings
+      const invoiceData = JSON.stringify(invoice);
+      
       const stmt = db.prepare(`
-        UPDATE invoices SET 
-          status = ?,
-          data = ?
+        UPDATE invoices SET
+        number = ?, date = ?, subtotal = ?, taxAmount = ?, total = ?, 
+        discount = ?, discountType = ?, paymentMethod = ?, cashierId = ?,
+        cashierName = ?, status = ?, orderType = ?, tableNumber = ?, data = ?
         WHERE id = ?
       `);
       
       stmt.run(
+        invoice.number,
+        invoice.date,
+        invoice.subtotal,
+        invoice.taxAmount,
+        invoice.total,
+        invoice.discount,
+        invoice.discountType,
+        invoice.paymentMethod,
+        invoice.cashierId,
+        invoice.cashierName,
         invoice.status,
-        JSON.stringify(invoice),
+        invoice.orderType,
+        invoice.tableNumber || null,
+        invoiceData,
         invoice.id
       );
       

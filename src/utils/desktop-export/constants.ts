@@ -3,9 +3,9 @@
 
 // Download URLs by platform - Update these URLs with your actual download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-setup-1.0.0.exe',
-  mac: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-1.0.0.dmg',
-  linux: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-1.0.0.AppImage',
+  windows: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos-setup.exe',
+  mac: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.dmg',
+  linux: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.AppImage',
 };
 
 // System requirements

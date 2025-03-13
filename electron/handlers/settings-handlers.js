@@ -1,20 +1,19 @@
 
-// Settings-specific handlers
 function setupSettingsHandlers(ipcMain, db) {
-  // Get settings
-  ipcMain.handle('get-settings', async () => {
+  // Get business settings
+  ipcMain.handle('db:getSettings', async () => {
     try {
-      const settings = db.prepare('SELECT * FROM settings LIMIT 1').get();
-      if (settings) {
-        return JSON.parse(settings.data);
-      } else {
+      const stmt = db.prepare(`SELECT * FROM settings LIMIT 1`);
+      const settings = stmt.get();
+      
+      if (!settings) {
         // Return default settings if none exist
         return {
           name: "مطعم الذواق",
           nameAr: "مطعم الذواق",
           taxNumber: "300000000000003",
           address: "الرياض، المملكة العربية السعودية",
-          addressAr: "الرياض، المملكة العربية السعودية",
+          addressAr: "الرياض، المملكة العربية السعودية", 
           phone: "966500000000",
           email: "info@example.com",
           taxRate: 15,
@@ -22,33 +21,39 @@ function setupSettingsHandlers(ipcMain, db) {
           invoiceNotesAr: "شكراً لزيارتكم"
         };
       }
+      
+      // Parse the data JSON field
+      try {
+        return {
+          ...settings,
+          data: JSON.parse(settings.data)
+        };
+      } catch (e) {
+        console.error('Error parsing settings data:', e);
+        return settings;
+      }
     } catch (error) {
       console.error('Error getting settings:', error);
       return null;
     }
   });
   
-  // Save settings
-  ipcMain.handle('save-settings', async (event, settings) => {
+  // Save business settings
+  ipcMain.handle('db:saveSettings', async (event, settings) => {
     try {
-      // First check if settings exist
-      const existingSettings = db.prepare('SELECT * FROM settings LIMIT 1').get();
+      // Check if settings already exist
+      const existingStmt = db.prepare(`SELECT id FROM settings LIMIT 1`);
+      const existing = existingStmt.get();
       
-      if (existingSettings) {
+      // Convert complex objects to JSON strings
+      const settingsData = JSON.stringify(settings);
+      
+      if (existing) {
         // Update existing settings
         const stmt = db.prepare(`
           UPDATE settings SET
-            name = ?,
-            nameAr = ?,
-            taxNumber = ?,
-            address = ?,
-            addressAr = ?,
-            phone = ?,
-            email = ?,
-            taxRate = ?,
-            taxIncluded = ?,
-            invoiceNotesAr = ?,
-            data = ?
+          name = ?, nameAr = ?, taxNumber = ?, address = ?, addressAr = ?,
+          phone = ?, email = ?, taxRate = ?, taxIncluded = ?, invoiceNotesAr = ?, data = ?
           WHERE id = ?
         `);
         
@@ -63,18 +68,20 @@ function setupSettingsHandlers(ipcMain, db) {
           settings.taxRate,
           settings.taxIncluded ? 1 : 0,
           settings.invoiceNotesAr,
-          JSON.stringify(settings),
-          existingSettings.id
+          settingsData,
+          existing.id
         );
       } else {
-        // Insert new settings
+        // Insert new settings with a default ID
         const stmt = db.prepare(`
-          INSERT INTO settings (id, name, nameAr, taxNumber, address, addressAr, phone, email, taxRate, taxIncluded, invoiceNotesAr, data)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO settings
+          (id, name, nameAr, taxNumber, address, addressAr, phone, email, taxRate, taxIncluded, invoiceNotesAr, data)
+          VALUES
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         
         stmt.run(
-          'settings-1',
+          'default',
           settings.name,
           settings.nameAr,
           settings.taxNumber,
@@ -85,7 +92,7 @@ function setupSettingsHandlers(ipcMain, db) {
           settings.taxRate,
           settings.taxIncluded ? 1 : 0,
           settings.invoiceNotesAr,
-          JSON.stringify(settings)
+          settingsData
         );
       }
       

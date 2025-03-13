@@ -1,25 +1,26 @@
 
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Expose IPC functions to the renderer process
+// Expose database API to renderer process
 contextBridge.exposeInMainWorld('db', {
-  query: (sql, params) => ipcRenderer.invoke('db-query', { sql, params }),
+  // Generic query method
+  query: (sql, params) => ipcRenderer.invoke('db:query', sql, params),
   
   // Invoices
-  getInvoices: () => ipcRenderer.invoke('get-invoices'),
-  saveInvoice: (invoice) => ipcRenderer.invoke('save-invoice', invoice),
-  updateInvoice: (invoice) => ipcRenderer.invoke('update-invoice', invoice),
+  getInvoices: () => ipcRenderer.invoke('db:getInvoices'),
+  saveInvoice: (invoice) => ipcRenderer.invoke('db:saveInvoice', invoice),
+  updateInvoice: (invoice) => ipcRenderer.invoke('db:updateInvoice', invoice),
   
   // Products
-  getProducts: () => ipcRenderer.invoke('get-products'),
+  getProducts: () => ipcRenderer.invoke('db:getProducts'),
   
   // Categories
-  getCategories: () => ipcRenderer.invoke('get-categories'),
-  addCategory: (category) => ipcRenderer.invoke('add-category', category),
-  updateCategory: (category) => ipcRenderer.invoke('update-category', category),
-  deleteCategory: (categoryId) => ipcRenderer.invoke('delete-category', categoryId),
+  getCategories: () => ipcRenderer.invoke('db:getCategories'),
+  addCategory: (category) => ipcRenderer.invoke('db:addCategory', category),
+  updateCategory: (category) => ipcRenderer.invoke('db:updateCategory', category),
+  deleteCategory: (categoryId) => ipcRenderer.invoke('db:deleteCategory', categoryId),
   
   // Settings
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings)
+  getSettings: () => ipcRenderer.invoke('db:getSettings'),
+  saveSettings: (settings) => ipcRenderer.invoke('db:saveSettings', settings),
 });
