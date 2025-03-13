@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/invoice";
-import { Backspace, Delete, X } from "lucide-react";
+import { Delete, X } from "lucide-react";
 
 interface PaidAmountDialogProps {
   isOpen: boolean;
@@ -32,7 +31,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   const [change, setChange] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>(total.toString());
 
-  // Update paid amount when total changes or dialog opens
   useEffect(() => {
     if (isOpen) {
       setPaidAmount(total);
@@ -41,7 +39,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     }
   }, [isOpen, total]);
 
-  // Calculate change amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
     updateAmount(inputVal);
@@ -53,7 +50,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     const value = parseFloat(inputVal);
     if (!isNaN(value)) {
       setPaidAmount(value);
-      // Calculate change amount - if paid is more than total, we give change
       const changeAmount = value - total;
       setChange(Math.max(0, changeAmount));
     } else {
@@ -65,7 +61,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   const handleNumberClick = (digit: string) => {
     let newValue = inputValue;
     
-    // Handle special cases
     if (digit === "C") {
       newValue = "0";
     } else if (digit === "⌫") {
@@ -76,7 +71,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
         newValue = inputValue + ".";
       }
     } else {
-      // For regular digits
       if (inputValue === "0") {
         newValue = digit;
       } else {
@@ -92,7 +86,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     onClose();
   };
 
-  // Predefined amounts based on total - for quick selection
   const getQuickAmounts = () => {
     const roundedTotal = Math.ceil(total);
     const denominations = [10, 20, 50, 100, 200, 500];
@@ -140,7 +133,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
             />
           </div>
           
-          {/* Quick amount selection */}
           <div className="flex flex-wrap gap-2 mt-1">
             {quickAmounts.map(amount => (
               <Button 
@@ -163,7 +155,6 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
             </Button>
           </div>
           
-          {/* Numeric keypad */}
           <div className="grid grid-cols-3 gap-2 mt-2">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
               <Button
