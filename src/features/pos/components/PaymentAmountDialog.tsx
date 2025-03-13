@@ -42,7 +42,7 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
   // Calculate remaining amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
-    if (!isNaN(value)) {
+    if (!isNaN(value) && value >= 0) {
       setPaidAmount(value);
       setRemaining(Math.max(0, total - value));
     } else {
@@ -87,6 +87,8 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
             <Input
               id="paid-amount"
               type="number"
+              min="0"
+              step="0.01"
               value={paidAmount}
               onChange={handlePaidAmountChange}
               className="text-lg font-bold"
