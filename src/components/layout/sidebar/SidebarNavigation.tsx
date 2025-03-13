@@ -24,7 +24,10 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       {links.map((link) => (
         <SidebarItem
           key={link.name}
-          link={link}
+          name={link.name}
+          path={link.path}
+          icon={link.icon}
+          subMenuItems={link.subMenuItems}
           collapsed={collapsed}
           isOpen={openCategories[link.path.replace("/", "")] || false}
           currentPath={location.pathname}
