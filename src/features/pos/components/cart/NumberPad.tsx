@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { X, Check, Delete } from "lucide-react";
+import NumericKeypad from "./numeric-keypad/NumericKeypad";
 
 interface NumberPadProps {
   isOpen: boolean;
@@ -20,8 +21,10 @@ const NumberPad: React.FC<NumberPadProps> = ({
 }) => {
   const [value, setValue] = useState(initialValue.toString());
 
-  const handleDigitClick = (digit: string) => {
-    if (value === "0" || value === "") {
+  const handleNumberClick = (digit: string) => {
+    if (digit === "C") {
+      setValue("");
+    } else if (value === "0" || value === "") {
       setValue(digit);
     } else {
       setValue(prev => prev + digit);
@@ -63,43 +66,26 @@ const NumberPad: React.FC<NumberPadProps> = ({
             autoFocus
           />
           
-          <div className="grid grid-cols-3 gap-2">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-              <Button
-                key={num}
-                type="button"
-                variant="outline"
-                onClick={() => handleDigitClick(num.toString())}
-                className="h-12 text-lg"
-              >
-                {num}
-              </Button>
-            ))}
+          <div className="mb-2 flex justify-between">
             <Button
               type="button"
               variant="outline"
               onClick={handleClear}
-              className="h-12"
+              className="h-12 flex-1 mr-2"
             >
               <X className="h-5 w-5" />
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => handleDigitClick("0")}
-              className="h-12 text-lg"
-            >
-              0
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
               onClick={handleDelete}
-              className="h-12"
+              className="h-12 flex-1"
             >
               <Delete className="h-5 w-5" />
             </Button>
           </div>
+          
+          <NumericKeypad onNumberClick={handleNumberClick} />
         </div>
         
         <DialogFooter>
