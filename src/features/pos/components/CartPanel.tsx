@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
+import { useCartResize } from "../hooks/useCartResize";
+import { usePaymentDialog } from "./cart/PaymentDialogHandler";
+import { usePaidAmount } from "../hooks/usePaidAmount";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import CartHeader from "./cart/CartHeader";
 import CartItemsList from "./cart/CartItemsList";
 import CartFooter from "./cart/CartFooter";
-import { useCartResize } from "../hooks/useCartResize";
-import { usePaymentDialog } from "./cart/PaymentDialogHandler";
-import { usePaidAmount } from "../hooks/usePaidAmount";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import PaidAmountDialog from "./cart/PaidAmountDialog";
 
