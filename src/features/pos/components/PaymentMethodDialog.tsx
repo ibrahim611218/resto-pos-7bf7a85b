@@ -82,6 +82,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 
   // دائماً إظهار المبلغ المتبقي
   const showRemainingAmount = true;
+  // التأكد من حساب المبلغ المتبقي بشكل صحيح
+  const calculatedRemainingAmount = Math.max(0, total - paidAmount);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -100,7 +102,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
                 {isArabic ? "المتبقي" : "Remaining"}
               </span>
               <span>
-                {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+                {formatCurrency(calculatedRemainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
               </span>
             </div>
           </div>

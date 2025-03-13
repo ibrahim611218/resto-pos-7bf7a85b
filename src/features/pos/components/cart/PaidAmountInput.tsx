@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/invoice";
 import NumberPad from "./NumberPad";
+import { DollarSign } from "lucide-react";
 
 interface PaidAmountInputProps {
   paidAmount: number;
@@ -49,10 +50,13 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
         </div>
       </div>
 
-      {/* إظهار المبلغ المتبقي دائماً بغض النظر عن الشروط */}
-      <div className="text-sm mt-1 text-red-600 font-medium">
-        {isArabic ? "المتبقي: " : "Remaining: "}
-        {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+      {/* إظهار المبلغ المتبقي دائماً بشكل واضح مع أيقونة */}
+      <div className="text-sm mt-2 text-red-600 font-bold flex items-center">
+        <DollarSign className={`${isArabic ? 'ml-1' : 'mr-1'}`} size={16} />
+        <span>
+          {isArabic ? "المتبقي: " : "Remaining: "}
+          {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+        </span>
       </div>
 
       <NumberPad

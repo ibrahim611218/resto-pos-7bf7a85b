@@ -31,6 +31,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
+  // التأكد من حساب المبلغ المتبقي بشكل صحيح
+  const calculatedRemainingAmount = Math.max(0, total - paidAmount);
+
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
@@ -95,7 +98,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
             {isArabic ? "المتبقي" : "Remaining"}
           </span>
           <span>
-            {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+            {formatCurrency(calculatedRemainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
           </span>
         </div>
       )}
