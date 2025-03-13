@@ -14,7 +14,7 @@ interface PosCartRendererProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: any;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => any;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => any;
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -35,9 +35,10 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
-    address?: string
+    address?: string,
+    paidAmount?: number
   ) => {
-    return props.createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address);
+    return props.createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
   };
 
   return (

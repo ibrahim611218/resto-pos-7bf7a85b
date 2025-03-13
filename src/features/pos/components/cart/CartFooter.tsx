@@ -18,6 +18,7 @@ interface CartFooterProps {
   taxAmount: number;
   total: number;
   paymentMethod?: PaymentMethod;
+  paidAmount?: number;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setDiscount: (discount: number) => void;
@@ -25,6 +26,7 @@ interface CartFooterProps {
   handleCreateInvoice: () => void;
   clearCart: () => void;
   isArabic: boolean;
+  onPaidAmountClick?: () => void;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -38,6 +40,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
   taxAmount,
   total,
   paymentMethod,
+  paidAmount,
   setOrderType,
   setTableNumber,
   setDiscount,
@@ -45,6 +48,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
   handleCreateInvoice,
   clearCart,
   isArabic,
+  onPaidAmountClick
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
@@ -79,6 +83,8 @@ const CartFooter: React.FC<CartFooterProps> = ({
         isMobile={isMobile}
         isArabic={isArabic}
         paymentMethod={paymentMethod}
+        paidAmount={paidAmount}
+        onPaidAmountClick={onPaidAmountClick}
       />
       
       <CartActions

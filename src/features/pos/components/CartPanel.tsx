@@ -9,6 +9,7 @@ import CartFooter from "./cart/CartFooter";
 import { useCartResize } from "../hooks/useCartResize";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { usePaymentDialog } from "./cart/PaymentDialogHandler";
+import PaidAmountDialog from "./cart/PaidAmountDialog";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -22,7 +23,7 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => Invoice; 
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -60,6 +61,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
+  const [paidAmount, setPaidAmount] = useState<number>(total);
+  const [showPaidAmountDialog, setShowPaidAmountDialog] = useState(false);
 
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
     isArabic,
@@ -80,8 +83,44 @@ const CartPanel: React.FC<CartPanelProps> = ({
     total
   });
 
+  // Update paidAmount when total changes
+  React.useEffect(() => {
+    setPaidAmount(total);
+  }, [total]);
+
   const toggleExpand = () => {
     setExpanded(!expanded);
+  };
+
+  const handlePaidAmountClick = () => {
+    if (paymentMethod === "cash") {
+      setShowPaidAmountDialog(true);
+    }
+  };
+
+  const handlePaidAmountConfirm = (amount: number) => {
+    setPaidAmount(amount);
+  };
+
+  // Override payment method selected handler to include paid amount
+  const handlePaymentMethodSelectedWithAmount = (method: PaymentMethod) => {
+    setPaymentMethod(method);
+    setShowPaymentMethodDialog(false);
+    
+    // If cash payment, ensure we have a paid amount set
+    const finalPaidAmount = method === "cash" ? paidAmount : total;
+    
+    // Create invoice with paid amount
+    const invoice = createInvoice(
+      undefined, 
+      undefined, 
+      undefined, 
+      undefined, 
+      undefined, 
+      finalPaidAmount
+    );
+    
+    setCurrentInvoice(invoice);
   };
 
   const isEmpty = cartItems.length === 0;
@@ -135,6 +174,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}
+        paymentMethod={paymentMethod}
+        paidAmount={paidAmount}
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setDiscount={setDiscount}
@@ -142,6 +183,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
         isArabic={isArabic}
+        onPaidAmountClick={handlePaidAmountClick}
       />
 
       <PaymentMethodDialog
@@ -149,7 +191,15 @@ const CartPanel: React.FC<CartPanelProps> = ({
         onClose={() => setShowPaymentMethodDialog(false)}
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
-        onConfirm={handlePaymentMethodSelected}
+        onConfirm={handlePaymentMethodSelectedWithAmount}
+      />
+
+      <PaidAmountDialog
+        isOpen={showPaidAmountDialog}
+        onClose={() => setShowPaidAmountDialog(false)}
+        onConfirm={handlePaidAmountConfirm}
+        total={total}
+        isArabic={isArabic}
       />
     </div>
   );
