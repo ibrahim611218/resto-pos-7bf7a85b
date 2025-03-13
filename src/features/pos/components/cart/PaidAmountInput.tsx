@@ -21,6 +21,8 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
   isArabic = false
 }) => {
   const [showNumberPad, setShowNumberPad] = useState(false);
+  
+  // حساب المبلغ المتبقي بشكل صحيح (المجموع - المبلغ المدفوع)
   const remainingAmount = Math.max(0, total - paidAmount);
 
   const handlePaidAmountClick = () => {
@@ -47,7 +49,7 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
         </div>
       </div>
 
-      {/* Always show remaining amount regardless of conditions */}
+      {/* إظهار المبلغ المتبقي دائماً بغض النظر عن الشروط */}
       <div className="text-sm mt-1 text-red-600 font-medium">
         {isArabic ? "المتبقي: " : "Remaining: "}
         {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}

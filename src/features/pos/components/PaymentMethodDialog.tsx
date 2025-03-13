@@ -80,7 +80,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // Always show remaining amount
+  // دائماً إظهار المبلغ المتبقي
   const showRemainingAmount = true;
 
   return (

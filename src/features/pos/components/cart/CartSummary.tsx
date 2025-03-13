@@ -35,7 +35,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
-  // Always show remaining amount
+  // دائماً إظهار المبلغ المتبقي
   const showRemainingAmount = true;
 
   return (
