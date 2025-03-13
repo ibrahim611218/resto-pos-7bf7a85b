@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
@@ -34,11 +35,13 @@ const SidebarItem = ({
   // Check if the current link is active (either exact match or contains for submenus)
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
+    if (path === "#") return false; // Special case for action items
     return location.pathname.startsWith(path);
   };
   
   // Handle special actions like desktop export
-  const handleSpecialAction = () => {
+  const handleSpecialAction = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (link.action === "desktop-export") {
       handleDesktopExport(language);
     }

@@ -1,7 +1,7 @@
 
 import { toast } from "@/hooks/use-toast";
 
-export const handleDesktopExport = (language: "en" | "ar" = "ar") => {
+export const handleDesktopExport = (language: string = "ar") => {
   const isArabic = language === "ar";
   
   // Check if running in development or already in Electron
@@ -15,7 +15,7 @@ export const handleDesktopExport = (language: "en" | "ar" = "ar") => {
     });
     return;
   }
-
+  
   // Open a new window to explain the installation process
   const installWindow = window.open('', '_blank');
   
@@ -75,10 +75,19 @@ export const handleDesktopExport = (language: "en" | "ar" = "ar") => {
               <p>${isArabic ? "بعد التثبيت، يمكنك تشغيل برنامج نقاط البيع للمطاعم من قائمة ابدأ أو من اختصار سطح المكتب. البرنامج سيعمل بدون الحاجة للإنترنت." : "After installation, you can run the Restaurant POS program from the Start menu or desktop shortcut. The program will work without requiring internet access."}</p>
             </div>
             
-            <button class="download-btn" onclick="window.location.href='/desktop-app-download'">
+            <button class="download-btn" id="downloadButton">
               ${isArabic ? "تنزيل نسخة الويندوز" : "Download Windows Version"}
             </button>
           </div>
+          
+          <script>
+            document.getElementById('downloadButton').addEventListener('click', function() {
+              // هنا يمكن إضافة رابط التنزيل الحقيقي
+              alert('${isArabic ? "بدأ التنزيل!" : "Download started!"}');
+              // يمكنك استبدال هذا بالرابط الفعلي
+              window.location.href = '/download/desktop-app.exe';
+            });
+          </script>
         </body>
       </html>
     `);
@@ -92,7 +101,7 @@ export const handleDesktopExport = (language: "en" | "ar" = "ar") => {
   
   toast({
     title: isArabic ? "جاري التحميل" : "Download Started",
-    description: isArabic ? "تم بدء تحميل نسخة سطح المكتب" : "Desktop version download initiated",
+    description: isArabic ? "تم فتح نافذة تحميل نسخة سطح المكتب" : "Desktop version download window opened",
     variant: "default",
   });
 };
