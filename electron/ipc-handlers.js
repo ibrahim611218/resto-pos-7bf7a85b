@@ -5,6 +5,7 @@ const { setupInvoiceHandlers } = require('./handlers/invoice-handlers');
 const { setupProductHandlers } = require('./handlers/product-handlers');
 const { setupSettingsHandlers } = require('./handlers/settings-handlers');
 const { setupCategoryHandlers } = require('./handlers/category-handlers');
+const { setupLicenseHandlers } = require('./handlers/license-handlers');
 const { setupQueryHandler } = require('./handlers/query-handler');
 
 // Set up all IPC handlers for database operations
@@ -19,6 +20,7 @@ function setupIpcHandlers() {
   setupProductHandlers(ipcMain, db);
   setupSettingsHandlers(ipcMain, db);
   setupCategoryHandlers(ipcMain, db);
+  setupLicenseHandlers(ipcMain, db);
 }
 
 module.exports = {

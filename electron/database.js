@@ -75,6 +75,16 @@ function initDatabase(app) {
         invoiceNotesAr TEXT,
         data TEXT NOT NULL
       );
+      
+      CREATE TABLE IF NOT EXISTS license (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT NOT NULL UNIQUE,
+        type TEXT NOT NULL,
+        expiresAt TEXT NOT NULL,
+        isActive INTEGER NOT NULL,
+        activatedAt TEXT NOT NULL,
+        data TEXT NOT NULL
+      );
     `);
     
     console.log('Database initialized successfully');
