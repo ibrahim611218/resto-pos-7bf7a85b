@@ -12,7 +12,7 @@ interface ExportExcelProps {
 }
 
 /**
- * Exports sales data to Excel file
+ * Exports sales data to Excel file with improved formatting
  */
 export const exportSalesReportExcel = ({
   filteredInvoices,
@@ -65,80 +65,102 @@ export const exportSalesReportExcel = ({
       ];
     });
     
-    // Create summary row
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([]);
+    
+    // Add title with merged cells
+    XLSX.utils.sheet_add_aoa(ws, [[isArabic ? "تقرير المبيعات" : "Sales Report"]], { origin: "A1" });
+    ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
+    
+    // Add date range if available
+    let rowIndex = 2; // Start after title row
+    if (startDate && endDate) {
+      const dateRangeText = isArabic 
+        ? `الفترة من: ${startDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US")} إلى: ${endDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US")}`
+        : `Period: ${startDate.toLocaleDateString("en-US")} to ${endDate.toLocaleDateString("en-US")}`;
+      
+      XLSX.utils.sheet_add_aoa(ws, [[dateRangeText]], { origin: `A${rowIndex}` });
+      ws["!merges"] = [...(ws["!merges"] || []), { s: { r: 1, c: 0 }, e: { r: 1, c: 6 } }];
+      rowIndex += 2; // Leave empty row after date range
+    } else {
+      rowIndex += 1; // Just leave one row after title
+    }
+    
+    // Add table headers
+    XLSX.utils.sheet_add_aoa(ws, [headers], { origin: `A${rowIndex}` });
+    rowIndex++;
+    
+    // Add data rows
+    XLSX.utils.sheet_add_aoa(ws, data, { origin: `A${rowIndex}` });
+    rowIndex += data.length + 1; // Add rows plus an empty row
+    
+    // Add summary/total row
     const summaryRow = [
-      "",
-      "",
-      "",
-      "",
-      "",
+      "", "", "", "", "",
       isArabic ? "إجمالي المبيعات" : "Total Sales",
       totalSales.toFixed(2)
     ];
+    XLSX.utils.sheet_add_aoa(ws, [summaryRow], { origin: `A${rowIndex}` });
     
-    // Add summary row to data
-    data.push([]);  // Empty row for spacing
-    data.push(summaryRow);
-    
-    // Create date range information row if available
-    if (startDate && endDate) {
-      const fromText = isArabic ? "من" : "From";
-      const toText = isArabic ? "إلى" : "To";
-      const startDateStr = startDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US");
-      const endDateStr = endDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US");
-      
-      const dateRangeRow = [
-        isArabic ? `${fromText}: ${startDateStr} ${toText}: ${endDateStr}` : `${fromText}: ${startDateStr} ${toText}: ${endDateStr}`,
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-      ];
-      
-      // Add date range row at the beginning
-      data.unshift(dateRangeRow);
-      data.unshift([]);  // Empty row for spacing
-    }
-    
-    // Add title row at the beginning
-    const titleRow = [
-      isArabic ? "تقرير المبيعات" : "Sales Report",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+    // Set column widths
+    ws["!cols"] = [
+      { wch: 8 },     // # 
+      { wch: 15 },    // Invoice
+      { wch: 15 },    // Date
+      { wch: 15 },    // Status
+      { wch: 15 },    // Payment
+      { wch: 15 },    // Order Type
+      { wch: 15 }     // Amount
     ];
-    data.unshift(titleRow);
     
-    // Create worksheet
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
-    
-    // Set RTL mode for Arabic
-    if (isArabic) {
-      ws["!cols"] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
-      
-      // Set right alignment for all cells
-      const range = XLSX.utils.decode_range(ws["!ref"] || "A1:G100");
-      for (let R = range.s.r; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
-          if (!ws[cell_ref]) continue;
-          if (!ws[cell_ref].s) ws[cell_ref].s = {};
+    // Apply styles to cells
+    const range = XLSX.utils.decode_range(ws["!ref"] || "A1:G100");
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[cell_ref]) continue;
+        
+        // Initialize style object if it doesn't exist
+        if (!ws[cell_ref].s) ws[cell_ref].s = {};
+        
+        // Title row - bold, centered
+        if (R === 0 || R === rowIndex - data.length - 1) {
+          ws[cell_ref].s.font = { bold: true, sz: 14 };
+          ws[cell_ref].s.alignment = { horizontal: "center", vertical: "center" };
+        }
+        // Header row - bold, with background color
+        else if (R === rowIndex - data.length - 2) {
+          ws[cell_ref].s.font = { bold: true };
+          ws[cell_ref].s.fill = { fgColor: { rgb: "DDDDDD" } };
+          ws[cell_ref].s.alignment = { horizontal: isArabic ? "right" : "left", vertical: "center" };
+        }
+        // Total row - bold
+        else if (R === rowIndex) {
+          ws[cell_ref].s.font = { bold: true };
           ws[cell_ref].s.alignment = { horizontal: "right", vertical: "center" };
         }
+        // Data rows
+        else {
+          ws[cell_ref].s.alignment = { horizontal: isArabic ? "right" : "left", vertical: "center" };
+        }
+        
+        // Add borders to all cells
+        ws[cell_ref].s.border = {
+          top: { style: "thin" },
+          bottom: { style: "thin" },
+          left: { style: "thin" },
+          right: { style: "thin" }
+        };
       }
     }
     
-    // Create workbook and add worksheet
-    const wb = XLSX.utils.book_new();
+    // Add worksheet to workbook
     XLSX.utils.book_append_sheet(wb, ws, isArabic ? "تقرير المبيعات" : "Sales Report");
     
-    // Generate Excel file and trigger download
-    XLSX.writeFile(wb, "sales_report.xlsx");
+    // Generate Excel file with date in filename and trigger download
+    const dateStr = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `sales_report_${dateStr}.xlsx`);
     
     toast({
       title: isArabic ? "تم التصدير بنجاح" : "Export Successful",
