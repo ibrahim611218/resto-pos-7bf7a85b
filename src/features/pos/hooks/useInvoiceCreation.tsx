@@ -50,6 +50,9 @@ export const useInvoiceCreation = (
       };
     }
     
+    // Use the provided paidAmount or default to total
+    const actualPaidAmount = typeof paidAmount === 'number' ? paidAmount : total;
+    
     const invoice: Invoice = {
       id: Math.random().toString(36).substring(2, 9),
       number: invoiceId,
@@ -58,7 +61,7 @@ export const useInvoiceCreation = (
       subtotal: subtotal,
       taxAmount: taxAmount,
       total: total,
-      paidAmount: paidAmount || 0,
+      paidAmount: actualPaidAmount,
       discount: discount,
       discountType: discountType,
       paymentMethod: paymentMethod === "cash" ? "نقدي" : "شبكة",
@@ -70,8 +73,7 @@ export const useInvoiceCreation = (
       customer: customer
     };
     
-    // يتم حفظ الفاتورة في قاعدة البيانات وإضافتها إلى قائمة الفواتير
-    // فقط عندما تكون عملية الحفظ ناجحة لتجنب الازدواجية
+    // Save the invoice to database and add it to the invoices list
     addNewInvoice(invoice)
       .then(success => {
         if (success) {

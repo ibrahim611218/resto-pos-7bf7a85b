@@ -1,16 +1,15 @@
 
 import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatCurrency } from "@/utils/invoice";
+import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface PaymentAmountDialogProps {
@@ -24,25 +23,32 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  total,
+  total
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  
   const [paidAmount, setPaidAmount] = useState<number>(total);
-  const [remainingAmount, setRemainingAmount] = useState<number>(0);
+  const [remaining, setRemaining] = useState<number>(0);
 
+  // Update paid amount when total changes or dialog opens
   useEffect(() => {
     if (isOpen) {
-      // Reset the form when dialog opens
       setPaidAmount(total);
-      setRemainingAmount(0);
+      setRemaining(0);
     }
   }, [isOpen, total]);
 
+  // Calculate remaining amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0;
-    setPaidAmount(value);
-    setRemainingAmount(Math.max(total - value, 0));
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value)) {
+      setPaidAmount(value);
+      setRemaining(Math.max(0, total - value));
+    } else {
+      setPaidAmount(0);
+      setRemaining(total);
+    }
   };
 
   const handleConfirm = () => {
@@ -51,54 +57,61 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
+      <DialogContent
+        className="sm:max-w-md"
+        dir={isArabic ? "rtl" : "ltr"}
+      >
         <DialogHeader>
-          <DialogTitle>
-            {isArabic ? "إدخال المبلغ المدفوع" : "Enter Payment Amount"}
+          <DialogTitle className="text-xl">
+            {isArabic ? "تفاصيل الدفع" : "Payment Details"}
           </DialogTitle>
         </DialogHeader>
-
+        
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 items-center gap-4">
-            <Label htmlFor="total" className="text-right">
+          <div className="grid gap-2">
+            <Label htmlFor="total-amount" className="text-md">
               {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
             </Label>
-            <div className="font-bold text-lg">
-              {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
-            </div>
+            <Input
+              id="total-amount"
+              value={total.toFixed(2)}
+              disabled
+              className="text-lg font-bold"
+            />
           </div>
-
-          <div className="grid grid-cols-2 items-center gap-4">
-            <Label htmlFor="paidAmount" className="text-right">
+          
+          <div className="grid gap-2">
+            <Label htmlFor="paid-amount" className="text-md">
               {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
             </Label>
             <Input
-              id="paidAmount"
+              id="paid-amount"
               type="number"
-              value={paidAmount || ""}
+              value={paidAmount}
               onChange={handlePaidAmountChange}
-              min="0"
-              step="0.01"
-              className="text-lg"
+              className="text-lg font-bold"
               autoFocus
             />
           </div>
-
-          <div className="grid grid-cols-2 items-center gap-4">
-            <Label htmlFor="remainingAmount" className="text-right">
+          
+          <div className="grid gap-2">
+            <Label htmlFor="remaining-amount" className="text-md">
               {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
             </Label>
-            <div className={`font-bold text-lg ${remainingAmount > 0 ? 'text-red-500' : 'text-green-500'}`}>
-              {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-            </div>
+            <Input
+              id="remaining-amount"
+              value={remaining.toFixed(2)}
+              disabled
+              className={`text-lg font-bold ${remaining > 0 ? 'text-red-500' : 'text-green-500'}`}
+            />
           </div>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        
+        <DialogFooter className={isArabic ? "sm:justify-start" : "sm:justify-end"}>
+          <Button type="button" variant="outline" onClick={onClose}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button onClick={handleConfirm}>
+          <Button type="button" onClick={handleConfirm}>
             {isArabic ? "تأكيد" : "Confirm"}
           </Button>
         </DialogFooter>

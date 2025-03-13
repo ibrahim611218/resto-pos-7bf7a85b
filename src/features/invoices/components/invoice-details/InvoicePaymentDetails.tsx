@@ -1,43 +1,67 @@
 
 import React from "react";
-import { formatCurrency } from "@/utils/invoice";
+import { Invoice } from "@/types";
+import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface InvoicePaymentDetailsProps {
-  total: number;
-  paidAmount?: number;
+  invoice: Invoice;
 }
 
-export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({
-  total,
-  paidAmount = 0,
-}) => {
+export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ invoice }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   
-  const remainingAmount = Math.max(total - paidAmount, 0);
+  // Calculate the remaining amount
+  const remainingAmount = invoice.total - invoice.paidAmount;
   
   return (
-    <div className="mt-4 border-t pt-4">
-      <div className="flex justify-between items-center mb-2">
-        <span className="font-medium text-muted-foreground">
-          {isArabic ? "المبلغ المدفوع" : "Paid Amount"}:
-        </span>
-        <span className="font-semibold text-green-600">
-          {formatCurrency(paidAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-        </span>
-      </div>
-      
-      {remainingAmount > 0 && (
-        <div className="flex justify-between items-center">
-          <span className="font-medium text-muted-foreground">
-            {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}:
-          </span>
-          <span className="font-semibold text-red-600">
-            {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-          </span>
+    <Card className="mb-4">
+      <CardContent className="p-4">
+        <h3 className="text-lg font-semibold mb-3">
+          {isArabic ? "تفاصيل الدفع" : "Payment Details"}
+        </h3>
+        
+        <div className="grid grid-cols-2 gap-2">
+          <div className="text-muted-foreground">
+            {isArabic ? "وسيلة الدفع" : "Payment Method"}
+          </div>
+          <div className="font-medium text-right">
+            {invoice.paymentMethod}
+          </div>
+          
+          <div className="text-muted-foreground">
+            {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
+          </div>
+          <div className="font-medium text-right">
+            {invoice.total.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          </div>
+          
+          <div className="text-muted-foreground">
+            {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
+          </div>
+          <div className="font-medium text-right">
+            {invoice.paidAmount.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          </div>
+          
+          <div className="text-muted-foreground">
+            {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
+          </div>
+          <div className={`font-medium text-right ${remainingAmount > 0 ? "text-red-500" : ""}`}>
+            {remainingAmount.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          </div>
+          
+          <div className="text-muted-foreground">
+            {isArabic ? "حالة الفاتورة" : "Invoice Status"}
+          </div>
+          <div className="font-medium text-right">
+            {invoice.status === "completed" ? (isArabic ? "مكتملة" : "Completed") : 
+             invoice.status === "cancelled" ? (isArabic ? "ملغاة" : "Cancelled") : 
+             invoice.status === "refunded" ? (isArabic ? "مسترجعة" : "Refunded") : 
+             (isArabic ? "معلقة" : "Pending")}
+          </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };

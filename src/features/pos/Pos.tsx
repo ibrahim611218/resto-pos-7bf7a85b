@@ -61,8 +61,15 @@ const Pos: React.FC = () => {
   
   const getSizeLabelFn = (size: string) => getSizeLabel(size, language);
   
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
-    const invoice = createInvoice(customerName, customerTaxNumber);
+  const handleCreateInvoice = (
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string,
+    commercialRegister?: string,
+    address?: string,
+    paidAmount?: number
+  ) => {
+    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
     return invoice;

@@ -66,8 +66,22 @@ export const useCart = () => {
   );
   
   // Wrapper for create invoice that also clears the cart
-  const createInvoice = (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string): Invoice => {
-    const invoice = internalCreateInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address);
+  const createInvoice = (
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string, 
+    commercialRegister?: string, 
+    address?: string, 
+    paidAmount?: number
+  ): Invoice => {
+    const invoice = internalCreateInvoice(
+      customerName, 
+      customerTaxNumber, 
+      customerId, 
+      commercialRegister, 
+      address, 
+      paidAmount
+    );
     clearCart();
     return invoice;
   };

@@ -9,6 +9,7 @@ import CartFooter from "./cart/CartFooter";
 import { useCartResize } from "../hooks/useCartResize";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { usePaymentDialog } from "./cart/PaymentDialogHandler";
+import PaymentAmountDialog from "./PaymentAmountDialog";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -72,8 +73,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { 
     showPaymentMethodDialog, 
     setShowPaymentMethodDialog,
+    showPaymentAmountDialog,
+    setShowPaymentAmountDialog,
     handleCreateInvoice, 
-    handlePaymentMethodSelected 
+    handlePaymentMethodSelected,
+    handlePaymentAmountConfirmed
   } = usePaymentDialog({
     paymentMethod,
     setPaymentMethod,
@@ -152,6 +156,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         onConfirm={handlePaymentMethodSelected}
+      />
+
+      <PaymentAmountDialog
+        isOpen={showPaymentAmountDialog}
+        onClose={() => setShowPaymentAmountDialog(false)}
+        onConfirm={handlePaymentAmountConfirmed}
+        total={total}
       />
     </div>
   );
