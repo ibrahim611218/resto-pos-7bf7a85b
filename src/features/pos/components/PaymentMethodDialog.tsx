@@ -78,7 +78,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // Always calculate remaining amount for display
+  // Calculate remaining amount dynamically based on total and paidAmount
   const remainingAmount = Math.max(0, total - paidAmount);
   const showRemainingAmount = remainingAmount > 0;
 

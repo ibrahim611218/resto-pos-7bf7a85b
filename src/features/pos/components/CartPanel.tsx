@@ -162,7 +162,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         onConfirm={handlePaymentMethodSelected}
         total={total}
         paidAmount={paidAmount}
-        remainingAmount={remainingAmount}
       />
     </div>
   );
