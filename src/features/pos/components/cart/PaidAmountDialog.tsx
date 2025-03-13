@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/invoice";
+import { Backspace, Delete, X } from "lucide-react";
 
 interface PaidAmountDialogProps {
   isOpen: boolean;
@@ -43,6 +44,10 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   // Calculate change amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
+    updateAmount(inputVal);
+  };
+
+  const updateAmount = (inputVal: string) => {
     setInputValue(inputVal);
     
     const value = parseFloat(inputVal);
@@ -57,10 +62,44 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     }
   };
 
+  const handleNumberClick = (digit: string) => {
+    let newValue = inputValue;
+    
+    // Handle special cases
+    if (digit === "C") {
+      newValue = "0";
+    } else if (digit === "⌫") {
+      newValue = inputValue.slice(0, -1);
+      if (newValue === "") newValue = "0";
+    } else if (digit === ".") {
+      if (!inputValue.includes(".")) {
+        newValue = inputValue + ".";
+      }
+    } else {
+      // For regular digits
+      if (inputValue === "0") {
+        newValue = digit;
+      } else {
+        newValue = inputValue + digit;
+      }
+    }
+    
+    updateAmount(newValue);
+  };
+
   const handleConfirm = () => {
     onConfirm(paidAmount);
     onClose();
   };
+
+  // Predefined amounts based on total - for quick selection
+  const getQuickAmounts = () => {
+    const roundedTotal = Math.ceil(total);
+    const denominations = [10, 20, 50, 100, 200, 500];
+    return denominations.filter(amount => amount >= roundedTotal);
+  };
+
+  const quickAmounts = getQuickAmounts();
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -93,17 +132,77 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
             </Label>
             <Input
               id="paid-amount"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="numeric"
               value={inputValue}
               onChange={handlePaidAmountChange}
               className="text-lg font-bold"
-              autoFocus
             />
           </div>
           
-          <div className="grid gap-2">
+          {/* Quick amount selection */}
+          <div className="flex flex-wrap gap-2 mt-1">
+            {quickAmounts.map(amount => (
+              <Button 
+                key={amount} 
+                type="button" 
+                variant="outline" 
+                className="flex-1 min-w-[70px]"
+                onClick={() => updateAmount(amount.toString())}
+              >
+                {amount}
+              </Button>
+            ))}
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="flex-1 min-w-[70px]"
+              onClick={() => updateAmount(total.toString())}
+            >
+              {isArabic ? "الضبط" : "Exact"}
+            </Button>
+          </div>
+          
+          {/* Numeric keypad */}
+          <div className="grid grid-cols-3 gap-2 mt-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+              <Button
+                key={num}
+                type="button"
+                variant="outline"
+                onClick={() => handleNumberClick(num.toString())}
+                className="h-12 text-lg"
+              >
+                {num}
+              </Button>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleNumberClick(".")}
+              className="h-12 text-lg"
+            >
+              .
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleNumberClick("0")}
+              className="h-12 text-lg"
+            >
+              0
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleNumberClick("C")}
+              className="h-12 text-lg"
+            >
+              C
+            </Button>
+          </div>
+          
+          <div className="grid gap-2 mt-1">
             <Label htmlFor="change-amount" className="text-md">
               {isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
             </Label>
