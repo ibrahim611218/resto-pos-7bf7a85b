@@ -3,9 +3,9 @@
 
 // Download URLs by platform - Update these URLs with your actual download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://drive.google.com/uc?export=download&id=1KH0_JDCRkvALBeL2WPtEyGYbX9TyFkXx',
-  mac: 'https://drive.google.com/uc?export=download&id=1KH0_JDCRkvALBeL2WPtEyGYbX9TyFkXx',
-  linux: 'https://drive.google.com/uc?export=download&id=1KH0_JDCRkvALBeL2WPtEyGYbX9TyFkXx',
+  windows: 'https://download.restopos.app/latest/RestoPOS-Setup-1.0.0.exe',
+  mac: 'https://download.restopos.app/latest/RestoPOS-1.0.0.dmg',
+  linux: 'https://download.restopos.app/latest/RestoPOS-1.0.0.AppImage',
 };
 
 // System requirements

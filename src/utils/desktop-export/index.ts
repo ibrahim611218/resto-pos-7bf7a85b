@@ -17,8 +17,16 @@ export const handleDesktopExport = (language: string = "ar") => {
     // Get the download URL based on platform
     const downloadUrl = getDownloadUrl();
     
+    console.log("Opening download URL:", downloadUrl);
+    
     // Simply open the download URL in a new tab
-    window.open(downloadUrl, '_blank');
+    const newWindow = window.open(downloadUrl, '_blank');
+    
+    if (!newWindow) {
+      // Show popup blocked notification
+      showNotification("popup-blocked", language);
+      return;
+    }
     
     // Show success notification
     showNotification("download-started", language);
