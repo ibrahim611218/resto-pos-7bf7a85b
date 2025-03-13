@@ -12,10 +12,13 @@ import tajawalBold from './Tajawal-Bold.ttf';
 export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   if (isArabic) {
     try {
-      // Convert font data to base64 string if needed
-      // Add Tajawal font (supports Arabic)
-      doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegular);
-      doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBold);
+      // Force binary format for the fonts
+      const tajawalRegularBinary = atob(tajawalRegular);
+      const tajawalBoldBinary = atob(tajawalBold);
+      
+      // Add Tajawal font (supports Arabic) with binary data directly
+      doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegularBinary);
+      doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBoldBinary);
       
       // Register the font with the document
       doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
