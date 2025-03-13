@@ -7,7 +7,7 @@ interface ProductsListProps {
   products: Product[];
   searchResults?: Product[];
   searchTerm?: string;
-  onAddToCart: (product: Product, variantId: string) => void;
+  onAddToCart: (product: Product, quantity: number, size?: string) => void;
   isArabic: boolean;
   getSizeLabel: (size: string) => string;
 }
