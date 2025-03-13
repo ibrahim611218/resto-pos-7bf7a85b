@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
+import { loadFontsForPDF, getFontStylesForPDF } from "@/assets/fonts";
 
 interface ExportPDFProps {
   filteredInvoices: Invoice[];
@@ -32,13 +33,15 @@ export const exportSalesReportPDF = ({
       compress: true
     });
     
-    // Set right-to-left mode for Arabic
-    if (isArabic) {
-      doc.setR2L(true);
-    }
+    // Load proper fonts for the selected language
+    loadFontsForPDF(doc, isArabic);
+    
+    // Get font styles for the document
+    const fontStyles = getFontStylesForPDF(isArabic);
     
     // Add report title
     doc.setFontSize(18);
+    doc.setFont(fontStyles.font, 'bold');
     const title = isArabic ? "تقرير المبيعات" : "Sales Report";
     const titleX = isArabic ? doc.internal.pageSize.width - 20 : 20;
     doc.text(title, titleX, 20, { align: isArabic ? "right" : "left" });
@@ -46,6 +49,7 @@ export const exportSalesReportPDF = ({
     // Add date range if available
     if (startDate && endDate) {
       doc.setFontSize(12);
+      doc.setFont(fontStyles.font, 'normal');
       const fromText = isArabic ? "من" : "From";
       const toText = isArabic ? "إلى" : "To";
       const startDateStr = startDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US");
@@ -57,6 +61,7 @@ export const exportSalesReportPDF = ({
     
     // Add sales summary
     doc.setFontSize(14);
+    doc.setFont(fontStyles.font, 'bold');
     const summaryTitle = isArabic ? "ملخص المبيعات" : "Sales Summary";
     const summaryX = isArabic ? doc.internal.pageSize.width - 20 : 20;
     doc.text(summaryTitle, summaryX, 40, { align: isArabic ? "right" : "left" });
@@ -114,18 +119,21 @@ export const exportSalesReportPDF = ({
       headStyles: { 
         fillColor: [16, 185, 129], 
         fontStyle: 'bold',
-        halign: isArabic ? 'right' : 'left'
+        halign: isArabic ? 'right' : 'left',
+        font: fontStyles.font
       },
       styles: { 
         fontSize: 10,
         halign: isArabic ? 'right' : 'left', 
         textColor: [0, 0, 0],
+        font: fontStyles.font
       },
       margin: { top: 50 },
       didDrawPage: function(data: any) {
-        // Reset RTL setting on each page for Arabic
+        // Reset RTL setting and font on each page for Arabic
         if (isArabic) {
           doc.setR2L(true);
+          doc.setFont(fontStyles.font);
         }
       }
     });
@@ -134,12 +142,19 @@ export const exportSalesReportPDF = ({
     // @ts-ignore
     const finalY = doc.lastAutoTable.finalY || 150;
     doc.setFontSize(14);
+    doc.setFont(fontStyles.font, 'bold');
     const totalText = `${isArabic ? "إجمالي المبيعات" : "Total Sales"}: ${totalSales.toFixed(2)} ${isArabic ? "ريال" : "SAR"}`;
     const totalX = isArabic ? doc.internal.pageSize.width - 20 : 20;
     doc.text(totalText, totalX, finalY + 10, { align: isArabic ? "right" : "left" });
     
     // Save the file
     doc.save("sales_report.pdf");
+    
+    toast({
+      title: isArabic ? "تم التصدير بنجاح" : "Export Successful",
+      description: isArabic ? "تم تصدير تقرير المبيعات بنجاح" : "Sales report has been exported successfully",
+      variant: "default"
+    });
     
     return true;
   } catch (error) {

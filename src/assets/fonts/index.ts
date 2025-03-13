@@ -1,21 +1,42 @@
 
 import { jsPDF } from 'jspdf';
+import tajawalRegular from './Tajawal-Regular.ttf';
+import tajawalBold from './Tajawal-Bold.ttf';
 
-// Font data will be loaded at runtime
+/**
+ * Loads Arabic font for PDF document
+ * @param doc jsPDF document instance
+ * @param isArabic boolean indicating if Arabic language is used
+ * @returns jsPDF document with fonts loaded
+ */
 export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   if (isArabic) {
+    // Add Tajawal font (supports Arabic)
+    doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegular);
+    doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBold);
+    doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
+    doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
+    
+    // Set the font for Arabic
+    doc.setFont('Tajawal');
+    
     // Set right-to-left for Arabic
     doc.setR2L(true);
   } else {
     // Use default font for English
+    doc.setFont('helvetica');
     doc.setR2L(false);
   }
   
   return doc;
 };
 
+/**
+ * Returns font styles configuration for PDF
+ */
 export const getFontStylesForPDF = (isArabic: boolean) => {
   return {
+    font: isArabic ? 'Tajawal' : 'helvetica',
     direction: isArabic ? 'rtl' : 'ltr'
   };
 };
