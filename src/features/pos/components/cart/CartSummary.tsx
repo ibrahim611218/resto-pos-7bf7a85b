@@ -39,8 +39,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
-  // Only show paid/remaining amounts if a payment method has been selected
-  const showPaymentDetails = paymentMethod && paidAmount !== undefined;
+  // Only show paid/remaining amounts if cash payment method has been selected
+  const showPaymentDetails = paymentMethod === "cash" && paidAmount !== undefined;
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
