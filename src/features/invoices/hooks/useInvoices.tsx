@@ -15,7 +15,7 @@ export const useInvoices = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter invoices when searchTerm or invoices change
+  // تصفية الفواتير عند تغيير مصطلح البحث أو الفواتير
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredInvoices(invoices);
@@ -31,7 +31,7 @@ export const useInvoices = () => {
     setFilteredInvoices(filtered);
   }, [searchTerm, invoices]);
 
-  // Fetch invoices on mount
+  // جلب الفواتير عند تحميل الصفحة
   useEffect(() => {
     loadInvoicesFromStorage();
   }, []);
@@ -51,7 +51,7 @@ export const useInvoices = () => {
     }
   }, [isArabic]);
 
-  // View invoice details
+  // عرض تفاصيل الفاتورة
   const viewInvoiceDetails = useCallback((id: string) => {
     const invoice = invoices.find((inv) => inv.id === id);
     if (invoice) {
@@ -59,18 +59,28 @@ export const useInvoices = () => {
     }
   }, [invoices]);
 
-  // Close invoice details modal
+  // إغلاق نافذة تفاصيل الفاتورة
   const closeInvoiceDetails = useCallback(() => {
     setSelectedInvoice(null);
   }, []);
 
-  // Add a new invoice
+  // إضافة فاتورة جديدة
   const addNewInvoice = useCallback(async (invoice: Invoice) => {
     try {
+      // حفظ الفاتورة في قاعدة البيانات
       const result = await databaseService.saveInvoice(invoice);
       
       if (result.success) {
-        setInvoices(prev => [invoice, ...prev]);
+        // تحديث حالة الفواتير بعد الحفظ الناجح فقط
+        setInvoices(prev => {
+          // التأكد من عدم وجود ازدواجية للفاتورة
+          const invoiceExists = prev.some(inv => inv.number === invoice.number);
+          if (invoiceExists) {
+            console.log("Invoice already exists:", invoice.number);
+            return prev;
+          }
+          return [invoice, ...prev];
+        });
         return true;
       } else {
         console.error("Failed to save invoice:", result.error);
@@ -82,7 +92,7 @@ export const useInvoices = () => {
     }
   }, []);
 
-  // Format invoice date
+  // تنسيق تاريخ الفاتورة
   const formatInvoiceDate = useCallback((date: Date) => {
     return new Date(date).toLocaleDateString(isArabic ? 'ar-SA' : 'en-US', {
       year: 'numeric',
@@ -93,7 +103,7 @@ export const useInvoices = () => {
     });
   }, [isArabic]);
 
-  // Get status badge color
+  // الحصول على لون شارة الحالة
   const getStatusBadgeColor = useCallback((status: "completed" | "cancelled" | "refunded" | "pending") => {
     switch (status) {
       case "completed":
@@ -109,16 +119,16 @@ export const useInvoices = () => {
     }
   }, []);
 
-  // Print invoice 
+  // طباعة الفاتورة
   const printInvoice = useCallback((invoice: Invoice) => {
-    // This is just a stub for TypeScript, actual printing is handled in InvoicesList
+    // هذا مجرد تمثيل لـ TypeScript، تتم معالجة الطباعة الفعلية في InvoicesList
     console.log("Printing invoice:", invoice.number);
     return true;
   }, []);
 
-  // Refund an invoice - modified to return a boolean immediately
+  // إرجاع فاتورة
   const refundInvoice = useCallback((invoiceId: string): boolean => {
-    // Find the invoice to refund
+    // البحث عن الفاتورة المراد إرجاعها
     const invoiceToRefund = invoices.find(inv => inv.id === invoiceId);
     
     if (!invoiceToRefund) {
@@ -140,30 +150,30 @@ export const useInvoices = () => {
     }
     
     try {
-      // Create a copy of the invoice with refunded status
+      // إنشاء نسخة من الفاتورة بحالة مسترجعة
       const refundedInvoice: Invoice = {
         ...invoiceToRefund,
         status: "refunded"
       };
       
-      // Update the invoice in the state immediately
+      // تحديث الفاتورة في الحالة فورًا
       setInvoices(prevInvoices => 
         prevInvoices.map(inv => 
           inv.id === invoiceId ? {...inv, status: "refunded"} : inv
         )
       );
       
-      // Update selected invoice if it's the one being refunded
+      // تحديث الفاتورة المحددة إذا كانت هي التي يتم إرجاعها
       if (selectedInvoice && selectedInvoice.id === invoiceId) {
         setSelectedInvoice({...selectedInvoice, status: "refunded"});
       }
       
-      // Update the invoice in the database asynchronously
+      // تحديث الفاتورة في قاعدة البيانات بشكل غير متزامن
       databaseService.updateInvoice(refundedInvoice)
         .then(result => {
           if (!result.success) {
             console.error("Error saving refund status to database:", result.error);
-            // Revert the state changes if database update fails
+            // إرجاع حالة التغييرات إذا فشل تحديث قاعدة البيانات
             setInvoices(prevInvoices => [...prevInvoices]);
             if (selectedInvoice && selectedInvoice.id === invoiceId) {
               setSelectedInvoice({...selectedInvoice});

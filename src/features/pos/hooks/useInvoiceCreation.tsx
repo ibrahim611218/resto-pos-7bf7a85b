@@ -69,10 +69,11 @@ export const useInvoiceCreation = (
       customer: customer
     };
     
-    // Save invoice to the database service asynchronously
-    databaseService.saveInvoice(invoice)
-      .then(result => {
-        if (result.success) {
+    // يتم حفظ الفاتورة في قاعدة البيانات وإضافتها إلى قائمة الفواتير
+    // فقط عندما تكون عملية الحفظ ناجحة لتجنب الازدواجية
+    addNewInvoice(invoice)
+      .then(success => {
+        if (success) {
           toast({
             title: isArabic ? "تم إنشاء الفاتورة" : "Invoice Created",
             description: isArabic 
@@ -80,9 +81,6 @@ export const useInvoiceCreation = (
               : `Invoice #${invoiceId} has been created successfully`,
             variant: "default",
           });
-          
-          // Add to invoices list for immediate display
-          addNewInvoice(invoice);
         } else {
           toast({
             title: isArabic ? "خطأ" : "Error",
@@ -91,11 +89,18 @@ export const useInvoiceCreation = (
               : "Error saving invoice",
             variant: "destructive",
           });
-          console.error("Failed to save invoice:", result.error);
+          console.error("Failed to save invoice");
         }
       })
       .catch(error => {
         console.error("Error saving invoice:", error);
+        toast({
+          title: isArabic ? "خطأ" : "Error",
+          description: isArabic 
+            ? "حدث خطأ أثناء حفظ الفاتورة" 
+            : "Error saving invoice",
+          variant: "destructive",
+        });
       });
     
     return invoice;
