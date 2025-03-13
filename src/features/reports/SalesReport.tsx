@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,8 +12,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer, Cell } from "recharts";
 import { SalesByPaymentMethod, SalesByOrderType, TopSellingProduct, SalesByTimeFrame } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Printer } from "lucide-react";
+import { FileText, Printer, Download } from "lucide-react";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const SalesReport: React.FC = () => {
   const { language } = useLanguage();
@@ -27,6 +30,7 @@ const SalesReport: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<string | undefined>(undefined);
   const [orderType, setOrderType] = useState<string | undefined>(undefined);
   const [cashier, setCashier] = useState<string | undefined>(undefined);
+  const [includeRefunded, setIncludeRefunded] = useState<boolean>(true);
   
   const allInvoices = useMemo(() => {
     return invoices.length > 0 ? invoices : mockInvoices;
@@ -73,12 +77,21 @@ const SalesReport: React.FC = () => {
         match = match && invoice.cashierId === cashier;
       }
       
+      // إذا كان خيار تضمين الفواتير المستردة غير مفعل، نستبعد الفواتير ذات الحالة "refunded"
+      if (!includeRefunded && invoice.status === "refunded") {
+        match = false;
+      }
+      
       return match;
     });
-  }, [allInvoices, startDate, endDate, paymentMethod, orderType, cashier]);
+  }, [allInvoices, startDate, endDate, paymentMethod, orderType, cashier, includeRefunded]);
   
   const totalSales = useMemo(() => {
-    return filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0);
+    return filteredInvoices.reduce((sum, invoice) => {
+      // عند حساب إجمالي المبيعات، يجب خصم قيم الفواتير المستردة
+      const multiplier = invoice.status === "refunded" ? -1 : 1;
+      return sum + (invoice.total * multiplier);
+    }, 0);
   }, [filteredInvoices]);
   
   const salesByPaymentMethod: SalesByPaymentMethod[] = useMemo(() => {
@@ -87,7 +100,10 @@ const SalesReport: React.FC = () => {
     filteredInvoices.forEach((invoice) => {
       const method = invoice.paymentMethod;
       const currentAmount = methodsMap.get(method) || 0;
-      methodsMap.set(method, currentAmount + invoice.total);
+      
+      // عند حساب المبيعات حسب طريقة الدفع، يجب خصم قيم الفواتير المستردة
+      const multiplier = invoice.status === "refunded" ? -1 : 1;
+      methodsMap.set(method, currentAmount + (invoice.total * multiplier));
     });
     
     const result: SalesByPaymentMethod[] = [];
@@ -100,8 +116,8 @@ const SalesReport: React.FC = () => {
       
       result.push({
         paymentMethod: methodLabel,
-        amount,
-        percentage: totalSales > 0 ? (amount / totalSales) * 100 : 0
+        amount: Math.abs(amount), // استخدام القيمة المطلقة للمخطط
+        percentage: totalSales > 0 ? (Math.abs(amount) / Math.abs(totalSales)) * 100 : 0
       });
     });
     
@@ -109,16 +125,24 @@ const SalesReport: React.FC = () => {
   }, [filteredInvoices, totalSales, isArabic]);
   
   const salesByOrderType: SalesByOrderType[] = useMemo(() => {
-    const typesMap: Map<string, number> = new Map();
+    const typesMap: Map<string, { count: number, total: number }> = new Map();
     
     filteredInvoices.forEach((invoice) => {
       const type = invoice.orderType || "unknown";
-      const currentCount = typesMap.get(type) || 0;
-      typesMap.set(type, currentCount + 1);
+      const current = typesMap.get(type) || { count: 0, total: 0 };
+      
+      // عند حساب عدد الطلبات حسب النوع، نحسب الفواتير المستردة كطلبات سالبة
+      const countMultiplier = invoice.status === "refunded" ? -1 : 1;
+      const totalMultiplier = invoice.status === "refunded" ? -1 : 1;
+      
+      typesMap.set(type, { 
+        count: current.count + countMultiplier,
+        total: current.total + (invoice.total * totalMultiplier)
+      });
     });
     
     const result: SalesByOrderType[] = [];
-    typesMap.forEach((count, type) => {
+    typesMap.forEach(({ count, total }, type) => {
       const typeLabel = type === "takeaway" 
         ? (isArabic ? "سفري" : "Takeaway") 
         : type === "dineIn" 
@@ -127,8 +151,9 @@ const SalesReport: React.FC = () => {
       
       result.push({
         orderType: typeLabel,
-        count,
-        percentage: filteredInvoices.length > 0 ? (count / filteredInvoices.length) * 100 : 0
+        count: Math.abs(count),
+        percentage: filteredInvoices.length > 0 ? (Math.abs(count) / filteredInvoices.length) * 100 : 0,
+        total: Math.abs(total)
       });
     });
     
@@ -139,6 +164,9 @@ const SalesReport: React.FC = () => {
     const productsMap: Map<string, { name: string, quantity: number, revenue: number }> = new Map();
     
     filteredInvoices.forEach((invoice) => {
+      // حساب المضاعف بناءً على حالة الفاتورة
+      const multiplier = invoice.status === "refunded" ? -1 : 1;
+      
       invoice.items.forEach((item) => {
         const currentProduct = productsMap.get(item.productId) || { 
           name: item.name, 
@@ -148,20 +176,22 @@ const SalesReport: React.FC = () => {
         
         productsMap.set(item.productId, {
           name: item.nameAr && isArabic ? item.nameAr : item.name,
-          quantity: currentProduct.quantity + item.quantity,
-          revenue: currentProduct.revenue + (item.price * item.quantity)
+          quantity: currentProduct.quantity + (item.quantity * multiplier),
+          revenue: currentProduct.revenue + (item.price * item.quantity * multiplier)
         });
       });
     });
     
     const productsArray: TopSellingProduct[] = [];
     productsMap.forEach((product, productId) => {
-      productsArray.push({
-        productId,
-        productName: product.name,
-        quantity: product.quantity,
-        revenue: product.revenue
-      });
+      if (product.quantity > 0) { // نضيف فقط المنتجات ذات الكميات الموجبة
+        productsArray.push({
+          productId,
+          productName: product.name,
+          quantity: product.quantity,
+          revenue: product.revenue
+        });
+      }
     });
     
     return productsArray
@@ -183,10 +213,79 @@ const SalesReport: React.FC = () => {
     setPaymentMethod(undefined);
     setOrderType(undefined);
     setCashier(undefined);
+    setIncludeRefunded(true);
   };
   
   const handlePrint = () => {
     window.print();
+  };
+  
+  // تصدير التقرير كملف PDF
+  const handleExportPDF = () => {
+    const doc = new jsPDF(isArabic ? "p" : "p", "mm", "a4");
+    
+    // إضافة عنوان التقرير
+    doc.setFontSize(18);
+    const title = isArabic ? "تقرير المبيعات" : "Sales Report";
+    doc.text(title, isArabic ? 170 : 20, 20, isArabic ? { align: "right" } : undefined);
+    
+    doc.setFontSize(12);
+    const dateRange = `${isArabic ? "من" : "From"}: ${startDate?.toLocaleDateString()} ${isArabic ? "إلى" : "To"}: ${endDate?.toLocaleDateString()}`;
+    doc.text(dateRange, isArabic ? 170 : 20, 30, isArabic ? { align: "right" } : undefined);
+    
+    // إضافة ملخص المبيعات
+    doc.setFontSize(14);
+    doc.text(isArabic ? "ملخص المبيعات" : "Sales Summary", isArabic ? 170 : 20, 40, isArabic ? { align: "right" } : undefined);
+    
+    // إضافة جدول المبيعات
+    const tableData = filteredInvoices.map((invoice, index) => {
+      const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US");
+      const status = invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed");
+      
+      return [
+        (index + 1).toString(),
+        invoice.number,
+        invDate,
+        invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed"),
+        invoice.paymentMethod,
+        invoice.orderType || "-",
+        invoice.total.toFixed(2)
+      ];
+    });
+    
+    // إنشاء الجدول مع autoTable
+    // @ts-ignore - jspdf-autotable إضافة غير مدعومة في TypeScript
+    doc.autoTable({
+      startY: 50,
+      head: [[
+        "#",
+        isArabic ? "رقم الفاتورة" : "Invoice",
+        isArabic ? "التاريخ" : "Date",
+        isArabic ? "الحالة" : "Status",
+        isArabic ? "طريقة الدفع" : "Payment",
+        isArabic ? "نوع الطلب" : "Order Type",
+        isArabic ? "المبلغ" : "Amount"
+      ]],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [16, 185, 129] },
+      styles: { 
+        font: 'helvetica',
+        halign: isArabic ? 'right' : 'left',
+        textColor: [0, 0, 0]
+      },
+      margin: { top: 50 }
+    });
+    
+    // إجمالي المبيعات
+    // @ts-ignore
+    const finalY = doc.lastAutoTable.finalY || 150;
+    doc.setFontSize(14);
+    const totalText = `${isArabic ? "إجمالي المبيعات" : "Total Sales"}: ${totalSales.toFixed(2)} ${isArabic ? "ريال" : "SAR"}`;
+    doc.text(totalText, isArabic ? 170 : 20, finalY + 10, isArabic ? { align: "right" } : undefined);
+    
+    // تصدير الملف
+    doc.save("sales_report.pdf");
   };
   
   return (
@@ -200,7 +299,7 @@ const SalesReport: React.FC = () => {
             <Printer className="h-4 w-4 mr-2" />
             {isArabic ? "طباعة" : "Print"}
           </Button>
-          <Button>
+          <Button onClick={handleExportPDF}>
             <FileText className="h-4 w-4 mr-2" />
             {isArabic ? "تصدير PDF" : "Export PDF"}
           </Button>
@@ -283,6 +382,27 @@ const SalesReport: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <Label>
+                {isArabic ? "الفواتير المستردة" : "Refunded Invoices"}
+              </Label>
+              <Select 
+                value={includeRefunded ? "include" : "exclude"} 
+                onValueChange={(val) => setIncludeRefunded(val === "include")}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="include">
+                    {isArabic ? "تضمين الفواتير المستردة" : "Include refunded"}
+                  </SelectItem>
+                  <SelectItem value="exclude">
+                    {isArabic ? "استبعاد الفواتير المستردة" : "Exclude refunded"}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex items-end">
               <Button variant="outline" onClick={resetFilters} className="w-full">
                 {isArabic ? "إعادة تعيين الفلاتر" : "Reset Filters"}
@@ -300,7 +420,9 @@ const SalesReport: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0).toFixed(2)} {isArabic ? "ريال" : "SAR"}</div>
+            <div className="text-3xl font-bold">
+              {totalSales.toFixed(2)} {isArabic ? "ريال" : "SAR"}
+            </div>
             <div className="text-sm text-muted-foreground">
               {isArabic ? `${filteredInvoices.length} فاتورة` : `${filteredInvoices.length} invoices`}
             </div>
@@ -316,7 +438,10 @@ const SalesReport: React.FC = () => {
           <CardContent>
             <div className="text-3xl font-bold">
               {filteredInvoices.length > 0 
-                ? (filteredInvoices.reduce((sum, invoice) => sum + invoice.total, 0) / filteredInvoices.length).toFixed(2) 
+                ? (filteredInvoices.reduce((sum, invoice) => {
+                    const multiplier = invoice.status === "refunded" ? 0 : 1; // لا نعتبر الفواتير المستردة
+                    return sum + (invoice.total * multiplier);
+                  }, 0) / filteredInvoices.filter(inv => inv.status !== "refunded").length).toFixed(2) 
                 : "0.00"} {isArabic ? "ريال" : "SAR"}
             </div>
             <div className="text-sm text-muted-foreground">
@@ -333,8 +458,10 @@ const SalesReport: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
-              {filteredInvoices.reduce((sum, invoice) => 
-                sum + invoice.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0)}
+              {filteredInvoices.reduce((sum, invoice) => {
+                const multiplier = invoice.status === "refunded" ? -1 : 1;
+                return sum + (multiplier * invoice.items.reduce((itemSum, item) => itemSum + item.quantity, 0));
+              }, 0)}
             </div>
             <div className="text-sm text-muted-foreground">
               {isArabic ? "إجمالي العناصر" : "Total items"}
@@ -494,12 +621,13 @@ const SalesReport: React.FC = () => {
                       <TableHead>{isArabic ? "التاريخ" : "Date"}</TableHead>
                       <TableHead>{isArabic ? "طريقة الدفع" : "Payment Method"}</TableHead>
                       <TableHead>{isArabic ? "نوع الطلب" : "Order Type"}</TableHead>
+                      <TableHead>{isArabic ? "الحالة" : "Status"}</TableHead>
                       <TableHead className="text-right">{isArabic ? "المبلغ" : "Amount"}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredInvoices.map((invoice) => (
-                      <TableRow key={invoice.id}>
+                      <TableRow key={invoice.id} className={invoice.status === "refunded" ? "bg-red-50" : ""}>
                         <TableCell>{invoice.number}</TableCell>
                         <TableCell>
                           {new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US")}
@@ -517,6 +645,12 @@ const SalesReport: React.FC = () => {
                             : invoice.orderType === "dineIn" 
                               ? (isArabic ? "محلي" : "Dine In")
                               : (isArabic ? "غير محدد" : "Unknown")}
+                        </TableCell>
+                        <TableCell>
+                          {invoice.status === "refunded" 
+                            ? <span className="text-red-500">{isArabic ? "مسترجع" : "Refunded"}</span>
+                            : <span className="text-green-500">{isArabic ? "مكتمل" : "Completed"}</span>
+                          }
                         </TableCell>
                         <TableCell className="text-right">
                           {invoice.total.toFixed(2)} {isArabic ? "ريال" : "SAR"}
