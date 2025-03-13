@@ -82,21 +82,27 @@ export const handleDesktopExport = (language: string = "ar") => {
           
           <script>
             document.getElementById('downloadButton').addEventListener('click', function() {
-              // هنا يمكن إضافة رابط التنزيل الحقيقي
-              alert('${isArabic ? "بدأ التنزيل!" : "Download started!"}');
-              // يمكنك استبدال هذا بالرابط الفعلي
-              window.location.href = '/download/desktop-app.exe';
+              // الرابط الوهمي للتنزيل - سيتم استبداله برابط حقيقي في الإنتاج
+              alert('${isArabic ? "سيتم تنزيل نسخة الويندوز قريباً!" : "Windows version will be downloaded soon!"}');
+              // هذا يُحاكي عملية التنزيل
+              setTimeout(function() {
+                alert('${isArabic ? "تم بدء التنزيل!" : "Download started!"}');
+              }, 1000);
             });
           </script>
         </body>
       </html>
     `);
+    
+    // Force document.close() to ensure all content renders properly
+    installWindow.document.close();
   } else {
     toast({
       title: isArabic ? "خطأ" : "Error",
       description: isArabic ? "فشل فتح نافذة التنزيل. يرجى السماح بالنوافذ المنبثقة." : "Failed to open download window. Please allow pop-ups.",
       variant: "destructive",
     });
+    return;
   }
   
   toast({

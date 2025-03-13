@@ -1,4 +1,3 @@
-
 import {
   Package2,
   Utensils,
@@ -132,7 +131,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "نسخة الويندوز",
       name_en: "Windows Version",
-      path: "#", // تغيير الرابط من القيمة السابقة
+      path: "#",
       icon: <Download size={20} />,
       isAction: true,
       action: "desktop-export",
