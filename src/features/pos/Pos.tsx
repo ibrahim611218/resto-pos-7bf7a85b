@@ -31,11 +31,14 @@ const Pos: React.FC = () => {
     discount,
     discountType,
     paymentMethod,
+    paidAmount,
+    remainingAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
+    setPaidAmount,
     
     // Invoice
     subtotal,
@@ -95,6 +98,8 @@ const Pos: React.FC = () => {
           orderType={orderType}
           tableNumber={tableNumber}
           paymentMethod={paymentMethod}
+          paidAmount={paidAmount}
+          remainingAmount={remainingAmount}
           addToCart={addToCart}
           updateQuantity={updateQuantity}
           removeItem={removeItem}
@@ -105,6 +110,7 @@ const Pos: React.FC = () => {
           setOrderType={setOrderType}
           setTableNumber={setTableNumber}
           setPaymentMethod={setPaymentMethod}
+          setPaidAmount={setPaidAmount}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           activeCategory={activeCategory}

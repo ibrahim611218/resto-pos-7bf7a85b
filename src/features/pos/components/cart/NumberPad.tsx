@@ -7,13 +7,23 @@ interface NumberPadProps {
   onClose: () => void;
   onConfirm: (value: number) => void;
   initialValue?: number;
+  title?: string;
+  isArabic?: boolean;
+  decimalAllowed?: boolean;
+  showRemainingAmount?: boolean;
+  remainingAmount?: number;
 }
 
 const NumberPad: React.FC<NumberPadProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  initialValue = 1
+  initialValue = 1,
+  title,
+  isArabic = false,
+  decimalAllowed = false,
+  showRemainingAmount = false,
+  remainingAmount = 0
 }) => {
   return (
     <NumberPadComponent
@@ -21,8 +31,11 @@ const NumberPad: React.FC<NumberPadProps> = ({
       onClose={onClose}
       onConfirm={onConfirm}
       initialValue={initialValue}
-      title="أدخل الكمية"
-      isArabic={true}
+      title={title || (isArabic ? "أدخل الكمية" : "Enter Quantity")}
+      isArabic={isArabic}
+      decimalAllowed={decimalAllowed}
+      showRemainingAmount={showRemainingAmount}
+      remainingAmount={remainingAmount}
     />
   );
 };

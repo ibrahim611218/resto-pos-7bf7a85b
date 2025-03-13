@@ -23,11 +23,13 @@ export const useCart = () => {
     discount,
     discountType,
     paymentMethod,
+    paidAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
+    setPaidAmount,
     resetOrderConfig
   } = useOrderConfig();
 
@@ -39,6 +41,9 @@ export const useCart = () => {
     discountType,
     settings.taxIncluded
   );
+  
+  // Calculate remaining amount
+  const remainingAmount = Math.max(0, total - paidAmount);
   
   // Clear the entire cart (items + config)
   const clearCart = () => {
@@ -86,11 +91,14 @@ export const useCart = () => {
     discount,
     discountType,
     paymentMethod,
+    paidAmount,
+    remainingAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
+    setPaidAmount,
     
     // Invoice
     subtotal,

@@ -22,6 +22,8 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
+  paidAmount: number;
+  remainingAmount: number;
   createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
@@ -32,6 +34,7 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  setPaidAmount: (amount: number) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -46,6 +49,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   orderType,
   tableNumber,
   paymentMethod,
+  paidAmount,
+  remainingAmount,
   createInvoice,
   clearCart,
   getSizeLabel,
@@ -56,6 +61,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
+  setPaidAmount,
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
@@ -136,10 +142,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}
+        paidAmount={paidAmount}
+        remainingAmount={remainingAmount}
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setDiscount={setDiscount}
         setDiscountType={setDiscountType}
+        setPaidAmount={setPaidAmount}
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
         isArabic={isArabic}
@@ -151,6 +160,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         onConfirm={handlePaymentMethodSelected}
+        total={total}
+        paidAmount={paidAmount}
+        remainingAmount={remainingAmount}
       />
     </div>
   );

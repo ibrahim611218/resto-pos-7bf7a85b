@@ -14,6 +14,8 @@ import { useCustomers } from "@/features/customers/hooks/useCustomers";
 import { usePaymentMethodDialog } from "../hooks/usePaymentMethodDialog";
 import PaymentMethodSelector from "./payment/PaymentMethodSelector";
 import CustomerFormFields from "./payment/CustomerFormFields";
+import { formatCurrency } from "@/utils/invoice";
+import { DollarSign } from "lucide-react";
 
 interface PaymentMethodDialogProps {
   isOpen: boolean;
@@ -21,6 +23,9 @@ interface PaymentMethodDialogProps {
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
+  total?: number;
+  paidAmount?: number;
+  remainingAmount?: number;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -29,6 +34,9 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   paymentMethod,
   setPaymentMethod,
   onConfirm,
+  total = 0,
+  paidAmount = 0,
+  remainingAmount = 0
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -72,6 +80,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
+  const showRemainingAmount = paidAmount > 0 && remainingAmount > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
@@ -80,6 +90,20 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             {isArabic ? "اختر طريقة الدفع" : "Select Payment Method"}
           </DialogTitle>
         </DialogHeader>
+
+        {showRemainingAmount && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-2">
+            <div className="flex items-center justify-between font-bold text-red-600 text-lg">
+              <span className="flex items-center">
+                <DollarSign className="mr-1" size={18} />
+                {isArabic ? "المتبقي" : "Remaining"}
+              </span>
+              <span>
+                {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="grid gap-4 py-4">
           <PaymentMethodSelector
@@ -119,4 +143,3 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 };
 
 export default PaymentMethodDialog;
-

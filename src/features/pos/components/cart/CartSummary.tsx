@@ -1,6 +1,7 @@
 
 import React from "react";
 import { formatCurrency } from "@/utils/invoice";
+import { DollarSign } from "lucide-react";
 
 export interface CartSummaryProps {
   subtotal: number;
@@ -8,6 +9,8 @@ export interface CartSummaryProps {
   discount: number;
   discountType: "percentage" | "fixed";
   total: number;
+  paidAmount?: number;
+  remainingAmount?: number;
   isMobile?: boolean;
   isArabic?: boolean;
 }
@@ -18,6 +21,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discount,
   discountType,
   total,
+  paidAmount = 0,
+  remainingAmount = total,
   isMobile = false,
   isArabic = false
 }) => {
@@ -68,6 +73,29 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
+
+      {paidAmount > 0 && (
+        <div className="flex justify-between text-green-600">
+          <span>
+            {isArabic ? "المدفوع" : "Paid"}
+          </span>
+          <span>
+            {formatCurrency(paidAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
+      
+      {paidAmount > 0 && (
+        <div className="flex justify-between font-bold text-red-600 text-lg border-t pt-2 mt-1">
+          <span className="flex items-center">
+            <DollarSign className="mr-1" size={18} />
+            {isArabic ? "المتبقي" : "Remaining"}
+          </span>
+          <span>
+            {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

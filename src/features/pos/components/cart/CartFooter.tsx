@@ -6,6 +6,7 @@ import OrderTypeSelector from "./OrderTypeSelector";
 import DiscountInput from "./DiscountInput";
 import CartSummary from "./CartSummary";
 import CartActions from "./CartActions";
+import PaidAmountInput from "./PaidAmountInput";
 
 interface CartFooterProps {
   isMobile: boolean;
@@ -17,10 +18,13 @@ interface CartFooterProps {
   subtotal: number;
   taxAmount: number;
   total: number;
+  paidAmount: number;
+  remainingAmount: number;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
+  setPaidAmount: (amount: number) => void;
   handleCreateInvoice: () => void;
   clearCart: () => void;
   isArabic: boolean;
@@ -36,10 +40,13 @@ const CartFooter: React.FC<CartFooterProps> = ({
   subtotal,
   taxAmount,
   total,
+  paidAmount,
+  remainingAmount,
   setOrderType,
   setTableNumber,
   setDiscount,
   setDiscountType,
+  setPaidAmount,
   handleCreateInvoice,
   clearCart,
   isArabic,
@@ -67,6 +74,14 @@ const CartFooter: React.FC<CartFooterProps> = ({
         isMobile={isMobile}
         isArabic={isArabic}
       />
+
+      <PaidAmountInput
+        paidAmount={paidAmount}
+        setPaidAmount={setPaidAmount}
+        total={total}
+        isMobile={isMobile}
+        isArabic={isArabic}
+      />
       
       <CartSummary
         subtotal={subtotal}
@@ -74,6 +89,8 @@ const CartFooter: React.FC<CartFooterProps> = ({
         discount={discount}
         discountType={discountType}
         total={total}
+        paidAmount={paidAmount}
+        remainingAmount={remainingAmount}
         isMobile={isMobile}
         isArabic={isArabic}
       />
