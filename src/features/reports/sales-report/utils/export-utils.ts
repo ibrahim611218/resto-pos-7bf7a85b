@@ -3,7 +3,6 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { loadFontsForPDF } from "@/assets/fonts";
 
 interface ExportPDFProps {
   filteredInvoices: Invoice[];
@@ -33,7 +32,7 @@ export const exportSalesReportPDF = ({
       compress: true
     });
     
-    // For Arabic, enable right-to-left and use the default font
+    // Set right-to-left mode for Arabic
     if (isArabic) {
       doc.setR2L(true);
     }
@@ -41,28 +40,26 @@ export const exportSalesReportPDF = ({
     // Add report title
     doc.setFontSize(18);
     const title = isArabic ? "تقرير المبيعات" : "Sales Report";
-    if (isArabic) {
-      doc.text(title, doc.internal.pageSize.width - 20, 20, { align: "right" });
-    } else {
-      doc.text(title, 20, 20);
-    }
+    const titleX = isArabic ? doc.internal.pageSize.width - 20 : 20;
+    doc.text(title, titleX, 20, { align: isArabic ? "right" : "left" });
     
-    doc.setFontSize(12);
-    const dateRange = `${isArabic ? "من" : "From"}: ${startDate?.toLocaleDateString()} ${isArabic ? "إلى" : "To"}: ${endDate?.toLocaleDateString()}`;
-    if (isArabic) {
-      doc.text(dateRange, doc.internal.pageSize.width - 20, 30, { align: "right" });
-    } else {
-      doc.text(dateRange, 20, 30);
+    // Add date range if available
+    if (startDate && endDate) {
+      doc.setFontSize(12);
+      const fromText = isArabic ? "من" : "From";
+      const toText = isArabic ? "إلى" : "To";
+      const startDateStr = startDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US");
+      const endDateStr = endDate.toLocaleDateString(isArabic ? "ar-SA" : "en-US");
+      const dateRange = `${fromText}: ${startDateStr} ${toText}: ${endDateStr}`;
+      const dateX = isArabic ? doc.internal.pageSize.width - 20 : 20;
+      doc.text(dateRange, dateX, 30, { align: isArabic ? "right" : "left" });
     }
     
     // Add sales summary
     doc.setFontSize(14);
     const summaryTitle = isArabic ? "ملخص المبيعات" : "Sales Summary";
-    if (isArabic) {
-      doc.text(summaryTitle, doc.internal.pageSize.width - 20, 40, { align: "right" });
-    } else {
-      doc.text(summaryTitle, 20, 40);
-    }
+    const summaryX = isArabic ? doc.internal.pageSize.width - 20 : 20;
+    doc.text(summaryTitle, summaryX, 40, { align: isArabic ? "right" : "left" });
     
     // Create table headers in the correct language
     const headers = [
@@ -80,15 +77,29 @@ export const exportSalesReportPDF = ({
       const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US");
       const status = invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed");
       
+      let paymentMethod = invoice.paymentMethod;
+      if (paymentMethod === "cash") {
+        paymentMethod = isArabic ? "نقدي" : "Cash";
+      } else if (paymentMethod === "card") {
+        paymentMethod = isArabic ? "بطاقة" : "Card";
+      }
+      
+      let orderType = invoice.orderType || "-";
+      if (orderType === "takeaway") {
+        orderType = isArabic ? "سفري" : "Takeaway"; 
+      } else if (orderType === "dineIn") {
+        orderType = isArabic ? "محلي" : "Dine In";
+      } else {
+        orderType = isArabic ? "غير محدد" : "-";
+      }
+      
       return [
         (index + 1).toString(),
         invoice.number,
         invDate,
         status,
-        invoice.paymentMethod === "cash" ? (isArabic ? "نقدي" : "Cash") : 
-        invoice.paymentMethod === "card" ? (isArabic ? "بطاقة" : "Card") : invoice.paymentMethod,
-        invoice.orderType === "takeaway" ? (isArabic ? "سفري" : "Takeaway") : 
-        invoice.orderType === "dineIn" ? (isArabic ? "محلي" : "Dine In") : (isArabic ? "غير محدد" : "-"),
+        paymentMethod,
+        orderType,
         invoice.total.toFixed(2)
       ];
     });
@@ -124,11 +135,8 @@ export const exportSalesReportPDF = ({
     const finalY = doc.lastAutoTable.finalY || 150;
     doc.setFontSize(14);
     const totalText = `${isArabic ? "إجمالي المبيعات" : "Total Sales"}: ${totalSales.toFixed(2)} ${isArabic ? "ريال" : "SAR"}`;
-    if (isArabic) {
-      doc.text(totalText, doc.internal.pageSize.width - 20, finalY + 10, { align: "right" });
-    } else {
-      doc.text(totalText, 20, finalY + 10);
-    }
+    const totalX = isArabic ? doc.internal.pageSize.width - 20 : 20;
+    doc.text(totalText, totalX, finalY + 10, { align: isArabic ? "right" : "left" });
     
     // Save the file
     doc.save("sales_report.pdf");
