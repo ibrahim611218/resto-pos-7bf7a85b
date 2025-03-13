@@ -14,8 +14,6 @@ import { useCustomers } from "@/features/customers/hooks/useCustomers";
 import { usePaymentMethodDialog } from "../hooks/usePaymentMethodDialog";
 import PaymentMethodSelector from "./payment/PaymentMethodSelector";
 import CustomerFormFields from "./payment/CustomerFormFields";
-import { formatCurrency } from "@/utils/invoice";
-import { DollarSign } from "lucide-react";
 
 interface PaymentMethodDialogProps {
   isOpen: boolean;
@@ -78,10 +76,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // Calculate remaining amount dynamically based on total and paidAmount
-  const remainingAmount = Math.max(0, total - paidAmount);
-  const showRemainingAmount = remainingAmount > 0;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
@@ -90,20 +84,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             {isArabic ? "اختر طريقة الدفع" : "Select Payment Method"}
           </DialogTitle>
         </DialogHeader>
-
-        {showRemainingAmount && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-2">
-            <div className="flex items-center justify-between font-bold text-red-600 text-lg">
-              <span className="flex items-center">
-                <DollarSign className={isArabic ? "ml-1" : "mr-1"} size={18} />
-                {isArabic ? "المتبقي" : "Remaining"}
-              </span>
-              <span>
-                {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-              </span>
-            </div>
-          </div>
-        )}
 
         <div className="grid gap-4 py-4">
           <PaymentMethodSelector
