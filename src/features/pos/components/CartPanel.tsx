@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
 import { useCartResize } from "../hooks/useCartResize";
-import { usePaymentDialog } from "./cart/PaymentDialogHandler";
-import { usePaidAmount } from "../hooks/usePaidAmount";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import CartHeader from "./cart/CartHeader";
 import CartItemsList from "./cart/CartItemsList";
@@ -34,6 +32,16 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  // New props from payment handling
+  paidAmount: number;
+  showPaidAmountDialog: boolean;
+  setShowPaidAmountDialog: (show: boolean) => void;
+  handlePaidAmountClick: () => void;
+  handlePaidAmountConfirm: (amount: number) => void;
+  showPaymentMethodDialog: boolean;
+  setShowPaymentMethodDialog: (show: boolean) => void;
+  handleCreateInvoice: () => void;
+  handlePaymentMethodSelectedWithAmount: (method: PaymentMethod) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -58,6 +66,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
+  // Payment handling props
+  paidAmount,
+  showPaidAmountDialog,
+  setShowPaidAmountDialog,
+  handlePaidAmountClick,
+  handlePaidAmountConfirm,
+  showPaymentMethodDialog,
+  setShowPaymentMethodDialog,
+  handleCreateInvoice,
+  handlePaymentMethodSelectedWithAmount
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
@@ -70,51 +88,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
     isTablet
   });
 
-  // Paid amount management
-  const {
-    paidAmount,
-    showPaidAmountDialog,
-    setShowPaidAmountDialog,
-    handlePaidAmountClick,
-    handlePaidAmountConfirm
-  } = usePaidAmount({ total, paymentMethod });
-
-  // Payment dialog management
-  const { 
-    showPaymentMethodDialog, 
-    setShowPaymentMethodDialog,
-    handleCreateInvoice, 
-  } = usePaymentDialog({
-    paymentMethod,
-    setPaymentMethod,
-    createInvoice,
-    setCurrentInvoice,
-    total
-  });
-
   const toggleExpand = () => {
     setExpanded(!expanded);
-  };
-
-  // Override payment method selected handler to include paid amount
-  const handlePaymentMethodSelectedWithAmount = (method: PaymentMethod) => {
-    setPaymentMethod(method);
-    setShowPaymentMethodDialog(false);
-    
-    // If cash payment, ensure we have a paid amount set
-    const finalPaidAmount = method === "cash" ? paidAmount : total;
-    
-    // Create invoice with paid amount
-    const invoice = createInvoice(
-      undefined, 
-      undefined, 
-      undefined, 
-      undefined, 
-      undefined, 
-      finalPaidAmount
-    );
-    
-    setCurrentInvoice(invoice);
   };
 
   const isEmpty = cartItems.length === 0;

@@ -1,6 +1,7 @@
 
 import React from "react";
 import CartPanel from "./CartPanel";
+import { usePaymentHandling } from "../hooks/usePaymentHandling";
 
 interface PosCartRendererProps {
   cartItems: any[];
@@ -30,16 +31,13 @@ interface PosCartRendererProps {
  * Component that renders the cart panel with all cart-related functionality
  */
 const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
-  const handleCreateInvoice = (
-    customerName?: string, 
-    customerTaxNumber?: string, 
-    customerId?: string,
-    commercialRegister?: string,
-    address?: string,
-    paidAmount?: number
-  ) => {
-    return props.createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
-  };
+  // Use the payment handling hook to manage all payment-related logic
+  const paymentHandling = usePaymentHandling({
+    total: props.total,
+    paymentMethod: props.paymentMethod,
+    setPaymentMethod: props.setPaymentMethod,
+    createInvoice: props.createInvoice
+  });
 
   return (
     <CartPanel 
@@ -54,7 +52,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       orderType={props.orderType}
       tableNumber={props.tableNumber}
       paymentMethod={props.paymentMethod}
-      createInvoice={handleCreateInvoice}
+      createInvoice={props.createInvoice}
       clearCart={props.clearCart}
       getSizeLabel={props.getSizeLabel}
       updateQuantity={props.updateQuantity}
@@ -64,6 +62,16 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       setOrderType={props.setOrderType}
       setTableNumber={props.setTableNumber}
       setPaymentMethod={props.setPaymentMethod}
+      // Pass payment handling props
+      paidAmount={paymentHandling.paidAmount}
+      showPaidAmountDialog={paymentHandling.showPaidAmountDialog}
+      setShowPaidAmountDialog={paymentHandling.setShowPaidAmountDialog}
+      handlePaidAmountClick={paymentHandling.handlePaidAmountClick}
+      handlePaidAmountConfirm={paymentHandling.handlePaidAmountConfirm}
+      showPaymentMethodDialog={paymentHandling.showPaymentMethodDialog}
+      setShowPaymentMethodDialog={paymentHandling.setShowPaymentMethodDialog}
+      handleCreateInvoice={paymentHandling.handleCreateInvoice}
+      handlePaymentMethodSelectedWithAmount={paymentHandling.handlePaymentMethodSelectedWithAmount}
     />
   );
 };
