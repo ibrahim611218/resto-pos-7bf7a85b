@@ -23,6 +23,8 @@ interface PaymentMethodDialogProps {
   setPaymentMethod: (method: PaymentMethod) => void;
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
   total?: number;
+  paidAmount?: number;
+  setPaidAmount?: (amount: number) => void;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -32,6 +34,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   setPaymentMethod,
   onConfirm,
   total = 0,
+  paidAmount = 0,
+  setPaidAmount
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -50,10 +54,15 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     setSelectedCustomerId,
     isNewCustomer,
     setIsNewCustomer,
-    paidAmount,
-    setPaidAmount,
+    paidAmount: internalPaidAmount,
+    setPaidAmount: setInternalPaidAmount,
     handleConfirm
-  } = usePaymentMethodDialog({ isOpen, onClose, onConfirm });
+  } = usePaymentMethodDialog({ 
+    isOpen, 
+    onClose, 
+    onConfirm,
+    initialPaidAmount: paidAmount || 0
+  });
 
   const handleCustomerSelect = (customerId: string) => {
     if (customerId === "new") {
@@ -77,7 +86,15 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  const remainingAmount = Math.max(0, total - paidAmount);
+  // Update both internal and external paid amount
+  const updatePaidAmount = (value: number) => {
+    setInternalPaidAmount(value);
+    if (setPaidAmount) {
+      setPaidAmount(value);
+    }
+  };
+
+  const remainingAmount = Math.max(0, total - internalPaidAmount);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -132,8 +149,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
                 <Input
                   id="paidAmount"
                   type="number"
-                  value={paidAmount}
-                  onChange={(e) => setPaidAmount(Math.max(0, parseFloat(e.target.value) || 0))}
+                  value={internalPaidAmount}
+                  onChange={(e) => updatePaidAmount(Math.max(0, parseFloat(e.target.value) || 0))}
                   className="bg-background"
                 />
               </div>
@@ -147,7 +164,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
                 type="text"
                 value={remainingAmount.toFixed(2)}
                 readOnly
-                className="bg-muted"
+                className={`bg-muted ${remainingAmount > 0 ? 'text-red-500 font-medium' : ''}`}
               />
             </div>
           </div>

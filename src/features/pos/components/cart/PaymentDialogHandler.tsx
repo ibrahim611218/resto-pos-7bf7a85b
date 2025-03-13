@@ -9,6 +9,8 @@ interface PaymentDialogHandlerProps {
   createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice;
   setCurrentInvoice: (invoice: Invoice | null) => void;
   total?: number;
+  paidAmount?: number;
+  setPaidAmount?: (amount: number) => void;
 }
 
 // Custom hook to handle payment dialog logic
@@ -17,7 +19,9 @@ export const usePaymentDialog = ({
   setPaymentMethod,
   createInvoice,
   setCurrentInvoice,
-  total = 0
+  total = 0,
+  paidAmount = 0,
+  setPaidAmount
 }: PaymentDialogHandlerProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
 
@@ -31,9 +35,10 @@ export const usePaymentDialog = ({
     customerId?: string,
     commercialRegister?: string,
     address?: string,
-    paidAmount?: number
+    newPaidAmount?: number
   ) => {
-    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
+    const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : total;
+    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, actualPaidAmount);
     setCurrentInvoice(invoice);
     setShowPaymentMethodDialog(false);
     return invoice;
@@ -63,6 +68,8 @@ const PaymentDialogHandler: React.FC<PaymentDialogHandlerProps> = (props) => {
       setPaymentMethod={props.setPaymentMethod}
       onConfirm={handlePaymentMethodSelected}
       total={props.total}
+      paidAmount={props.paidAmount}
+      setPaidAmount={props.setPaidAmount}
     />
   );
 };

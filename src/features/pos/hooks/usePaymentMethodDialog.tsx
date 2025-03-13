@@ -6,16 +6,17 @@ interface UsePaymentMethodDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
+  initialPaidAmount?: number;
 }
 
-export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDialogProps) => {
+export const usePaymentMethodDialog = ({ isOpen, onConfirm, initialPaidAmount = 0 }: UsePaymentMethodDialogProps) => {
   const [customerName, setCustomerName] = useState("");
   const [customerTaxNumber, setCustomerTaxNumber] = useState("");
   const [commercialRegister, setCommercialRegister] = useState("");
   const [address, setAddress] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(true);
-  const [paidAmount, setPaidAmount] = useState<number>(0);
+  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount);
 
   useEffect(() => {
     if (isOpen) {
@@ -26,9 +27,9 @@ export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDi
       setAddress("");
       setSelectedCustomerId("");
       setIsNewCustomer(true);
-      setPaidAmount(0);
+      setPaidAmount(initialPaidAmount);
     }
-  }, [isOpen]);
+  }, [isOpen, initialPaidAmount]);
 
   const handleConfirm = () => {
     if (!isNewCustomer && selectedCustomerId) {
