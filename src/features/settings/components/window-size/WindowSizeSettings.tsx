@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Maximize } from "lucide-react";
 import { WindowSizeState } from "../../types/displaySettings";
+import HeaderSection from "../common/HeaderSection";
 
 interface WindowSizeSettingsProps {
   windowSize: WindowSizeState;
@@ -23,9 +24,11 @@ export const WindowSizeSettings: React.FC<WindowSizeSettingsProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">
-        {isArabic ? "تغيير حجم النافذة" : "Resize Window"}
-      </h3>
+      <HeaderSection 
+        icon={Maximize}
+        title={isArabic ? "تغيير حجم النافذة" : "Resize Window"}
+        isArabic={isArabic}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="width">{isArabic ? "العرض (بالبكسل)" : "Width (px)"}</Label>

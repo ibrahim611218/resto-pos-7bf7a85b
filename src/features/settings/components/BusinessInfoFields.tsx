@@ -6,6 +6,7 @@ import { BusinessSettings } from "@/types";
 import GeneralInfo from "./general-info/GeneralInfo";
 import TaxSettings from "./tax-settings/TaxSettings";
 import ContactInformation from "./contact-info/ContactInformation";
+import HeaderSection from "./common/HeaderSection";
 
 interface BusinessInfoFieldsProps {
   settings: BusinessSettings;
@@ -24,10 +25,11 @@ const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({
     <div className="space-y-6">
       {/* General Information Section */}
       <div>
-        <h3 className="text-lg font-medium mb-4 flex items-center">
-          <Building2 className="mr-2" size={18} />
-          {isArabic ? "معلومات عامة" : "General Information"}
-        </h3>
+        <HeaderSection 
+          icon={Building2}
+          title={isArabic ? "معلومات عامة" : "General Information"}
+          isArabic={isArabic}
+        />
         <GeneralInfo 
           settings={settings} 
           isArabic={isArabic} 
@@ -39,10 +41,11 @@ const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({
       
       {/* Tax Settings Section */}
       <div>
-        <h3 className="text-lg font-medium mb-4 flex items-center">
-          <Percent className="mr-2" size={18} />
-          {isArabic ? "إعدادات الضريبة" : "Tax Settings"}
-        </h3>
+        <HeaderSection 
+          icon={Percent}
+          title={isArabic ? "إعدادات الضريبة" : "Tax Settings"}
+          isArabic={isArabic}
+        />
         <TaxSettings 
           settings={settings} 
           isArabic={isArabic} 
@@ -55,10 +58,11 @@ const BusinessInfoFields: React.FC<BusinessInfoFieldsProps> = ({
       
       {/* Contact Information Section */}
       <div>
-        <h3 className="text-lg font-medium mb-4 flex items-center">
-          <Phone className="mr-2" size={18} />
-          {isArabic ? "معلومات الاتصال" : "Contact Information"}
-        </h3>
+        <HeaderSection 
+          icon={Phone}
+          title={isArabic ? "معلومات الاتصال" : "Contact Information"}
+          isArabic={isArabic}
+        />
         <ContactInformation 
           settings={settings} 
           isArabic={isArabic} 

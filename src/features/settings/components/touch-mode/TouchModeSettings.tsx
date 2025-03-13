@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Mouse, TouchpadIcon } from "lucide-react";
 import { DisplaySettingsData } from "../../types/displaySettings";
+import HeaderSection from "../common/HeaderSection";
 
 interface TouchModeSettingsProps {
   settings: DisplaySettingsData;
@@ -18,9 +19,11 @@ export const TouchModeSettings: React.FC<TouchModeSettingsProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">
-        {isArabic ? "وضع الإدخال" : "Input Mode"}
-      </h3>
+      <HeaderSection 
+        icon={settings.touchMode ? TouchpadIcon : Mouse}
+        title={isArabic ? "وضع الإدخال" : "Input Mode"}
+        isArabic={isArabic}
+      />
       <div className="flex items-center justify-between border p-4 rounded-lg">
         <div className="flex items-center gap-3">
           {settings.touchMode ? (
