@@ -7,8 +7,9 @@ import CartHeader from "./cart/CartHeader";
 import CartItemsList from "./cart/CartItemsList";
 import CartFooter from "./cart/CartFooter";
 import { useCartResize } from "../hooks/useCartResize";
-import PaymentMethodDialog from "./PaymentMethodDialog";
 import { usePaymentDialog } from "./cart/PaymentDialogHandler";
+import { usePaidAmount } from "../hooks/usePaidAmount";
+import PaymentMethodDialog from "./PaymentMethodDialog";
 import PaidAmountDialog from "./cart/PaidAmountDialog";
 
 interface CartPanelProps {
@@ -61,20 +62,28 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
-  const [paidAmount, setPaidAmount] = useState<number>(total);
-  const [showPaidAmountDialog, setShowPaidAmountDialog] = useState(false);
 
+  // Cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
     isArabic,
     isMobile,
     isTablet
   });
 
+  // Paid amount management
+  const {
+    paidAmount,
+    showPaidAmountDialog,
+    setShowPaidAmountDialog,
+    handlePaidAmountClick,
+    handlePaidAmountConfirm
+  } = usePaidAmount({ total, paymentMethod });
+
+  // Payment dialog management
   const { 
     showPaymentMethodDialog, 
     setShowPaymentMethodDialog,
     handleCreateInvoice, 
-    handlePaymentMethodSelected
   } = usePaymentDialog({
     paymentMethod,
     setPaymentMethod,
@@ -83,23 +92,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
     total
   });
 
-  // Update paidAmount when total changes
-  React.useEffect(() => {
-    setPaidAmount(total);
-  }, [total]);
-
   const toggleExpand = () => {
     setExpanded(!expanded);
-  };
-
-  const handlePaidAmountClick = () => {
-    if (paymentMethod === "cash") {
-      setShowPaidAmountDialog(true);
-    }
-  };
-
-  const handlePaidAmountConfirm = (amount: number) => {
-    setPaidAmount(amount);
   };
 
   // Override payment method selected handler to include paid amount
