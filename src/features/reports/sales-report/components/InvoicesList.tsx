@@ -11,6 +11,10 @@ interface InvoicesListProps {
 }
 
 const InvoicesList: React.FC<InvoicesListProps> = ({ filteredInvoices, isArabic }) => {
+  // قسم الفواتير إلى مكتملة ومسترجعة
+  const completedInvoices = filteredInvoices.filter(inv => inv.status !== "refunded");
+  const refundedInvoices = filteredInvoices.filter(inv => inv.status === "refunded");
+  
   return (
     <Card>
       <CardHeader>
@@ -32,8 +36,9 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ filteredInvoices, isArabic 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredInvoices.map((invoice) => (
-                <TableRow key={invoice.id} className={invoice.status === "refunded" ? "bg-red-50" : ""}>
+              {/* عرض الفواتير المكتملة أولاً */}
+              {completedInvoices.map((invoice) => (
+                <TableRow key={invoice.id}>
                   <TableCell>{invoice.number}</TableCell>
                   <TableCell>
                     {new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US")}
@@ -45,13 +50,32 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ filteredInvoices, isArabic 
                     {formatOrderType(invoice.orderType, isArabic)}
                   </TableCell>
                   <TableCell>
-                    {invoice.status === "refunded" 
-                      ? <span className="text-red-500">{isArabic ? "مسترجع" : "Refunded"}</span>
-                      : <span className="text-green-500">{isArabic ? "مكتمل" : "Completed"}</span>
-                    }
+                    <span className="text-green-500">{isArabic ? "مكتمل" : "Completed"}</span>
                   </TableCell>
                   <TableCell className="text-right">
                     {invoice.total.toFixed(2)} {isArabic ? "ريال" : "SAR"}
+                  </TableCell>
+                </TableRow>
+              ))}
+              
+              {/* عرض الفواتير المسترجعة بعد ذلك */}
+              {refundedInvoices.map((invoice) => (
+                <TableRow key={invoice.id} className="bg-red-50">
+                  <TableCell>{invoice.number}</TableCell>
+                  <TableCell>
+                    {new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US")}
+                  </TableCell>
+                  <TableCell>
+                    {formatPaymentMethod(invoice.paymentMethod, isArabic)}
+                  </TableCell>
+                  <TableCell>
+                    {formatOrderType(invoice.orderType, isArabic)}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-red-500">{isArabic ? "مسترجع" : "Refunded"}</span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    0.00 {isArabic ? "ريال" : "SAR"}
                   </TableCell>
                 </TableRow>
               ))}

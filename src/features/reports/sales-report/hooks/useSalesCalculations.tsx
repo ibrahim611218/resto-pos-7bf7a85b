@@ -12,9 +12,11 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
   // Calculate total sales
   const totalSales = useMemo(() => {
     return filteredInvoices.reduce((sum, invoice) => {
-      // When calculating total sales, subtract refunded invoice values
-      const multiplier = invoice.status === "refunded" ? -1 : 1;
-      return sum + (invoice.total * multiplier);
+      // عند حساب إجمالي المبيعات، نستبعد الفواتير المسترجعة بدلاً من حسابها بقيمة سالبة
+      if (invoice.status === "refunded") {
+        return sum; // استبعاد الفواتير المسترجعة
+      }
+      return sum + invoice.total;
     }, 0);
   }, [filteredInvoices]);
   
@@ -23,12 +25,14 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
     const methodsMap: Map<string, number> = new Map();
     
     filteredInvoices.forEach((invoice) => {
+      // استبعاد الفواتير المسترجعة من حسابات طرق الدفع
+      if (invoice.status === "refunded") {
+        return;
+      }
+      
       const method = invoice.paymentMethod;
       const currentAmount = methodsMap.get(method) || 0;
-      
-      // When calculating sales by payment method, subtract refunded invoice values
-      const multiplier = invoice.status === "refunded" ? -1 : 1;
-      methodsMap.set(method, currentAmount + (invoice.total * multiplier));
+      methodsMap.set(method, currentAmount + invoice.total);
     });
     
     const result: SalesByPaymentMethod[] = [];
@@ -37,8 +41,8 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
       
       result.push({
         paymentMethod: methodLabel,
-        amount: Math.abs(amount), // Use absolute value for the chart
-        percentage: totalSales > 0 ? (Math.abs(amount) / Math.abs(totalSales)) * 100 : 0
+        amount: amount,
+        percentage: totalSales > 0 ? (amount / totalSales) * 100 : 0
       });
     });
     
@@ -50,16 +54,17 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
     const typesMap: Map<string, { count: number, total: number }> = new Map();
     
     filteredInvoices.forEach((invoice) => {
+      // استبعاد الفواتير المسترجعة من حسابات أنواع الطلبات
+      if (invoice.status === "refunded") {
+        return;
+      }
+      
       const type = invoice.orderType || "unknown";
       const current = typesMap.get(type) || { count: 0, total: 0 };
       
-      // When calculating order count by type, count refunded invoices as negative orders
-      const countMultiplier = invoice.status === "refunded" ? -1 : 1;
-      const totalMultiplier = invoice.status === "refunded" ? -1 : 1;
-      
       typesMap.set(type, { 
-        count: current.count + countMultiplier,
-        total: current.total + (invoice.total * totalMultiplier)
+        count: current.count + 1,
+        total: current.total + invoice.total
       });
     });
     
@@ -67,10 +72,13 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
     typesMap.forEach(({ count }, type) => {
       const typeLabel = formatOrderType(type, isArabic);
       
+      // حساب النسبة المئوية باستخدام عدد الفواتير غير المسترجعة فقط
+      const nonRefundedInvoiceCount = filteredInvoices.filter(inv => inv.status !== "refunded").length;
+      
       result.push({
         orderType: typeLabel,
-        count: Math.abs(count),
-        percentage: filteredInvoices.length > 0 ? (Math.abs(count) / filteredInvoices.length) * 100 : 0
+        count: count,
+        percentage: nonRefundedInvoiceCount > 0 ? (count / nonRefundedInvoiceCount) * 100 : 0
       });
     });
     
