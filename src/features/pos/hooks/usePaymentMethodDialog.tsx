@@ -5,7 +5,7 @@ import { PaymentMethod } from "@/types";
 interface UsePaymentMethodDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
+  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
 }
 
 export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDialogProps) => {
@@ -15,6 +15,7 @@ export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDi
   const [address, setAddress] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(true);
+  const [paidAmount, setPaidAmount] = useState<number>(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -25,14 +26,15 @@ export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDi
       setAddress("");
       setSelectedCustomerId("");
       setIsNewCustomer(true);
+      setPaidAmount(0);
     }
   }, [isOpen]);
 
   const handleConfirm = () => {
     if (!isNewCustomer && selectedCustomerId) {
-      onConfirm(customerName, customerTaxNumber, selectedCustomerId, commercialRegister, address);
+      onConfirm(customerName, customerTaxNumber, selectedCustomerId, commercialRegister, address, paidAmount);
     } else {
-      onConfirm(customerName, customerTaxNumber, undefined, commercialRegister, address);
+      onConfirm(customerName, customerTaxNumber, undefined, commercialRegister, address, paidAmount);
     }
   };
 
@@ -49,7 +51,8 @@ export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDi
     setSelectedCustomerId,
     isNewCustomer,
     setIsNewCustomer,
+    paidAmount,
+    setPaidAmount,
     handleConfirm
   };
 };
-

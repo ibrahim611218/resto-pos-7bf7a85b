@@ -20,8 +20,8 @@ function setupInvoiceHandlers(ipcMain, db) {
     try {
       const stmt = db.prepare(`
         INSERT INTO invoices (id, number, date, subtotal, taxAmount, total, discount, discountType, 
-        paymentMethod, cashierId, cashierName, status, orderType, tableNumber, data)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        paymentMethod, cashierId, cashierName, status, orderType, tableNumber, paidAmount, remainingAmount, data)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       
       stmt.run(
@@ -39,6 +39,8 @@ function setupInvoiceHandlers(ipcMain, db) {
         invoice.status,
         invoice.orderType,
         invoice.tableNumber || null,
+        invoice.paidAmount || invoice.total,
+        invoice.remainingAmount || 0,
         JSON.stringify(invoice)
       );
       
@@ -55,12 +57,16 @@ function setupInvoiceHandlers(ipcMain, db) {
       const stmt = db.prepare(`
         UPDATE invoices SET 
           status = ?,
+          paidAmount = ?,
+          remainingAmount = ?,
           data = ?
         WHERE id = ?
       `);
       
       stmt.run(
         invoice.status,
+        invoice.paidAmount || invoice.total,
+        invoice.remainingAmount || 0,
         JSON.stringify(invoice),
         invoice.id
       );
