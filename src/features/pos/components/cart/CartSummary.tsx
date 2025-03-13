@@ -22,7 +22,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discountType,
   total,
   paidAmount = 0,
-  remainingAmount = total,
+  remainingAmount = 0,
   isMobile = false,
   isArabic = false
 }) => {
@@ -31,14 +31,14 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
-  // التأكد من حساب المبلغ المتبقي بشكل صحيح
+  // Always calculate remaining amount correctly
   const calculatedRemainingAmount = Math.max(0, total - paidAmount);
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
-  // دائماً إظهار المبلغ المتبقي
+  // Always show remaining amount
   const showRemainingAmount = true;
 
   return (

@@ -80,9 +80,9 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // دائماً إظهار المبلغ المتبقي
+  // Always show remaining amount
   const showRemainingAmount = true;
-  // التأكد من حساب المبلغ المتبقي بشكل صحيح
+  // Calculate remaining amount correctly
   const calculatedRemainingAmount = Math.max(0, total - paidAmount);
 
   return (

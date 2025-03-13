@@ -34,7 +34,9 @@ export const useInvoiceCreation = (
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
-    address?: string
+    address?: string,
+    paidAmount: number = 0,
+    remainingAmount: number = total
   ): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
@@ -65,7 +67,9 @@ export const useInvoiceCreation = (
       status: "completed",
       orderType: orderType,
       tableNumber: orderType === "dineIn" ? tableNumber : undefined,
-      customer: customer
+      customer: customer,
+      paidAmount: paidAmount, // Add paid amount to the invoice
+      remainingAmount: remainingAmount // Add remaining amount to the invoice
     };
     
     // يتم حفظ الفاتورة في قاعدة البيانات وإضافتها إلى قائمة الفواتير

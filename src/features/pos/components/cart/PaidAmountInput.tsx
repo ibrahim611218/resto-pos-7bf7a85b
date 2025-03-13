@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/invoice";
@@ -23,8 +23,15 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
 }) => {
   const [showNumberPad, setShowNumberPad] = useState(false);
   
-  // حساب المبلغ المتبقي بشكل صحيح (المجموع - المبلغ المدفوع)
+  // Calculate the remaining amount (total - paidAmount)
   const remainingAmount = Math.max(0, total - paidAmount);
+
+  // Automatically update paid amount when total changes
+  useEffect(() => {
+    if (paidAmount > total) {
+      setPaidAmount(total);
+    }
+  }, [total, paidAmount, setPaidAmount]);
 
   const handlePaidAmountClick = () => {
     setShowNumberPad(true);
@@ -63,7 +70,9 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
         isOpen={showNumberPad}
         onClose={() => setShowNumberPad(false)}
         onConfirm={(value) => {
-          setPaidAmount(value);
+          // Ensure paid amount doesn't exceed total
+          const newPaidAmount = Math.min(value, total);
+          setPaidAmount(newPaidAmount);
           setShowNumberPad(false);
         }}
         initialValue={paidAmount}
