@@ -17,7 +17,7 @@ interface ProductsPanelProps {
   categories: Category[];
   filteredProducts: Product[];
   searchedProducts: Product[];
-  onAddToCart: (product: Product, variantId: string) => void;
+  onAddToCart: (product: Product, quantity: number, size?: string) => void;
   isArabic: boolean;
   getSizeLabel: (size: string) => string;
   showAllProducts?: boolean;
@@ -47,7 +47,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const handleProductClick = (product: Product) => {
     // For single products with price (not variants), add directly to cart
     if (product.variants.length === 0 && product.price !== undefined) {
-      onAddToCart(product, "simple");
+      onAddToCart(product, 1); // Default quantity 1, no size needed for simple products
       return;
     }
     

@@ -17,7 +17,7 @@ interface SizeSelectionDialogProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
-  onAddToCart: (product: Product, variantId: string) => void;
+  onAddToCart: (product: Product, quantity: number, size?: string) => void;
   isArabic: boolean;
 }
 
@@ -29,20 +29,24 @@ const SizeSelectionDialog: React.FC<SizeSelectionDialogProps> = ({
   isArabic,
 }) => {
   const [selectedVariantId, setSelectedVariantId] = React.useState<string>("");
+  const [selectedSize, setSelectedSize] = React.useState<string>("");
 
   useEffect(() => {
     if (product && product.variants.length > 0) {
-      setSelectedVariantId(product.variants[0].id);
+      const firstVariant = product.variants[0];
+      setSelectedVariantId(firstVariant.id);
+      setSelectedSize(firstVariant.size);
     } else {
       setSelectedVariantId("");
+      setSelectedSize("");
     }
   }, [product]);
 
   if (!product) return null;
 
   const handleAddToCart = () => {
-    if (selectedVariantId) {
-      onAddToCart(product, selectedVariantId);
+    if (selectedSize) {
+      onAddToCart(product, 1, selectedSize); // Add with default quantity 1 and selected size
       onClose();
     }
   };
@@ -71,7 +75,7 @@ const SizeSelectionDialog: React.FC<SizeSelectionDialogProps> = ({
                   {product.price} {isArabic ? "ر.س" : "SAR"}
                 </p>
               </div>
-              <Button onClick={() => onAddToCart(product, "simple")}>
+              <Button onClick={() => onAddToCart(product, 1)}>
                 {isArabic ? "إضافة إلى السلة" : "Add to Cart"}
               </Button>
             </div>
@@ -83,7 +87,13 @@ const SizeSelectionDialog: React.FC<SizeSelectionDialogProps> = ({
               
               <RadioGroup
                 value={selectedVariantId}
-                onValueChange={setSelectedVariantId}
+                onValueChange={(value) => {
+                  setSelectedVariantId(value);
+                  const variant = product.variants.find(v => v.id === value);
+                  if (variant) {
+                    setSelectedSize(variant.size);
+                  }
+                }}
                 className="flex flex-wrap gap-2"
               >
                 {product.variants.map((variant) => {
