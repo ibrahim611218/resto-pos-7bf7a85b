@@ -3,6 +3,8 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
+import tajawalNormal from '@/assets/fonts/Tajawal-Regular.ttf';
+import tajawalBold from '@/assets/fonts/Tajawal-Bold.ttf';
 
 interface ExportPDFProps {
   filteredInvoices: Invoice[];
@@ -24,20 +26,48 @@ export const exportSalesReportPDF = ({
 }: ExportPDFProps) => {
   try {
     // Create new PDF document with the appropriate orientation
-    const doc = new jsPDF(isArabic ? "p" : "p", "mm", "a4");
+    const doc = new jsPDF({
+      orientation: "p",
+      unit: "mm",
+      format: "a4",
+      putOnlyUsedFonts: true,
+      compress: true
+    });
+    
+    // Add Arabic font support
+    if (isArabic) {
+      doc.addFileToVFS('Tajawal-Regular.ttf', tajawalNormal);
+      doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBold);
+      doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
+      doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
+      doc.setFont('Tajawal');
+    }
     
     // Add report title
     doc.setFontSize(18);
     const title = isArabic ? "تقرير المبيعات" : "Sales Report";
-    doc.text(title, isArabic ? 170 : 20, 20, isArabic ? { align: "right" } : undefined);
+    if (isArabic) {
+      doc.text(title, doc.internal.pageSize.width - 20, 20, { align: "right" });
+    } else {
+      doc.text(title, 20, 20);
+    }
     
     doc.setFontSize(12);
     const dateRange = `${isArabic ? "من" : "From"}: ${startDate?.toLocaleDateString()} ${isArabic ? "إلى" : "To"}: ${endDate?.toLocaleDateString()}`;
-    doc.text(dateRange, isArabic ? 170 : 20, 30, isArabic ? { align: "right" } : undefined);
+    if (isArabic) {
+      doc.text(dateRange, doc.internal.pageSize.width - 20, 30, { align: "right" });
+    } else {
+      doc.text(dateRange, 20, 30);
+    }
     
     // Add sales summary
     doc.setFontSize(14);
-    doc.text(isArabic ? "ملخص المبيعات" : "Sales Summary", isArabic ? 170 : 20, 40, isArabic ? { align: "right" } : undefined);
+    const summaryTitle = isArabic ? "ملخص المبيعات" : "Sales Summary";
+    if (isArabic) {
+      doc.text(summaryTitle, doc.internal.pageSize.width - 20, 40, { align: "right" });
+    } else {
+      doc.text(summaryTitle, 20, 40);
+    }
     
     // Create table data
     const tableData = filteredInvoices.map((invoice, index) => {
@@ -75,10 +105,17 @@ export const exportSalesReportPDF = ({
       headStyles: { fillColor: [16, 185, 129], fontStyle: 'bold' },
       styles: { 
         fontSize: 10,
-        halign: isArabic ? 'right' : 'left',
-        textColor: [0, 0, 0]
+        halign: isArabic ? 'right' : 'left', 
+        textColor: [0, 0, 0],
+        font: isArabic ? 'Tajawal' : undefined,
       },
-      margin: { top: 50 }
+      margin: { top: 50 },
+      didDrawPage: function(data) {
+        // Add RTL support for page
+        if (isArabic) {
+          doc.setR2L(true);
+        }
+      }
     });
     
     // Add total sales
@@ -86,7 +123,11 @@ export const exportSalesReportPDF = ({
     const finalY = doc.lastAutoTable.finalY || 150;
     doc.setFontSize(14);
     const totalText = `${isArabic ? "إجمالي المبيعات" : "Total Sales"}: ${totalSales.toFixed(2)} ${isArabic ? "ريال" : "SAR"}`;
-    doc.text(totalText, isArabic ? 170 : 20, finalY + 10, isArabic ? { align: "right" } : undefined);
+    if (isArabic) {
+      doc.text(totalText, doc.internal.pageSize.width - 20, finalY + 10, { align: "right" });
+    } else {
+      doc.text(totalText, 20, finalY + 10);
+    }
     
     // Save the file
     doc.save("sales_report.pdf");
