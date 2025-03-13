@@ -10,6 +10,7 @@ export interface CartSummaryProps {
   total: number;
   isMobile?: boolean;
   isArabic?: boolean;
+  paymentMethod?: string;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -19,7 +20,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discountType,
   total,
   isMobile = false,
-  isArabic = false
+  isArabic = false,
+  paymentMethod
 }) => {
   // Calculate discount amount
   const discountAmount = discountType === "percentage" 
@@ -29,6 +31,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
+  const showPaymentDetails = paymentMethod === "cash";
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
@@ -68,6 +71,19 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
+
+      {showPaymentDetails && (
+        <div className="border-t pt-2 mt-1">
+          <div className="flex justify-between text-blue-600">
+            <span>
+              {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
+            </span>
+            <span>
+              {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

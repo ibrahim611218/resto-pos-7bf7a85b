@@ -37,6 +37,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
   subtotal,
   taxAmount,
   total,
+  paymentMethod,
   setOrderType,
   setTableNumber,
   setDiscount,
@@ -77,6 +78,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         total={total}
         isMobile={isMobile}
         isArabic={isArabic}
+        paymentMethod={paymentMethod}
       />
       
       <CartActions
