@@ -23,4 +23,9 @@ contextBridge.exposeInMainWorld('db', {
   // Settings
   getSettings: () => ipcRenderer.invoke('db:getSettings'),
   saveSettings: (settings) => ipcRenderer.invoke('db:saveSettings', settings),
+  
+  // License
+  activateLicense: (licenseKey) => ipcRenderer.invoke('activate-license', licenseKey),
+  getLicenseState: () => ipcRenderer.invoke('get-license-state'),
+  deactivateLicense: () => ipcRenderer.invoke('deactivate-license'),
 });

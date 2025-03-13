@@ -30,8 +30,8 @@ const LicenseStatus: React.FC<LicenseStatusProps> = ({ isArabic }) => {
   
   const getBadgeVariant = () => {
     if (!licenseState.isLicensed) return "destructive";
-    if (licenseState.isTrial) return "warning";
-    return "success";
+    if (licenseState.isTrial) return "secondary";
+    return "default";
   };
   
   const formatDate = (isoDate: string) => {
