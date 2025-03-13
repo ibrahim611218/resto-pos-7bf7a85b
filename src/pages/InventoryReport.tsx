@@ -1,6 +1,6 @@
 
 import React from "react";
-import InventoryReport from "@/features/reports/InventoryReport";
+import InventoryReport from "@/features/reports/inventory-report/InventoryReport";
 
 const InventoryReportPage: React.FC = () => {
   return <InventoryReport />;
