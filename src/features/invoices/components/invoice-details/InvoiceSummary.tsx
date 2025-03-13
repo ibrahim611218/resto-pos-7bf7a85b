@@ -2,7 +2,7 @@
 import React from "react";
 import { Invoice, BusinessSettings } from "@/types";
 import { formatCurrency } from "@/utils/invoice";
-import { Separator } from "@/components/ui/separator";
+import { DollarSign } from "lucide-react";
 
 interface InvoiceSummaryProps {
   invoice: Invoice;
@@ -10,83 +10,81 @@ interface InvoiceSummaryProps {
   discountAmount: number;
 }
 
-export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
+const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   invoice,
   settings,
   discountAmount
 }) => {
-  return (
-    <>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground">الكاشير</h3>
-          <p>{invoice.cashierName}</p>
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground">العميل</h3>
-          <p>{invoice.customer?.name || "عميل عادي"}</p>
-          {invoice.customer?.phone && <p className="text-sm">{invoice.customer.phone}</p>}
-          {invoice.customer?.email && <p className="text-sm">{invoice.customer.email}</p>}
-          {invoice.customer?.taxNumber && (
-            <p className="text-sm">
-              <span className="text-muted-foreground">الرقم الضريبي: </span>
-              {invoice.customer.taxNumber}
-            </p>
-          )}
-          {invoice.customer?.commercialRegister && (
-            <p className="text-sm">
-              <span className="text-muted-foreground">السجل التجاري: </span>
-              {invoice.customer.commercialRegister}
-            </p>
-          )}
-          {invoice.customer?.address && (
-            <p className="text-sm">
-              <span className="text-muted-foreground">العنوان: </span>
-              {invoice.customer.address}
-            </p>
-          )}
-        </div>
-      </div>
+  // Calculate remaining amount if not already in the invoice
+  const paidAmount = invoice.paidAmount || 0;
+  const remainingAmount = invoice.remainingAmount !== undefined 
+    ? invoice.remainingAmount 
+    : Math.max(0, invoice.total - paidAmount);
 
-      {invoice.orderType && (
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h3 className="text-sm font-semibold text-muted-foreground">نوع الطلب</h3>
-            <p>{invoice.orderType === "dineIn" ? "محلي" : "سفري"}</p>
-          </div>
-          {invoice.orderType === "dineIn" && invoice.tableNumber && (
-            <div>
-              <h3 className="text-sm font-semibold text-muted-foreground">رقم الطاولة</h3>
-              <p>{invoice.tableNumber}</p>
-            </div>
-          )}
+  return (
+    <div className="space-y-3 text-right rtl:text-right ltr:text-left">
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">
+          المجموع الفرعي
+        </span>
+        <span>
+          {formatCurrency(invoice.subtotal, "ar-SA", "SAR")}
+        </span>
+      </div>
+      
+      <div className="flex justify-between">
+        <span className="text-muted-foreground">
+          ضريبة القيمة المضافة ({settings.taxRate || 15}%)
+        </span>
+        <span>
+          {formatCurrency(invoice.taxAmount, "ar-SA", "SAR")}
+        </span>
+      </div>
+      
+      {invoice.discount > 0 && (
+        <div className="flex justify-between text-green-600">
+          <span>
+            الخصم {invoice.discountType === "percentage" ? `(${invoice.discount}%)` : ""}
+          </span>
+          <span>
+            - {formatCurrency(discountAmount, "ar-SA", "SAR")}
+          </span>
         </div>
       )}
-
-      <Separator />
-
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">المجموع الفرعي</span>
-          <span>{formatCurrency(invoice.subtotal, "ar-SA", "SAR")}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">ضريبة القيمة المضافة ({settings.taxRate}%)</span>
-          <span>{formatCurrency(invoice.taxAmount, "ar-SA", "SAR")}</span>
-        </div>
-        
-        {invoice.discount > 0 && (
-          <div className="flex justify-between text-green-600 text-sm">
-            <span>الخصم {invoice.discountType === 'percentage' ? `(${invoice.discount}%)` : ''}</span>
-            <span>- {formatCurrency(discountAmount, "ar-SA", "SAR")}</span>
-          </div>
-        )}
-        
-        <div className="flex justify-between font-bold">
-          <span>الإجمالي</span>
-          <span>{formatCurrency(invoice.total, "ar-SA", "SAR")}</span>
-        </div>
+      
+      <div className="flex justify-between font-bold text-lg pt-1">
+        <span>
+          الإجمالي
+        </span>
+        <span>
+          {formatCurrency(invoice.total, "ar-SA", "SAR")}
+        </span>
       </div>
-    </>
+
+      {paidAmount > 0 && (
+        <div className="flex justify-between text-green-600">
+          <span>
+            المدفوع
+          </span>
+          <span>
+            {formatCurrency(paidAmount, "ar-SA", "SAR")}
+          </span>
+        </div>
+      )}
+      
+      {remainingAmount > 0 && (
+        <div className="flex justify-between font-bold text-red-600 text-lg border-t pt-2 mt-1">
+          <span className="flex items-center">
+            <DollarSign className="ml-1" size={18} />
+            المتبقي
+          </span>
+          <span>
+            {formatCurrency(remainingAmount, "ar-SA", "SAR")}
+          </span>
+        </div>
+      )}
+    </div>
   );
 };
+
+export default InvoiceSummary;

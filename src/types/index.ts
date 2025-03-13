@@ -82,6 +82,8 @@ export interface Invoice {
   discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
   orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
   tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
+  paidAmount?: number;           // المبلغ المدفوع
+  remainingAmount?: number;      // المبلغ المتبقي
 }
 
 export interface BusinessSettings {
