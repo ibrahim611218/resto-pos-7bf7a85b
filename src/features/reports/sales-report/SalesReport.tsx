@@ -2,9 +2,9 @@
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Printer, FileText } from "lucide-react";
+import { Printer, FileText, FileSpreadsheet } from "lucide-react";
 import { useSalesData } from "./hooks/useSalesData";
-import { exportSalesReportPDF } from "./utils/export-utils";
+import { exportSalesReportPDF, exportSalesReportExcel } from "./utils/export-utils";
 import FilterCard from "./components/FilterCard";
 import SummaryCards from "./components/SummaryCards";
 import ChartsTabs from "./components/ChartsTabs";
@@ -57,6 +57,16 @@ const SalesReport: React.FC = () => {
     });
   };
   
+  const handleExportExcel = () => {
+    exportSalesReportExcel({
+      filteredInvoices,
+      totalSales,
+      startDate,
+      endDate,
+      isArabic
+    });
+  };
+  
   return (
     <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
       <div className="flex justify-between items-center mb-6">
@@ -68,9 +78,13 @@ const SalesReport: React.FC = () => {
             <Printer className="h-4 w-4 mr-2" />
             {isArabic ? "طباعة" : "Print"}
           </Button>
-          <Button onClick={handleExportPDF}>
+          <Button variant="outline" onClick={handleExportPDF}>
             <FileText className="h-4 w-4 mr-2" />
             {isArabic ? "تصدير PDF" : "Export PDF"}
+          </Button>
+          <Button onClick={handleExportExcel}>
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            {isArabic ? "تصدير Excel" : "Export Excel"}
           </Button>
         </div>
       </div>
