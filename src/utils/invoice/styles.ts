@@ -4,7 +4,12 @@
  */
 export const getInvoiceStyles = (): string => {
   return `
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+    @font-face {
+      font-family: 'Tajawal';
+      src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+      font-weight: normal;
+      font-style: normal;
+    }
     
     body { 
       font-family: 'Tajawal', Arial, sans-serif; 

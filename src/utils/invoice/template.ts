@@ -46,7 +46,6 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     <head>
       <title>فاتورة ${invoice.number}</title>
       <meta charset="UTF-8">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap">
       <style>
         ${getInvoiceStyles()}
         .watermark {
