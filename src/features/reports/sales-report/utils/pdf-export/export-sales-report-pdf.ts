@@ -52,7 +52,7 @@ export const exportSalesReportPDF = ({
     
     // Force set font again after table rendering
     if (isArabic) {
-      doc.setFont('Tajawal');
+      doc.setFont('Tajawal', 'normal');
       doc.setR2L(true);
     }
     

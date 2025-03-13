@@ -18,6 +18,13 @@ export const createPDFDocument = (isArabic: boolean): jsPDF => {
   // Load proper fonts for the selected language
   loadFontsForPDF(doc, isArabic);
   
+  // Ensure Arabic font is properly set
+  if (isArabic) {
+    doc.setFont('Tajawal', 'normal');
+    doc.setR2L(true);
+    console.log('Confirmed font after loading:', doc.getFont());
+  }
+  
   return doc;
 };
 

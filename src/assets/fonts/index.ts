@@ -14,25 +14,25 @@ export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
     try {
       console.log("Loading Arabic fonts for PDF");
       
-      // Convert Base64 encoded font to binary data
+      // Force binary format for the fonts - make sure to properly convert Base64
       const tajawalRegularBinary = binaryFromBase64(tajawalRegular);
       const tajawalBoldBinary = binaryFromBase64(tajawalBold);
       
-      // Add font files to the virtual file system
+      // Add Tajawal font (supports Arabic) with binary data directly
       doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegularBinary);
       doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBoldBinary);
       
-      // Register the fonts with specific names
+      // Register the font with the document
       doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
       doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
       
-      // Set default font to Tajawal
-      doc.setFont('Tajawal');
+      // Make sure font is properly set
+      doc.setFont('Tajawal', 'normal');
       
-      // Enable right-to-left for Arabic text
+      // Enable right-to-left for Arabic text - very important
       doc.setR2L(true);
       
-      console.log('Arabic fonts loaded successfully');
+      console.log('Arabic fonts loaded successfully', doc.getFont());
     } catch (error) {
       console.error('Error loading Arabic fonts:', error);
       // Fallback to default font if there's an error

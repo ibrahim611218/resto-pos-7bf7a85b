@@ -91,6 +91,13 @@ export const renderAutoTable = (
         doc.setR2L(true);
         doc.setFont(fontFamily);
       }
+    },
+    didDrawCell: function(data: any) {
+      // Ensure font is maintained after each cell draw for Arabic
+      if (isArabic && data.row.section === 'body') {
+        doc.setFont(fontFamily);
+        doc.setR2L(true);
+      }
     }
   });
 };

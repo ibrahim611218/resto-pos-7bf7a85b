@@ -82,6 +82,13 @@ export const exportInventoryReportPDF = (inventoryData: InventoryItem[], isArabi
           doc.setR2L(true);
           doc.setFont(fontStyles.font);
         }
+      },
+      didDrawCell: function(data: any) {
+        // Ensure font is maintained after each cell draw for Arabic
+        if (isArabic && data.row.section === 'body') {
+          doc.setFont(fontStyles.font);
+          doc.setR2L(true);
+        }
       }
     });
     
