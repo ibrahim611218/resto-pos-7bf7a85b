@@ -14,6 +14,7 @@ interface PosCartRendererProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: any;
+  paidAmount?: number; // Add optional paidAmount
   createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => any;
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
@@ -54,6 +55,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       orderType={props.orderType}
       tableNumber={props.tableNumber}
       paymentMethod={props.paymentMethod}
+      paidAmount={props.paidAmount}
       createInvoice={handleCreateInvoice}
       clearCart={props.clearCart}
       getSizeLabel={props.getSizeLabel}

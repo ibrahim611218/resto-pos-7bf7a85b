@@ -8,6 +8,7 @@ export interface CartSummaryProps {
   discount: number;
   discountType: "percentage" | "fixed";
   total: number;
+  paidAmount?: number; // Optional paid amount
   isMobile?: boolean;
   isArabic?: boolean;
 }
@@ -18,6 +19,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discount,
   discountType,
   total,
+  paidAmount,
   isMobile = false,
   isArabic = false
 }) => {
@@ -25,6 +27,11 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const discountAmount = discountType === "percentage" 
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
+
+  // Calculate remaining amount if paidAmount is provided
+  const remainingAmount = paidAmount !== undefined 
+    ? Math.max(0, total - paidAmount)
+    : undefined;
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
@@ -68,6 +75,28 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
+
+      {/* Display paid amount and remaining if available */}
+      {paidAmount !== undefined && (
+        <>
+          <div className="flex justify-between pt-1 border-t border-gray-200">
+            <span className="text-muted-foreground">
+              {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
+            </span>
+            <span>
+              {formatCurrency(paidAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">
+              {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
+            </span>
+            <span className={remainingAmount > 0 ? 'text-red-500' : 'text-green-500'}>
+              {formatCurrency(remainingAmount || 0, isArabic ? "ar-SA" : "en-US", "SAR")}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 };
