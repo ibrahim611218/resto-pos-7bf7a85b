@@ -51,6 +51,7 @@ export const createInvoiceObject = (
     taxAmount: taxAmount,
     discount: discountAmount,
     total: total,
+    paidAmount: total, // Default the paid amount to the total
     paymentMethod: paymentMethod,
     customer: customer,
     cashierId: "unknown",
