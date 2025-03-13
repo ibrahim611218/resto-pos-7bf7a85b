@@ -6,9 +6,9 @@ import CartResizeHandler from "./CartResizeHandler";
 import CartHeader from "./CartHeader";
 import CartItemsList from "./CartItemsList";
 import CartFooter from "./CartFooter";
-import { useCartResize } from "../hooks/useCartResize";
-import PaymentMethodDialog from "./PaymentMethodDialog";
-import PaymentDialogHandler, { usePaymentDialog } from "./PaymentDialogHandler";
+import { useCartResize } from "../../hooks/useCartResize"; // Fixed import path
+import PaymentMethodDialog from "../../components/PaymentMethodDialog"; // Fixed import path
+import { usePaymentDialog } from "./PaymentDialogHandler";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -32,6 +32,7 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  paidAmount?: number;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -56,11 +57,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
+  paidAmount = 0,
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
-  const [localPaidAmount, setLocalPaidAmount] = useState<number>(total);
+  const [localPaidAmount, setLocalPaidAmount] = useState<number>(paidAmount);
 
   // Use the cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
@@ -69,9 +71,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
     isTablet
   });
 
-  // Create a wrapper for createInvoice
-  const handleCreateInvoiceClick = () => {
-    // Set showPaymentMethodDialog to true in usePaymentDialog
+  // Handle creating an invoice and showing the payment dialog
+  const handleInvoiceCreation = () => {
+    // Forward to the payment dialog hook's handler
     paymentDialogControls.setShowPaymentMethodDialog(true);
   };
 
@@ -146,7 +148,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         setTableNumber={setTableNumber}
         setDiscount={setDiscount}
         setDiscountType={setDiscountType}
-        handleCreateInvoice={handleCreateInvoiceClick}
+        handleCreateInvoice={handleInvoiceCreation}
         clearCart={clearCart}
         isArabic={isArabic}
       />
