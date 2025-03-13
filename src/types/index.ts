@@ -1,4 +1,3 @@
-
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
