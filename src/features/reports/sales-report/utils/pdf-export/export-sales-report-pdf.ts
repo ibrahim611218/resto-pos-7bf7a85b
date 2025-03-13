@@ -56,8 +56,9 @@ export const exportSalesReportPDF = ({
       doc.setR2L(true);
     }
     
-    // Save the PDF document
-    doc.save("sales_report.pdf");
+    // Save the PDF document with custom filename that includes date
+    const dateStr = new Date().toISOString().split('T')[0];
+    doc.save(`sales_report_${dateStr}.pdf`);
     
     // Show success notification
     toast({
