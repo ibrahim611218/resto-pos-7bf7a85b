@@ -67,6 +67,8 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       setOrderType={props.setOrderType}
       setTableNumber={props.setTableNumber}
       setPaymentMethod={props.setPaymentMethod}
+      paidAmount={paidAmount}
+      setPaidAmount={setPaidAmount}
     />
   );
 };

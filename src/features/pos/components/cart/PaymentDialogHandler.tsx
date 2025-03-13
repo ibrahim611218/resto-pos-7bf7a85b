@@ -37,7 +37,7 @@ export const usePaymentDialog = ({
     address?: string,
     newPaidAmount?: number
   ) => {
-    const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : total;
+    const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : paidAmount !== undefined ? paidAmount : total;
     
     // Update the paidAmount state if setPaidAmount is provided
     if (setPaidAmount && newPaidAmount !== undefined) {

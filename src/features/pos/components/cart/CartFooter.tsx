@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { PaymentMethod } from "@/types";
 import OrderTypeSelector from "./OrderTypeSelector";
@@ -44,7 +44,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
   handleCreateInvoice,
   clearCart,
   isArabic,
-  paidAmount = 0,
+  paidAmount,
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 

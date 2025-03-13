@@ -19,7 +19,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discount,
   discountType,
   total,
-  paidAmount = 0,
+  paidAmount,
   isMobile = false,
   isArabic = false
 }) => {
@@ -29,7 +29,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     : discount;
     
   // Calculate remaining amount
-  const remainingAmount = Math.max(0, total - paidAmount);
+  const remainingAmount = paidAmount !== undefined ? Math.max(0, total - paidAmount) : 0;
+  const showPaidAmount = paidAmount !== undefined && paidAmount > 0;
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
@@ -74,7 +75,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         </span>
       </div>
       
-      {paidAmount > 0 && (
+      {showPaidAmount && (
         <>
           <div className="flex justify-between text-blue-600">
             <span>
