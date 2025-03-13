@@ -35,6 +35,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
+  // Force show remaining amount when paid amount is set, even if it's zero
+  const showRemainingAmount = paidAmount > 0;
+
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
       <div className="flex justify-between">
@@ -85,10 +88,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         </div>
       )}
       
-      {paidAmount > 0 && (
+      {showRemainingAmount && (
         <div className="flex justify-between font-bold text-red-600 text-lg border-t pt-2 mt-1">
           <span className="flex items-center">
-            <DollarSign className="mr-1" size={18} />
+            <DollarSign className={`${isArabic ? 'ml-1' : 'mr-1'}`} size={18} />
             {isArabic ? "المتبقي" : "Remaining"}
           </span>
           <span>

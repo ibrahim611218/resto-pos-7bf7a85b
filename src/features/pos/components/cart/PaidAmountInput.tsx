@@ -34,7 +34,7 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
       <Label className={`block mb-1 ${textSizeClass}`}>
         {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
       </Label>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 rtl:space-x-reverse">
         <div className="flex-1">
           <Input
             type="text"
@@ -46,6 +46,13 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
           />
         </div>
       </div>
+
+      {remainingAmount > 0 && paidAmount > 0 && (
+        <div className="text-sm mt-1 text-red-600 font-medium">
+          {isArabic ? "المتبقي: " : "Remaining: "}
+          {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+        </div>
+      )}
 
       <NumberPad
         isOpen={showNumberPad}

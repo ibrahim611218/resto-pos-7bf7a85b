@@ -80,7 +80,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  const showRemainingAmount = paidAmount > 0 && remainingAmount > 0;
+  // Always show remaining amount information if paidAmount is set
+  const showRemainingAmount = paidAmount > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -95,7 +96,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
           <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-2">
             <div className="flex items-center justify-between font-bold text-red-600 text-lg">
               <span className="flex items-center">
-                <DollarSign className="mr-1" size={18} />
+                <DollarSign className={isArabic ? "ml-1" : "mr-1"} size={18} />
                 {isArabic ? "المتبقي" : "Remaining"}
               </span>
               <span>
