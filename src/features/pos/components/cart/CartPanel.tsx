@@ -6,8 +6,8 @@ import CartResizeHandler from "./CartResizeHandler";
 import CartHeader from "./CartHeader";
 import CartItemsList from "./CartItemsList";
 import CartFooter from "./CartFooter";
-import { useCartResize } from "../../hooks/useCartResize"; // Fixed import path
-import PaymentMethodDialog from "../../components/PaymentMethodDialog"; // Fixed import path
+import { useCartResize } from "../../hooks/useCartResize";
+import PaymentMethodDialog from "../PaymentMethodDialog";
 import { usePaymentDialog } from "./PaymentDialogHandler";
 
 interface CartPanelProps {
@@ -32,7 +32,6 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
-  paidAmount?: number;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -57,12 +56,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
-  paidAmount = 0,
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
-  const [localPaidAmount, setLocalPaidAmount] = useState<number>(paidAmount);
+  const [localPaidAmount, setLocalPaidAmount] = useState<number>(0);
 
   // Use the cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
@@ -70,12 +68,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
     isMobile,
     isTablet
   });
-
-  // Handle creating an invoice and showing the payment dialog
-  const handleInvoiceCreation = () => {
-    // Forward to the payment dialog hook's handler
-    paymentDialogControls.setShowPaymentMethodDialog(true);
-  };
 
   // Use the payment dialog hook
   const paymentDialogControls = usePaymentDialog({
@@ -143,14 +135,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}
-        paidAmount={localPaidAmount}
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setDiscount={setDiscount}
         setDiscountType={setDiscountType}
-        handleCreateInvoice={handleInvoiceCreation}
+        handleCreateInvoice={paymentDialogControls.handleCreateInvoice}
         clearCart={clearCart}
         isArabic={isArabic}
+        paidAmount={localPaidAmount}
       />
 
       <PaymentMethodDialog

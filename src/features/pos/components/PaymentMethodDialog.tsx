@@ -61,7 +61,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     isOpen, 
     onClose, 
     onConfirm,
-    initialPaidAmount: paidAmount || 0
+    initialPaidAmount: paidAmount,
+    total
   });
 
   const handleCustomerSelect = (customerId: string) => {

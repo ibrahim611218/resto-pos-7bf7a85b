@@ -33,7 +33,7 @@ export const usePaymentMethodDialog = ({
       setAddress("");
       setSelectedCustomerId("");
       setIsNewCustomer(true);
-      setPaidAmount(initialPaidAmount || total);
+      setPaidAmount(initialPaidAmount !== undefined ? initialPaidAmount : total);
     }
   }, [isOpen, initialPaidAmount, total]);
 
