@@ -8,7 +8,7 @@ import { ChevronDown } from "lucide-react";
 export interface SidebarItemProps {
   name: string;
   path: string;
-  icon: React.ComponentType;
+  icon: React.ComponentType<{ className?: string }>;
   subMenuItems?: SidebarLink[];
   collapsed: boolean;
   isOpen: boolean;
@@ -65,21 +65,24 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
       {hasSubMenu && isOpen && !collapsed && (
         <div className="pl-8 space-y-1">
-          {subMenuItems.map((subItem) => (
-            <Link
-              key={subItem.name}
-              to={subItem.path}
-              className={cn(
-                "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                currentPath === subItem.path
-                  ? "bg-accent text-accent-foreground"
-                  : "hover:bg-accent hover:text-accent-foreground"
-              )}
-            >
-              {subItem.icon && <subItem.icon className="h-4 w-4 mr-2" />}
-              <span>{subItem.name}</span>
-            </Link>
-          ))}
+          {subMenuItems.map((subItem) => {
+            const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
+            return (
+              <Link
+                key={subItem.name}
+                to={subItem.path}
+                className={cn(
+                  "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                  currentPath === subItem.path
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground"
+                )}
+              >
+                {subItem.icon && typeof SubIcon === 'function' && <SubIcon className="h-4 w-4 mr-2" />}
+                <span>{subItem.name}</span>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
