@@ -1,3 +1,4 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -73,6 +74,7 @@ export interface Invoice {
   subtotal: number;
   taxAmount: number;
   total: number;
+  paidAmount: number;         // Added paidAmount property to the Invoice interface
   paymentMethod: "cash" | "card" | string;
   customer?: Customer;
   cashierId: string;
