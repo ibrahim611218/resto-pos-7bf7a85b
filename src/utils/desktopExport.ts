@@ -54,6 +54,24 @@ export const handleDesktopExport = (language: string = "ar") => {
               font-size: 16px;
               margin-top: 20px;
             }
+            .download-progress {
+              margin-top: 20px;
+              display: none;
+              text-align: center;
+            }
+            .progress-bar {
+              width: 100%;
+              background-color: #f3f3f3;
+              border-radius: 5px;
+              margin-top: 10px;
+            }
+            .progress {
+              height: 20px;
+              background-color: #4CAF50;
+              border-radius: 5px;
+              width: 0%;
+              transition: width 1s ease-in-out;
+            }
           </style>
         </head>
         <body>
@@ -78,16 +96,52 @@ export const handleDesktopExport = (language: string = "ar") => {
             <button class="download-btn" id="downloadButton">
               ${isArabic ? "تنزيل نسخة الويندوز" : "Download Windows Version"}
             </button>
+            
+            <div id="downloadProgress" class="download-progress">
+              <p>${isArabic ? "جاري التنزيل..." : "Downloading..."}</p>
+              <div class="progress-bar">
+                <div id="progressBar" class="progress"></div>
+              </div>
+              <p id="downloadStatus"></p>
+            </div>
           </div>
           
           <script>
             document.getElementById('downloadButton').addEventListener('click', function() {
-              // الرابط الوهمي للتنزيل - سيتم استبداله برابط حقيقي في الإنتاج
-              alert('${isArabic ? "سيتم تنزيل نسخة الويندوز قريباً!" : "Windows version will be downloaded soon!"}');
-              // هذا يُحاكي عملية التنزيل
-              setTimeout(function() {
-                alert('${isArabic ? "تم بدء التنزيل!" : "Download started!"}');
-              }, 1000);
+              // Show the download progress area
+              document.getElementById('downloadProgress').style.display = 'block';
+              document.getElementById('downloadButton').disabled = true;
+              
+              // Create a dummy file to download
+              // In a real app, this would be a link to your actual installer
+              let progress = 0;
+              const progressBar = document.getElementById('progressBar');
+              const statusText = document.getElementById('downloadStatus');
+              const downloadInterval = setInterval(function() {
+                progress += 5;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                  clearInterval(downloadInterval);
+                  statusText.textContent = '${isArabic ? "اكتمل التنزيل!" : "Download complete!"}';
+                  
+                  // Create a sample file for download
+                  setTimeout(function() {
+                    const a = document.createElement('a');
+                    const content = '${isArabic ? "هذا ملف تجريبي للتنزيل. في الإصدار الفعلي، هذا سيكون الملف التنفيذي الحقيقي للتطبيق." : "This is a sample download file. In the actual release, this would be the real executable file."}';
+                    const file = new Blob([content], {type: 'text/plain'});
+                    a.href = URL.createObjectURL(file);
+                    a.download = 'resto-pos-setup.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    statusText.textContent = '${isArabic ? "تم تنزيل الملف. في الإصدار الفعلي، سيكون هذا ملف تنفيذي. يرجى المتابعة مع خطوات التثبيت." : "File downloaded. In the actual release, this would be an executable file. Please proceed with installation steps."}';
+                  }, 500);
+                } else {
+                  statusText.textContent = '${isArabic ? "جاري التنزيل" : "Downloading"} ' + progress + '%';
+                }
+              }, 200);
             });
           </script>
         </body>
