@@ -8,10 +8,9 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/utils/invoice";
-import { Delete, X } from "lucide-react";
+import NumericKeypad from "./numeric-keypad/NumericKeypad";
+import QuickAmountButtons from "./quick-amount/QuickAmountButtons";
+import AmountField from "./amount-field/AmountField";
 
 interface PaidAmountDialogProps {
   isOpen: boolean;
@@ -88,6 +87,11 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     updateAmount(newValue);
   };
 
+  const handleQuickAmountSelect = (amount: string) => {
+    updateAmount(amount);
+    setIsFirstInput(false);
+  };
+
   const handleConfirm = () => {
     onConfirm(paidAmount);
     onClose();
@@ -114,110 +118,42 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
         </DialogHeader>
         
         <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="total-amount" className="text-md">
-              {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
-            </Label>
-            <Input
-              id="total-amount"
-              value={formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
-              disabled
-              className="text-lg font-bold"
-            />
-          </div>
+          <AmountField 
+            id="total-amount"
+            label={isArabic ? "المبلغ الإجمالي" : "Total Amount"}
+            value={total}
+            disabled={true}
+            formatAsCurrency={true}
+            isArabic={isArabic}
+          />
           
-          <div className="grid gap-2">
-            <Label htmlFor="paid-amount" className="text-md">
-              {isArabic ? "المبلغ المستلم" : "Paid Amount"}
-            </Label>
-            <Input
-              id="paid-amount"
-              type="text"
-              inputMode="numeric"
-              value={inputValue}
-              onChange={handlePaidAmountChange}
-              className="text-lg font-bold"
-              onClick={() => setIsFirstInput(true)}
-            />
-          </div>
+          <AmountField 
+            id="paid-amount"
+            label={isArabic ? "المبلغ المستلم" : "Paid Amount"}
+            value={inputValue}
+            onChange={handlePaidAmountChange}
+            onClick={() => setIsFirstInput(true)}
+            isArabic={isArabic}
+          />
           
-          <div className="flex flex-wrap gap-2 mt-1">
-            {quickAmounts.map(amount => (
-              <Button 
-                key={amount} 
-                type="button" 
-                variant="outline" 
-                className="flex-1 min-w-[70px]"
-                onClick={() => {
-                  updateAmount(amount.toString());
-                  setIsFirstInput(false);
-                }}
-              >
-                {amount}
-              </Button>
-            ))}
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="flex-1 min-w-[70px]"
-              onClick={() => {
-                updateAmount(total.toString());
-                setIsFirstInput(false);
-              }}
-            >
-              {isArabic ? "الضبط" : "Exact"}
-            </Button>
-          </div>
+          <QuickAmountButtons 
+            quickAmounts={quickAmounts}
+            total={total}
+            isArabic={isArabic}
+            onAmountSelect={handleQuickAmountSelect}
+          />
           
-          <div className="grid grid-cols-3 gap-2 mt-2">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-              <Button
-                key={num}
-                type="button"
-                variant="outline"
-                onClick={() => handleNumberClick(num.toString())}
-                className="h-12 text-lg"
-              >
-                {num}
-              </Button>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick(".")}
-              className="h-12 text-lg"
-            >
-              .
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick("0")}
-              className="h-12 text-lg"
-            >
-              0
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick("C")}
-              className="h-12 text-lg"
-            >
-              C
-            </Button>
-          </div>
+          <NumericKeypad onNumberClick={handleNumberClick} />
           
-          <div className="grid gap-2 mt-1">
-            <Label htmlFor="change-amount" className="text-md">
-              {isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
-            </Label>
-            <Input
-              id="change-amount"
-              value={formatCurrency(change, isArabic ? "ar-SA" : "en-US", "SAR")}
-              disabled
-              className={`text-lg font-bold ${change > 0 ? 'text-green-500' : 'text-gray-500'}`}
-            />
-          </div>
+          <AmountField 
+            id="change-amount"
+            label={isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
+            value={change}
+            disabled={true}
+            formatAsCurrency={true}
+            className={change > 0 ? 'text-green-500' : 'text-gray-500'}
+            isArabic={isArabic}
+          />
         </div>
         
         <DialogFooter className={isArabic ? "sm:justify-start" : "sm:justify-end"}>

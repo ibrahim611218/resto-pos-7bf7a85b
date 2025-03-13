@@ -9,9 +9,10 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
+import NumericKeypad from "./cart/numeric-keypad/NumericKeypad";
+import QuickAmountButtons from "./cart/quick-amount/QuickAmountButtons";
+import AmountField from "./cart/amount-field/AmountField";
 
 interface PaymentAmountDialogProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
   const [paidAmount, setPaidAmount] = useState<number>(total);
   const [change, setChange] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>(total.toString());
+  const [isFirstInput, setIsFirstInput] = useState(true);
 
   // Update paid amount when total changes or dialog opens
   useEffect(() => {
@@ -39,6 +41,7 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
       setPaidAmount(total);
       setInputValue(total.toString());
       setChange(0);
+      setIsFirstInput(true);
     }
   }, [isOpen, total]);
 
@@ -69,23 +72,31 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
     // Handle special cases
     if (digit === "C") {
       newValue = "0";
+      setIsFirstInput(true);
     } else if (digit === "⌫") {
       newValue = inputValue.slice(0, -1);
       if (newValue === "") newValue = "0";
     } else if (digit === ".") {
       if (!inputValue.includes(".")) {
-        newValue = inputValue + ".";
+        newValue = isFirstInput ? "0." : inputValue + ".";
+        setIsFirstInput(false);
       }
     } else {
       // For regular digits
-      if (inputValue === "0") {
+      if (isFirstInput) {
         newValue = digit;
+        setIsFirstInput(false);
       } else {
         newValue = inputValue + digit;
       }
     }
     
     updateAmount(newValue);
+  };
+
+  const handleQuickAmountSelect = (amount: string) => {
+    updateAmount(amount);
+    setIsFirstInput(false);
   };
 
   const handleConfirm = () => {
@@ -117,105 +128,40 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
         </DialogHeader>
         
         <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="total-amount" className="text-md">
-              {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
-            </Label>
-            <Input
-              id="total-amount"
-              value={total.toFixed(2)}
-              disabled
-              className="text-lg font-bold"
-            />
-          </div>
+          <AmountField 
+            id="total-amount"
+            label={isArabic ? "المبلغ الإجمالي" : "Total Amount"}
+            value={total.toFixed(2)}
+            disabled={true}
+            isArabic={isArabic}
+          />
           
-          <div className="grid gap-2">
-            <Label htmlFor="paid-amount" className="text-md">
-              {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
-            </Label>
-            <Input
-              id="paid-amount"
-              type="text"
-              inputMode="numeric"
-              value={inputValue}
-              onChange={handlePaidAmountChange}
-              className="text-lg font-bold"
-            />
-          </div>
+          <AmountField 
+            id="paid-amount"
+            label={isArabic ? "المبلغ المدفوع" : "Paid Amount"}
+            value={inputValue}
+            onChange={handlePaidAmountChange}
+            onClick={() => setIsFirstInput(true)}
+            isArabic={isArabic}
+          />
           
-          {/* Quick amount selection */}
-          <div className="flex flex-wrap gap-2 mt-1">
-            {quickAmounts.map(amount => (
-              <Button 
-                key={amount} 
-                type="button" 
-                variant="outline" 
-                className="flex-1 min-w-[70px]"
-                onClick={() => updateAmount(amount.toString())}
-              >
-                {amount}
-              </Button>
-            ))}
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="flex-1 min-w-[70px]"
-              onClick={() => updateAmount(total.toString())}
-            >
-              {isArabic ? "الضبط" : "Exact"}
-            </Button>
-          </div>
+          <QuickAmountButtons 
+            quickAmounts={quickAmounts}
+            total={total}
+            isArabic={isArabic}
+            onAmountSelect={handleQuickAmountSelect}
+          />
           
-          {/* Numeric keypad */}
-          <div className="grid grid-cols-3 gap-2 mt-2">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-              <Button
-                key={num}
-                type="button"
-                variant="outline"
-                onClick={() => handleNumberClick(num.toString())}
-                className="h-12 text-lg"
-              >
-                {num}
-              </Button>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick(".")}
-              className="h-12 text-lg"
-            >
-              .
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick("0")}
-              className="h-12 text-lg"
-            >
-              0
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleNumberClick("C")}
-              className="h-12 text-lg"
-            >
-              C
-            </Button>
-          </div>
+          <NumericKeypad onNumberClick={handleNumberClick} />
           
-          <div className="grid gap-2 mt-1">
-            <Label htmlFor="change-amount" className="text-md">
-              {isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
-            </Label>
-            <Input
-              id="change-amount"
-              value={change.toFixed(2)}
-              disabled
-              className={`text-lg font-bold ${change > 0 ? 'text-green-500' : 'text-gray-500'}`}
-            />
-          </div>
+          <AmountField 
+            id="change-amount"
+            label={isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
+            value={change.toFixed(2)}
+            disabled={true}
+            className={change > 0 ? 'text-green-500' : 'text-gray-500'}
+            isArabic={isArabic}
+          />
         </div>
         
         <DialogFooter className={isArabic ? "sm:justify-start" : "sm:justify-end"}>
