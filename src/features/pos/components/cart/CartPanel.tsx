@@ -1,19 +1,16 @@
+
 import React, { useState } from "react";
-import { useLanguage } from "@/context/LanguageContext";
-import { useCartItems } from "../../hooks/useCartItems";
-import { useOrderConfig } from "../../hooks/useOrderConfig";
-import { calculateInvoiceAmounts } from "@/utils/invoice";
-import { Product } from "@/types";
+import { CartItem as CartItemType, PaymentMethod, Invoice } from "@/types";
 import CartHeader from "./CartHeader";
 import CartItemsList from "./CartItemsList";
 import CartSummary from "./CartSummary";
 import CartFooter from "./CartFooter";
 import EmptyCart from "./EmptyCart";
 import PaymentDialogHandler from "./PaymentDialogHandler";
-import { usePaymentDialog } from "./PaymentDialogHandler";
+import { useScreenSize } from "@/hooks/use-mobile";
 
-export interface CartPanelProps {
-  cartItems: any[];
+interface CartPanelProps {
+  cartItems: CartItemType[];
   isArabic: boolean;
   language: any;
   subtotal: number;
@@ -23,8 +20,8 @@ export interface CartPanelProps {
   discountType: "percentage" | "fixed";
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
-  paymentMethod: any;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => any;
+  paymentMethod: PaymentMethod;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -33,7 +30,7 @@ export interface CartPanelProps {
   setDiscountType: (type: "percentage" | "fixed") => void;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
-  setPaymentMethod: (method: any) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -59,51 +56,47 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setTableNumber,
   setPaymentMethod,
 }) => {
+  const { isMobile } = useScreenSize();
   const cartPanelClasses = `
     flex flex-col h-full w-full
     ${isArabic ? "font-arabic" : "font-sans"}
   `;
   
-  const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
-  
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
-    return createInvoice(customerName, customerTaxNumber);
-  };
-  
-  const [paidAmount, setPaidAmount] = useState<number>(0);
+  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
+  const [paidAmount, setPaidAmount] = useState<number>(total);
 
-  const handleCreateInvoice = () => {
-    setShowPaymentMethodDialog(true);
+  // Create a function to handle invoice creation that will be passed to the PaymentDialogHandler
+  const handlePaymentDialogConfirm = (
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string,
+    commercialRegister?: string,
+    address?: string,
+    paidAmount?: number
+  ) => {
+    return createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
   };
-  
-  const {
-    showPaymentMethodDialog,
-    setShowPaymentMethodDialog,
-    handlePaymentMethodSelected
-  } = usePaymentDialog({
-    paymentMethod,
-    setPaymentMethod,
-    createInvoice,
-    setCurrentInvoice: () => {},
-    total,
-    paidAmount,
-    setPaidAmount
-  });
 
   return (
     <div className={cartPanelClasses}>
       <CartHeader
-        isArabic={isArabic}
+        isMobile={isMobile}
+        expanded={false}
+        isEmpty={cartItems.length === 0}
+        toggleExpand={() => {}}
         clearCart={clearCart}
-        itemCount={cartItems.length}
+        isArabic={isArabic}
       />
 
       {cartItems.length === 0 ? (
-        <EmptyCart isArabic={isArabic} />
+        <div className="flex-grow overflow-y-auto">
+          <EmptyCart />
+        </div>
       ) : (
         <div className="flex-1 flex flex-col h-full">
           <CartItemsList
             cartItems={cartItems}
+            isMobile={isMobile}
             isArabic={isArabic}
             getSizeLabel={getSizeLabel}
             updateQuantity={updateQuantity}
@@ -123,16 +116,22 @@ const CartPanel: React.FC<CartPanelProps> = ({
           </div>
           
           <CartFooter
-            isArabic={isArabic}
-            discount={discount}
-            discountType={discountType}
-            setDiscount={setDiscount}
-            setDiscountType={setDiscountType}
+            isMobile={isMobile}
+            cartItems={cartItems}
             orderType={orderType}
             tableNumber={tableNumber}
+            discount={discount}
+            discountType={discountType}
+            subtotal={subtotal}
+            taxAmount={taxAmount}
+            total={total}
             setOrderType={setOrderType}
             setTableNumber={setTableNumber}
-            onCreateInvoice={handleCreateInvoice}
+            setDiscount={setDiscount}
+            setDiscountType={setDiscountType}
+            handleCreateInvoice={() => {}}
+            clearCart={clearCart}
+            isArabic={isArabic}
           />
         </div>
       )}
@@ -141,7 +140,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         createInvoice={createInvoice}
-        setCurrentInvoice={() => {}}
+        setCurrentInvoice={setCurrentInvoice}
         total={total}
         paidAmount={paidAmount}
         setPaidAmount={setPaidAmount}
