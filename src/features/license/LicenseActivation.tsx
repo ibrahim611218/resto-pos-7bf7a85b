@@ -31,9 +31,9 @@ const LicenseActivation: React.FC = () => {
       return;
     }
     
-    const result = await activateLicense(licenseKey.trim());
+    const success = await activateLicense(licenseKey.trim());
     
-    if (result.success) {
+    if (success) {
       toast({
         title: isArabic ? "تم التفعيل بنجاح" : "Activation Successful",
         description: isArabic 
@@ -44,7 +44,7 @@ const LicenseActivation: React.FC = () => {
     } else {
       toast({
         title: isArabic ? "فشل التفعيل" : "Activation Failed",
-        description: result.error || (isArabic ? "مفتاح الترخيص غير صالح" : "Invalid license key"),
+        description: isArabic ? "مفتاح الترخيص غير صالح" : "Invalid license key",
         variant: "destructive",
       });
     }
