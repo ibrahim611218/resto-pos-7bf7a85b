@@ -13,7 +13,7 @@ type ToastType = {
  * @param language The language code (ar or en)
  */
 export const showNotification = (
-  type: "already-in-desktop" | "download-started" | "popup-blocked",
+  type: "already-in-desktop" | "download-started" | "popup-blocked" | "export-error",
   language: string = "ar"
 ): void => {
   const isArabic = language === "ar";
@@ -37,6 +37,13 @@ export const showNotification = (
       description: isArabic
         ? "فشل فتح نافذة التنزيل. يرجى السماح بالنوافذ المنبثقة أو تعطيل مانع الإعلانات."
         : "Failed to open download window. Please allow pop-ups or disable ad blockers.",
+      variant: "destructive",
+    },
+    "export-error": {
+      title: isArabic ? "خطأ في التصدير" : "Export Error",
+      description: isArabic
+        ? "حدث خطأ أثناء تصدير النسخة المكتبية. يرجى المحاولة مرة أخرى."
+        : "An error occurred while exporting the desktop version. Please try again.",
       variant: "destructive",
     },
   };

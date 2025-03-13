@@ -15,16 +15,18 @@ export const handleDesktopExport = (language: string = "ar") => {
   }
   
   try {
-    // Open a new window to explain the installation process
-    const installWindow = window.open('', '_blank');
+    // Generate the download URL
+    const downloadUrl = getDownloadUrl();
+    
+    // Create a blob with the HTML content
+    const htmlContent = generateDownloadPageTemplate(language);
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    
+    // Open a new window with the HTML content
+    const installWindow = window.open(blobUrl, '_blank');
     
     if (installWindow) {
-      // Write the HTML template to the new window
-      installWindow.document.write(generateDownloadPageTemplate(language));
-      
-      // Force document.close() to ensure all content renders properly
-      installWindow.document.close();
-      
       // Show success notification
       showNotification("download-started", language);
     } else {
@@ -33,6 +35,6 @@ export const handleDesktopExport = (language: string = "ar") => {
     }
   } catch (error) {
     console.error("Error opening desktop export window:", error);
-    showNotification("popup-blocked", language);
+    showNotification("export-error", language);
   }
 };
