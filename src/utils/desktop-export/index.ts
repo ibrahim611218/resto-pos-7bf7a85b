@@ -2,6 +2,7 @@
 import { isRunningInElectron, getDownloadUrl } from './utils';
 import { showNotification } from './notifications';
 import { generateDownloadPageTemplate } from './templates';
+import { INSTALLER_INFO } from './constants';
 
 /**
  * Handles the desktop export process
