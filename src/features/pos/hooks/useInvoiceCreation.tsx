@@ -34,7 +34,8 @@ export const useInvoiceCreation = (
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
-    address?: string
+    address?: string,
+    paidAmount?: number
   ): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
@@ -57,6 +58,7 @@ export const useInvoiceCreation = (
       subtotal: subtotal,
       taxAmount: taxAmount,
       total: total,
+      paidAmount: paidAmount || 0,
       discount: discount,
       discountType: discountType,
       paymentMethod: paymentMethod === "cash" ? "نقدي" : "شبكة",

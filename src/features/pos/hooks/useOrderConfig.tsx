@@ -8,12 +8,14 @@ export const useOrderConfig = () => {
   const [discount, setDiscount] = useState<number>(0);
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [paidAmount, setPaidAmount] = useState<number>(0);
 
   const resetOrderConfig = () => {
     setDiscount(0);
     setTableNumber("");
     setOrderType("takeaway");
     setPaymentMethod("cash");
+    setPaidAmount(0);
   };
 
   return {
@@ -22,11 +24,13 @@ export const useOrderConfig = () => {
     discount,
     discountType,
     paymentMethod,
+    paidAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
+    setPaidAmount,
     resetOrderConfig
   };
 };

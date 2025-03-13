@@ -22,7 +22,7 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
-  createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice; 
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -78,7 +78,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
     paymentMethod,
     setPaymentMethod,
     createInvoice,
-    setCurrentInvoice
+    setCurrentInvoice,
+    total
   });
 
   const toggleExpand = () => {
