@@ -7,7 +7,6 @@ import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
-import databaseService from "@/services/DatabaseService";
 
 export const useInvoiceCreation = (
   cartItems: any[],

@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/LanguageContext";
-import databaseService from "@/services/DatabaseService";
+import databaseService from "@/services/index";
 
 export const useInvoices = () => {
   const { language } = useLanguage();

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { BusinessSettings } from "@/types";
-import databaseService from "@/services/DatabaseService";
+import databaseService from "@/services/index";
 
 export const useBusinessSettings = () => {
   const [settings, setSettings] = useState<BusinessSettings>({

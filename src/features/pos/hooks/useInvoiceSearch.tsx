@@ -4,7 +4,7 @@ import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/context/LanguageContext";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
-import databaseService from "@/services/DatabaseService";
+import databaseService from "@/services/index";
 
 export const useInvoiceSearch = () => {
   const { language } = useLanguage();
