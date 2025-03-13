@@ -35,8 +35,8 @@ export const showNotification = (
     "popup-blocked": {
       title: isArabic ? "خطأ" : "Error",
       description: isArabic
-        ? "فشل فتح نافذة التنزيل. يرجى السماح بالنوافذ المنبثقة."
-        : "Failed to open download window. Please allow pop-ups.",
+        ? "فشل فتح نافذة التنزيل. يرجى السماح بالنوافذ المنبثقة أو تعطيل مانع الإعلانات."
+        : "Failed to open download window. Please allow pop-ups or disable ad blockers.",
       variant: "destructive",
     },
   };
