@@ -3,8 +3,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { Invoice } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import tajawalNormal from '@/assets/fonts/Tajawal-Regular.ttf';
-import tajawalBold from '@/assets/fonts/Tajawal-Bold.ttf';
+import { loadFontsForPDF } from "@/assets/fonts";
 
 interface ExportPDFProps {
   filteredInvoices: Invoice[];
@@ -34,14 +33,9 @@ export const exportSalesReportPDF = ({
       compress: true
     });
     
-    // Add Arabic font support
+    // For Arabic, enable right-to-left and use the default font
     if (isArabic) {
-      doc.addFileToVFS('Tajawal-Regular.ttf', tajawalNormal);
-      doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBold);
-      doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
-      doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
-      doc.setFont('Tajawal');
-      doc.setR2L(true); // Enable right-to-left for Arabic
+      doc.setR2L(true);
     }
     
     // Add report title
@@ -109,18 +103,16 @@ export const exportSalesReportPDF = ({
       headStyles: { 
         fillColor: [16, 185, 129], 
         fontStyle: 'bold',
-        font: isArabic ? 'Tajawal' : 'Helvetica',
         halign: isArabic ? 'right' : 'left'
       },
       styles: { 
         fontSize: 10,
         halign: isArabic ? 'right' : 'left', 
         textColor: [0, 0, 0],
-        font: isArabic ? 'Tajawal' : 'Helvetica',
       },
       margin: { top: 50 },
       didDrawPage: function(data: any) {
-        // Ensure RTL support on each page
+        // Reset RTL setting on each page for Arabic
         if (isArabic) {
           doc.setR2L(true);
         }

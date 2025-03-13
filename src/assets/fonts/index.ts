@@ -1,15 +1,13 @@
 
 import { jsPDF } from 'jspdf';
 
-// Font data will be loaded at runtime from Google Fonts CDN
+// Font data will be loaded at runtime
 export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   if (isArabic) {
-    // Add tajawal font for Arabic
-    doc.setFont('Tajawal');
-    doc.setR2L(true); // Set right-to-left for Arabic
+    // Set right-to-left for Arabic
+    doc.setR2L(true);
   } else {
     // Use default font for English
-    doc.setFont('Helvetica');
     doc.setR2L(false);
   }
   
@@ -18,7 +16,6 @@ export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
 
 export const getFontStylesForPDF = (isArabic: boolean) => {
   return {
-    font: isArabic ? 'Tajawal' : 'Helvetica',
     direction: isArabic ? 'rtl' : 'ltr'
   };
 };
