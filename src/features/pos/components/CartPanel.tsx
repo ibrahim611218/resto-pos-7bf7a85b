@@ -32,6 +32,8 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  paidAmount?: number;
+  setPaidAmount?: (amount: number) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -56,11 +58,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
+  paidAmount = total,
+  setPaidAmount,
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
-  const [paidAmount, setPaidAmount] = useState<number>(total);
 
   // Use the cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
