@@ -42,7 +42,7 @@ export const useCart = () => {
     settings.taxIncluded
   );
   
-  // Calculate remaining amount
+  // Calculate remaining amount (only for display purposes)
   const remainingAmount = Math.max(0, total - paidAmount);
   
   // Clear the entire cart (items + config)
@@ -72,8 +72,8 @@ export const useCart = () => {
   
   // Wrapper for create invoice that also clears the cart
   const createInvoice = (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string): Invoice => {
-    // Pass the remaining amount to the invoice creation
-    const invoice = internalCreateInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount, remainingAmount);
+    // Pass only the paid amount to the invoice creation, not the remaining amount
+    const invoice = internalCreateInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
     clearCart();
     return invoice;
   };

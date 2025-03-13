@@ -25,7 +25,6 @@ interface PaymentMethodDialogProps {
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
   total?: number;
   paidAmount?: number;
-  remainingAmount?: number;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -35,8 +34,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   setPaymentMethod,
   onConfirm,
   total = 0,
-  paidAmount = 0,
-  remainingAmount = 0
+  paidAmount = 0
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -80,10 +78,9 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // Always show remaining amount
-  const showRemainingAmount = true;
-  // Calculate remaining amount correctly
-  const calculatedRemainingAmount = Math.max(0, total - paidAmount);
+  // Always calculate remaining amount for display
+  const remainingAmount = Math.max(0, total - paidAmount);
+  const showRemainingAmount = remainingAmount > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -102,7 +99,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
                 {isArabic ? "المتبقي" : "Remaining"}
               </span>
               <span>
-                {formatCurrency(calculatedRemainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+                {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
               </span>
             </div>
           </div>

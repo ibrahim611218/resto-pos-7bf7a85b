@@ -90,7 +90,6 @@ const CartFooter: React.FC<CartFooterProps> = ({
         discountType={discountType}
         total={total}
         paidAmount={paidAmount}
-        remainingAmount={remainingAmount}
         isMobile={isMobile}
         isArabic={isArabic}
       />

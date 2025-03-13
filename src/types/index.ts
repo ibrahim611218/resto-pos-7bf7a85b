@@ -1,3 +1,4 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -83,7 +84,6 @@ export interface Invoice {
   orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
   tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
   paidAmount?: number;           // المبلغ المدفوع
-  remainingAmount?: number;      // المبلغ المتبقي
 }
 
 export interface BusinessSettings {

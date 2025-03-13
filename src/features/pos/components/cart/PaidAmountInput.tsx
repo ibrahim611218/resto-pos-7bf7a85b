@@ -23,7 +23,7 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
 }) => {
   const [showNumberPad, setShowNumberPad] = useState(false);
   
-  // Calculate the remaining amount (total - paidAmount)
+  // Calculate the remaining amount (only for display)
   const remainingAmount = Math.max(0, total - paidAmount);
 
   // Automatically update paid amount when total changes
@@ -57,14 +57,16 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
         </div>
       </div>
 
-      {/* إظهار المبلغ المتبقي دائماً بشكل واضح مع أيقونة */}
-      <div className="text-sm mt-2 text-red-600 font-bold flex items-center">
-        <DollarSign className={`${isArabic ? 'ml-1' : 'mr-1'}`} size={16} />
-        <span>
-          {isArabic ? "المتبقي: " : "Remaining: "}
-          {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-        </span>
-      </div>
+      {/* إظهار المبلغ المتبقي دائماً بشكل واضح مع أيقونة إذا كان هناك مبلغ متبقي */}
+      {remainingAmount > 0 && (
+        <div className="text-sm mt-2 text-red-600 font-bold flex items-center">
+          <DollarSign className={`${isArabic ? 'ml-1' : 'mr-1'}`} size={16} />
+          <span>
+            {isArabic ? "المتبقي: " : "Remaining: "}
+            {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
 
       <NumberPad
         isOpen={showNumberPad}

@@ -17,9 +17,7 @@ const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
 }) => {
   // Calculate remaining amount if not already in the invoice
   const paidAmount = invoice.paidAmount || 0;
-  const remainingAmount = invoice.remainingAmount !== undefined 
-    ? invoice.remainingAmount 
-    : Math.max(0, invoice.total - paidAmount);
+  const remainingAmount = Math.max(0, invoice.total - paidAmount);
 
   return (
     <div className="space-y-3 text-right rtl:text-right ltr:text-left">

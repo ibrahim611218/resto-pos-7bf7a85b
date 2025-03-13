@@ -10,7 +10,6 @@ export interface CartSummaryProps {
   discountType: "percentage" | "fixed";
   total: number;
   paidAmount?: number;
-  remainingAmount?: number;
   isMobile?: boolean;
   isArabic?: boolean;
 }
@@ -22,7 +21,6 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discountType,
   total,
   paidAmount = 0,
-  remainingAmount = 0,
   isMobile = false,
   isArabic = false
 }) => {
@@ -31,15 +29,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
-  // Always calculate remaining amount correctly
-  const calculatedRemainingAmount = Math.max(0, total - paidAmount);
+  // Always calculate remaining amount for display
+  const remainingAmount = Math.max(0, total - paidAmount);
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
-  // Always show remaining amount
-  const showRemainingAmount = true;
+  // Only show remaining amount if there is an amount remaining
+  const showRemainingAmount = remainingAmount > 0;
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
@@ -98,7 +96,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
             {isArabic ? "المتبقي" : "Remaining"}
           </span>
           <span>
-            {formatCurrency(calculatedRemainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+            {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
           </span>
         </div>
       )}
