@@ -3,9 +3,9 @@
 
 // Download URLs by platform - Update these URLs with your actual download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://download.restopos.app/latest/RestoPOS-Setup-1.0.0.exe',
-  mac: 'https://download.restopos.app/latest/RestoPOS-1.0.0.dmg',
-  linux: 'https://download.restopos.app/latest/RestoPOS-1.0.0.AppImage',
+  windows: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-win32-x64.zip',
+  mac: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-darwin-x64.zip',
+  linux: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-linux-x64.zip',
 };
 
 // System requirements

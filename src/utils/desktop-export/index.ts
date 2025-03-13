@@ -1,6 +1,7 @@
 
 import { isRunningInElectron, getDownloadUrl } from './utils';
 import { showNotification } from './notifications';
+import { generateDownloadPageTemplate } from './templates';
 
 /**
  * Handles the desktop export process
@@ -19,14 +20,14 @@ export const handleDesktopExport = (language: string = "ar") => {
     
     console.log("Opening download URL:", downloadUrl);
     
-    // Simply open the download URL in a new tab
-    const newWindow = window.open(downloadUrl, '_blank');
-    
-    if (!newWindow) {
-      // Show popup blocked notification
-      showNotification("popup-blocked", language);
-      return;
-    }
+    // Try to directly download the file instead of just opening a new window
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', '');
+    link.setAttribute('target', '_blank');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     
     // Show success notification
     showNotification("download-started", language);
