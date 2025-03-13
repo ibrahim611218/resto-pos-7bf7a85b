@@ -147,8 +147,16 @@ export const exportSalesReportPDF = ({
     const totalX = isArabic ? doc.internal.pageSize.width - 20 : 20;
     doc.text(totalText, totalX, finalY + 10, { align: isArabic ? "right" : "left" });
     
-    // Save the file
-    doc.save("sales_report.pdf");
+    // Generate blob and create download link programmatically
+    const pdfBlob = doc.output('blob');
+    const url = URL.createObjectURL(pdfBlob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = "sales_report.pdf";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(url);
     
     toast({
       title: isArabic ? "تم التصدير بنجاح" : "Export Successful",
