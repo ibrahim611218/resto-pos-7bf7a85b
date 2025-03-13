@@ -37,8 +37,10 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
   const showPaymentDetails = paymentMethod === "cash";
   
-  // Calculate remaining amount (for cash payments)
-  const remainingAmount = showPaymentDetails ? Math.max(0, total - (paidAmount || 0)) : 0;
+  // Calculate change amount (for cash payments)
+  const changeAmount = showPaymentDetails && paidAmount 
+    ? Math.max(0, paidAmount - total)
+    : 0;
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
@@ -94,11 +96,11 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           </div>
           
           <div className="flex justify-between">
-            <span className={remainingAmount > 0 ? "text-red-600" : "text-green-600"}>
-              {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
+            <span className={changeAmount > 0 ? "text-green-600" : "text-gray-500"}>
+              {isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
             </span>
-            <span className={remainingAmount > 0 ? "text-red-600 font-semibold" : "text-green-600 font-semibold"}>
-              {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+            <span className={changeAmount > 0 ? "text-green-600 font-semibold" : "text-gray-500 font-semibold"}>
+              {formatCurrency(changeAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
             </span>
           </div>
         </div>

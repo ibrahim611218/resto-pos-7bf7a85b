@@ -28,7 +28,7 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   isArabic
 }) => {
   const [paidAmount, setPaidAmount] = useState<number>(total);
-  const [remaining, setRemaining] = useState<number>(0);
+  const [change, setChange] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>(total.toString());
 
   // Update paid amount when total changes or dialog opens
@@ -36,11 +36,11 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     if (isOpen) {
       setPaidAmount(total);
       setInputValue(total.toString());
-      setRemaining(0);
+      setChange(0);
     }
   }, [isOpen, total]);
 
-  // Calculate remaining amount when paid amount changes
+  // Calculate change amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
     setInputValue(inputVal);
@@ -48,12 +48,12 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     const value = parseFloat(inputVal);
     if (!isNaN(value)) {
       setPaidAmount(value);
-      // Calculate remaining amount
-      const remainingAmount = total - value;
-      setRemaining(Math.max(0, remainingAmount));
+      // Calculate change amount - if paid is more than total, we give change
+      const changeAmount = value - total;
+      setChange(Math.max(0, changeAmount));
     } else {
       setPaidAmount(0);
-      setRemaining(total);
+      setChange(0);
     }
   };
 
@@ -104,14 +104,14 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
           </div>
           
           <div className="grid gap-2">
-            <Label htmlFor="remaining-amount" className="text-md">
-              {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
+            <Label htmlFor="change-amount" className="text-md">
+              {isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
             </Label>
             <Input
-              id="remaining-amount"
-              value={formatCurrency(remaining, isArabic ? "ar-SA" : "en-US", "SAR")}
+              id="change-amount"
+              value={formatCurrency(change, isArabic ? "ar-SA" : "en-US", "SAR")}
               disabled
-              className={`text-lg font-bold ${remaining > 0 ? 'text-red-500' : 'text-green-500'}`}
+              className={`text-lg font-bold ${change > 0 ? 'text-green-500' : 'text-gray-500'}`}
             />
           </div>
         </div>
