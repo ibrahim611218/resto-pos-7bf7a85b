@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
@@ -11,6 +10,8 @@ import {
 } from "@/components/ui/collapsible";
 import { SidebarLink } from "./types";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
+import { handleDesktopExport } from "@/utils/desktopExport";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SidebarItemProps {
   link: SidebarLink;
@@ -28,11 +29,19 @@ const SidebarItem = ({
   onToggleCategory,
 }: SidebarItemProps) => {
   const location = useLocation();
+  const { language } = useLanguage();
   
   // Check if the current link is active (either exact match or contains for submenus)
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
     return location.pathname.startsWith(path);
+  };
+  
+  // Handle special actions like desktop export
+  const handleSpecialAction = () => {
+    if (link.action === "desktop-export") {
+      handleDesktopExport(language);
+    }
   };
   
   // If this is a parent menu with subMenuItems
@@ -98,6 +107,28 @@ const SidebarItem = ({
           </CollapsibleContent>
         )}
       </Collapsible>
+    );
+  }
+
+  // For action items (like desktop export)
+  if (link.isAction) {
+    return (
+      <Button
+        variant="ghost"
+        className={cn(
+          "flex w-full items-center rounded-md px-3 py-2 transition-colors duration-200 ease-in-out",
+          "hover:bg-accent hover:text-accent-foreground",
+          collapsed ? "justify-center" : "justify-start"
+        )}
+        onClick={handleSpecialAction}
+      >
+        {link.icon}
+        {!collapsed && (
+          <AnimatedTransition animation="fade">
+            <span className="mr-3">{link.name}</span>
+          </AnimatedTransition>
+        )}
+      </Button>
     );
   }
 

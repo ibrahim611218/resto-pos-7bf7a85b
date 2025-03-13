@@ -1,4 +1,3 @@
-
 import {
   Package2,
   Utensils,
@@ -13,6 +12,7 @@ import {
   Store,
   FileSearch,
   Home,
+  Download,
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
@@ -127,6 +127,14 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "",
       path: "/users",
       icon: <Users size={20} />,
+    },
+    {
+      name: "نسخة الويندوز",
+      name_en: "Windows Version",
+      path: "#desktop-export",
+      icon: <Download size={20} />,
+      isAction: true,
+      action: "desktop-export",
     },
     {
       name: "الإعدادات",
