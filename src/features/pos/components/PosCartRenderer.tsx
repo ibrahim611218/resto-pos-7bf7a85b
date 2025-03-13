@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import CartPanel from "./CartPanel";
 
 interface PosCartRendererProps {
@@ -14,7 +14,7 @@ interface PosCartRendererProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: any;
-  createInvoice: (customerName?: string, customerTaxNumber?: string) => any;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => any;
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -30,8 +30,18 @@ interface PosCartRendererProps {
  * Component that renders the cart panel with all cart-related functionality
  */
 const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
-  const handleCreateInvoice = (customerName?: string, customerTaxNumber?: string) => {
-    return props.createInvoice(customerName, customerTaxNumber);
+  const [paidAmount, setPaidAmount] = useState(props.total);
+
+  const handleCreateInvoice = (
+    customerName?: string, 
+    customerTaxNumber?: string, 
+    customerId?: string, 
+    commercialRegister?: string, 
+    address?: string,
+    newPaidAmount?: number
+  ) => {
+    const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : paidAmount;
+    return props.createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, actualPaidAmount);
   };
 
   return (

@@ -60,6 +60,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
+  const [paidAmount, setPaidAmount] = useState<number>(total);
 
   // Use the cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
@@ -79,7 +80,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
     setPaymentMethod,
     createInvoice,
     setCurrentInvoice,
-    total
+    total,
+    paidAmount,
+    setPaidAmount
   });
 
   const toggleExpand = () => {
@@ -144,6 +147,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
         isArabic={isArabic}
+        paidAmount={paidAmount}
       />
 
       <PaymentMethodDialog
@@ -153,6 +157,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
         setPaymentMethod={setPaymentMethod}
         onConfirm={handlePaymentMethodSelected}
         total={total}
+        paidAmount={paidAmount}
+        setPaidAmount={setPaidAmount}
       />
     </div>
   );

@@ -13,7 +13,7 @@ interface UsePaymentMethodDialogProps {
 export const usePaymentMethodDialog = ({ 
   isOpen, 
   onConfirm, 
-  initialPaidAmount = 0,
+  initialPaidAmount,
   total = 0
 }: UsePaymentMethodDialogProps) => {
   const [customerName, setCustomerName] = useState("");
@@ -22,7 +22,7 @@ export const usePaymentMethodDialog = ({
   const [address, setAddress] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(true);
-  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount || total);
+  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount !== undefined ? initialPaidAmount : total);
 
   useEffect(() => {
     if (isOpen) {

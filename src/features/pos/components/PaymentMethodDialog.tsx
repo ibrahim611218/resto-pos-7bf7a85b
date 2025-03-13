@@ -34,7 +34,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   setPaymentMethod,
   onConfirm,
   total = 0,
-  paidAmount = 0,
+  paidAmount,
   setPaidAmount
 }) => {
   const { language } = useLanguage();

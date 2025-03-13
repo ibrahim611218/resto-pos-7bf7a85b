@@ -20,7 +20,7 @@ export const usePaymentDialog = ({
   createInvoice,
   setCurrentInvoice,
   total = 0,
-  paidAmount = 0,
+  paidAmount,
   setPaidAmount
 }: PaymentDialogHandlerProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
