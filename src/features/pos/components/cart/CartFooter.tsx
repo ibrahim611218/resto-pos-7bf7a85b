@@ -2,10 +2,10 @@
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { PaymentMethod } from "@/types";
-import OrderTypeSelector from "./OrderTypeSelector";
-import DiscountInput from "./DiscountInput";
-import CartSummary from "./CartSummary";
-import CartActions from "./CartActions";
+import OrderTypeSection from "./footer/OrderTypeSection";
+import DiscountSection from "./footer/DiscountSection";
+import SummarySection from "./footer/SummarySection";
+import ActionsSection from "./footer/ActionsSection";
 
 interface CartFooterProps {
   isMobile: boolean;
@@ -56,7 +56,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
     <div className={`${footerClass} border-t bg-card flex-shrink-0`}>
       <Separator className={isMobile ? "mb-1" : "mb-2"} />
       
-      <OrderTypeSelector
+      <OrderTypeSection
         orderType={orderType}
         tableNumber={tableNumber}
         setOrderType={setOrderType}
@@ -65,7 +65,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         isArabic={isArabic}
       />
       
-      <DiscountInput
+      <DiscountSection
         discount={discount}
         discountType={discountType}
         setDiscount={setDiscount}
@@ -74,7 +74,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         isArabic={isArabic}
       />
       
-      <CartSummary
+      <SummarySection
         subtotal={subtotal}
         taxAmount={taxAmount}
         discount={discount}
@@ -87,7 +87,7 @@ const CartFooter: React.FC<CartFooterProps> = ({
         onPaidAmountClick={onPaidAmountClick}
       />
       
-      <CartActions
+      <ActionsSection
         cartItems={cartItems}
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
