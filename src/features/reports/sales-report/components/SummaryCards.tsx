@@ -10,17 +10,18 @@ interface SummaryCardsProps {
 }
 
 const SummaryCards: React.FC<SummaryCardsProps> = ({ totalSales, filteredInvoices, isArabic }) => {
-  // احتساب عدد الفواتير غير المسترجعة فقط
-  const completedInvoices = filteredInvoices.filter(inv => inv.status !== "refunded");
-  
-  // حساب متوسط قيمة الطلب باستخدام الفواتير المكتملة فقط
-  const averageOrderValue = completedInvoices.length > 0
-    ? (completedInvoices.reduce((sum, invoice) => sum + invoice.total, 0) / completedInvoices.length).toFixed(2)
+  // Calculate average order value excluding refunded invoices
+  const averageOrderValue = filteredInvoices.length > 0
+    ? (filteredInvoices.reduce((sum, invoice) => {
+        const multiplier = invoice.status === "refunded" ? 0 : 1; // Don't count refunded invoices
+        return sum + (invoice.total * multiplier);
+      }, 0) / filteredInvoices.filter(inv => inv.status !== "refunded").length).toFixed(2)
     : "0.00";
   
-  // حساب إجمالي المنتجات المباعة باستخدام الفواتير المكتملة فقط
-  const totalItemsSold = completedInvoices.reduce((sum, invoice) => {
-    return sum + invoice.items.reduce((itemSum, item) => itemSum + item.quantity, 0);
+  // Calculate total items sold
+  const totalItemsSold = filteredInvoices.reduce((sum, invoice) => {
+    const multiplier = invoice.status === "refunded" ? -1 : 1;
+    return sum + (multiplier * invoice.items.reduce((itemSum, item) => itemSum + item.quantity, 0));
   }, 0);
   
   return (
@@ -36,7 +37,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ totalSales, filteredInvoice
             {totalSales.toFixed(2)} {isArabic ? "ريال" : "SAR"}
           </div>
           <div className="text-sm text-muted-foreground">
-            {isArabic ? `${completedInvoices.length} فاتورة` : `${completedInvoices.length} invoices`}
+            {isArabic ? `${filteredInvoices.length} فاتورة` : `${filteredInvoices.length} invoices`}
           </div>
         </CardContent>
       </Card>
