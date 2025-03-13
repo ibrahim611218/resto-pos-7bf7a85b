@@ -41,6 +41,7 @@ export const exportSalesReportPDF = ({
       doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
       doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
       doc.setFont('Tajawal');
+      doc.setR2L(true); // Enable right-to-left for Arabic
     }
     
     // Add report title
@@ -69,6 +70,17 @@ export const exportSalesReportPDF = ({
       doc.text(summaryTitle, 20, 40);
     }
     
+    // Create table headers in the correct language
+    const headers = [
+      "#",
+      isArabic ? "رقم الفاتورة" : "Invoice",
+      isArabic ? "التاريخ" : "Date",
+      isArabic ? "الحالة" : "Status",
+      isArabic ? "طريقة الدفع" : "Payment",
+      isArabic ? "نوع الطلب" : "Order Type",
+      isArabic ? "المبلغ" : "Amount"
+    ];
+    
     // Create table data
     const tableData = filteredInvoices.map((invoice, index) => {
       const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US");
@@ -91,27 +103,24 @@ export const exportSalesReportPDF = ({
     // @ts-ignore - jspdf-autotable addition not supported in TypeScript
     doc.autoTable({
       startY: 50,
-      head: [[
-        "#",
-        isArabic ? "رقم الفاتورة" : "Invoice",
-        isArabic ? "التاريخ" : "Date",
-        isArabic ? "الحالة" : "Status",
-        isArabic ? "طريقة الدفع" : "Payment",
-        isArabic ? "نوع الطلب" : "Order Type",
-        isArabic ? "المبلغ" : "Amount"
-      ]],
+      head: [headers],
       body: tableData,
       theme: 'grid',
-      headStyles: { fillColor: [16, 185, 129], fontStyle: 'bold' },
+      headStyles: { 
+        fillColor: [16, 185, 129], 
+        fontStyle: 'bold',
+        font: isArabic ? 'Tajawal' : 'Helvetica',
+        halign: isArabic ? 'right' : 'left'
+      },
       styles: { 
         fontSize: 10,
         halign: isArabic ? 'right' : 'left', 
         textColor: [0, 0, 0],
-        font: isArabic ? 'Tajawal' : undefined,
+        font: isArabic ? 'Tajawal' : 'Helvetica',
       },
       margin: { top: 50 },
-      didDrawPage: function(data) {
-        // Add RTL support for page
+      didDrawPage: function(data: any) {
+        // Ensure RTL support on each page
         if (isArabic) {
           doc.setR2L(true);
         }
