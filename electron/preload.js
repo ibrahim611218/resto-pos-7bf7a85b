@@ -13,6 +13,12 @@ contextBridge.exposeInMainWorld('db', {
   // Products
   getProducts: () => ipcRenderer.invoke('get-products'),
   
+  // Categories
+  getCategories: () => ipcRenderer.invoke('get-categories'),
+  addCategory: (category) => ipcRenderer.invoke('add-category', category),
+  updateCategory: (category) => ipcRenderer.invoke('update-category', category),
+  deleteCategory: (categoryId) => ipcRenderer.invoke('delete-category', categoryId),
+  
   // Settings
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings)

@@ -7,6 +7,10 @@ interface Window {
     saveInvoice: (invoice: any) => Promise<any>;
     updateInvoice: (invoice: any) => Promise<any>;
     getProducts: () => Promise<any[]>;
+    getCategories: () => Promise<any[]>;
+    addCategory: (category: any) => Promise<any>;
+    updateCategory: (category: any) => Promise<any>;
+    deleteCategory: (categoryId: string) => Promise<any>;
     getSettings: () => Promise<any>;
     saveSettings: (settings: any) => Promise<any>;
   };

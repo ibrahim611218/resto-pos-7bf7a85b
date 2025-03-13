@@ -4,6 +4,7 @@ const { getDatabase } = require('./database');
 const { setupInvoiceHandlers } = require('./handlers/invoice-handlers');
 const { setupProductHandlers } = require('./handlers/product-handlers');
 const { setupSettingsHandlers } = require('./handlers/settings-handlers');
+const { setupCategoryHandlers } = require('./handlers/category-handlers');
 const { setupQueryHandler } = require('./handlers/query-handler');
 
 // Set up all IPC handlers for database operations
@@ -17,6 +18,7 @@ function setupIpcHandlers() {
   setupInvoiceHandlers(ipcMain, db);
   setupProductHandlers(ipcMain, db);
   setupSettingsHandlers(ipcMain, db);
+  setupCategoryHandlers(ipcMain, db);
 }
 
 module.exports = {
