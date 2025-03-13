@@ -3,9 +3,9 @@
 
 // Download URLs by platform - Update these URLs with your actual download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-win32-x64.zip',
-  mac: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-darwin-x64.zip',
-  linux: 'https://github.com/electron/electron/releases/download/v28.1.0/electron-v28.1.0-linux-x64.zip',
+  windows: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-setup-1.0.0.exe',
+  mac: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-1.0.0.dmg',
+  linux: 'https://github.com/yourusername/resto-pos/releases/download/v1.0.0/resto-pos-1.0.0.AppImage',
 };
 
 // System requirements
@@ -33,5 +33,5 @@ export const INSTALLER_INFO = {
   version: "1.0.0",
   size: "42.8 MB",
   releaseDate: "2023-11-15",
-  filename: "RestoPOS-Setup-1.0.0.exe"
+  filename: "resto-pos-setup-1.0.0.exe"
 };

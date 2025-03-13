@@ -20,14 +20,26 @@ export const handleDesktopExport = (language: string = "ar") => {
     
     console.log("Opening download URL:", downloadUrl);
     
-    // Try to directly download the file instead of just opening a new window
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', '');
-    link.setAttribute('target', '_blank');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Create a temporary HTML page with instructions and auto-download
+    const downloadPage = generateDownloadPageTemplate(language, downloadUrl);
+    const blob = new Blob([downloadPage], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Open the download page in a new window
+    const newWindow = window.open(url, '_blank');
+    
+    if (!newWindow) {
+      // Show popup blocked notification
+      showNotification("popup-blocked", language);
+      
+      // Alternative approach if popup is blocked
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = INSTALLER_INFO.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
     
     // Show success notification
     showNotification("download-started", language);
