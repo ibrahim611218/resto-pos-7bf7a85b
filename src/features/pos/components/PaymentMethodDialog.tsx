@@ -96,6 +96,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   };
 
   const remainingAmount = Math.max(0, total - internalPaidAmount);
+  const hasRemainingAmount = remainingAmount > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -165,7 +166,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
                 type="text"
                 value={remainingAmount.toFixed(2)}
                 readOnly
-                className={`bg-muted ${remainingAmount > 0 ? 'text-red-500 font-medium' : ''}`}
+                className={`bg-muted ${hasRemainingAmount ? 'text-red-500 font-bold text-lg p-4 border-2 border-red-300' : ''}`}
               />
             </div>
           </div>
