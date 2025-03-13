@@ -153,11 +153,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
         isArabic={isArabic}
       />
 
-      <PaymentDialogHandler
+      <PaymentMethodDialog
+        isOpen={paymentDialogControls.showPaymentMethodDialog}
+        onClose={() => paymentDialogControls.setShowPaymentMethodDialog(false)}
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
-        createInvoice={createInvoice}
-        setCurrentInvoice={setCurrentInvoice}
+        onConfirm={paymentDialogControls.handlePaymentMethodSelected}
         total={total}
         paidAmount={localPaidAmount}
         setPaidAmount={setLocalPaidAmount}
