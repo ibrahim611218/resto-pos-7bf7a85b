@@ -40,6 +40,17 @@ export const useBusinessSettings = () => {
   const updateSettings = async (partialSettings: Partial<BusinessSettings>) => {
     try {
       setLoading(true);
+      
+      // Ensure taxRate is a valid number
+      if (partialSettings.taxRate !== undefined) {
+        const taxRateValue = Number(partialSettings.taxRate);
+        if (isNaN(taxRateValue)) {
+          partialSettings.taxRate = settings.taxRate; // Keep the previous value if invalid
+        } else {
+          partialSettings.taxRate = taxRateValue;
+        }
+      }
+      
       // Create a new settings object by merging the current settings with the partial update
       const newSettings = { ...settings, ...partialSettings };
       

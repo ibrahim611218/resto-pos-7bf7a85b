@@ -16,13 +16,24 @@ interface BusinessSettingsFormProps {
 const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language }) => {
   const isArabic = language === "ar";
   
-  const { settings, updateSettings } = useBusinessSettings();
+  const { settings, updateSettings, loading } = useBusinessSettings();
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    updateSettings({
-      [name]: name === "taxRate" ? parseFloat(value) : value
-    });
+    
+    // Handle tax rate field specifically
+    if (name === "taxRate") {
+      // Only update if the value is a valid number or empty
+      if (value === "" || !isNaN(parseFloat(value))) {
+        updateSettings({
+          [name]: value === "" ? 0 : parseFloat(value)
+        });
+      }
+    } else {
+      updateSettings({
+        [name]: value
+      });
+    }
   };
   
   const handleSwitchChange = (name: string, checked: boolean) => {
@@ -73,7 +84,11 @@ const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language })
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={loading}
+            >
               <Save className="ml-2" size={16} />
               {isArabic ? "حفظ الإعدادات" : "Save Settings"}
             </Button>

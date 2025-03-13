@@ -1,3 +1,4 @@
+
 import { CartItem } from "@/types";
 
 /**
@@ -31,11 +32,15 @@ export const generateInvoiceNumber = (): string => {
  */
 export const calculateInvoiceAmounts = (
   items: CartItem[],
-  taxRate: number,
+  taxRate: number = 15, // Default to 15% if taxRate is invalid
   discount: number = 0,
   discountType: "percentage" | "fixed" = "percentage",
   taxIncluded: boolean = false
 ): { subtotal: number; taxAmount: number; total: number } => {
+  // Ensure taxRate is a valid number
+  const validTaxRate = Number(taxRate);
+  const effectiveTaxRate = isNaN(validTaxRate) ? 15 : validTaxRate;
+  
   // إذا كانت الضريبة مضمنة في السعر، نحتاج إلى استخراج قيمة الضريبة من السعر
   if (taxIncluded) {
     // حساب المجموع الإجمالي شامل الضريبة
@@ -45,7 +50,7 @@ export const calculateInvoiceAmounts = (
     );
     
     // استخراج القيمة الضريبية من المجموع
-    const taxAmount = +(totalWithTax - (totalWithTax / (1 + taxRate / 100))).toFixed(2);
+    const taxAmount = +(totalWithTax - (totalWithTax / (1 + effectiveTaxRate / 100))).toFixed(2);
     
     // حساب المجموع بدون ضريبة
     const subtotal = +(totalWithTax - taxAmount).toFixed(2);
@@ -74,7 +79,7 @@ export const calculateInvoiceAmounts = (
       .filter((item) => item.taxable)
       .reduce((sum, item) => sum + item.price * item.quantity, 0);
     
-    const taxAmount = +(taxableSubtotal * (taxRate / 100)).toFixed(2);
+    const taxAmount = +(taxableSubtotal * (effectiveTaxRate / 100)).toFixed(2);
     
     const discountAmount = discountType === "percentage" 
       ? (subtotal + taxAmount) * (discount / 100)
