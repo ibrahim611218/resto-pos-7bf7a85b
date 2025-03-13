@@ -60,8 +60,9 @@ export const calculateInvoiceAmounts = (
       ? totalWithTax * (discount / 100)
       : discount;
     
-    // حساب المجموع النهائي بعد الخصم
-    const total = +Math.max(0, totalWithTax - discountAmount).toFixed(2);
+    // حساب المجموع النهائي بعد الخصم ويتم تقريبه للرقم الصحيح
+    const totalBeforeRounding = Math.max(0, totalWithTax - discountAmount);
+    const total = Math.round(totalBeforeRounding);
     
     return {
       subtotal,
@@ -85,7 +86,8 @@ export const calculateInvoiceAmounts = (
       ? (subtotal + taxAmount) * (discount / 100)
       : discount;
     
-    const total = +Math.max(0, subtotal + taxAmount - discountAmount).toFixed(2);
+    const totalBeforeRounding = Math.max(0, subtotal + taxAmount - discountAmount);
+    const total = Math.round(totalBeforeRounding);
     
     return {
       subtotal: +subtotal.toFixed(2),

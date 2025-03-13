@@ -32,14 +32,17 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? (subtotal + taxAmount) * (discount / 100)
     : discount;
 
+  // Round the total to eliminate decimal places
+  const roundedTotal = Math.round(total);
+
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
   const showPaymentDetails = paymentMethod === "cash";
   
-  // Calculate change amount (for cash payments)
+  // Calculate change amount (for cash payments) using the rounded total
   const changeAmount = showPaymentDetails && paidAmount 
-    ? Math.max(0, paidAmount - total)
+    ? Math.max(0, paidAmount - roundedTotal)
     : 0;
 
   return (
@@ -77,7 +80,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {isArabic ? "الإجمالي" : "Total"}
         </span>
         <span>
-          {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
+          {formatCurrency(roundedTotal, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
 
