@@ -264,9 +264,8 @@ export const exportSalesReportExcel = ({
     if (isArabic) {
       ws["!cols"] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
       
-      // Set RTL for the sheet
-      if (!ws["!margins"]) ws["!margins"] = {};
-      ws["!margins"].right = true;
+      // Fix: Remove this line that's causing the type error
+      // ws["!margins"].right = true;  // Boolean assigned to number
       
       // Set right alignment for all cells
       const range = XLSX.utils.decode_range(ws["!ref"] || "A1:G100");
@@ -304,3 +303,4 @@ export const exportSalesReportExcel = ({
     return false;
   }
 };
+
