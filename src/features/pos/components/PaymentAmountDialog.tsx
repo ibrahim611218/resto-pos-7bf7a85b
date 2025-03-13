@@ -5,7 +5,8 @@ import {
   DialogContent, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle 
+  DialogTitle,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -30,18 +31,23 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
   
   const [paidAmount, setPaidAmount] = useState<number>(total);
   const [remaining, setRemaining] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>(total.toString());
 
   // Update paid amount when total changes or dialog opens
   useEffect(() => {
     if (isOpen) {
       setPaidAmount(total);
+      setInputValue(total.toString());
       setRemaining(0);
     }
   }, [isOpen, total]);
 
   // Calculate remaining amount when paid amount changes
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+    const inputVal = e.target.value;
+    setInputValue(inputVal);
+    
+    const value = parseFloat(inputVal);
     if (!isNaN(value) && value >= 0) {
       setPaidAmount(value);
       setRemaining(Math.max(0, total - value));
@@ -65,6 +71,9 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
           <DialogTitle className="text-xl">
             {isArabic ? "تفاصيل الدفع" : "Payment Details"}
           </DialogTitle>
+          <DialogDescription>
+            {isArabic ? "ادخل المبلغ المدفوع من العميل" : "Enter the amount paid by the customer"}
+          </DialogDescription>
         </DialogHeader>
         
         <div className="grid gap-4 py-4">
@@ -89,7 +98,7 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
               type="number"
               min="0"
               step="0.01"
-              value={paidAmount}
+              value={inputValue}
               onChange={handlePaidAmountChange}
               className="text-lg font-bold"
               autoFocus
