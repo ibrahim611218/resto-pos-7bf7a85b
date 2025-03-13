@@ -35,8 +35,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
 
-  // Force show remaining amount when paid amount is set, even if it's zero
-  const showRemainingAmount = paidAmount > 0;
+  // Always show remaining amount
+  const showRemainingAmount = true;
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>

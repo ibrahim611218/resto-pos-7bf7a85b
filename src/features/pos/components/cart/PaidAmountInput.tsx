@@ -47,12 +47,11 @@ const PaidAmountInput: React.FC<PaidAmountInputProps> = ({
         </div>
       </div>
 
-      {remainingAmount > 0 && paidAmount > 0 && (
-        <div className="text-sm mt-1 text-red-600 font-medium">
-          {isArabic ? "المتبقي: " : "Remaining: "}
-          {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-        </div>
-      )}
+      {/* Always show remaining amount regardless of conditions */}
+      <div className="text-sm mt-1 text-red-600 font-medium">
+        {isArabic ? "المتبقي: " : "Remaining: "}
+        {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+      </div>
 
       <NumberPad
         isOpen={showNumberPad}

@@ -80,8 +80,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  // Always show remaining amount information if paidAmount is set
-  const showRemainingAmount = paidAmount > 0;
+  // Always show remaining amount
+  const showRemainingAmount = true;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
