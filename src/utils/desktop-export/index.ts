@@ -19,27 +19,36 @@ export const handleDesktopExport = (language: string = "ar") => {
     const downloadUrl = getDownloadUrl();
     
     // Generate the HTML content
-    const htmlContent = generateDownloadPageTemplate(language);
+    const htmlContent = generateDownloadPageTemplate(language, downloadUrl);
     
-    // Create a blob and a URL for it
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const blobUrl = URL.createObjectURL(blob);
+    // Direct approach - Create a new window with document.write
+    const newWindow = window.open('', '_blank');
     
-    // Open the blob URL in a new tab
-    const newWindow = window.open(blobUrl, '_blank');
-    
-    if (newWindow) {
-      // Show success notification
-      showNotification("download-started", language);
-      
-      // Clean up the blob URL after the window has loaded
-      setTimeout(() => {
-        URL.revokeObjectURL(blobUrl);
-      }, 5000);
-    } else {
+    if (!newWindow) {
       // Show popup blocked notification
       showNotification("popup-blocked", language);
+      return;
     }
+    
+    // Write content directly to the new window
+    newWindow.document.write(htmlContent);
+    newWindow.document.close();
+    
+    // Trigger download programmatically after a short delay
+    setTimeout(() => {
+      try {
+        const downloadLink = newWindow.document.getElementById('download-link');
+        if (downloadLink) {
+          downloadLink.click();
+          // Show success notification
+          showNotification("download-started", language);
+        }
+      } catch (innerError) {
+        console.error("Error triggering download:", innerError);
+        showNotification("export-error", language);
+      }
+    }, 500);
+    
   } catch (error) {
     console.error("Desktop export error:", error);
     showNotification("export-error", language);

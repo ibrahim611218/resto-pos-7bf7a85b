@@ -7,7 +7,7 @@ import { DOWNLOAD_URLS } from './constants';
  */
 export const isRunningInElectron = (): boolean => {
   // Check if the window object has Electron specific properties
-  return window.navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
+  return window?.navigator?.userAgent?.toLowerCase().indexOf(' electron/') > -1;
 };
 
 /**
@@ -23,8 +23,10 @@ export const getDownloadUrl = (): string => {
     url = DOWNLOAD_URLS.windows;
   } else if (platform.includes('mac')) {
     url = DOWNLOAD_URLS.mac;
+  } else if (platform.includes('linux')) {
+    url = DOWNLOAD_URLS.linux;
   } else {
-    // Default to Windows if platform cannot be determined or is Linux
+    // Default to Windows if platform cannot be determined
     url = DOWNLOAD_URLS.windows;
   }
   

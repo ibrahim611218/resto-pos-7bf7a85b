@@ -1,15 +1,14 @@
 
 import { SYSTEM_REQUIREMENTS, INSTALLER_INFO } from './constants';
-import { getDownloadUrl } from './utils';
 
 /**
  * Generates the HTML template for the download page
  * @param language The language code (ar or en)
+ * @param downloadUrl The URL for downloading the desktop application
  * @returns HTML string for the download page
  */
-export const generateDownloadPageTemplate = (language: string): string => {
+export const generateDownloadPageTemplate = (language: string, downloadUrl: string): string => {
   const isArabic = language === "ar";
-  const downloadUrl = getDownloadUrl();
   
   return `<!DOCTYPE html>
 <html lang="${isArabic ? 'ar' : 'en'}" dir="${isArabic ? 'rtl' : 'ltr'}">
@@ -152,14 +151,11 @@ export const generateDownloadPageTemplate = (language: string): string => {
   </div>
 
   <script>
-    // Auto-trigger download when page loads
+    // Auto-trigger download after a short delay
     window.onload = function() {
       setTimeout(function() {
-        var link = document.getElementById('download-link');
-        if (link) {
-          console.log('Triggering download...');
-          link.click();
-        }
+        document.getElementById('download-link').click();
+        console.log('Auto-download triggered');
       }, 1000);
     };
   </script>
