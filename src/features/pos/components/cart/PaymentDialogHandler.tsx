@@ -38,6 +38,12 @@ export const usePaymentDialog = ({
     newPaidAmount?: number
   ) => {
     const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : total;
+    
+    // Update the paidAmount state if setPaidAmount is provided
+    if (setPaidAmount && newPaidAmount !== undefined) {
+      setPaidAmount(newPaidAmount);
+    }
+    
     const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, actualPaidAmount);
     setCurrentInvoice(invoice);
     setShowPaymentMethodDialog(false);

@@ -1,4 +1,3 @@
-
 import { CartItem } from "@/types";
 
 /**
@@ -41,7 +40,6 @@ export const calculateInvoiceAmounts = (
   const validTaxRate = Number(taxRate);
   const effectiveTaxRate = isNaN(validTaxRate) ? 15 : validTaxRate;
   
-  // إذا كانت الضريبة مضمنة في السعر، نحتاج إلى استخراج قيمة الضريبة من السعر
   if (taxIncluded) {
     // حساب المجموع الإجمالي شامل الضريبة
     const totalWithTax = items.reduce(
@@ -50,10 +48,10 @@ export const calculateInvoiceAmounts = (
     );
     
     // استخراج القيمة الضريبية من المجموع
-    const taxAmount = +(totalWithTax - (totalWithTax / (1 + effectiveTaxRate / 100))).toFixed(2);
+    const taxAmount = totalWithTax - (totalWithTax / (1 + effectiveTaxRate / 100));
     
-    // حساب المجموع بدون ضريبة
-    const subtotal = +(totalWithTax - taxAmount).toFixed(2);
+    // حساب المجموع بدون ضريبة (السعر قبل الضريبة)
+    const subtotal = totalWithTax - taxAmount;
     
     // حساب قيمة الخصم
     const discountAmount = discountType === "percentage" 
@@ -61,12 +59,12 @@ export const calculateInvoiceAmounts = (
       : discount;
     
     // حساب المجموع النهائي بعد الخصم
-    const total = +Math.max(0, totalWithTax - discountAmount).toFixed(2);
+    const total = Math.max(0, totalWithTax - discountAmount);
     
     return {
-      subtotal,
-      taxAmount,
-      total,
+      subtotal: +subtotal.toFixed(2),
+      taxAmount: +taxAmount.toFixed(2),
+      total: +total.toFixed(2),
     };
   } else {
     // الطريقة الأصلية لحساب الفاتورة عندما تكون الضريبة غير مضمنة في السعر
@@ -79,18 +77,18 @@ export const calculateInvoiceAmounts = (
       .filter((item) => item.taxable)
       .reduce((sum, item) => sum + item.price * item.quantity, 0);
     
-    const taxAmount = +(taxableSubtotal * (effectiveTaxRate / 100)).toFixed(2);
+    const taxAmount = taxableSubtotal * (effectiveTaxRate / 100);
     
     const discountAmount = discountType === "percentage" 
       ? (subtotal + taxAmount) * (discount / 100)
       : discount;
     
-    const total = +Math.max(0, subtotal + taxAmount - discountAmount).toFixed(2);
+    const total = Math.max(0, subtotal + taxAmount - discountAmount);
     
     return {
       subtotal: +subtotal.toFixed(2),
       taxAmount: +taxAmount.toFixed(2),
-      total,
+      total: +total.toFixed(2),
     };
   }
 };

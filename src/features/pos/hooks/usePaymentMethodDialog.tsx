@@ -7,16 +7,22 @@ interface UsePaymentMethodDialogProps {
   onClose: () => void;
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
   initialPaidAmount?: number;
+  total?: number;
 }
 
-export const usePaymentMethodDialog = ({ isOpen, onConfirm, initialPaidAmount = 0 }: UsePaymentMethodDialogProps) => {
+export const usePaymentMethodDialog = ({ 
+  isOpen, 
+  onConfirm, 
+  initialPaidAmount = 0,
+  total = 0
+}: UsePaymentMethodDialogProps) => {
   const [customerName, setCustomerName] = useState("");
   const [customerTaxNumber, setCustomerTaxNumber] = useState("");
   const [commercialRegister, setCommercialRegister] = useState("");
   const [address, setAddress] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(true);
-  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount);
+  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount || total);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,9 +33,9 @@ export const usePaymentMethodDialog = ({ isOpen, onConfirm, initialPaidAmount = 
       setAddress("");
       setSelectedCustomerId("");
       setIsNewCustomer(true);
-      setPaidAmount(initialPaidAmount);
+      setPaidAmount(initialPaidAmount || total);
     }
-  }, [isOpen, initialPaidAmount]);
+  }, [isOpen, initialPaidAmount, total]);
 
   const handleConfirm = () => {
     if (!isNewCustomer && selectedCustomerId) {
