@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { X, Check, Delete, Plus, Minus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatCurrency } from "@/utils/invoice";
 
 interface NumberPadProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ interface NumberPadProps {
   title?: string;
   decimalAllowed?: boolean;
   isArabic?: boolean;
+  showRemainingAmount?: boolean;
+  remainingAmount?: number;
 }
 
 const NumberPad: React.FC<NumberPadProps> = ({
@@ -24,6 +27,8 @@ const NumberPad: React.FC<NumberPadProps> = ({
   title,
   decimalAllowed = false,
   isArabic: propIsArabic,
+  showRemainingAmount = false,
+  remainingAmount = 0
 }) => {
   const { language } = useLanguage();
   const isArabic = propIsArabic !== undefined ? propIsArabic : language === "ar";
@@ -100,6 +105,17 @@ const NumberPad: React.FC<NumberPadProps> = ({
             className="text-2xl text-center mb-4"
             autoFocus
           />
+          
+          {showRemainingAmount && (
+            <div className="mb-4 text-center">
+              <div className="text-sm text-muted-foreground">
+                {isArabic ? "المبلغ المطلوب:" : "Total Amount:"}
+              </div>
+              <div className="text-lg font-semibold">
+                {formatCurrency(remainingAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+              </div>
+            </div>
+          )}
           
           <div className="grid grid-cols-3 gap-2">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (

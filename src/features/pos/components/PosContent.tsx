@@ -1,7 +1,10 @@
+
 import React from "react";
 import { useScreenSize } from "@/hooks/use-mobile";
 import DesktopPosLayout from "./layout/DesktopPosLayout";
 import MobilePosLayout from "./layout/MobilePosLayout";
+import PosProductsRenderer from "./PosProductsRenderer";
+import PosCartRenderer from "./PosCartRenderer";
 
 interface PosContentProps {
   cartItems: any[];
@@ -43,12 +46,67 @@ interface PosContentProps {
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile, isTablet } = useScreenSize();
   
+  // Create the products panel component
+  const productsPanel = (
+    <PosProductsRenderer
+      searchTerm={props.searchTerm}
+      setSearchTerm={props.setSearchTerm}
+      activeCategory={props.activeCategory}
+      setActiveCategory={props.setActiveCategory}
+      categories={props.categories}
+      filteredProducts={props.filteredProducts}
+      searchedProducts={props.searchedProducts}
+      addToCart={props.addToCart}
+      showAllProducts={props.showAllProducts}
+      setShowAllProducts={props.setShowAllProducts}
+      isArabic={props.isArabic}
+    />
+  );
+  
+  // Create the cart panel component
+  const cartPanel = (
+    <PosCartRenderer
+      cartItems={props.cartItems}
+      isArabic={props.isArabic}
+      language={props.language}
+      subtotal={props.subtotal}
+      taxAmount={props.taxAmount}
+      total={props.total}
+      discount={props.discount}
+      discountType={props.discountType}
+      orderType={props.orderType}
+      tableNumber={props.tableNumber}
+      paymentMethod={props.paymentMethod}
+      paidAmount={props.paidAmount}
+      remainingAmount={props.remainingAmount}
+      createInvoice={props.createInvoice}
+      clearCart={props.clearCart}
+      getSizeLabel={props.getSizeLabel}
+      updateQuantity={props.updateQuantity}
+      removeItem={props.removeItem}
+      setDiscount={props.setDiscount}
+      setDiscountType={props.setDiscountType}
+      setOrderType={props.setOrderType}
+      setTableNumber={props.setTableNumber}
+      setPaymentMethod={props.setPaymentMethod}
+      setPaidAmount={props.setPaidAmount}
+    />
+  );
+  
   return (
     <div className="flex h-full">
       {isMobile ? (
-        <MobilePosLayout {...props} />
+        <MobilePosLayout 
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
       ) : (
-        <DesktopPosLayout {...props} />
+        <DesktopPosLayout
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
       )}
     </div>
   );

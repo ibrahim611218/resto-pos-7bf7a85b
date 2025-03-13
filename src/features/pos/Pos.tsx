@@ -75,6 +75,11 @@ const Pos: React.FC = () => {
     handleInvoiceExport("print", invoice, settings);
   };
   
+  // Create a wrapper for addToCart that matches the expected signature
+  const handleAddToCart = (product: any, quantity: number = 1, size?: string) => {
+    addToCart(product, quantity, size);
+  };
+  
   return (
     <div 
       className={`h-screen max-w-full flex flex-col m-0 p-0 ${
@@ -100,7 +105,7 @@ const Pos: React.FC = () => {
           paymentMethod={paymentMethod}
           paidAmount={paidAmount}
           remainingAmount={remainingAmount}
-          addToCart={addToCart}
+          addToCart={handleAddToCart}
           updateQuantity={updateQuantity}
           removeItem={removeItem}
           clearCart={clearCart}

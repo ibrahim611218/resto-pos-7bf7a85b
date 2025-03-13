@@ -9,14 +9,20 @@ export const useCartItems = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const isArabic = language === "ar";
 
-  const addToCart = useCallback((product: Product, variantId: string) => {
+  const addToCart = useCallback((product: Product, quantity: number, size?: string) => {
     // Handle products with variants (sized products)
     if (product.variants.length > 0) {
-      const variant = product.variants.find((v) => v.id === variantId);
+      // If size is provided, find the variant with that size
+      let variantId = "simple";
       
-      if (!variant) {
-        console.error("Variant not found");
-        return;
+      if (size) {
+        const variant = product.variants.find(v => v.size === size);
+        if (variant) {
+          variantId = variant.id;
+        }
+      } else {
+        // Default to first variant if size not specified
+        variantId = product.variants[0].id;
       }
       
       setCartItems((prev) => {
@@ -26,7 +32,7 @@ export const useCartItems = () => {
         
         if (existingItemIndex >= 0) {
           const newItems = [...prev];
-          newItems[existingItemIndex].quantity += 1;
+          newItems[existingItemIndex].quantity += quantity;
           
           toast({
             title: isArabic ? "تم تحديث السلة" : "Cart updated",
@@ -38,15 +44,17 @@ export const useCartItems = () => {
           return newItems;
         }
         
+        const selectedVariant = product.variants.find(v => v.id === variantId) || product.variants[0];
+        
         const newItem: CartItem = {
           id: `${product.id}-${variantId}-${Date.now()}`,
           productId: product.id,
           variantId: variantId,
           name: product.name,
           nameAr: product.nameAr,
-          price: variant.price,
-          size: variant.size,
-          quantity: 1,
+          price: selectedVariant.price,
+          size: selectedVariant.size,
+          quantity: quantity,
           taxable: product.taxable,
         };
         
@@ -62,8 +70,6 @@ export const useCartItems = () => {
     } 
     // Handle products without variants (simple products)
     else {
-      console.log("Adding simple product:", product.name, "with price:", product.price);
-      
       if (!product.price) {
         console.error("Simple product has no price:", product);
         return;
@@ -76,7 +82,7 @@ export const useCartItems = () => {
         
         if (existingItemIndex >= 0) {
           const newItems = [...prev];
-          newItems[existingItemIndex].quantity += 1;
+          newItems[existingItemIndex].quantity += quantity;
           
           toast({
             title: isArabic ? "تم تحديث السلة" : "Cart updated",
@@ -96,11 +102,9 @@ export const useCartItems = () => {
           nameAr: product.nameAr,
           price: product.price,
           size: "medium" as Size, // Use "medium" as the default size for simple products
-          quantity: 1,
+          quantity: quantity,
           taxable: product.taxable,
         };
-        
-        console.log("Created new cart item for simple product:", newItem);
         
         toast({
           title: isArabic ? "تمت الإضافة إلى السلة" : "Added to cart",
