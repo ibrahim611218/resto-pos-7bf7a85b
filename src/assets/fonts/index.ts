@@ -12,19 +12,21 @@ import tajawalBold from './Tajawal-Bold.ttf';
 export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   if (isArabic) {
     try {
-      // Force binary format for the fonts
-      const tajawalRegularBinary = atob(tajawalRegular);
-      const tajawalBoldBinary = atob(tajawalBold);
+      console.log("Loading Arabic fonts for PDF");
       
-      // Add Tajawal font (supports Arabic) with binary data directly
+      // Convert Base64 encoded font to binary data
+      const tajawalRegularBinary = binaryFromBase64(tajawalRegular);
+      const tajawalBoldBinary = binaryFromBase64(tajawalBold);
+      
+      // Add font files to the virtual file system
       doc.addFileToVFS('Tajawal-Regular.ttf', tajawalRegularBinary);
       doc.addFileToVFS('Tajawal-Bold.ttf', tajawalBoldBinary);
       
-      // Register the font with the document
+      // Register the fonts with specific names
       doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
       doc.addFont('Tajawal-Bold.ttf', 'Tajawal', 'bold');
       
-      // Set the font for Arabic
+      // Set default font to Tajawal
       doc.setFont('Tajawal');
       
       // Enable right-to-left for Arabic text
@@ -44,6 +46,20 @@ export const loadFontsForPDF = (doc: jsPDF, isArabic: boolean) => {
   }
   
   return doc;
+};
+
+/**
+ * Converts base64 encoded font to binary format
+ */
+const binaryFromBase64 = (base64: string): string => {
+  try {
+    // Remove data URI prefix if present
+    const base64Data = base64.replace(/^data:.*?;base64,/, '');
+    return atob(base64Data);
+  } catch (error) {
+    console.error('Error converting font to binary:', error);
+    throw error;
+  }
 };
 
 /**

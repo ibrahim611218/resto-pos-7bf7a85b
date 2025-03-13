@@ -85,6 +85,12 @@ export const exportInventoryReportPDF = (inventoryData: InventoryItem[], isArabi
       }
     });
     
+    // Force set font again after table rendering to ensure Arabic text displays correctly
+    if (isArabic) {
+      doc.setFont(fontStyles.font);
+      doc.setR2L(true);
+    }
+    
     // Save the file directly
     doc.save("inventory_report.pdf");
     

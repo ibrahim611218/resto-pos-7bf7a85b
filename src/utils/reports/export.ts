@@ -51,10 +51,14 @@ export const exportToPdf = (content: HTMLElement, fileName: string, isArabic: bo
     }
     
     // Add content from the HTML element
-    // This is just a placeholder - in a real implementation, you'd need to
-    // properly extract and format the content from the HTML element
     const titleX = isArabic ? doc.internal.pageSize.width - 20 : 20;
-    doc.text('Report Content', titleX, 20, { align: isArabic ? 'right' : 'left' });
+    doc.text(isArabic ? 'محتوى التقرير' : 'Report Content', titleX, 20, { align: isArabic ? 'right' : 'left' });
+    
+    // Force set font again to ensure Arabic text displays correctly
+    if (isArabic) {
+      doc.setFont(fontStyles.font);
+      doc.setR2L(true);
+    }
     
     // Save the PDF
     doc.save(`${fileName}.pdf`);

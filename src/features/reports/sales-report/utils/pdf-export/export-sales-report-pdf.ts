@@ -50,6 +50,12 @@ export const exportSalesReportPDF = ({
     const finalY = doc.lastAutoTable.finalY || 150;
     addTotalSales(doc, totalSales, finalY, isArabic, fontStyles.font);
     
+    // Force set font again after table rendering
+    if (isArabic) {
+      doc.setFont('Tajawal');
+      doc.setR2L(true);
+    }
+    
     // Save the PDF document
     doc.save("sales_report.pdf");
     
