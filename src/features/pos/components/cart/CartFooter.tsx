@@ -17,8 +17,7 @@ interface CartFooterProps {
   subtotal: number;
   taxAmount: number;
   total: number;
-  paidAmount?: number; // Optional paid amount
-  paymentMethod?: PaymentMethod; // Add paymentMethod for tracking whether it's selected
+  paymentMethod?: PaymentMethod;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setDiscount: (discount: number) => void;
@@ -38,8 +37,6 @@ const CartFooter: React.FC<CartFooterProps> = ({
   subtotal,
   taxAmount,
   total,
-  paidAmount,
-  paymentMethod,
   setOrderType,
   setTableNumber,
   setDiscount,
@@ -78,8 +75,6 @@ const CartFooter: React.FC<CartFooterProps> = ({
         discount={discount}
         discountType={discountType}
         total={total}
-        paidAmount={paidAmount}
-        paymentMethod={paymentMethod}
         isMobile={isMobile}
         isArabic={isArabic}
       />

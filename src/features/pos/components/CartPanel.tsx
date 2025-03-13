@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
@@ -8,7 +9,6 @@ import CartFooter from "./cart/CartFooter";
 import { useCartResize } from "../hooks/useCartResize";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import { usePaymentDialog } from "./cart/PaymentDialogHandler";
-import PaymentAmountDialog from "./PaymentAmountDialog";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -22,8 +22,7 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
-  paidAmount?: number;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -47,7 +46,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   orderType,
   tableNumber,
   paymentMethod,
-  paidAmount,
   createInvoice,
   clearCart,
   getSizeLabel,
@@ -62,7 +60,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
-  const [localPaidAmount, setLocalPaidAmount] = useState<number | undefined>(paidAmount);
 
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
     isArabic,
@@ -73,18 +70,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { 
     showPaymentMethodDialog, 
     setShowPaymentMethodDialog,
-    showPaymentAmountDialog,
-    setShowPaymentAmountDialog,
     handleCreateInvoice, 
-    handlePaymentMethodSelected,
-    handlePaymentAmountConfirmed
+    handlePaymentMethodSelected
   } = usePaymentDialog({
     paymentMethod,
     setPaymentMethod,
     createInvoice,
     setCurrentInvoice,
-    total,
-    setPaidAmount: setLocalPaidAmount
+    total
   });
 
   const toggleExpand = () => {
@@ -142,7 +135,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         subtotal={subtotal}
         taxAmount={taxAmount}
         total={total}
-        paidAmount={localPaidAmount}
         setOrderType={setOrderType}
         setTableNumber={setTableNumber}
         setDiscount={setDiscount}
@@ -158,13 +150,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         onConfirm={handlePaymentMethodSelected}
-      />
-
-      <PaymentAmountDialog
-        isOpen={showPaymentAmountDialog}
-        onClose={() => setShowPaymentAmountDialog(false)}
-        onConfirm={handlePaymentAmountConfirmed}
-        total={total}
       />
     </div>
   );

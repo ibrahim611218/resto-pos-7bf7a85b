@@ -5,10 +5,9 @@ import { PaymentMethod, Invoice } from "@/types";
 interface UsePaymentDialogProps {
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => Invoice;
   setCurrentInvoice: (invoice: Invoice | null) => void;
   total: number;
-  setPaidAmount?: (amount: number) => void; // Add optional setPaidAmount
 }
 
 export const usePaymentDialog = ({
@@ -16,11 +15,9 @@ export const usePaymentDialog = ({
   setPaymentMethod,
   createInvoice,
   setCurrentInvoice,
-  total,
-  setPaidAmount
+  total
 }: UsePaymentDialogProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
-  const [showPaymentAmountDialog, setShowPaymentAmountDialog] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<{
     name?: string;
     taxNumber?: string;
@@ -36,28 +33,16 @@ export const usePaymentDialog = ({
   const handlePaymentMethodSelected = (selectedMethod: PaymentMethod) => {
     setPaymentMethod(selectedMethod);
     
-    // After selecting payment method, show the payment amount dialog
+    // Close the payment method dialog
     setShowPaymentMethodDialog(false);
-    setShowPaymentAmountDialog(true);
-  };
-
-  const handlePaymentAmountConfirmed = (paidAmount: number) => {
-    // Close the payment amount dialog
-    setShowPaymentAmountDialog(false);
     
-    // Store the paid amount if setPaidAmount is provided
-    if (setPaidAmount) {
-      setPaidAmount(paidAmount);
-    }
-    
-    // Create the invoice with the paid amount
+    // Create the invoice directly after selecting payment method
     const invoice = createInvoice(
       customerInfo.name,
       customerInfo.taxNumber,
       customerInfo.customerId,
       customerInfo.commercialRegister,
-      customerInfo.address,
-      paidAmount
+      customerInfo.address
     );
     
     // Set the current invoice
@@ -67,12 +52,9 @@ export const usePaymentDialog = ({
   return {
     showPaymentMethodDialog,
     setShowPaymentMethodDialog,
-    showPaymentAmountDialog,
-    setShowPaymentAmountDialog,
     customerInfo,
     setCustomerInfo,
     handleCreateInvoice,
-    handlePaymentMethodSelected,
-    handlePaymentAmountConfirmed
+    handlePaymentMethodSelected
   };
 };
