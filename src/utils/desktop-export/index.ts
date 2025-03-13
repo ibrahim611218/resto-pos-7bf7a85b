@@ -21,8 +21,11 @@ export const handleDesktopExport = (language: string = "ar") => {
     // Generate the HTML content
     const htmlContent = generateDownloadPageTemplate(language, downloadUrl);
     
-    // Direct approach - Create a new window with document.write
-    const newWindow = window.open('', '_blank');
+    // Use data URL approach which is more reliable than blob URLs
+    const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+    
+    // Open the data URL in a new window
+    const newWindow = window.open(dataUrl, '_blank');
     
     if (!newWindow) {
       // Show popup blocked notification
@@ -30,24 +33,8 @@ export const handleDesktopExport = (language: string = "ar") => {
       return;
     }
     
-    // Write content directly to the new window
-    newWindow.document.write(htmlContent);
-    newWindow.document.close();
-    
-    // Trigger download programmatically after a short delay
-    setTimeout(() => {
-      try {
-        const downloadLink = newWindow.document.getElementById('download-link');
-        if (downloadLink) {
-          downloadLink.click();
-          // Show success notification
-          showNotification("download-started", language);
-        }
-      } catch (innerError) {
-        console.error("Error triggering download:", innerError);
-        showNotification("export-error", language);
-      }
-    }, 500);
+    // Show success notification
+    showNotification("download-started", language);
     
   } catch (error) {
     console.error("Desktop export error:", error);

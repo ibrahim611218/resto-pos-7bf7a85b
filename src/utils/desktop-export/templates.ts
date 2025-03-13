@@ -114,8 +114,8 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
     
     <p>${isArabic ? 'اضغط على زر التحميل أدناه لتنزيل نسخة سطح المكتب من تطبيق Resto POS:' : 'Click the download button below to download the desktop version of Resto POS:'}</p>
     
-    <a href="${downloadUrl}" class="download-btn" id="download-link">
-      ${isArabic ? 'تحميل Resto POS للويندوز' : 'Download Resto POS for Windows'}
+    <a href="${downloadUrl}" class="download-btn" id="download-link" download>
+      ${isArabic ? 'تحميل Resto POS' : 'Download Resto POS'}
     </a>
     
     <div class="file-info">
@@ -151,13 +151,16 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
   </div>
 
   <script>
-    // Auto-trigger download after a short delay
-    window.onload = function() {
+    // Auto-download trigger
+    document.addEventListener('DOMContentLoaded', function() {
       setTimeout(function() {
-        document.getElementById('download-link').click();
-        console.log('Auto-download triggered');
-      }, 1000);
-    };
+        var link = document.getElementById('download-link');
+        if (link) {
+          link.click();
+          console.log('Auto-download triggered');
+        }
+      }, 800);
+    });
   </script>
 </body>
 </html>`;

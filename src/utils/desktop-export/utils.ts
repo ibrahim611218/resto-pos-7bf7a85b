@@ -6,8 +6,13 @@ import { DOWNLOAD_URLS } from './constants';
  * @returns boolean indicating if running in Electron
  */
 export const isRunningInElectron = (): boolean => {
-  // Check if the window object has Electron specific properties
-  return window?.navigator?.userAgent?.toLowerCase().indexOf(' electron/') > -1;
+  try {
+    // Check if the window object has Electron specific properties
+    return window?.navigator?.userAgent?.toLowerCase().indexOf(' electron/') > -1;
+  } catch (error) {
+    console.error("Error checking for Electron:", error);
+    return false;
+  }
 };
 
 /**
@@ -15,26 +20,31 @@ export const isRunningInElectron = (): boolean => {
  * @returns string URL for the appropriate installer
  */
 export const getDownloadUrl = (): string => {
-  const platform = window.navigator.platform.toLowerCase();
-  let url = '';
-  
-  // Determine the appropriate download URL based on platform
-  if (platform.includes('win')) {
-    url = DOWNLOAD_URLS.windows;
-  } else if (platform.includes('mac')) {
-    url = DOWNLOAD_URLS.mac;
-  } else if (platform.includes('linux')) {
-    url = DOWNLOAD_URLS.linux;
-  } else {
-    // Default to Windows if platform cannot be determined
-    url = DOWNLOAD_URLS.windows;
+  try {
+    const platform = window.navigator.platform.toLowerCase();
+    let url = '';
+    
+    // Determine the appropriate download URL based on platform
+    if (platform.includes('win')) {
+      url = DOWNLOAD_URLS.windows;
+    } else if (platform.includes('mac')) {
+      url = DOWNLOAD_URLS.mac;
+    } else if (platform.includes('linux')) {
+      url = DOWNLOAD_URLS.linux;
+    } else {
+      // Default to Windows if platform cannot be determined
+      url = DOWNLOAD_URLS.windows;
+    }
+    
+    // Make sure we have a valid URL
+    if (!url || url.trim() === '') {
+      console.warn('Invalid download URL, using Windows as fallback');
+      return DOWNLOAD_URLS.windows;
+    }
+    
+    return url;
+  } catch (error) {
+    console.error("Error getting download URL:", error);
+    return DOWNLOAD_URLS.windows; // Default to Windows on error
   }
-  
-  // Make sure we have a valid URL
-  if (!url || url.trim() === '') {
-    console.warn('Invalid download URL, using Windows as fallback');
-    return DOWNLOAD_URLS.windows;
-  }
-  
-  return url;
 };
