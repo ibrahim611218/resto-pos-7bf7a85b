@@ -22,7 +22,7 @@ interface CartPanelProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: PaymentMethod;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
+  createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice; 
   clearCart: () => void;
   getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
@@ -32,8 +32,6 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
-  paidAmount?: number;
-  setPaidAmount?: (amount: number) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -58,8 +56,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
-  paidAmount = total,
-  setPaidAmount,
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
@@ -82,10 +78,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     paymentMethod,
     setPaymentMethod,
     createInvoice,
-    setCurrentInvoice,
-    total,
-    paidAmount,
-    setPaidAmount
+    setCurrentInvoice
   });
 
   const toggleExpand = () => {
@@ -150,7 +143,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         handleCreateInvoice={handleCreateInvoice}
         clearCart={clearCart}
         isArabic={isArabic}
-        paidAmount={paidAmount}
       />
 
       <PaymentMethodDialog
@@ -159,9 +151,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         paymentMethod={paymentMethod}
         setPaymentMethod={setPaymentMethod}
         onConfirm={handlePaymentMethodSelected}
-        total={total}
-        paidAmount={paidAmount}
-        setPaidAmount={setPaidAmount}
       />
     </div>
   );

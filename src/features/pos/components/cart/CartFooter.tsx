@@ -24,7 +24,6 @@ interface CartFooterProps {
   handleCreateInvoice: () => void;
   clearCart: () => void;
   isArabic: boolean;
-  paidAmount?: number;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -44,7 +43,6 @@ const CartFooter: React.FC<CartFooterProps> = ({
   handleCreateInvoice,
   clearCart,
   isArabic,
-  paidAmount,
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
@@ -76,7 +74,6 @@ const CartFooter: React.FC<CartFooterProps> = ({
         discount={discount}
         discountType={discountType}
         total={total}
-        paidAmount={paidAmount}
         isMobile={isMobile}
         isArabic={isArabic}
       />

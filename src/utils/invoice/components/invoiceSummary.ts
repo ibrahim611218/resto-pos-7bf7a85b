@@ -17,12 +17,6 @@ export const generateInvoiceSummary = (invoice: Invoice, businessSettings: Busin
     invoice.discountType || "percentage"
   );
   
-  // Get paid and remaining amounts with fallbacks
-  const paidAmount = invoice.paidAmount !== undefined ? invoice.paidAmount : invoice.total;
-  const remainingAmount = invoice.remainingAmount !== undefined ? invoice.remainingAmount : 0;
-  
-  const showRemaining = remainingAmount > 0;
-  
   return `
     <div class="invoice-summary">
       <p><strong>المجموع الفرعي:</strong> <span>${invoice.subtotal.toFixed(2)} ر.س</span></p>
@@ -31,8 +25,6 @@ export const generateInvoiceSummary = (invoice: Invoice, businessSettings: Busin
         discountAmount.toFixed(2)
       } ر.س</span></p>` : ''}
       <p class="total-row"><strong>الإجمالي:</strong> <span>${invoice.total.toFixed(2)} ر.س</span></p>
-      <p><strong>المبلغ المدفوع:</strong> <span>${paidAmount.toFixed(2)} ر.س</span></p>
-      ${showRemaining ? `<p class="remaining-amount"><strong>المبلغ المتبقي:</strong> <span>${remainingAmount.toFixed(2)} ر.س</span></p>` : ''}
     </div>
   `;
 };

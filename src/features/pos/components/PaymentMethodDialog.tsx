@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { PaymentMethod } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCustomers } from "@/features/customers/hooks/useCustomers";
@@ -21,10 +20,7 @@ interface PaymentMethodDialogProps {
   onClose: () => void;
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
-  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
-  total?: number;
-  paidAmount?: number;
-  setPaidAmount?: (amount: number) => void;
+  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -33,9 +29,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   paymentMethod,
   setPaymentMethod,
   onConfirm,
-  total = 0,
-  paidAmount,
-  setPaidAmount
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -54,16 +47,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     setSelectedCustomerId,
     isNewCustomer,
     setIsNewCustomer,
-    paidAmount: internalPaidAmount,
-    setPaidAmount: setInternalPaidAmount,
     handleConfirm
-  } = usePaymentMethodDialog({ 
-    isOpen, 
-    onClose, 
-    onConfirm,
-    initialPaidAmount: paidAmount,
-    total
-  });
+  } = usePaymentMethodDialog({ isOpen, onClose, onConfirm });
 
   const handleCustomerSelect = (customerId: string) => {
     if (customerId === "new") {
@@ -86,17 +71,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
       }
     }
   };
-
-  // Update both internal and external paid amount
-  const updatePaidAmount = (value: number) => {
-    setInternalPaidAmount(value);
-    if (setPaidAmount) {
-      setPaidAmount(value);
-    }
-  };
-
-  const remainingAmount = Math.max(0, total - internalPaidAmount);
-  const hasRemainingAmount = remainingAmount > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -129,47 +103,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             onCommercialRegisterChange={setCommercialRegister}
             onAddressChange={setAddress}
           />
-
-          <div className="space-y-2">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="totalAmount" className="text-sm font-medium mb-2 block">
-                  {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
-                </label>
-                <Input
-                  id="totalAmount"
-                  type="text"
-                  value={total.toFixed(2)}
-                  readOnly
-                  className="bg-muted"
-                />
-              </div>
-              <div>
-                <label htmlFor="paidAmount" className="text-sm font-medium mb-2 block">
-                  {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
-                </label>
-                <Input
-                  id="paidAmount"
-                  type="number"
-                  value={internalPaidAmount}
-                  onChange={(e) => updatePaidAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                  className="bg-background"
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="remainingAmount" className="text-sm font-medium mb-2 block">
-                {isArabic ? "المبلغ المتبقي" : "Remaining Amount"}
-              </label>
-              <Input
-                id="remainingAmount"
-                type="text"
-                value={remainingAmount.toFixed(2)}
-                readOnly
-                className={`bg-muted ${hasRemainingAmount ? 'text-red-500 font-bold text-lg p-4 border-2 border-red-300' : ''}`}
-              />
-            </div>
-          </div>
         </div>
 
         <DialogFooter>
@@ -186,3 +119,4 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 };
 
 export default PaymentMethodDialog;
+

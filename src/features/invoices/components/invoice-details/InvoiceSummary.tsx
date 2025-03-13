@@ -15,10 +15,6 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   settings,
   discountAmount
 }) => {
-  // Get paid and remaining amounts with fallbacks
-  const paidAmount = invoice.paidAmount !== undefined ? invoice.paidAmount : invoice.total;
-  const remainingAmount = invoice.remainingAmount !== undefined ? invoice.remainingAmount : 0;
-
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
@@ -90,20 +86,6 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           <span>الإجمالي</span>
           <span>{formatCurrency(invoice.total, "ar-SA", "SAR")}</span>
         </div>
-        
-        <Separator className="my-2" />
-        
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">المبلغ المدفوع</span>
-          <span>{formatCurrency(paidAmount, "ar-SA", "SAR")}</span>
-        </div>
-        
-        {remainingAmount > 0 && (
-          <div className="flex justify-between text-red-500 font-medium">
-            <span>المبلغ المتبقي</span>
-            <span>{formatCurrency(remainingAmount, "ar-SA", "SAR")}</span>
-          </div>
-        )}
       </div>
     </>
   );

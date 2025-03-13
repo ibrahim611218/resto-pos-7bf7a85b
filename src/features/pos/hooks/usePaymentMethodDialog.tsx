@@ -5,24 +5,16 @@ import { PaymentMethod } from "@/types";
 interface UsePaymentMethodDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => void;
-  initialPaidAmount?: number;
-  total?: number;
+  onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
 }
 
-export const usePaymentMethodDialog = ({ 
-  isOpen, 
-  onConfirm, 
-  initialPaidAmount,
-  total = 0
-}: UsePaymentMethodDialogProps) => {
+export const usePaymentMethodDialog = ({ isOpen, onConfirm }: UsePaymentMethodDialogProps) => {
   const [customerName, setCustomerName] = useState("");
   const [customerTaxNumber, setCustomerTaxNumber] = useState("");
   const [commercialRegister, setCommercialRegister] = useState("");
   const [address, setAddress] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isNewCustomer, setIsNewCustomer] = useState(true);
-  const [paidAmount, setPaidAmount] = useState<number>(initialPaidAmount !== undefined ? initialPaidAmount : total);
 
   useEffect(() => {
     if (isOpen) {
@@ -33,15 +25,14 @@ export const usePaymentMethodDialog = ({
       setAddress("");
       setSelectedCustomerId("");
       setIsNewCustomer(true);
-      setPaidAmount(initialPaidAmount !== undefined ? initialPaidAmount : total);
     }
-  }, [isOpen, initialPaidAmount, total]);
+  }, [isOpen]);
 
   const handleConfirm = () => {
     if (!isNewCustomer && selectedCustomerId) {
-      onConfirm(customerName, customerTaxNumber, selectedCustomerId, commercialRegister, address, paidAmount);
+      onConfirm(customerName, customerTaxNumber, selectedCustomerId, commercialRegister, address);
     } else {
-      onConfirm(customerName, customerTaxNumber, undefined, commercialRegister, address, paidAmount);
+      onConfirm(customerName, customerTaxNumber, undefined, commercialRegister, address);
     }
   };
 
@@ -58,8 +49,7 @@ export const usePaymentMethodDialog = ({
     setSelectedCustomerId,
     isNewCustomer,
     setIsNewCustomer,
-    paidAmount,
-    setPaidAmount,
     handleConfirm
   };
 };
+

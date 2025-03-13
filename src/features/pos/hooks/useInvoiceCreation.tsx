@@ -34,8 +34,7 @@ export const useInvoiceCreation = (
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
-    address?: string,
-    paidAmount?: number
+    address?: string
   ): Invoice => {
     const invoiceId = generateInvoiceNumber();
     
@@ -49,9 +48,6 @@ export const useInvoiceCreation = (
         address: address
       };
     }
-    
-    const actualPaidAmount = paidAmount !== undefined ? paidAmount : total;
-    const remainingAmount = Math.max(0, total - actualPaidAmount);
     
     const invoice: Invoice = {
       id: Math.random().toString(36).substring(2, 9),
@@ -69,9 +65,7 @@ export const useInvoiceCreation = (
       status: "completed",
       orderType: orderType,
       tableNumber: orderType === "dineIn" ? tableNumber : undefined,
-      customer: customer,
-      paidAmount: actualPaidAmount,
-      remainingAmount: remainingAmount
+      customer: customer
     };
     
     // يتم حفظ الفاتورة في قاعدة البيانات وإضافتها إلى قائمة الفواتير

@@ -6,11 +6,8 @@ import PaymentMethodDialog from "../PaymentMethodDialog";
 interface PaymentDialogHandlerProps {
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice;
+  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => Invoice;
   setCurrentInvoice: (invoice: Invoice | null) => void;
-  total?: number;
-  paidAmount?: number;
-  setPaidAmount?: (amount: number) => void;
 }
 
 // Custom hook to handle payment dialog logic
@@ -18,10 +15,7 @@ export const usePaymentDialog = ({
   paymentMethod,
   setPaymentMethod,
   createInvoice,
-  setCurrentInvoice,
-  total = 0,
-  paidAmount,
-  setPaidAmount
+  setCurrentInvoice
 }: PaymentDialogHandlerProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
 
@@ -34,17 +28,9 @@ export const usePaymentDialog = ({
     customerTaxNumber?: string, 
     customerId?: string,
     commercialRegister?: string,
-    address?: string,
-    newPaidAmount?: number
+    address?: string
   ) => {
-    const actualPaidAmount = newPaidAmount !== undefined ? newPaidAmount : paidAmount !== undefined ? paidAmount : total;
-    
-    // Update the paidAmount state if setPaidAmount is provided
-    if (setPaidAmount && newPaidAmount !== undefined) {
-      setPaidAmount(newPaidAmount);
-    }
-    
-    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, actualPaidAmount);
+    const invoice = createInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address);
     setCurrentInvoice(invoice);
     setShowPaymentMethodDialog(false);
     return invoice;
@@ -73,9 +59,6 @@ const PaymentDialogHandler: React.FC<PaymentDialogHandlerProps> = (props) => {
       paymentMethod={props.paymentMethod}
       setPaymentMethod={props.setPaymentMethod}
       onConfirm={handlePaymentMethodSelected}
-      total={props.total}
-      paidAmount={props.paidAmount}
-      setPaidAmount={props.setPaidAmount}
     />
   );
 };
