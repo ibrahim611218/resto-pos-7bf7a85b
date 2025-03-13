@@ -21,7 +21,13 @@ export const exportSalesReportPDF = ({
   endDate,
   isArabic
 }: ExportPDFProps) => {
+  // Create new PDF document
   const doc = new jsPDF(isArabic ? "p" : "p", "mm", "a4");
+  
+  // Add font for Arabic text support
+  // This is crucial for proper Arabic text rendering
+  doc.addFont("https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap", "Tajawal", "normal");
+  doc.setFont("Tajawal");
   
   // Add report title
   doc.setFontSize(18);
@@ -45,9 +51,11 @@ export const exportSalesReportPDF = ({
       (index + 1).toString(),
       invoice.number,
       invDate,
-      invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed"),
-      invoice.paymentMethod,
-      invoice.orderType || "-",
+      status,
+      invoice.paymentMethod === "cash" ? (isArabic ? "نقدي" : "Cash") : 
+      invoice.paymentMethod === "card" ? (isArabic ? "بطاقة" : "Card") : invoice.paymentMethod,
+      invoice.orderType === "takeaway" ? (isArabic ? "سفري" : "Takeaway") : 
+      invoice.orderType === "dineIn" ? (isArabic ? "محلي" : "Dine In") : (isArabic ? "غير محدد" : "-"),
       invoice.total.toFixed(2)
     ];
   });
@@ -67,9 +75,10 @@ export const exportSalesReportPDF = ({
     ]],
     body: tableData,
     theme: 'grid',
-    headStyles: { fillColor: [16, 185, 129] },
+    headStyles: { fillColor: [16, 185, 129], fontStyle: 'bold' },
     styles: { 
-      font: 'helvetica',
+      font: 'Tajawal',
+      fontSize: 10,
       halign: isArabic ? 'right' : 'left',
       textColor: [0, 0, 0]
     },
