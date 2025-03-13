@@ -21,6 +21,16 @@ interface PosProductsRendererProps {
  * Component that renders the products panel with search and filtering functionality
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
+  // Add debug logs
+  console.log("PosProductsRenderer - Categories:", props.categories?.length);
+  console.log("PosProductsRenderer - Filtered Products:", props.filteredProducts?.length);
+  console.log("PosProductsRenderer - Searched Products:", props.searchedProducts?.length);
+  
+  const getSizeLabel = (size: string) => {
+    // This is a simple adapter function to match the expected prop
+    return size;
+  };
+  
   return (
     <ProductsPanel 
       searchTerm={props.searchTerm}
@@ -32,7 +42,7 @@ const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
       searchedProducts={props.searchedProducts}
       onAddToCart={props.onAddToCart}
       isArabic={props.isArabic}
-      getSizeLabel={(size) => size} // This prop is expected but wasn't used properly
+      getSizeLabel={getSizeLabel}
       showAllProducts={props.showAllProducts}
       setShowAllProducts={props.setShowAllProducts}
     />

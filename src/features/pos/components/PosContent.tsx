@@ -56,7 +56,7 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       categories={props.categories}
       filteredProducts={props.filteredProducts}
       searchedProducts={props.searchedProducts}
-      onAddToCart={props.addToCart} // Changed from addToCart to onAddToCart
+      onAddToCart={props.addToCart} // Using the correct prop name
       showAllProducts={props.showAllProducts}
       setShowAllProducts={props.setShowAllProducts}
       isArabic={props.isArabic}

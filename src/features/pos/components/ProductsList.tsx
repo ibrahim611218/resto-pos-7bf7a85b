@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Product, Size } from "@/types";
+import { Product } from "@/types";
 import ProductCard from "./ProductCard";
 
 interface ProductsListProps {
@@ -22,6 +22,9 @@ const ProductsList: React.FC<ProductsListProps> = ({
 }) => {
   const displayProducts = searchTerm ? searchResults : products;
 
+  // Add debug logs to verify data
+  console.log("ProductsList - displayProducts:", displayProducts?.length);
+  
   return (
     <div className="container mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pb-24">
       {displayProducts && displayProducts.length > 0 ? (
