@@ -48,9 +48,11 @@ const PaymentAmountDialog: React.FC<PaymentAmountDialogProps> = ({
     setInputValue(inputVal);
     
     const value = parseFloat(inputVal);
-    if (!isNaN(value) && value >= 0) {
+    if (!isNaN(value)) {
       setPaidAmount(value);
-      setRemaining(Math.max(0, total - value));
+      // Calculate remaining amount - if paid is less than total, we have remaining
+      const remainingAmount = total - value;
+      setRemaining(Math.max(0, remainingAmount));
     } else {
       setPaidAmount(0);
       setRemaining(total);
