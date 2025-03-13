@@ -76,7 +76,7 @@ export const calculateInvoiceAmounts = (
     );
     
     const taxableSubtotal = items
-      .filter((item) => item.taxable)
+      .filter((item) => item.taxable !== false) // Consider items taxable by default
       .reduce((sum, item) => sum + item.price * item.quantity, 0);
     
     const taxAmount = +(taxableSubtotal * (effectiveTaxRate / 100)).toFixed(2);

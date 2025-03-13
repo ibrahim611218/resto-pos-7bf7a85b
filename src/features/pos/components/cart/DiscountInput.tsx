@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import NumberPad from "@/components/ui/number-pad";
 
 export interface DiscountInputProps {
   discount: number;
@@ -21,10 +22,10 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   isMobile = false,
   isArabic = false
 }) => {
-  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = parseFloat(e.target.value);
-    if (isNaN(value)) value = 0;
-    setDiscount(value);
+  const [showNumberPad, setShowNumberPad] = useState(false);
+
+  const handleDiscountClick = () => {
+    setShowNumberPad(true);
   };
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
@@ -37,10 +38,10 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
       <div className="flex space-x-2">
         <div className="flex-1">
           <Input
-            type="number"
-            min="0"
-            value={discount || ""}
-            onChange={handleDiscountChange}
+            type="text"
+            readOnly
+            value={discount || "0"}
+            onClick={handleDiscountClick}
             className={`w-full p-${isMobile ? '1.5' : '2'}`}
             placeholder={isArabic ? "أدخل قيمة الخصم" : "Enter discount"}
           />
@@ -62,6 +63,19 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
           </div>
         </RadioGroup>
       </div>
+
+      <NumberPad
+        isOpen={showNumberPad}
+        onClose={() => setShowNumberPad(false)}
+        onConfirm={(value) => {
+          setDiscount(value);
+          setShowNumberPad(false);
+        }}
+        initialValue={discount}
+        title={isArabic ? "أدخل قيمة الخصم" : "Enter Discount"}
+        decimalAllowed={true}
+        isArabic={isArabic}
+      />
     </div>
   );
 };
