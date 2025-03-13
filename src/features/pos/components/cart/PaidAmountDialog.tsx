@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
@@ -30,12 +31,14 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   const [paidAmount, setPaidAmount] = useState<number>(total);
   const [change, setChange] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>(total.toString());
+  const [isFirstInput, setIsFirstInput] = useState(true);
 
   useEffect(() => {
     if (isOpen) {
       setPaidAmount(total);
       setInputValue(total.toString());
       setChange(0);
+      setIsFirstInput(true);
     }
   }, [isOpen, total]);
 
@@ -63,16 +66,20 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
     
     if (digit === "C") {
       newValue = "0";
+      setIsFirstInput(true);
     } else if (digit === "⌫") {
       newValue = inputValue.slice(0, -1);
       if (newValue === "") newValue = "0";
     } else if (digit === ".") {
       if (!inputValue.includes(".")) {
-        newValue = inputValue + ".";
+        newValue = isFirstInput ? "0." : inputValue + ".";
+        setIsFirstInput(false);
       }
     } else {
-      if (inputValue === "0") {
+      // For regular digits, replace the value on first click
+      if (isFirstInput) {
         newValue = digit;
+        setIsFirstInput(false);
       } else {
         newValue = inputValue + digit;
       }
@@ -130,6 +137,7 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
               value={inputValue}
               onChange={handlePaidAmountChange}
               className="text-lg font-bold"
+              onClick={() => setIsFirstInput(true)}
             />
           </div>
           
@@ -140,7 +148,10 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
                 type="button" 
                 variant="outline" 
                 className="flex-1 min-w-[70px]"
-                onClick={() => updateAmount(amount.toString())}
+                onClick={() => {
+                  updateAmount(amount.toString());
+                  setIsFirstInput(false);
+                }}
               >
                 {amount}
               </Button>
@@ -149,7 +160,10 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
               type="button" 
               variant="outline" 
               className="flex-1 min-w-[70px]"
-              onClick={() => updateAmount(total.toString())}
+              onClick={() => {
+                updateAmount(total.toString());
+                setIsFirstInput(false);
+              }}
             >
               {isArabic ? "الضبط" : "Exact"}
             </Button>
