@@ -9,6 +9,7 @@ export interface CartSummaryProps {
   discountType: "percentage" | "fixed";
   total: number;
   paidAmount?: number; // Optional paid amount
+  paymentMethod?: string; // Add paymentMethod to determine when to show paid/remaining
   isMobile?: boolean;
   isArabic?: boolean;
 }
@@ -20,6 +21,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   discountType,
   total,
   paidAmount,
+  paymentMethod,
   isMobile = false,
   isArabic = false
 }) => {
@@ -36,6 +38,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
+
+  // Only show paid/remaining amounts if a payment method has been selected
+  const showPaymentDetails = paymentMethod && paidAmount !== undefined;
 
   return (
     <div className={`${spacingClass} ${textSizeClass}`}>
@@ -56,28 +61,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         </span>
       </div>
       
-      {discount > 0 && (
-        <div className="flex justify-between text-green-600">
-          <span>
-            {isArabic ? "الخصم" : "Discount"} {discountType === 'percentage' ? `(${discount}%)` : ''}
-          </span>
-          <span>
-            - {formatCurrency(discountAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-          </span>
-        </div>
-      )}
-      
-      <div className={`flex justify-between font-bold ${totalSizeClass} pt-1`}>
-        <span>
-          {isArabic ? "الإجمالي" : "Total"}
-        </span>
-        <span>
-          {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
-        </span>
-      </div>
-
-      {/* Display paid amount and remaining if available */}
-      {paidAmount !== undefined && (
+      {/* Display paid amount and remaining if payment method is selected */}
+      {showPaymentDetails && (
         <>
           <div className="flex justify-between pt-1 border-t border-gray-200">
             <span className="text-muted-foreground">
@@ -97,6 +82,26 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           </div>
         </>
       )}
+      
+      {discount > 0 && (
+        <div className="flex justify-between text-green-600">
+          <span>
+            {isArabic ? "الخصم" : "Discount"} {discountType === 'percentage' ? `(${discount}%)` : ''}
+          </span>
+          <span>
+            - {formatCurrency(discountAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
+      
+      <div className={`flex justify-between font-bold ${totalSizeClass} pt-1`}>
+        <span>
+          {isArabic ? "الإجمالي" : "Total"}
+        </span>
+        <span>
+          {formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}
+        </span>
+      </div>
     </div>
   );
 };
