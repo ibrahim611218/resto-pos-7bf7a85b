@@ -4,7 +4,9 @@
  */
 export interface InventoryItem {
   id: string;
-  name: string;
+  name: string; 
+  productName?: string; // Added for compatibility
+  productNameAr?: string; // Added for Arabic name
   quantity: number;
   unit: string;
   reorderLevel: number;

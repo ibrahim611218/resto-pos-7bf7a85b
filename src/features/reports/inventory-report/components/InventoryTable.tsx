@@ -2,7 +2,6 @@
 import React from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from "lucide-react";
 import { InventoryItem } from "../types";
 import { calculateInventoryPercentage, getInventoryStatusColor } from "../utils/inventory-utils";
@@ -43,11 +42,12 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
             {inventoryData.map((item) => {
               const percentage = calculateInventoryPercentage(item.quantity, item.originalQuantity);
               const statusColor = getInventoryStatusColor(percentage);
+              const displayName = isArabic && item.productNameAr ? item.productNameAr : (item.productName || item.name);
               
               return (
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
-                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{displayName}</TableCell>
                   <TableCell>{item.quantity.toFixed(2)}</TableCell>
                   <TableCell>{item.unit}</TableCell>
                   <TableCell>{item.reorderLevel}</TableCell>

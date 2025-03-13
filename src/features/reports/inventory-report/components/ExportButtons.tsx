@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { FileDown, Printer } from "lucide-react";
@@ -22,15 +21,19 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ inventoryData, isArabic, 
         : ["ID", "Product Name", "Quantity", "Unit", "Reorder Level", "Last Updated", "Inventory %"];
       
       // Create data rows
-      const data = inventoryData.map(item => [
-        item.id,
-        isArabic && item.productNameAr ? item.productNameAr : item.productName,
-        item.quantity.toFixed(2),
-        item.unit || "-",
-        item.reorderLevel.toString(),
-        new Date(item.lastUpdated).toLocaleDateString(isArabic ? "ar-SA" : "en-US"),
-        `${calculateInventoryPercentage(item.quantity, item.originalQuantity)}%`
-      ]);
+      const data = inventoryData.map(item => {
+        const displayName = isArabic && item.productNameAr ? item.productNameAr : (item.productName || item.name);
+        
+        return [
+          item.id,
+          displayName,
+          item.quantity.toFixed(2),
+          item.unit || "-",
+          item.reorderLevel.toString(),
+          new Date(item.lastUpdated).toLocaleDateString(isArabic ? "ar-SA" : "en-US"),
+          `${calculateInventoryPercentage(item.quantity, item.originalQuantity)}%`
+        ];
+      });
       
       // Create workbook and worksheet
       const wb = XLSX.utils.book_new();

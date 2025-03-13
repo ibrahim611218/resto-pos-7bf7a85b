@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import InventoryTable from "./components/InventoryTable";
@@ -11,21 +10,18 @@ const InventoryReport: React.FC = () => {
   const isArabic = language === "ar";
   const { inventoryData } = useInventoryData();
   
-  // Log component mount and data status - helpful for debugging
   useEffect(() => {
     console.log("InventoryReport rendered, data length:", inventoryData?.length);
     console.log("Language:", language, "isArabic:", isArabic);
   }, [inventoryData, language, isArabic]);
   
   const handlePrint = () => {
-    // Create a new window for printing
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       alert(isArabic ? 'يرجى السماح بالنوافذ المنبثقة لهذا الموقع' : 'Please allow popups for this site');
       return;
     }
     
-    // Prepare data for printing
     const printableHTML = `
       <html dir="${isArabic ? 'rtl' : 'ltr'}">
       <head>
@@ -134,6 +130,7 @@ const InventoryReport: React.FC = () => {
           <tbody>
             ${inventoryData.map((item, index) => {
               const inventoryPercentage = calculateInventoryPercentage(item.quantity, item.originalQuantity);
+              const displayName = isArabic && item.productNameAr ? item.productNameAr : (item.productName || item.name);
               
               let statusClass = 'good-stock';
               let statusText = isArabic ? 'متوفر' : 'In Stock';
@@ -143,7 +140,7 @@ const InventoryReport: React.FC = () => {
                 statusText = isArabic ? 'نفذ من المخزون' : 'Out of Stock';
               } else if (item.quantity <= item.reorderLevel) {
                 statusClass = 'low-stock';
-                statusText = isArabic ? 'المخزون منخفض' : 'Low Stock';
+                statusText = isArabic ? 'الخزون منخفض' : 'Low Stock';
               } else if (inventoryPercentage < 50) {
                 statusClass = 'medium-stock';
                 statusText = isArabic ? 'المخزون متوسط' : 'Medium Stock';
@@ -152,7 +149,7 @@ const InventoryReport: React.FC = () => {
               return `
                 <tr>
                   <td>${item.id}</td>
-                  <td>${isArabic && item.productNameAr ? item.productNameAr : item.productName}</td>
+                  <td>${displayName}</td>
                   <td>${item.quantity.toFixed(2)}</td>
                   <td>${item.unit || "-"}</td>
                   <td>${item.reorderLevel}</td>
@@ -176,19 +173,15 @@ const InventoryReport: React.FC = () => {
       </html>
     `;
     
-    // Write the HTML to the new window and print it
     printWindow.document.open();
     printWindow.document.write(printableHTML);
     printWindow.document.close();
     
-    // Wait for resources to load before printing
     printWindow.onload = function() {
       printWindow.print();
-      // Don't close the window to allow the user to see the print dialog
     };
   };
   
-  // If no data, render a loading state
   if (!inventoryData || inventoryData.length === 0) {
     return (
       <div className="container p-4 flex justify-center items-center min-h-[50vh]">
