@@ -11,9 +11,8 @@ interface PosProductsRendererProps {
   categories: any[];
   filteredProducts: Product[];
   searchedProducts: Product[];
-  onAddToCart: (product: Product, variantId: string) => void;
+  onAddToCart: (product: Product, quantity: number, size?: string) => void;
   isArabic: boolean;
-  getSizeLabel: (size: string) => string;
   showAllProducts?: boolean;
   setShowAllProducts?: (show: boolean) => void;
 }
@@ -33,7 +32,7 @@ const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
       searchedProducts={props.searchedProducts}
       onAddToCart={props.onAddToCart}
       isArabic={props.isArabic}
-      getSizeLabel={props.getSizeLabel}
+      getSizeLabel={(size) => size} // This prop is expected but wasn't used properly
       showAllProducts={props.showAllProducts}
       setShowAllProducts={props.setShowAllProducts}
     />
