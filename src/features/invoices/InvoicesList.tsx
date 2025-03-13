@@ -1,10 +1,9 @@
 
 import React, { useEffect } from "react";
 import { useInvoices } from "./hooks/useInvoices";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvoiceDetailsModal from "./components/InvoiceDetailsModal";
-import SearchBox from "./components/SearchBox";
-import InvoiceTabPanel from "./components/InvoiceTabPanel";
+import InvoiceListHeader from "./components/InvoiceListHeader";
+import InvoiceTabsContainer from "./components/InvoiceTabsContainer";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
@@ -41,67 +40,21 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
 
   return (
     <div className="container mx-auto py-6" dir={isArabic ? "rtl" : "ltr"}>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          {isArabic ? "الفواتير" : "Invoices"}
-        </h1>
-        <SearchBox
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          placeholder={isArabic ? "بحث عن فاتورة..." : "Search invoices..."}
-        />
-      </div>
+      <InvoiceListHeader
+        title={isArabic ? "الفواتير" : "Invoices"}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        placeholder={isArabic ? "بحث عن فاتورة..." : "Search invoices..."}
+      />
 
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="w-full max-w-md mx-auto mb-6">
-          <TabsTrigger value="all" className="flex-1">
-            {isArabic ? "جميع الفواتير" : "All Invoices"}
-          </TabsTrigger>
-          <TabsTrigger value="completed" className="flex-1">
-            {isArabic ? "مكتملة" : "Completed"}
-          </TabsTrigger>
-          <TabsTrigger value="refunded" className="flex-1">
-            {isArabic ? "مستردة" : "Refunded"}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="mt-0">
-          <InvoiceTabPanel
-            invoices={filteredInvoices}
-            isArabic={isArabic}
-            formatInvoiceDate={formatInvoiceDate}
-            getStatusBadgeColor={getStatusBadgeColor}
-            viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={handlePrintInvoice}
-          />
-        </TabsContent>
-
-        <TabsContent value="completed" className="mt-0">
-          <InvoiceTabPanel
-            invoices={filteredInvoices}
-            isArabic={isArabic}
-            formatInvoiceDate={formatInvoiceDate}
-            getStatusBadgeColor={getStatusBadgeColor}
-            viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={handlePrintInvoice}
-            filteredStatus="completed"
-            showHeader={false}
-          />
-        </TabsContent>
-
-        <TabsContent value="refunded" className="mt-0">
-          <InvoiceTabPanel
-            invoices={filteredInvoices}
-            isArabic={isArabic}
-            formatInvoiceDate={formatInvoiceDate}
-            getStatusBadgeColor={getStatusBadgeColor}
-            viewInvoiceDetails={viewInvoiceDetails}
-            printInvoice={handlePrintInvoice}
-            filteredStatus="refunded"
-            showHeader={false}
-          />
-        </TabsContent>
-      </Tabs>
+      <InvoiceTabsContainer
+        filteredInvoices={filteredInvoices}
+        isArabic={isArabic}
+        formatInvoiceDate={formatInvoiceDate}
+        getStatusBadgeColor={getStatusBadgeColor}
+        viewInvoiceDetails={viewInvoiceDetails}
+        printInvoice={handlePrintInvoice}
+      />
 
       <InvoiceDetailsModal
         invoice={selectedInvoice}

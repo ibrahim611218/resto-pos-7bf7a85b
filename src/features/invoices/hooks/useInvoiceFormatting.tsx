@@ -1,6 +1,7 @@
 
 import { useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { Invoice } from "@/types";
 
 export const useInvoiceFormatting = () => {
   const { language } = useLanguage();

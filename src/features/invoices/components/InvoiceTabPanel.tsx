@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import InvoiceTable from "./InvoiceTable";
+import EnhancedInvoiceTable from "./EnhancedInvoiceTable";
 import { Invoice } from "@/types";
 
 interface InvoiceTabPanelProps {
@@ -9,7 +9,7 @@ interface InvoiceTabPanelProps {
   invoices: Invoice[];
   isArabic: boolean;
   formatInvoiceDate: (date: Date) => string;
-  getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded") => string;
+  getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
   filteredStatus?: "completed" | "refunded" | null;
@@ -37,7 +37,7 @@ const InvoiceTabPanel: React.FC<InvoiceTabPanelProps> = ({
         </CardHeader>
       )}
       <CardContent className={!showHeader ? "pt-6" : undefined}>
-        <InvoiceTable
+        <EnhancedInvoiceTable
           invoices={invoices}
           isArabic={isArabic}
           formatInvoiceDate={formatInvoiceDate}
