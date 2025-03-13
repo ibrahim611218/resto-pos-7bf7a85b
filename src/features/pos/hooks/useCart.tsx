@@ -23,13 +23,11 @@ export const useCart = () => {
     discount,
     discountType,
     paymentMethod,
-    paidAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
-    setPaidAmount,
     resetOrderConfig
   } = useOrderConfig();
 
@@ -41,9 +39,6 @@ export const useCart = () => {
     discountType,
     settings.taxIncluded
   );
-  
-  // Calculate remaining amount (only for display purposes)
-  const remainingAmount = Math.max(0, total - paidAmount);
   
   // Clear the entire cart (items + config)
   const clearCart = () => {
@@ -72,8 +67,7 @@ export const useCart = () => {
   
   // Wrapper for create invoice that also clears the cart
   const createInvoice = (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string): Invoice => {
-    // Pass only the paid amount to the invoice creation, not the remaining amount
-    const invoice = internalCreateInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address, paidAmount);
+    const invoice = internalCreateInvoice(customerName, customerTaxNumber, customerId, commercialRegister, address);
     clearCart();
     return invoice;
   };
@@ -92,14 +86,11 @@ export const useCart = () => {
     discount,
     discountType,
     paymentMethod,
-    paidAmount,
-    remainingAmount,
     setOrderType,
     setTableNumber,
     setDiscount,
     setDiscountType,
     setPaymentMethod,
-    setPaidAmount,
     
     // Invoice
     subtotal,

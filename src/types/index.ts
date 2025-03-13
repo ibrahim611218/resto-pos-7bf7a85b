@@ -1,4 +1,3 @@
-
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -83,7 +82,6 @@ export interface Invoice {
   discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
   orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
   tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
-  paidAmount?: number;           // المبلغ المدفوع
 }
 
 export interface BusinessSettings {

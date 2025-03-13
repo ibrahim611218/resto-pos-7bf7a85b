@@ -1,15 +1,18 @@
 
 import React from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { Product, Invoice } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
-import DesktopPosLayout from "./layout/DesktopPosLayout";
+import PosLayout from "./layout/PosLayout";
 import MobilePosLayout from "./layout/MobilePosLayout";
+import DesktopPosLayout from "./layout/DesktopPosLayout";
 import PosProductsRenderer from "./PosProductsRenderer";
 import PosCartRenderer from "./PosCartRenderer";
 
 interface PosContentProps {
   cartItems: any[];
   isArabic: boolean;
-  language: string;
+  language: any;
   subtotal: number;
   taxAmount: number;
   total: number;
@@ -18,35 +21,32 @@ interface PosContentProps {
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
   paymentMethod: any;
-  paidAmount: number;
-  remainingAmount: number;
-  addToCart: (product: any, quantity: number, size?: string) => void;
+  addToCart: (product: Product, variantId: string) => void;
   updateQuantity: (itemId: string, change: number) => void;
   removeItem: (itemId: string) => void;
   clearCart: () => void;
-  createInvoice: (customerName?: string, customerTaxNumber?: string) => any;
+  createInvoice: (customerName?: string, customerTaxNumber?: string) => Invoice;
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: any) => void;
-  setPaidAmount: (amount: number) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  activeCategory: string;
-  setActiveCategory: (category: string) => void;
+  activeCategory: string | null;
+  setActiveCategory: (id: string | null) => void;
   categories: any[];
-  filteredProducts: any[];
-  searchedProducts: any[];
+  filteredProducts: Product[];
+  searchedProducts: Product[];
   getSizeLabel: (size: string) => string;
-  showAllProducts: boolean;
-  setShowAllProducts: (show: boolean) => void;
+  showAllProducts?: boolean;
+  setShowAllProducts?: (show: boolean) => void;
 }
 
 const PosContent: React.FC<PosContentProps> = (props) => {
-  const { isMobile, isTablet } = useScreenSize();
-  
-  // Create the products panel component
+  const { isMobile } = useScreenSize();
+
+  // Prepare product panel component
   const productsPanel = (
     <PosProductsRenderer
       searchTerm={props.searchTerm}
@@ -56,14 +56,15 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       categories={props.categories}
       filteredProducts={props.filteredProducts}
       searchedProducts={props.searchedProducts}
-      onAddToCart={props.addToCart} // Using the correct prop name
+      onAddToCart={props.addToCart}
+      isArabic={props.isArabic}
+      getSizeLabel={props.getSizeLabel}
       showAllProducts={props.showAllProducts}
       setShowAllProducts={props.setShowAllProducts}
-      isArabic={props.isArabic}
     />
   );
-  
-  // Create the cart panel component
+
+  // Prepare cart panel component
   const cartPanel = (
     <PosCartRenderer
       cartItems={props.cartItems}
@@ -77,8 +78,6 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       orderType={props.orderType}
       tableNumber={props.tableNumber}
       paymentMethod={props.paymentMethod}
-      paidAmount={props.paidAmount}
-      remainingAmount={props.remainingAmount}
       createInvoice={props.createInvoice}
       clearCart={props.clearCart}
       getSizeLabel={props.getSizeLabel}
@@ -89,14 +88,13 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       setOrderType={props.setOrderType}
       setTableNumber={props.setTableNumber}
       setPaymentMethod={props.setPaymentMethod}
-      setPaidAmount={props.setPaidAmount}
     />
   );
-  
+
   return (
-    <div className="flex h-full">
+    <PosLayout isArabic={props.isArabic}>
       {isMobile ? (
-        <MobilePosLayout 
+        <MobilePosLayout
           isArabic={props.isArabic}
           productsPanel={productsPanel}
           cartPanel={cartPanel}
@@ -108,7 +106,7 @@ const PosContent: React.FC<PosContentProps> = (props) => {
           cartPanel={cartPanel}
         />
       )}
-    </div>
+    </PosLayout>
   );
 };
 

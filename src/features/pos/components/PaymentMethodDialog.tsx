@@ -21,8 +21,6 @@ interface PaymentMethodDialogProps {
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
   onConfirm: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string) => void;
-  total?: number;
-  paidAmount?: number;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -31,8 +29,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   paymentMethod,
   setPaymentMethod,
   onConfirm,
-  total = 0,
-  paidAmount = 0
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -123,3 +119,4 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 };
 
 export default PaymentMethodDialog;
+

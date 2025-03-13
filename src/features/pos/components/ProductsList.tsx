@@ -1,13 +1,13 @@
 
 import React from "react";
-import { Product } from "@/types";
+import { Product, Size } from "@/types";
 import ProductCard from "./ProductCard";
 
 interface ProductsListProps {
   products: Product[];
   searchResults?: Product[];
   searchTerm?: string;
-  onAddToCart: (product: Product, quantity: number, size?: string) => void;
+  onAddToCart: (product: Product, variantId: string) => void;
   isArabic: boolean;
   getSizeLabel: (size: string) => string;
 }
@@ -22,9 +22,6 @@ const ProductsList: React.FC<ProductsListProps> = ({
 }) => {
   const displayProducts = searchTerm ? searchResults : products;
 
-  // Add debug logs to verify data
-  console.log("ProductsList - displayProducts:", displayProducts?.length);
-  
   return (
     <div className="container mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pb-24">
       {displayProducts && displayProducts.length > 0 ? (

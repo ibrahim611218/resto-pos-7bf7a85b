@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -9,7 +8,7 @@ interface ProductCardProps {
   product: Product;
   onClick?: () => void;
   isArabic: boolean;
-  onAddToCart?: (product: Product, quantity: number, size?: string) => void;
+  onAddToCart?: (product: Product, variantId: string) => void;
   getSizeLabel?: (size: string) => string;
 }
 
@@ -66,16 +65,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
       // Handling different product types:
       // 1. Single variant products - add directly to cart
       if (product.variants.length === 1) {
-        onAddToCart(product, 1, product.variants[0].size);
+        onAddToCart(product, product.variants[0].id);
       } 
       // 2. Multiple variants - show size selection dialog
       else if (product.variants.length > 1) {
         onClick?.();
       }
-      // 3. Products without variants (simple products) - add directly with quantity 1
+      // 3. Products without variants (simple products) - add directly using "simple" as variantId
       else if (product.variants.length === 0 && product.price) {
         console.log("Adding simple product to cart:", product.name);
-        onAddToCart(product, 1);
+        onAddToCart(product, "simple");
       }
     }
   };
