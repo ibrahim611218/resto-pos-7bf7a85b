@@ -52,6 +52,15 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   // Handle special action links (like Windows Export)
   const isAction = path === "#";
 
+  // Apply RTL-specific icon margin classes
+  const iconMarginClass = () => {
+    if (collapsed) return "";
+    return isArabic ? "ml-2" : "mr-2";
+  };
+
+  // Apply RTL-specific submenu padding
+  const submenuPaddingClass = isArabic ? "pr-8" : "pl-8";
+
   return (
     <div className="space-y-1">
       <button
@@ -61,25 +70,26 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           isActive
             ? "bg-accent text-accent-foreground"
             : "hover:bg-accent hover:text-accent-foreground",
-          collapsed ? "justify-center" : "justify-between"
+          collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between"
         )}
       >
-        <div className="flex items-center">
-          <Icon className={cn("h-5 w-5", collapsed ? "" : isArabic ? "ml-2" : "mr-2")} />
+        <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse" : "")}>
+          <Icon className={cn("h-5 w-5", iconMarginClass())} />
           {!collapsed && <span>{name}</span>}
         </div>
         {hasSubMenu && !collapsed && (
           <ChevronDown
             className={cn(
               "h-4 w-4 transition-transform",
-              isOpen ? "transform rotate-180" : ""
+              isOpen ? "transform rotate-180" : "",
+              isArabic ? "transform rotate-180" : ""
             )}
           />
         )}
       </button>
 
       {hasSubMenu && isOpen && !collapsed && (
-        <div className={cn("space-y-1", isArabic ? "pr-8" : "pl-8")}>
+        <div className={cn("space-y-1", submenuPaddingClass)}>
           {subMenuItems.map((subItem) => {
             const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
             const isSubItemActive = currentPath === subItem.path;
@@ -92,10 +102,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
                   isSubItemActive
                     ? "bg-accent text-accent-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground",
+                  isArabic ? "flex-row-reverse justify-end" : ""
                 )}
               >
-                {subItem.icon && typeof SubIcon === 'function' && <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />}
+                {subItem.icon && typeof SubIcon === 'function' && 
+                  <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />
+                }
                 <span>{subItem.name}</span>
               </button>
             );

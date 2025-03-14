@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 interface SidebarNavigationProps {
   links: SidebarLink[];
@@ -58,7 +59,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   };
 
   return (
-    <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto">
+    <nav className={cn("mt-4 flex-1 space-y-1 px-3 overflow-y-auto", isArabic ? "scrollbar-rtl" : "")}>
       {filteredLinks.map((link) => {
         const IconComponent = link.icon as React.ComponentType<{ className?: string }>;
         return (

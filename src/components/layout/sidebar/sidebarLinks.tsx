@@ -1,156 +1,101 @@
 
-import {
-  Package2,
-  Utensils,
-  ListOrdered,
-  Receipt,
-  BarChart3,
-  Settings,
-  Users,
-  FileText,
-  ShoppingCart,
-  ChefHat,
-  Store,
-  FileSearch,
-  Home,
-  Download,
-  KeyRound
-} from "lucide-react";
+import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, DollarSign, ChefHat, KeySquare } from "lucide-react";
 import { SidebarLink } from "./types";
 
+// Function to get sidebar links with proper Arabic labels
 export const getSidebarLinks = (): SidebarLink[] => {
   return [
     {
-      name: "لوحة التحكم",
-      name_en: "Dashboard",
+      name: "الرئيسية",
       path: "/",
       icon: Home,
     },
     {
-      name: "نقاط البيع",
-      name_en: "POS",
+      name: "نقطة البيع",
       path: "/pos",
-      icon: ShoppingCart,
+      icon: DollarSign,
+    },
+    {
+      name: "المنتجات",
+      path: "/products",
+      icon: ShoppingBag,
+    },
+    {
+      name: "التصنيفات",
+      path: "/categories",
+      icon: Box,
+    },
+    {
+      name: "الفواتير",
+      path: "/invoices",
+      icon: ReceiptText,
       subMenuItems: [
         {
-          name: "نقطة البيع",
-          name_en: "Point of Sale",
-          path: "/pos",
-          icon: ShoppingCart,
-        },
-        {
-          name: "استرجاع الفاتورة",
-          name_en: "Retrieve Invoice",
-          path: "/retrieve-invoice",
-          icon: FileSearch,
-        },
-        {
-          name: "الفواتير",
-          name_en: "Invoices",
+          name: "قائمة الفواتير",
           path: "/invoices",
-          icon: Receipt,
+          icon: FileText,
         },
         {
-          name: "العملاء",
-          name_en: "Customers",
-          path: "/customers",
-          icon: Users,
+          name: "استرجاع فاتورة",
+          path: "/retrieve-invoice",
+          icon: ReceiptText,
         },
       ],
     },
     {
+      name: "العملاء",
+      path: "/customers",
+      icon: Users,
+    },
+    {
+      name: "المخزون",
+      path: "/inventory",
+      icon: Box,
+    },
+    {
       name: "المطبخ",
-      name_en: "Kitchen",
       path: "/kitchen",
       icon: ChefHat,
     },
     {
-      name: "الأصناف",
-      name_en: "Products",
-      path: "/products",
-      icon: Package2,
-      subMenuItems: [
-        {
-          name: "الأصناف",
-          name_en: "Products",
-          path: "/products",
-          icon: Package2,
-        },
-        {
-          name: "الفئات",
-          name_en: "Categories",
-          path: "/categories",
-          icon: ListOrdered,
-        },
-      ],
-    },
-    {
-      name: "المخزون",
-      name_en: "Inventory",
-      path: "/inventory",
-      icon: Store,
-      subMenuItems: [
-        {
-          name: "المخزون",
-          name_en: "Inventory",
-          path: "/inventory",
-          icon: Store,
-        },
-      ],
-    },
-    {
       name: "التقارير",
-      name_en: "Reports",
-      path: "/reports/sales",
+      path: "/reports",
       icon: BarChart3,
       subMenuItems: [
         {
-          name: "تقارير المبيعات",
-          name_en: "Sales Reports",
-          path: "/reports/sales",
+          name: "تقرير المبيعات",
+          path: "/sales-report",
           icon: BarChart3,
         },
         {
-          name: "تقارير المخزون",
-          name_en: "Inventory Reports",
-          path: "/reports/inventory",
-          icon: FileText,
+          name: "تقرير المخزون",
+          path: "/inventory-report",
+          icon: Box,
         },
         {
-          name: "تقارير العملاء",
-          name_en: "Customer Reports",
-          path: "/reports/customers",
+          name: "تقرير العملاء",
+          path: "/customers-report",
           icon: Users,
         },
       ],
     },
     {
-      name: "المستخدمين",
-      name_en: "Users",
-      path: "/users",
+      name: "المستخدمون",
+      path: "/user-management",
       icon: Users,
-    },
-    {
-      name: "نسخة الويندوز",
-      name_en: "Windows Version",
-      path: "#",
-      icon: Download,
-      isAction: true,
-      action: "desktop-export",
+      isAdminOnly: true,
     },
     {
       name: "الإعدادات",
-      name_en: "Settings",
-      path: "/settings",
+      path: "/business-settings",
       icon: Settings,
     },
     {
-      name: "إدارة التراخيص",
-      name_en: "License Manager",
+      name: "مولد التراخيص",
       path: "/license-generator",
-      icon: KeyRound,
+      icon: KeySquare,
       isAdminOnly: true,
-      requiredEmail: "eng.ibrahimabdalfatah@gmail.com"
+      requiredEmail: "admin@example.com",
     },
   ];
 };

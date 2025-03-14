@@ -1,5 +1,5 @@
 
-import { SidebarProvider, useSidebar } from './sidebar-context'
+import { SidebarProvider, useSidebar, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './sidebar-context'
 import { Sidebar } from './sidebar-main'
 import {
   SidebarContent,
@@ -50,5 +50,7 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar
+  useSidebar,
+  SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_ICON
 }

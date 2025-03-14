@@ -7,7 +7,7 @@ import SidebarFooter from "./sidebar/SidebarFooter";
 import SidebarContainer from "./sidebar/SidebarContainer";
 import SidebarUserProfile from "./sidebar/SidebarUserProfile";
 import SidebarEventHandler from "./sidebar/SidebarEventHandler";
-import { sidebarLinks } from "./sidebar/sidebarLinks";
+import { getSidebarLinks } from "./sidebar/sidebarLinks";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -28,6 +28,7 @@ const Sidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({
   const { language } = useLanguage();
   const isMobile = useIsMobile();
   const [isInitialized, setIsInitialized] = useState(false);
+  const sidebarLinks = getSidebarLinks();
 
   // Set initialized after a brief delay to allow for animation
   useEffect(() => {
