@@ -35,8 +35,8 @@
 @media (max-width: 480px) {
   .touch-target-fix button, 
   .touch-target-fix [role="button"] {
-    min-height: 36px !important;
-    min-width: 36px !important;
+    min-height: 40px !important;
+    min-width: 40px !important;
   }
 }
 
@@ -49,6 +49,7 @@
   
   .product-image {
     height: 100% !important;
+    object-fit: cover !important;
   }
   
   .pos-screen {
@@ -61,12 +62,17 @@
 }
 
 /* Fix for very large screens */
+@media (min-width: 1600px) {
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+  }
+}
+
 @media (min-width: 1920px) {
   .auto-scale-container {
     height: 100vh !important;
     width: 100vw !important;
     display: flex !important;
-    flex-direction: column !important;
     overflow: hidden !important;
   }
   
@@ -76,6 +82,18 @@
     height: 100% !important;
     overflow: auto !important;
   }
+  
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  }
+}
+
+/* Force larger buttons for touch devices */
+.touch-mode-active button,
+.touch-mode-active [role="button"] {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 0.5rem 1rem !important;
 }
 
 /* Add stretch classes for full viewport utilization */
@@ -95,4 +113,35 @@
   flex: 1 !important;
   min-height: 0 !important;
   overflow: hidden !important;
+}
+
+/* Ensure grid items maintain aspect ratio */
+.grid-item-square {
+  aspect-ratio: 1/1;
+}
+
+/* Ensure correct overflow handling */
+.overflow-container {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improved scrollbars for touch devices */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }

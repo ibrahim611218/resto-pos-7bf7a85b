@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "./hooks/useCart";
 import { useProductFiltering } from "./hooks/useProductFiltering";
@@ -16,6 +16,16 @@ const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { settings } = useBusinessSettings();
+  
+  // Force a resize event when component mounts to ensure proper layout
+  useEffect(() => {
+    // Wait for the DOM to be fully rendered
+    const timeoutId = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, []);
   
   const {
     // Cart items
@@ -79,17 +89,27 @@ const Pos: React.FC = () => {
     handleInvoiceExport("print", invoice, settings);
   };
   
+  // Enhanced Add to Cart function with logging for debugging
+  const handleAddToCart = (product: any, variantId: string) => {
+    console.log("Adding product to cart:", product?.name, "variant:", variantId);
+    if (product) {
+      addToCart(product, variantId);
+    } else {
+      console.error("Attempted to add undefined product to cart");
+    }
+  };
+  
   return (
     <div 
       className={`h-screen max-w-full flex flex-col m-0 p-0 ${
         isArabic ? "font-[system-ui]" : ""
-      }`}
+      } auto-scale-container`}
       dir={isArabic ? "rtl" : "ltr"}
       style={{ zIndex: 10 }}
     >
       <PosHeader />
 
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden stretch-content">
         <PosContent 
           cartItems={cartItems}
           isArabic={isArabic}
@@ -102,7 +122,7 @@ const Pos: React.FC = () => {
           orderType={orderType}
           tableNumber={tableNumber}
           paymentMethod={paymentMethod}
-          addToCart={addToCart}
+          addToCart={handleAddToCart}
           updateQuantity={updateQuantity}
           removeItem={removeItem}
           clearCart={clearCart}
@@ -117,8 +137,8 @@ const Pos: React.FC = () => {
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
           categories={categories}
-          filteredProducts={filteredProducts}
-          searchedProducts={searchedProducts}
+          filteredProducts={filteredProducts || []}
+          searchedProducts={searchedProducts || []}
           getSizeLabel={getSizeLabelFn}
           showAllProducts={showAllProducts}
           setShowAllProducts={setShowAllProducts}

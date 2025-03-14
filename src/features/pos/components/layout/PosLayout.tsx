@@ -17,22 +17,41 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   
   // Update layout direction based on screen size and orientation
   useEffect(() => {
-    // Mobile or narrow screens - vertical layout
-    if (isMobile || width < 768 || (width < height && width < 1024)) {
-      setLayoutClass("flex-col");
-    } 
-    // Tablet landscape or desktop - horizontal layout
-    else {
-      setLayoutClass("flex-row");
-    }
+    // Force layout recalculation on mount and when dimensions change
+    const updateLayout = () => {
+      // Mobile or narrow screens - vertical layout
+      if (isMobile || width < 768 || (width < height && width < 1024)) {
+        setLayoutClass("flex-col");
+      } 
+      // Tablet landscape or desktop - horizontal layout
+      else {
+        setLayoutClass("flex-row");
+      }
+    };
+    
+    updateLayout();
+    
+    // Ensure the layout updates immediately after render
+    const timeoutId = setTimeout(updateLayout, 50);
+    
+    return () => clearTimeout(timeoutId);
   }, [isMobile, isTablet, width, height]);
-
-  // Add a debounced resize handler to prevent too many re-renders
+  
+  // Add a debounced resize handler with immediate execution
   useEffect(() => {
     let resizeTimeout: number;
     
     const handleResize = () => {
       clearTimeout(resizeTimeout);
+      
+      // Update immediately for better user experience
+      if (isMobile || width < 768 || (width < height && width < 1024)) {
+        setLayoutClass("flex-col");
+      } else {
+        setLayoutClass("flex-row");
+      }
+      
+      // Then finalize after a short delay
       resizeTimeout = window.setTimeout(() => {
         if (isMobile || width < 768 || (width < height && width < 1024)) {
           setLayoutClass("flex-col");
@@ -43,6 +62,10 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
     };
     
     window.addEventListener('resize', handleResize);
+    
+    // Force an initial layout calculation
+    handleResize();
+    
     return () => {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
@@ -50,7 +73,15 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   }, [isMobile, isTablet, width, height]);
 
   return (
-    <div dir={isArabic ? "rtl" : "ltr"} className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} style={{ minHeight: "100vh" }}>
+    <div 
+      dir={isArabic ? "rtl" : "ltr"} 
+      className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
+      style={{ 
+        minHeight: "100vh", 
+        maxWidth: "100vw",
+        maxHeight: "100vh" 
+      }}
+    >
       {children}
     </div>
   );

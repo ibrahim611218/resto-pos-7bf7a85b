@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Product } from "@/types";
 import ProductGrid from "./ProductGrid";
 
@@ -16,15 +16,21 @@ const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({
   onProductClick,
   getGridCols,
 }) => {
-  const handleProductClick = (product: Product) => {
+  // Optimize product click handler with useCallback
+  const handleProductClick = useCallback((product: Product) => {
     console.log("Product clicked in AllProductsTabContent:", product.name);
-    onProductClick(product);
-  };
+    if (product && typeof onProductClick === 'function') {
+      onProductClick(product);
+    }
+  }, [onProductClick]);
 
   return (
-    <div className="mt-2 space-y-3">
+    <div 
+      className="mt-2 space-y-3 overflow-auto custom-scrollbar stretch-content"
+      style={{ flexGrow: 1, minHeight: 0 }}
+    >
       <ProductGrid 
-        products={searchedProducts}
+        products={searchedProducts || []}
         isArabic={isArabic}
         onProductClick={handleProductClick}
         getGridCols={getGridCols}
