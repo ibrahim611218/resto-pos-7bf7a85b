@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLicense } from "@/hooks/useLicense";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Key } from "lucide-react";
+import { Loader2, Key, Shield, Lock, Check } from "lucide-react";
 
 const LicenseActivation: React.FC = () => {
   const { language } = useLanguage();
@@ -18,6 +18,7 @@ const LicenseActivation: React.FC = () => {
   const navigate = useNavigate();
   
   const [licenseKey, setLicenseKey] = useState("");
+  const [showTrialKey, setShowTrialKey] = useState(false);
   const [oneDayTrialKey, setOneDayTrialKey] = useState("");
   
   useEffect(() => {
@@ -55,8 +56,10 @@ const LicenseActivation: React.FC = () => {
     
     if (activated) {
       toast({
-        title: "تم التفعيل بنجاح",
-        description: "تم تفعيل الإصدار التجريبي ليوم واحد بنجاح",
+        title: isArabic ? "تم التفعيل بنجاح" : "Activation Successful",
+        description: isArabic
+          ? "تم تفعيل الإصدار التجريبي ليوم واحد بنجاح"
+          : "The one-day trial version has been activated successfully",
       });
       navigate("/");
     }
@@ -66,6 +69,9 @@ const LicenseActivation: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-muted/40" dir={isArabic ? "rtl" : "ltr"}>
       <Card className="w-full max-w-md">
         <CardHeader>
+          <div className="flex justify-center mb-2">
+            <Shield className="h-12 w-12 text-primary" />
+          </div>
           <CardTitle className="text-center">
             {isArabic ? "تفعيل البرنامج" : "Activate Software"}
           </CardTitle>
@@ -98,11 +104,14 @@ const LicenseActivation: React.FC = () => {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     {isArabic ? "جاري التفعيل..." : "Activating..."}
                   </>
                 ) : (
-                  isArabic ? "تفعيل" : "Activate"
+                  <>
+                    <Lock className="h-4 w-4" />
+                    {isArabic ? "تفعيل" : "Activate"}
+                  </>
                 )}
               </Button>
             </div>
@@ -110,23 +119,44 @@ const LicenseActivation: React.FC = () => {
         </CardContent>
         <CardFooter className="flex-col space-y-4">
           <div className="w-full border-t pt-4">
-            <h3 className="text-sm font-medium mb-2">
+            <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Key className="h-4 w-4 text-amber-500" />
               {isArabic ? "تفعيل سريع ليوم واحد" : "Quick One-Day Activation"}
             </h3>
-            <div className="flex flex-col gap-3">
-              <div className="text-center bg-muted p-2 rounded-md font-mono text-xs">
-                {oneDayTrialKey}
+            
+            {showTrialKey ? (
+              <div className="flex flex-col gap-3">
+                <div className="text-center bg-muted p-2 rounded-md font-mono text-xs break-all">
+                  {oneDayTrialKey}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setShowTrialKey(false)}
+                    className="w-full"
+                  >
+                    {isArabic ? "إخفاء المفتاح" : "Hide Key"}
+                  </Button>
+                  <Button 
+                    variant="secondary"
+                    onClick={activateOneDayTrial}
+                    className="w-full"
+                    disabled={loading}
+                  >
+                    <Check className="h-4 w-4" />
+                    {isArabic ? "تفعيل الآن" : "Activate Now"}
+                  </Button>
+                </div>
               </div>
+            ) : (
               <Button 
                 variant="secondary"
-                onClick={activateOneDayTrial}
+                onClick={() => setShowTrialKey(true)}
                 className="w-full"
-                disabled={loading}
               >
-                <Key className="ml-2 h-4 w-4" />
-                {isArabic ? "تفعيل لمدة يوم واحد للطباعة" : "Activate for One Day"}
+                {isArabic ? "إظهار مفتاح التفعيل ليوم واحد" : "Show One-Day Trial Key"}
               </Button>
-            </div>
+            )}
           </div>
           <Button 
             type="button" 
