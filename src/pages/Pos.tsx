@@ -8,6 +8,10 @@ const PosPage: React.FC = () => {
 
   // Force the page to take the full viewport on mount
   useEffect(() => {
+    // Add fix to prevent touch event issues - add passive: false to document
+    document.addEventListener('touchstart', function() {}, { passive: false });
+    document.addEventListener('touchmove', function() {}, { passive: false });
+
     // Save original styles to restore on unmount
     const originalHtmlStyle = {
       height: document.documentElement.style.height,
@@ -77,6 +81,10 @@ const PosPage: React.FC = () => {
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
       document.body.classList.remove('pos-active');
+      
+      // Remove touch event listeners
+      document.removeEventListener('touchstart', function() {}, { passive: false } as EventListenerOptions);
+      document.removeEventListener('touchmove', function() {}, { passive: false } as EventListenerOptions);
       
       // Clear all timeouts
       timeoutIds.forEach(id => clearTimeout(id));

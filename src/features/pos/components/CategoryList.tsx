@@ -1,74 +1,51 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Category } from "@/types";
 
 interface CategoryListProps {
-  categories: { id: string; name: string; nameAr?: string }[];
+  categories: Category[];
   activeCategory: string | null;
-  onCategoryClick?: (categoryId: string) => void;
+  setActiveCategory: (id: string | null) => void;
   isArabic: boolean;
-  setActiveCategory?: (id: string | null) => void;
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
   categories,
   activeCategory,
-  onCategoryClick,
-  isArabic,
   setActiveCategory,
+  isArabic,
 }) => {
-  const { theme } = useTheme();
-  const isLightTheme = theme === "light";
-
-  const handleCategoryClick = (categoryId: string) => {
-    if (setActiveCategory) {
-      setActiveCategory(categoryId === "all" ? null : categoryId);
-    } else if (onCategoryClick) {
-      onCategoryClick(categoryId);
-    }
+  // Enhanced handleClick with proper event handling
+  const handleClick = (e: React.MouseEvent | React.TouchEvent, categoryId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Category clicked:", categoryId);
+    setActiveCategory(categoryId === activeCategory ? null : categoryId);
   };
 
   return (
-    <div className="flex overflow-x-auto pb-2 gap-2 pl-1 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-primary/10 scrollbar-track-transparent">
-      <Button
-        variant={isLightTheme ? "outline" : "secondary"}
-        className={cn(
-          "flex-shrink-0 whitespace-nowrap",
-          isLightTheme 
-            ? (!activeCategory 
-                ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-            : (!activeCategory 
-                ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                : "")
-        )}
-        onClick={() => handleCategoryClick("all")}
-      >
-        {isArabic ? "الكل" : "All"}
-      </Button>
-      
-      {categories.map((category) => (
-        <Button
-          key={category.id}
-          variant={isLightTheme ? "outline" : "secondary"}
-          className={cn(
-            "flex-shrink-0 whitespace-nowrap",
-            isLightTheme 
-              ? (activeCategory === category.id
-                  ? "bg-[#004d40] text-white hover:bg-[#00352c] border-[#004d40]" 
-                  : "bg-white hover:bg-gray-50 text-gray-800 border-gray-200")
-              : (activeCategory === category.id 
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                  : "")
-          )}
-          onClick={() => handleCategoryClick(category.id)}
-        >
-          {isArabic && category.nameAr ? category.nameAr : category.name}
-        </Button>
-      ))}
-    </div>
+    <ScrollArea className="w-full" dir={isArabic ? "rtl" : "ltr"}>
+      <div className="flex overflow-x-auto pb-2 space-x-2 rtl:space-x-reverse interactive-element">
+        {categories.map((category) => (
+          <Button
+            key={category.id}
+            variant={activeCategory === category.id ? "default" : "outline"}
+            size="sm"
+            className="flex-shrink-0 interactive category-item"
+            onClick={(e) => handleClick(e, category.id)}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => handleClick(e, category.id)}
+            role="button"
+            aria-pressed={activeCategory === category.id}
+            tabIndex={0}
+          >
+            {isArabic && category.nameAr ? category.nameAr : category.name}
+          </Button>
+        ))}
+      </div>
+    </ScrollArea>
   );
 };
 

@@ -86,6 +86,8 @@ body, html, #root {
   justify-content: space-between;
   height: 100%;
   transition: transform 0.2s ease;
+  cursor: pointer !important; /* Force cursor pointer for better UI feedback */
+  touch-action: manipulation; /* Optimize for touch */
 }
 
 .product-card:active {
@@ -125,6 +127,25 @@ body, html, #root {
   flex: 1 1 auto;
   display: flex;
   min-height: 0;
+}
+
+/* Improve touch targets and interactivity */
+.product-grid [role="button"],
+.product-grid [role="grid"] > div,
+.product-card,
+.glass-card,
+.category-item {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+
+/* Ensure touch event handling works well */
+.clickable, .tappable, button, [role="button"] {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+  touch-action: manipulation !important;
 }
 
 /* Handle large displays better */
@@ -184,4 +205,17 @@ body, html, #root {
   position: fixed;
   top: 1rem;
   right: 1rem;
+}
+
+/* Fix z-index issues that might prevent clicking */
+.pos-content, 
+.products-panel, 
+.cart-panel {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Specifically improve product grid interactivity */
+.product-grid-container > div {
+  pointer-events: auto !important;
 }

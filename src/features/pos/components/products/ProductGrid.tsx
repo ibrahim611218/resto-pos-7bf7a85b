@@ -47,6 +47,14 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
       onProductClick(product);
     }
   }, [onProductClick]);
+
+  // Explicit touch/mouse handlers to improve interaction
+  const handlePress = useCallback((e: React.MouseEvent | React.TouchEvent, product: Product) => {
+    e.preventDefault(); // Prevent default to avoid any issues
+    e.stopPropagation(); // Stop propagation to parent elements
+    console.log("Product pressed:", product.name);
+    handleProductClick(product);
+  }, [handleProductClick]);
   
   if (!products || products.length === 0) {
     return (
@@ -75,8 +83,10 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
           key={product.id || `product-${index}`}
           animation="fade"
           delay={Math.min(index * 30, 300)} // Cap the delay at 300ms for better performance
-          className={`cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card transition-transform duration-200 ease-in-out transform hover:scale-105 ${cardSizeClass}`}
-          onClick={() => handleProductClick(product)}
+          className={`cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card transition-transform duration-200 ease-in-out transform hover:scale-105 interactive ${cardSizeClass}`}
+          onClick={(e) => handlePress(e, product)}
+          onTouchStart={(e) => e.stopPropagation()} // Stop propagation for touch events
+          onTouchEnd={(e) => handlePress(e, product)}
           role="button"
           tabIndex={0}
           aria-label={isArabic ? product.nameAr || product.name : product.name}

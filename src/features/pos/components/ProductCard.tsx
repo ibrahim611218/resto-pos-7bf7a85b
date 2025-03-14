@@ -59,7 +59,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
-  const handleClick = () => {
+  // Handle click with both mouse and touch events optimized
+  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     console.log("ProductCard clicked:", product.name);
     
     if (onClick) {
@@ -88,10 +92,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   return (
     <Card 
       className={cn(
-        "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full",
+        "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full interactive",
         bgColorClass
       )} 
       onClick={handleClick}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchEnd={handleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={isArabic && product.nameAr ? product.nameAr : product.name}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick(e as any);
+        }
+      }}
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
         {product.image ? (
@@ -99,6 +114,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
             src={product.image}
             alt={isArabic && product.nameAr ? product.nameAr : product.name}
             className="object-cover w-full h-full"
+            loading="lazy"
+            onError={(e) => {
+              // Fallback for broken images
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = '/placeholder.svg';
+            }}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
