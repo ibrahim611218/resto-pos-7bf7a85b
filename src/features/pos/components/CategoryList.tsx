@@ -35,11 +35,22 @@ const CategoryList: React.FC<CategoryListProps> = ({
             size="sm"
             className="flex-shrink-0 interactive category-item"
             onClick={(e) => handleClick(e, category.id)}
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchEnd={(e) => handleClick(e, category.id)}
+            onTouchStart={(e) => e.preventDefault()}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClick(e, category.id);
+            }}
             role="button"
             aria-pressed={activeCategory === category.id}
             tabIndex={0}
+            style={{
+              // Force interaction to work
+              pointerEvents: 'auto',
+              touchAction: 'manipulation',
+              position: 'relative',
+              zIndex: 2
+            }}
           >
             {isArabic && category.nameAr ? category.nameAr : category.name}
           </Button>

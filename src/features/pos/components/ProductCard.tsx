@@ -59,8 +59,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
-  // Handle click with both mouse and touch events optimized
+  // Enhanced click handler with improved event handling
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    // Stop propagation to prevent issues with nested elements
     e.preventDefault();
     e.stopPropagation();
     
@@ -96,8 +97,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         bgColorClass
       )} 
       onClick={handleClick}
-      onTouchStart={(e) => e.stopPropagation()}
-      onTouchEnd={handleClick}
+      onTouchStart={(e) => {
+        // Prevent defaults but don't stop propagation at this stage
+        e.preventDefault();
+      }}
+      onTouchEnd={(e) => {
+        // Stop propagation and then call the click handler
+        e.preventDefault();
+        e.stopPropagation();
+        handleClick(e);
+      }}
       role="button"
       tabIndex={0}
       aria-label={isArabic && product.nameAr ? product.nameAr : product.name}
@@ -106,6 +115,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
           e.preventDefault();
           handleClick(e as any);
         }
+      }}
+      style={{
+        // Force interaction to work
+        pointerEvents: 'auto',
+        touchAction: 'manipulation',
+        position: 'relative',
+        zIndex: 1
       }}
     >
       <div className="relative aspect-square overflow-hidden bg-muted">

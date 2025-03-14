@@ -36,6 +36,10 @@ const PosPage: React.FC = () => {
     // Add POS-specific class
     document.body.classList.add('pos-active');
     
+    // Force root elements to be interactive
+    document.body.style.pointerEvents = "auto";
+    document.documentElement.style.pointerEvents = "auto";
+    
     // Force layout recalculation
     window.dispatchEvent(new Event('resize'));
     
@@ -65,12 +69,14 @@ const PosPage: React.FC = () => {
     window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
     
     // Auto enter fullscreen after a short delay
+    /* Commenting out auto-fullscreen to fix normal mode
     if (!isFullscreen) {
       const fullscreenTimeout = setTimeout(() => {
         toggleFullscreen();
       }, 500);
       timeoutIds.push(fullscreenTimeout);
     }
+    */
     
     // Cleanup on unmount
     return () => {
@@ -81,6 +87,8 @@ const PosPage: React.FC = () => {
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
       document.body.classList.remove('pos-active');
+      document.body.style.pointerEvents = "";
+      document.documentElement.style.pointerEvents = "";
       
       // Remove touch event listeners
       document.removeEventListener('touchstart', function() {}, { passive: false } as EventListenerOptions);
@@ -126,7 +134,11 @@ const PosPage: React.FC = () => {
   }, [isFullscreen]);
 
   return (
-    <div className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen">
+    <div className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen" 
+      style={{ 
+        pointerEvents: 'auto',
+        touchAction: 'auto'
+      }}>
       <Pos />
     </div>
   );

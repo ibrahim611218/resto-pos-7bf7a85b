@@ -56,3 +56,39 @@ html, body, #root, #app, .app-container {
     height: 100vh;
   }
 }
+
+/* Critical fix for touch/click interaction in POS mode */
+.pos-screen * {
+  pointer-events: auto !important;
+}
+
+.pos-panel, .products-panel, .cart-panel {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+/* Fix touch target size for better interaction */
+.pos-screen button,
+.pos-screen [role="button"],
+.pos-screen .interactive,
+.pos-screen .product-card {
+  min-height: 32px;
+  min-width: 32px;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+/* Fix z-index issues that might block interaction */
+.products-panel, .cart-panel {
+  z-index: 5;
+  position: relative;
+}
+
+/* Force hardware acceleration for better performance */
+.pos-screen {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}

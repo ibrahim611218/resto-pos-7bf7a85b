@@ -1,21 +1,19 @@
 
-// Import all CSS files to be used in the application
-// Order matters for Tailwind's layer system
+// Import base styles first to ensure proper ordering
+import './base.css';
 import './base-elements.css';
 import './utilities.css';
-import './saudi-theme.css';
-import './restopos-theme.css';
-import './responsive-grid.css';
-import './base.css';
+
+// Import component-specific styles
+import './desktop.css';
+import './mobile.css';
+import './fullscreen.css';
 import './pos.css';
+import './touch.css'; // New touch-related fixes
 import './products.css';
 import './compact-ui.css';
-import './mobile.css';
-import './desktop.css';
-import './fullscreen.css';
-import './touch.css';
+import './responsive-grid.css';
 
-// Export a dummy function to make this a valid module
-export const loadStyles = () => {
-  console.log('All styles loaded');
-};
+// Import theme styles
+import './restopos-theme.css';
+import './saudi-theme.css';

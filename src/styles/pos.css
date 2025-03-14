@@ -9,6 +9,8 @@
   max-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Add pointer events to ensure clicks work */
+  pointer-events: auto !important;
 }
 
 /* POS cart styles */
@@ -88,6 +90,10 @@ body, html, #root {
   transition: transform 0.2s ease;
   cursor: pointer !important; /* Force cursor pointer for better UI feedback */
   touch-action: manipulation; /* Optimize for touch */
+  /* Ensure clicks work */
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
 }
 
 .product-card:active {
@@ -99,6 +105,8 @@ body, html, #root {
   display: flex;
   flex-direction: column;
   aspect-ratio: 1/1.2;
+  /* Ensure clicks work */
+  pointer-events: auto !important;
 }
 
 @media (orientation: portrait) {
@@ -127,6 +135,8 @@ body, html, #root {
   flex: 1 1 auto;
   display: flex;
   min-height: 0;
+  /* Ensure clicks work */
+  pointer-events: auto !important;
 }
 
 /* Improve touch targets and interactivity */
@@ -139,6 +149,9 @@ body, html, #root {
   -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
   user-select: none !important;
   touch-action: manipulation !important;
+  /* Ensure clicks work */
+  pointer-events: auto !important;
+  position: relative;
 }
 
 /* Ensure touch event handling works well */
@@ -146,6 +159,8 @@ body, html, #root {
   cursor: pointer !important;
   -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
   touch-action: manipulation !important;
+  /* Ensure clicks work */
+  pointer-events: auto !important;
 }
 
 /* Handle large displays better */
@@ -213,9 +228,34 @@ body, html, #root {
 .cart-panel {
   z-index: 1 !important;
   position: relative !important;
+  /* Ensure clicks work */
+  pointer-events: auto !important;
 }
 
 /* Specifically improve product grid interactivity */
 .product-grid-container > div {
   pointer-events: auto !important;
+}
+
+/* Fix scrolling areas to prevent interaction blocking */
+.pos-content .scroll-area,
+.pos-content .overflow-y-auto,
+.pos-content .overflow-x-auto {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+/* Force universal interaction on all POS elements */
+.pos-screen button,
+.pos-screen [role="button"],
+.pos-screen a,
+.pos-screen input,
+.pos-screen select,
+.pos-screen .interactive,
+.pos-screen .product-card,
+.pos-screen .category-item {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  z-index: 1;
+  position: relative;
 }
