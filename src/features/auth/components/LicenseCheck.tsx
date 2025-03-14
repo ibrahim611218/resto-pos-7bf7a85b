@@ -13,12 +13,14 @@ const LicenseCheck: React.FC = () => {
   const [isChecking, setIsChecking] = useState(true);
   const [expiryDays, setExpiryDays] = useState<number | null>(null);
   
+  const isAdminUser = isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com';
+  
   useEffect(() => {
     const verifyLicense = async () => {
       setIsChecking(true);
       
-      // Skip license check for admin users
-      if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+      // Skip license check for admin users - immediately set checking to false
+      if (isAdminUser) {
         setIsChecking(false);
         return;
       }
@@ -45,21 +47,15 @@ const LicenseCheck: React.FC = () => {
     };
     
     verifyLicense();
-  }, [checkLicense, getLicenseInfo, navigate, isAuthenticated, user]);
+  }, [checkLicense, getLicenseInfo, navigate, isAuthenticated, user, isAdminUser]);
   
+  // Show loading only if needed
   if (isChecking) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 text-2xl font-bold">جاري التحقق من الترخيص...</div>
-          <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
-        </div>
-      </div>
-    );
+    return <LicenseCheckLoading />;
   }
   
   // Don't show warning for admin
-  if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+  if (isAdminUser) {
     return <Outlet />;
   }
   
@@ -76,6 +72,18 @@ const LicenseCheck: React.FC = () => {
       )}
       <Outlet />
     </>
+  );
+};
+
+// Import the loading component to avoid circular dependencies
+const LicenseCheckLoading = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="mb-4 text-2xl font-bold">جاري التحقق من الترخيص...</div>
+        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+      </div>
+    </div>
   );
 };
 
