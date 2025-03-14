@@ -48,6 +48,9 @@ const PosPage: React.FC = () => {
       clearInterval(intervalId);
     }, 5000);
     
+    // Special event to help other components know POS is active
+    window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: true } }));
+    
     // Cleanup on unmount
     return () => {
       document.documentElement.style.height = originalHtmlStyle.height;
@@ -61,10 +64,13 @@ const PosPage: React.FC = () => {
       timeoutIds.forEach(id => clearTimeout(id));
       clearTimeout(clearIntervalId);
       clearInterval(intervalId);
+      
+      // Notify components that POS is no longer active
+      window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: false } }));
     };
   }, []);
 
-  // Listen for window resize events
+  // Listen for window resize events and orientation changes
   useEffect(() => {
     const handleResize = () => {
       // Force another resize event after a short delay
@@ -79,6 +85,16 @@ const PosPage: React.FC = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
+  // Collapse sidebar when POS page is active
+  useEffect(() => {
+    // Dispatch a custom event to collapse the sidebar
+    window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
+    
+    return () => {
+      // No need to restore since that's handled by the sidebar itself
     };
   }, []);
 

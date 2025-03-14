@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
@@ -11,6 +11,7 @@ const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   const location = useLocation();
+  const navigate = useNavigate();
   
   // Automatically collapse sidebar on mobile devices or small screens
   useEffect(() => {
@@ -24,7 +25,7 @@ const MainLayout = () => {
   // Listen for the custom toggle event
   useEffect(() => {
     const handleToggleSidebar = () => {
-      setSidebarCollapsed(!sidebarCollapsed);
+      setSidebarCollapsed(prevState => !prevState);
     };
 
     window.addEventListener('toggle-sidebar', handleToggleSidebar);
@@ -32,19 +33,21 @@ const MainLayout = () => {
     return () => {
       window.removeEventListener('toggle-sidebar', handleToggleSidebar);
     };
-  }, [sidebarCollapsed]);
-
-  // Memoize toggle function to prevent unnecessary re-renders
-  const toggleSidebar = useCallback(() => {
-    setSidebarCollapsed(prevState => !prevState);
   }, []);
 
-  // Handle route changes by auto-closing sidebar on mobile
+  // Listen for route changes to auto-collapse sidebar on mobile
   useEffect(() => {
     if (isMobile) {
       setSidebarCollapsed(true);
     }
   }, [location.pathname, isMobile]);
+
+  // Memoize toggle function to prevent unnecessary re-renders
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed(prevState => !prevState);
+    // Dispatch a custom event that other components can listen for
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { collapsed: !sidebarCollapsed } }));
+  }, [sidebarCollapsed]);
 
   return (
     <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">

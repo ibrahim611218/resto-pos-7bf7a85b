@@ -17,6 +17,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   const { isMobile, isTablet, width, height } = useWindowDimensions();
   const [layoutClass, setLayoutClass] = useState("flex-row");
   const [childrenArray, setChildrenArray] = useState<ReactNode[]>([]);
+  const [layoutKey, setLayoutKey] = useState<number>(Date.now());
   
   // Split children into array for proper layout placement
   useEffect(() => {
@@ -36,6 +37,9 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
       else {
         setLayoutClass("flex-row");
       }
+      
+      // Force a re-render by updating the key
+      setLayoutKey(Date.now());
     };
     
     updateLayout();
@@ -67,16 +71,21 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
         } else {
           setLayoutClass("flex-row");
         }
+        
+        // Force a re-render by updating the key
+        setLayoutKey(Date.now());
       }, 100); // 100ms debounce
     };
     
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
     
     // Force an initial layout calculation
     handleResize();
     
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
       clearTimeout(resizeTimeout);
     };
   }, [isMobile, isTablet, width, height]);
@@ -89,6 +98,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   if (isMobile || width < 768 || (width < height && width < 1024)) {
     return (
       <div 
+        key={`mobile-layout-${layoutKey}`}
         dir={isArabic ? "rtl" : "ltr"} 
         className={`flex flex-col h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
         style={{ 
@@ -108,6 +118,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
 
   return (
     <div 
+      key={`desktop-layout-${layoutKey}`}
       dir={isArabic ? "rtl" : "ltr"} 
       className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
       style={{ 

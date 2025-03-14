@@ -1,9 +1,8 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { SidebarLink } from "./types";
-import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SidebarLink } from "./types";
 
 export interface SidebarItemProps {
   name: string;
@@ -14,6 +13,7 @@ export interface SidebarItemProps {
   isOpen: boolean;
   currentPath: string;
   onToggleCategory: (category: string) => void;
+  onNavigate: (path: string) => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -25,24 +25,33 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isOpen,
   currentPath,
   onToggleCategory,
+  onNavigate,
 }) => {
   const isActive = currentPath === path;
   const hasSubMenu = subMenuItems && subMenuItems.length > 0;
 
-  const toggleSubMenu = (e: React.MouseEvent) => {
+  const handleItemClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
     if (hasSubMenu) {
-      e.preventDefault();
       onToggleCategory(path.replace("/", ""));
+    } else {
+      onNavigate(path);
     }
+  };
+
+  const handleSubItemClick = (e: React.MouseEvent, subPath: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onNavigate(subPath);
   };
 
   return (
     <div className="space-y-1">
-      <Link
-        to={hasSubMenu ? "#" : path}
-        onClick={toggleSubMenu}
+      <button
+        onClick={handleItemClick}
         className={cn(
-          "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+          "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
           isActive
             ? "bg-accent text-accent-foreground"
             : "hover:bg-accent hover:text-accent-foreground",
@@ -61,26 +70,28 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             )}
           />
         )}
-      </Link>
+      </button>
 
       {hasSubMenu && isOpen && !collapsed && (
         <div className="pl-8 space-y-1">
           {subMenuItems.map((subItem) => {
             const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
+            const isSubItemActive = currentPath === subItem.path;
+            
             return (
-              <Link
+              <button
                 key={subItem.name}
-                to={subItem.path}
+                onClick={(e) => handleSubItemClick(e, subItem.path)}
                 className={cn(
-                  "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                  currentPath === subItem.path
+                  "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                  isSubItemActive
                     ? "bg-accent text-accent-foreground"
                     : "hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 {subItem.icon && typeof SubIcon === 'function' && <SubIcon className="h-4 w-4 mr-2" />}
                 <span>{subItem.name}</span>
-              </Link>
+              </button>
             );
           })}
         </div>

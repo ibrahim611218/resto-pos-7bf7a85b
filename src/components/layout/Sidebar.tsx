@@ -22,6 +22,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Setup initial open categories based on current URL
   useEffect(() => {
     const path = location.pathname;
     const categoriesState: Record<string, boolean> = {};
@@ -40,6 +41,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     
     if (path.includes('/reports')) {
       categoriesState['reports'] = true;
+    }
+    
+    if (path.includes('/settings')) {
+      categoriesState['settings'] = true;
     }
     
     setOpenCategories(categoriesState);
@@ -73,6 +78,16 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
         ...prev,
         [category]: !prev[category],
       }));
+    }
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    // Auto-collapse sidebar on mobile after navigation
+    if (isMobile) {
+      setTimeout(() => {
+        onToggle();
+      }, 150);
     }
   };
 
@@ -129,6 +144,8 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           collapsed={collapsed} 
           openCategories={openCategories}
           onToggleCategory={toggleCategory}
+          onNavigate={handleNavigate}
+          currentPath={location.pathname}
         />
         <SidebarFooter 
           collapsed={collapsed} 

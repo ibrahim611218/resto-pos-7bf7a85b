@@ -85,6 +85,11 @@ body, html, #root {
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.product-card:active {
+  transform: scale(0.98);
 }
 
 /* Make sure product cards maintain proportion */
@@ -135,4 +140,48 @@ body, html, #root {
     display: flex !important;
     height: 100vh !important;
   }
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 768px) {
+  .product-card {
+    padding: 8px;
+  }
+  
+  button, 
+  .button, 
+  [role="button"], 
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Ensure inputs and buttons have good touch targets */
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+}
+
+/* Fix for safari viewport height issues */
+@supports (-webkit-touch-callout: none) {
+  .pos-screen, .auto-scale-container {
+    height: -webkit-fill-available !important;
+  }
+}
+
+/* Fix overlaps in portrait mode on mobile */
+@media (orientation: portrait) and (max-width: 768px) {
+  .pos-layout-mobile {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+/* Ensure sidebar works at all screen sizes */
+.sidebar-toggle-button {
+  z-index: 100;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
 }

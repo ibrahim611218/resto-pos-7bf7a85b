@@ -1,6 +1,5 @@
 
 import React from "react";
-import { useLocation } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
 import { SidebarLink } from "./types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -10,15 +9,18 @@ interface SidebarNavigationProps {
   collapsed: boolean;
   openCategories: Record<string, boolean>;
   onToggleCategory: (category: string) => void;
+  onNavigate: (path: string) => void;
+  currentPath: string;
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ 
   links, 
   collapsed, 
   openCategories,
-  onToggleCategory
+  onToggleCategory,
+  onNavigate,
+  currentPath
 }) => {
-  const location = useLocation();
   const { user } = useAuth();
 
   // Filter links based on admin access and required email
@@ -47,8 +49,9 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             subMenuItems={link.subMenuItems}
             collapsed={collapsed}
             isOpen={openCategories[link.path.replace("/", "")] || false}
-            currentPath={location.pathname}
+            currentPath={currentPath}
             onToggleCategory={() => onToggleCategory(link.path.replace("/", ""))}
+            onNavigate={onNavigate}
           />
         );
       })}
