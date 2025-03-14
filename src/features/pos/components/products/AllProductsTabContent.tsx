@@ -7,7 +7,7 @@ interface AllProductsTabContentProps {
   searchedProducts: Product[];
   isArabic: boolean;
   onProductClick: (product: Product) => void;
-  getGridCols: () => string;
+  getGridCols: string | (() => string);
 }
 
 const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({

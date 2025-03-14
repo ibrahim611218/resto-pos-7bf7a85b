@@ -11,7 +11,7 @@ interface CategoriesTabContentProps {
   searchedProducts: Product[];
   isArabic: boolean;
   onProductClick: (product: Product) => void;
-  getGridCols: () => string;
+  getGridCols: string | (() => string);
   isMobile: boolean;
 }
 
