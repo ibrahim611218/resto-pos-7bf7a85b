@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "sonner";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -36,38 +36,36 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <Router>
-            <LicenseCheck>
-              <Routes>
-                <Route path="/login" element={<Login language="ar" />} />
-                <Route path="/activate" element={<ActivateLicense />} />
-                <Route path="/unauthorized" element={<Unauthorized />} />
-                
-                <Route element={<ProtectedRoute />}>
-                  <Route element={<MainLayout />}>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/pos" element={<Pos />} />
-                    <Route path="/invoices" element={<Invoices />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/categories" element={<Categories />} />
-                    <Route path="/customers" element={<Customers />} />
-                    <Route path="/kitchen" element={<Kitchen />} />
-                    <Route path="/settings" element={<BusinessSettings />} />
-                    <Route path="/sales-report" element={<SalesReport />} />
-                    <Route path="/inventory-report" element={<InventoryReport />} />
-                    <Route path="/customers-report" element={<CustomersReport />} />
-                    <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
-                    <Route path="/user-management" element={<UserManagement />} />
-                    <Route path="/license-management" element={<LicenseManagement />} />
-                  </Route>
+          <LicenseCheck>
+            <Routes>
+              <Route path="/login" element={<Login language="ar" />} />
+              <Route path="/activate" element={<ActivateLicense />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              
+              <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/pos" element={<Pos />} />
+                  <Route path="/invoices" element={<Invoices />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/customers" element={<Customers />} />
+                  <Route path="/kitchen" element={<Kitchen />} />
+                  <Route path="/settings" element={<BusinessSettings />} />
+                  <Route path="/sales-report" element={<SalesReport />} />
+                  <Route path="/inventory-report" element={<InventoryReport />} />
+                  <Route path="/customers-report" element={<CustomersReport />} />
+                  <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
+                  <Route path="/user-management" element={<UserManagement />} />
+                  <Route path="/license-management" element={<LicenseManagement />} />
                 </Route>
-                
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </LicenseCheck>
+              </Route>
+              
+              <Route path="*" element={<NotFound />} />
+            </Routes>
             <SonnerToaster richColors position="top-center" dir="rtl" />
             <Toaster />
-          </Router>
+          </LicenseCheck>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
