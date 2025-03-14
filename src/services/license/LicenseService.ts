@@ -1,4 +1,3 @@
-
 import { License, LicenseState, LicenseType } from "@/types/license";
 import { BaseService, isElectron } from "../base/BaseService";
 
@@ -44,7 +43,10 @@ class BrowserLicenseService extends BaseService implements ILicenseService {
       const now = new Date();
       let expiresAt = new Date(now);
       
-      if (licenseType === "trial") {
+      // Check for special one-day trial key (T1Dx-xxxx-xxxx-xxxx)
+      if (parts[0].includes("1D")) {
+        expiresAt.setDate(now.getDate() + 1); // 1 day trial
+      } else if (licenseType === "trial") {
         expiresAt.setDate(now.getDate() + 14); // 14 days trial
       } else if (licenseType === "monthly") {
         expiresAt.setMonth(now.getMonth() + 1); // 1 month subscription

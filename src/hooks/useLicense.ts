@@ -74,11 +74,30 @@ export const useLicense = () => {
     }
   };
 
+  // Function to generate a 1-day trial license key
+  const generateOneDayTrialKey = () => {
+    // Create type prefix for one-day trial
+    const prefix = "T";
+    
+    // Random alphanumeric characters
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const getRandomChar = () => chars.charAt(Math.floor(Math.random() * chars.length));
+    
+    // Generate parts of the key with special "1D" marker for one-day trial
+    const firstPart = prefix + "1D" + getRandomChar();
+    const secondPart = Array(4).fill(0).map(() => getRandomChar()).join("");
+    const thirdPart = Array(4).fill(0).map(() => getRandomChar()).join("");
+    const fourthPart = Array(4).fill(0).map(() => getRandomChar()).join("");
+    
+    return `${firstPart}-${secondPart}-${thirdPart}-${fourthPart}`;
+  };
+
   return {
     licenseState,
     loading,
     activateLicense,
     deactivateLicense,
-    fetchLicenseState
+    fetchLicenseState,
+    generateOneDayTrialKey
   };
 };

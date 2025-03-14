@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,16 +8,22 @@ import { useToast } from "@/hooks/use-toast";
 import { useLicense } from "@/hooks/useLicense";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Key } from "lucide-react";
 
 const LicenseActivation: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { toast } = useToast();
-  const { activateLicense, loading } = useLicense();
+  const { activateLicense, loading, generateOneDayTrialKey } = useLicense();
   const navigate = useNavigate();
   
   const [licenseKey, setLicenseKey] = useState("");
+  const [oneDayTrialKey, setOneDayTrialKey] = useState("");
+  
+  useEffect(() => {
+    // Generate a one-day trial key when component mounts
+    setOneDayTrialKey(generateOneDayTrialKey());
+  }, [generateOneDayTrialKey]);
   
   const handleActivate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +45,18 @@ const LicenseActivation: React.FC = () => {
         description: isArabic 
           ? "تم تفعيل البرنامج بنجاح" 
           : "The application has been activated successfully",
+      });
+      navigate("/");
+    }
+  };
+  
+  const activateOneDayTrial = async () => {
+    const activated = await activateLicense(oneDayTrialKey);
+    
+    if (activated) {
+      toast({
+        title: "تم التفعيل بنجاح",
+        description: "تم تفعيل الإصدار التجريبي ليوم واحد بنجاح",
       });
       navigate("/");
     }
@@ -87,17 +105,38 @@ const LicenseActivation: React.FC = () => {
                   isArabic ? "تفعيل" : "Activate"
                 )}
               </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => navigate("/")}
-              >
-                {isArabic ? "العودة للرئيسية" : "Back to Home"}
-              </Button>
             </div>
           </form>
         </CardContent>
+        <CardFooter className="flex-col space-y-4">
+          <div className="w-full border-t pt-4">
+            <h3 className="text-sm font-medium mb-2">
+              {isArabic ? "تفعيل سريع ليوم واحد" : "Quick One-Day Activation"}
+            </h3>
+            <div className="flex flex-col gap-3">
+              <div className="text-center bg-muted p-2 rounded-md font-mono text-xs">
+                {oneDayTrialKey}
+              </div>
+              <Button 
+                variant="secondary"
+                onClick={activateOneDayTrial}
+                className="w-full"
+                disabled={loading}
+              >
+                <Key className="ml-2 h-4 w-4" />
+                {isArabic ? "تفعيل لمدة يوم واحد للطباعة" : "Activate for One Day"}
+              </Button>
+            </div>
+          </div>
+          <Button 
+            type="button" 
+            variant="outline" 
+            className="w-full"
+            onClick={() => navigate("/")}
+          >
+            {isArabic ? "العودة للرئيسية" : "Back to Home"}
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
