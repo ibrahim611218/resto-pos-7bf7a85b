@@ -3,25 +3,23 @@ import React from "react";
 import SidebarItem from "./SidebarItem";
 import { SidebarLink } from "./types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useSidebarContext } from "./SidebarContext";
 
 interface SidebarNavigationProps {
   links: SidebarLink[];
   collapsed: boolean;
-  openCategories: Record<string, boolean>;
-  onToggleCategory: (category: string) => void;
-  onNavigate: (path: string) => void;
   currentPath: string;
+  onNavigate: (path: string) => void;
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ 
   links, 
   collapsed, 
-  openCategories,
-  onToggleCategory,
-  onNavigate,
-  currentPath
+  currentPath,
+  onNavigate
 }) => {
   const { user } = useAuth();
+  const { openCategories, toggleCategory } = useSidebarContext();
 
   // Filter links based on admin access and required email
   const filteredLinks = links.filter(link => {
@@ -50,7 +48,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             collapsed={collapsed}
             isOpen={openCategories[link.path.replace("/", "")] || false}
             currentPath={currentPath}
-            onToggleCategory={() => onToggleCategory(link.path.replace("/", ""))}
+            onToggleCategory={() => toggleCategory(link.path.replace("/", ""))}
             onNavigate={onNavigate}
           />
         );

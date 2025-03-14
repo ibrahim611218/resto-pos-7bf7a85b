@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import AnimatedTransition from "../ui-custom/AnimatedTransition";
-import { getSidebarLinks } from "./sidebar/sidebarLinks";
-import { SidebarProps } from "./sidebar/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
+import { getSidebarLinks } from "./sidebar/sidebarLinks";
+import { SidebarProps } from "./sidebar/types";
 import SidebarHeader from "./sidebar/SidebarHeader";
 import SidebarUserProfile from "./sidebar/SidebarUserProfile";
 import SidebarNavigation from "./sidebar/SidebarNavigation";
 import SidebarFooter from "./sidebar/SidebarFooter";
+import SidebarContainer from "./sidebar/SidebarContainer";
+import SidebarEventHandler from "./sidebar/SidebarEventHandler";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
@@ -19,68 +19,13 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
   const { language } = useLanguage();
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Setup initial open categories based on current URL
+  // Mark sidebar as initialized after first render
   useEffect(() => {
-    const path = location.pathname;
-    const categoriesState: Record<string, boolean> = {};
-    
-    if (path.includes('/pos') || path.includes('/invoices') || path.includes('/customers')) {
-      categoriesState['pos'] = true;
-    }
-    
-    if (path.includes('/products') || path.includes('/categories')) {
-      categoriesState['products'] = true;
-    }
-    
-    if (path.includes('/inventory')) {
-      categoriesState['inventory'] = true;
-    }
-    
-    if (path.includes('/reports')) {
-      categoriesState['reports'] = true;
-    }
-    
-    if (path.includes('/settings')) {
-      categoriesState['settings'] = true;
-    }
-    
-    setOpenCategories(categoriesState);
     setIsInitialized(true);
-  }, [location.pathname]);
-
-  // Listen for custom toggle sidebar event
-  useEffect(() => {
-    const handleToggleSidebar = () => {
-      onToggle();
-    };
-
-    window.addEventListener('toggle-sidebar', handleToggleSidebar);
-    
-    return () => {
-      window.removeEventListener('toggle-sidebar', handleToggleSidebar);
-    };
-  }, [onToggle]);
-
-  const toggleCategory = (category: string) => {
-    if (collapsed) {
-      onToggle();
-      setTimeout(() => {
-        setOpenCategories((prev) => ({
-          ...prev,
-          [category]: !prev[category],
-        }));
-      }, 300);
-    } else {
-      setOpenCategories((prev) => ({
-        ...prev,
-        [category]: !prev[category],
-      }));
-    }
-  };
-
+  }, []);
+  
   const handleNavigate = (path: string) => {
     navigate(path);
     // Auto-collapse sidebar on mobile after navigation
@@ -124,36 +69,29 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     return true;
   });
 
-  if (isMobile && collapsed) return null;
-
-  const sidebarTransition = collapsed ? "w-20" : "w-64";
-
   return (
-    <AnimatedTransition animation="fade" show={isInitialized}>
-      <aside
-        className={cn(
-          "fixed lg:relative inset-y-0 right-0 z-30 flex h-screen flex-col glass border-l shadow-md",
-          sidebarTransition,
-          "transition-all duration-300 ease-in-out"
-        )}
+    <SidebarEventHandler onToggle={onToggle}>
+      <SidebarContainer 
+        collapsed={collapsed} 
+        onToggle={onToggle} 
+        isInitialized={isInitialized}
+        isMobile={isMobile}
       >
         <SidebarHeader collapsed={collapsed} onToggle={onToggle} />
         <SidebarUserProfile user={user} collapsed={collapsed} />
         <SidebarNavigation 
           links={mainLinks} 
           collapsed={collapsed} 
-          openCategories={openCategories}
-          onToggleCategory={toggleCategory}
-          onNavigate={handleNavigate}
           currentPath={location.pathname}
+          onNavigate={handleNavigate}
         />
         <SidebarFooter 
           collapsed={collapsed} 
           language={language}
           onLogout={handleLogout}
         />
-      </aside>
-    </AnimatedTransition>
+      </SidebarContainer>
+    </SidebarEventHandler>
   );
 };
 
