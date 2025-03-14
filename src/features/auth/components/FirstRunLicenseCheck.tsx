@@ -1,66 +1,66 @@
 
-import React, { ReactNode, useEffect, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useLicense } from '../hooks/useLicense';
-import { Loader2, Menu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '../hooks/useAuth';
 
-interface FirstRunLicenseCheckProps {
-  children: ReactNode;
-}
-
-const FirstRunLicenseCheck: React.FC<FirstRunLicenseCheckProps> = ({ children }) => {
-  const { licenseStatus, isLoading } = useLicense();
-  const [firstRun, setFirstRun] = useState(true);
-  const location = useLocation();
+const FirstRunLicenseCheck: React.FC = () => {
+  const { checkLicense } = useLicense();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
+  const [isChecking, setIsChecking] = useState(true);
+  
   useEffect(() => {
-    // Check if this is the first run
-    const isFirstRun = !localStorage.getItem('app_initialized');
-    setFirstRun(isFirstRun);
+    const checkAppLicense = async () => {
+      setIsChecking(true);
+      
+      // Skip license check for admin users (they're already authenticated)
+      if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+        setIsChecking(false);
+        return;
+      }
+      
+      try {
+        const hasValidLicense = await checkLicense();
+        if (!hasValidLicense) {
+          navigate('/activate');
+        }
+      } finally {
+        setIsChecking(false);
+      }
+    };
     
-    // If first run, mark as initialized
-    if (isFirstRun) {
-      localStorage.setItem('app_initialized', 'true');
-    }
-  }, []);
-
-  const toggleSidebar = () => {
-    // Dispatch a custom event that the sidebar can listen for
-    const event = new CustomEvent('toggle-sidebar');
-    window.dispatchEvent(event);
+    checkAppLicense();
+  }, [checkLicense, navigate, isAuthenticated, user]);
+  
+  const handleNavigateToActivation = () => {
+    navigate('/activate');
   };
-
-  if (isLoading) {
+  
+  if (isChecking) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground">Loading...</span>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 text-2xl font-bold">جاري التحقق من الترخيص...</div>
+          <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+        </div>
       </div>
     );
   }
-
-  // If it's first run and license not active, redirect to activation
-  if (firstRun && !licenseStatus.isActive && location.pathname !== '/activate') {
-    return <Navigate to="/activate" replace />;
+  
+  // If the admin is logged in, don't show the activation page button
+  if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+    return null;
   }
-
-  // On the activation page, show a menu icon to open the sidebar
-  if (location.pathname === '/activate') {
-    return (
-      <>
-        <div className="fixed top-4 right-4 z-50">
-          <Button variant="ghost" size="icon" onClick={toggleSidebar} title="فتح القائمة الرئيسية">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </div>
-        {children}
-      </>
-    );
-  }
-
-  return <>{children}</>;
+  
+  return (
+    <div className="fixed bottom-4 left-4 z-50">
+      <Button onClick={handleNavigateToActivation} variant="outline">
+        صفحة التفعيل
+      </Button>
+    </div>
+  );
 };
 
 export default FirstRunLicenseCheck;

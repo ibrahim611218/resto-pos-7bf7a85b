@@ -1,25 +1,86 @@
 
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { useLicense } from '../hooks/useLicense';
-import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
-const LicenseCheck = () => {
-  const { licenseStatus, isLoading } = useLicense();
+interface LicenseCheckProps {
+  children: React.ReactNode;
+}
 
-  if (isLoading) {
+const LicenseCheck: React.FC<LicenseCheckProps> = ({ children }) => {
+  const { checkLicense, getLicenseInfo } = useLicense();
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [isChecking, setIsChecking] = useState(true);
+  const [expiryDays, setExpiryDays] = useState<number | null>(null);
+  
+  useEffect(() => {
+    const verifyLicense = async () => {
+      setIsChecking(true);
+      
+      // Skip license check for admin users
+      if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+        setIsChecking(false);
+        return;
+      }
+      
+      try {
+        const hasValidLicense = await checkLicense();
+        if (!hasValidLicense) {
+          navigate('/activate');
+          return;
+        }
+        
+        // Get license info if valid
+        const licenseInfo = await getLicenseInfo();
+        if (licenseInfo) {
+          const expiryDate = new Date(licenseInfo.expiryDate);
+          const currentDate = new Date();
+          const diffTime = expiryDate.getTime() - currentDate.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          setExpiryDays(diffDays);
+        }
+      } finally {
+        setIsChecking(false);
+      }
+    };
+    
+    verifyLicense();
+  }, [checkLicense, getLicenseInfo, navigate, isAuthenticated, user]);
+  
+  if (isChecking) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-2 text-muted-foreground">جاري التحقق من الترخيص...</span>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 text-2xl font-bold">جاري التحقق من الترخيص...</div>
+          <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+        </div>
       </div>
     );
   }
-
-  if (!licenseStatus.isActive) {
-    return <Navigate to="/activate" replace />;
+  
+  // Don't show warning for admin
+  if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
+    return <>{children}</>;
   }
-
-  return <Outlet />;
+  
+  return (
+    <>
+      {expiryDays !== null && expiryDays <= 7 && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>تنبيه</AlertTitle>
+          <AlertDescription>
+            ستنتهي صلاحية الترخيص الخاص بك خلال {expiryDays} {expiryDays === 1 ? 'يوم' : 'أيام'}. يرجى تجديد الترخيص.
+          </AlertDescription>
+        </Alert>
+      )}
+      {children}
+    </>
+  );
 };
 
 export default LicenseCheck;

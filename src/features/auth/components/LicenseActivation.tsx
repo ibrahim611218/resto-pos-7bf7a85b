@@ -52,7 +52,9 @@ const LicenseActivation = () => {
     try {
       const success = login(email.trim(), password.trim());
       if (success) {
-        navigate('/license-generator');
+        // If admin login is successful, navigate directly to dashboard
+        // This bypasses the license activation requirement
+        navigate('/');
       } else {
         toast.error('بيانات غير صحيحة');
       }
