@@ -42,8 +42,8 @@ function App() {
         <LanguageProvider>
           <AuthProvider>
             <TooltipProvider>
-              <FirstRunLicenseCheck>
-                <BrowserRouter>
+              <BrowserRouter>
+                <FirstRunLicenseCheck>
                   <Routes>
                     {/* Public routes */}
                     <Route path="/login" element={<Login />} />
@@ -98,8 +98,8 @@ function App() {
                     {/* Catch-all route */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </BrowserRouter>
-              </FirstRunLicenseCheck>
+                </FirstRunLicenseCheck>
+              </BrowserRouter>
               <Sonner position="top-center" />
               <Toaster />
             </TooltipProvider>
