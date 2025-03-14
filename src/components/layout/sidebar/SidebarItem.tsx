@@ -14,6 +14,7 @@ export interface SidebarItemProps {
   currentPath: string;
   onToggleCategory: (category: string) => void;
   onNavigate: (path: string) => void;
+  isArabic?: boolean;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -26,6 +27,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   currentPath,
   onToggleCategory,
   onNavigate,
+  isArabic = false,
 }) => {
   const isActive = currentPath === path;
   const hasSubMenu = subMenuItems && subMenuItems.length > 0;
@@ -63,7 +65,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         )}
       >
         <div className="flex items-center">
-          <Icon className={cn("h-5 w-5", collapsed ? "" : "mr-2")} />
+          <Icon className={cn("h-5 w-5", collapsed ? "" : isArabic ? "ml-2" : "mr-2")} />
           {!collapsed && <span>{name}</span>}
         </div>
         {hasSubMenu && !collapsed && (
@@ -77,7 +79,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       </button>
 
       {hasSubMenu && isOpen && !collapsed && (
-        <div className="pl-8 space-y-1">
+        <div className={cn("space-y-1", isArabic ? "pr-8" : "pl-8")}>
           {subMenuItems.map((subItem) => {
             const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
             const isSubItemActive = currentPath === subItem.path;
@@ -93,7 +95,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                     : "hover:bg-accent hover:text-accent-foreground"
                 )}
               >
-                {subItem.icon && typeof SubIcon === 'function' && <SubIcon className="h-4 w-4 mr-2" />}
+                {subItem.icon && typeof SubIcon === 'function' && <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />}
                 <span>{subItem.name}</span>
               </button>
             );

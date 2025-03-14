@@ -53,13 +53,6 @@ const MainLayout = () => {
     };
   }, []);
 
-  // Collapse sidebar on route change in mobile or fullscreen
-  useEffect(() => {
-    if (isMobile || isFullscreen) {
-      setSidebarCollapsed(true);
-    }
-  }, [location.pathname, isMobile, isFullscreen]);
-
   // Toggle sidebar function - used by button and passed to child components
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
@@ -74,10 +67,10 @@ const MainLayout = () => {
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container ${
-            !sidebarCollapsed && !isMobile && !isFullscreen ? "md:mr-64" : "mr-0"
+            !sidebarCollapsed && !isMobile ? isArabic ? "md:ml-64" : "md:mr-64" : "mx-0"
           }`}
         >
-          <div className="fixed top-4 right-4 z-30 flex gap-2">
+          <div className={`fixed top-4 z-30 flex gap-2 ${isArabic ? "left-4" : "right-4"}`}>
             <FullscreenToggle />
             
             {(isMobile || sidebarCollapsed || isFullscreen) && (

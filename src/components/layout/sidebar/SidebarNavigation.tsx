@@ -6,6 +6,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useSidebarContext } from "./SidebarContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useFullscreen } from "@/hooks/useFullscreen";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SidebarNavigationProps {
   links: SidebarLink[];
@@ -24,6 +25,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const { openCategories, toggleCategory } = useSidebarContext();
   const isMobile = useIsMobile();
   const { isFullscreen } = useFullscreen();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
 
   // Filter links based on admin access and required email
   const filteredLinks = links.filter(link => {
@@ -68,6 +71,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             currentPath={currentPath}
             onToggleCategory={() => toggleCategory(link.path.replace("/", ""))}
             onNavigate={handleNavigate}
+            isArabic={isArabic}
           />
         );
       })}

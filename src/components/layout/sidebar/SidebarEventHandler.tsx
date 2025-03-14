@@ -1,5 +1,6 @@
 
 import React, { useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SidebarEventHandlerProps {
   onToggle: () => void;
@@ -7,6 +8,9 @@ interface SidebarEventHandlerProps {
 }
 
 const SidebarEventHandler: React.FC<SidebarEventHandlerProps> = ({ onToggle, children }) => {
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
+
   // Listen for custom toggle sidebar event
   useEffect(() => {
     const handleToggleSidebar = (e: Event) => {
@@ -31,7 +35,7 @@ const SidebarEventHandler: React.FC<SidebarEventHandlerProps> = ({ onToggle, chi
     };
   }, [onToggle]);
 
-  return <>{children}</>;
+  return <div dir={isArabic ? "rtl" : "ltr"}>{children}</div>;
 };
 
 export default SidebarEventHandler;

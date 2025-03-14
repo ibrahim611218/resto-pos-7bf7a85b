@@ -20,6 +20,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
   const { language } = useLanguage();
+  const isArabic = language === "ar";
   const { isFullscreen } = useFullscreen();
   const [isInitialized, setIsInitialized] = useState(false);
 
