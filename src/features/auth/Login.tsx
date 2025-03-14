@@ -8,15 +8,18 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useLanguage } from "@/context/LanguageContext";
+import { Language } from "@/types";
 
-const Login: React.FC = () => {
+interface LoginProps {
+  language: Language;
+}
+
+const Login: React.FC<LoginProps> = ({ language }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
-  const { language } = useLanguage();
   const isArabic = language === "ar";
 
   const handleLogin = (e: React.FormEvent) => {
