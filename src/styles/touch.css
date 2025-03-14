@@ -1,0 +1,58 @@
+
+/* Force larger buttons for touch devices */
+.touch-mode-active button,
+.touch-mode-active [role="button"] {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Ensure correct overflow handling */
+.overflow-container {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improved scrollbars for touch devices */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Position fixes for resizing */
+.pos-content {
+  display: flex !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+/* Global fix for layout size issues on large screens */
+html, body, #root, #app, .app-container {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Fix for Windows/Chrome specific sizing issues */
+@supports (-ms-ime-align: auto) {
+  html, body, #root {
+    height: 100vh;
+  }
+}

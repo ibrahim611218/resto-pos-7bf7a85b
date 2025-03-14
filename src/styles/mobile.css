@@ -1,0 +1,59 @@
+
+/* Mobile-specific responsive styles */
+@media (max-width: 640px) {
+  .compact-ui {
+    font-size: 0.875rem !important;
+  }
+  
+  .compact-ui .text-lg {
+    font-size: 0.9375rem !important;
+  }
+  
+  .compact-ui .px-4 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .compact-ui .p-4 {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Additional responsive fixes for small screens */
+@media (max-height: 700px) {
+  .compact-ui .spacing-y-reduce {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .compact-ui .card-content {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Fix for small touch devices */
+@media (max-width: 480px) {
+  .touch-target-fix button, 
+  .touch-target-fix [role="button"] {
+    min-height: 40px !important;
+    min-width: 40px !important;
+  }
+}
+
+/* Enhanced responsiveness for compact screens */
+.auto-responsive-tight {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 0.5rem;
+}
+
+/* Flexible table for responsive displays */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsive-table {
+  width: 100%;
+  min-width: 600px;
+}

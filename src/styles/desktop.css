@@ -1,0 +1,126 @@
+
+/* Full screen scaling fixes */
+@media (min-width: 1400px) {
+  .product-card {
+    transform: scale(1);
+    transition: transform 0.2s ease;
+  }
+  
+  .product-image {
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  
+  .pos-screen {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Fix for large screens */
+@media (min-width: 1600px) {
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+  }
+  
+  html, body, #root {
+    height: 100vh !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .auto-scale-container {
+    height: 100vh !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Fix for very large screens */
+@media (min-width: 1920px) {
+  .auto-scale-container {
+    height: 100vh !important;
+    width: 100vw !important;
+    display: flex !important;
+    overflow: hidden !important;
+  }
+  
+  .content-container {
+    flex: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: auto !important;
+  }
+  
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  }
+  
+  .stretch-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Additional large screen fixes */
+@media (min-width: 2560px) {
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+  }
+  
+  .product-card {
+    transform: scale(1);
+  }
+}
+
+/* Responsive layout classes */
+.auto-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+}
+
+.auto-responsive-wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: 1.5rem;
+}
+
+/* Add stretch classes for full viewport utilization */
+.full-height {
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+.full-width {
+  width: 100vw !important;
+  max-width: 100vw !important;
+}
+
+.flex-grow-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.stretch-content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Ensure grid items maintain aspect ratio */
+.grid-item-square {
+  aspect-ratio: 1/1;
+}
