@@ -1,4 +1,3 @@
-
 /* Responsive breakpoints */
 @media (max-width: 640px) {
   .compact-ui {
@@ -202,4 +201,64 @@ html, body, #root, #app, .app-container {
   .product-card {
     transform: scale(1);
   }
+}
+
+/* Fullscreen specific styles */
+:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+:-moz-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+:-ms-fullscreen {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+:fullscreen {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Fullscreen container styles */
+.in-fullscreen {
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+/* Improve visibility of controls in fullscreen mode */
+:fullscreen .fullscreen-controls,
+:-webkit-full-screen .fullscreen-controls,
+:-moz-full-screen .fullscreen-controls,
+:-ms-fullscreen .fullscreen-controls {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+  transition: opacity 0.3s ease !important;
+}
+
+:fullscreen .fullscreen-controls:hover,
+:-webkit-full-screen .fullscreen-controls:hover,
+:-moz-full-screen .fullscreen-controls:hover,
+:-ms-fullscreen .fullscreen-controls:hover {
+  opacity: 1 !important;
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -6,6 +5,7 @@ import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import FullscreenToggle from "../ui-custom/FullscreenToggle";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -13,7 +13,6 @@ const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Automatically collapse sidebar on mobile devices or small screens
   useEffect(() => {
     if (isMobile || (isTablet && width < 768)) {
       setSidebarCollapsed(true);
@@ -22,7 +21,6 @@ const MainLayout = () => {
     }
   }, [isMobile, isTablet, width]);
 
-  // Listen for the custom toggle event
   useEffect(() => {
     const handleToggleSidebar = () => {
       setSidebarCollapsed(prevState => !prevState);
@@ -35,17 +33,14 @@ const MainLayout = () => {
     };
   }, []);
 
-  // Listen for route changes to auto-collapse sidebar on mobile
   useEffect(() => {
     if (isMobile) {
       setSidebarCollapsed(true);
     }
   }, [location.pathname, isMobile]);
 
-  // Memoize toggle function to prevent unnecessary re-renders
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
-    // Dispatch a custom event that other components can listen for
     window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { collapsed: !sidebarCollapsed } }));
   }, [sidebarCollapsed]);
 
@@ -58,18 +53,22 @@ const MainLayout = () => {
             !sidebarCollapsed && !isMobile ? "md:mr-64" : "mr-0"
           }`}
         >
-          {/* Floating menu button for mobile view */}
-          {(isMobile || sidebarCollapsed) && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="fixed top-4 right-4 z-30 bg-background/80 backdrop-blur-sm shadow-sm"
-              onClick={toggleSidebar}
-              title="فتح القائمة الرئيسية"
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-          )}
+          <div className="fixed top-4 right-4 z-30 flex gap-2">
+            <FullscreenToggle />
+            
+            {(isMobile || sidebarCollapsed) && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="bg-background/80 backdrop-blur-sm shadow-sm"
+                onClick={toggleSidebar}
+                title="فتح القائمة الرئيسية"
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            )}
+          </div>
+          
           <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container">
             <Outlet />
           </div>
