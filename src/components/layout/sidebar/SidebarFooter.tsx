@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import ThemeToggle from "../../ui-custom/ThemeToggle";
 import { Language } from "@/types";
+import FullscreenToggle from "../../ui-custom/FullscreenToggle";
 
 interface SidebarFooterProps {
   collapsed: boolean;
@@ -21,6 +22,13 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
   return (
     <div className="border-t p-3 space-y-2">
       <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
+      
+      <FullscreenToggle 
+        className={cn(
+          "w-full justify-start",
+          collapsed ? "justify-center" : ""
+        )} 
+      />
       
       <Button 
         variant="outline"

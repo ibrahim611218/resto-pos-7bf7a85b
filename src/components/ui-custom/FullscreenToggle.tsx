@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
+import AnimatedTransition from "./AnimatedTransition";
 
 interface FullscreenToggleProps {
   className?: string;
+  collapsed?: boolean;
 }
 
-const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "" }) => {
+const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "", collapsed = false }) => {
   const { isFullscreen, toggleFullscreen, fullscreenEnabled } = useFullscreen();
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -37,18 +39,28 @@ const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "" }) =
   return (
     <Button
       variant="ghost"
-      size="icon"
+      size={collapsed ? "icon" : "default"}
       onClick={toggleFullscreen}
-      className={`bg-background/80 backdrop-blur-sm shadow-sm z-50 ${className}`}
+      className={`bg-background/80 backdrop-blur-sm ${className}`}
       title={isArabic 
         ? (isFullscreen ? "إلغاء وضع ملء الشاشة" : "ملء الشاشة") 
         : (isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen")
       }
     >
       {isFullscreen ? (
-        <Minimize2 className="h-5 w-5" />
+        <Minimize2 className={collapsed ? "" : "mr-2"} size={18} />
       ) : (
-        <Maximize2 className="h-5 w-5" />
+        <Maximize2 className={collapsed ? "" : "mr-2"} size={18} />
+      )}
+      
+      {!collapsed && (
+        <AnimatedTransition animation="fade">
+          <span>
+            {isFullscreen 
+              ? (isArabic ? "إلغاء ملء الشاشة" : "Exit Fullscreen") 
+              : (isArabic ? "ملء الشاشة" : "Enter Fullscreen")}
+          </span>
+        </AnimatedTransition>
       )}
     </Button>
   );
