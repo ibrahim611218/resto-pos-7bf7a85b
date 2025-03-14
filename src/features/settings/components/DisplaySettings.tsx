@@ -1,14 +1,14 @@
 
 import React from "react";
-import { useScreenSize } from "@/hooks/use-mobile";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { WindowSizeSettings } from "./window-size/WindowSizeSettings";
 import { TouchModeSettings } from "./touch-mode/TouchModeSettings";
 import { useDisplaySettings } from "../hooks/useDisplaySettings";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 
 const DisplaySettings = () => {
-  const screenSize = useScreenSize();
+  const { width, height, isMobile, isTablet, isDesktop } = useWindowDimensions();
   const {
     settings,
     windowSize,
@@ -29,11 +29,11 @@ const DisplaySettings = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>{isArabic ? "عرض النافذة الحالي" : "Current Window Width"}</Label>
-              <div className="font-medium">{window.innerWidth}px</div>
+              <div className="font-medium">{width}px</div>
             </div>
             <div>
               <Label>{isArabic ? "ارتفاع النافذة الحالي" : "Current Window Height"}</Label>
-              <div className="font-medium">{window.innerHeight}px</div>
+              <div className="font-medium">{height}px</div>
             </div>
             <div>
               <Label>{isArabic ? "عرض الشاشة المتاح" : "Available Screen Width"}</Label>
@@ -46,9 +46,9 @@ const DisplaySettings = () => {
             <div>
               <Label>{isArabic ? "نوع الجهاز" : "Device Type"}</Label>
               <div className="font-medium">
-                {screenSize.isMobile 
+                {isMobile 
                   ? (isArabic ? "جوال" : "Mobile") 
-                  : screenSize.isTablet 
+                  : isTablet 
                     ? (isArabic ? "جهاز لوحي" : "Tablet")
                     : (isArabic ? "حاسوب" : "Desktop")}
               </div>

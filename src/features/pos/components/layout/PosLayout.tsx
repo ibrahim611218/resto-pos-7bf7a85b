@@ -1,6 +1,6 @@
 
-import React, { ReactNode } from "react";
-import { useScreenSize } from "@/hooks/use-mobile";
+import React, { ReactNode, useEffect, useState } from "react";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 
 interface PosLayoutProps {
   isArabic: boolean;
@@ -12,16 +12,23 @@ interface PosLayoutProps {
  * Handles different layouts for mobile, tablet and desktop
  */
 const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
-  const { isMobile } = useScreenSize();
+  const { isMobile, isTablet, width, height } = useWindowDimensions();
+  const [layoutClass, setLayoutClass] = useState("flex-row");
   
-  // Determine the order of panels based on language
-  // For Arabic, cart should be on the right side
-  const cartOrder = isArabic ? "order-1" : "order-2";
-  const productsOrder = isArabic ? "order-2" : "order-1";
+  // Update layout direction based on screen size and orientation
+  useEffect(() => {
+    // Mobile or narrow screens - vertical layout
+    if (isMobile || width < 768 || (width < height && width < 1024)) {
+      setLayoutClass("flex-col");
+    } 
+    // Tablet landscape or desktop - horizontal layout
+    else {
+      setLayoutClass("flex-row");
+    }
+  }, [isMobile, isTablet, width, height]);
 
-  // On mobile, we'll use a flex column layout instead of row
   return (
-    <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full overflow-hidden m-0 p-0`}>
+    <div className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`}>
       {children}
     </div>
   );

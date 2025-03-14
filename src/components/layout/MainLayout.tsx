@@ -2,22 +2,24 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const isMobile = useIsMobile();
+  const { isMobile, isTablet, width } = useWindowDimensions();
   const location = useLocation();
   
-  // Automatically collapse sidebar on mobile devices
+  // Automatically collapse sidebar on mobile devices or small screens
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile || (isTablet && width < 768)) {
       setSidebarCollapsed(true);
+    } else {
+      setSidebarCollapsed(false);
     }
-  }, [isMobile]);
+  }, [isMobile, isTablet, width]);
 
   // Listen for the custom toggle event
   useEffect(() => {
@@ -37,16 +39,16 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background w-full m-0 p-0 compact-ui overflow-hidden">
+    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <AnimatedTransition animation="fade" delay={100}>
         <div 
-          className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 ${
-            !sidebarCollapsed && !isMobile ? "md:ml-64" : "ml-0"
+          className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container ${
+            !sidebarCollapsed && !isMobile ? "md:mr-64" : "mr-0"
           }`}
         >
           {/* Floating menu button for mobile view */}
-          {isMobile && sidebarCollapsed && (
+          {(isMobile || sidebarCollapsed) && (
             <Button 
               variant="ghost" 
               size="icon" 
@@ -57,7 +59,7 @@ const MainLayout = () => {
               <Menu className="h-6 w-6" />
             </Button>
           )}
-          <div className="h-screen w-full overflow-auto m-0 p-0">
+          <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container">
             <Outlet />
           </div>
         </div>

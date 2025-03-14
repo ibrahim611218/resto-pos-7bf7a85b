@@ -43,6 +43,12 @@
     --ring: 167 100% 15%;
     
     --radius: 0.75rem;
+    
+    /* Viewport scaling variables */
+    --viewport-padding: 1rem;
+    --content-max-width: 100%;
+    --sidebar-width: 16rem;
+    --sidebar-collapsed-width: 5rem;
   }
  
   .dark {
@@ -87,11 +93,51 @@
   html {
     @apply scroll-smooth font-sans;
     direction: rtl;
+    height: 100%;
+    width: 100%;
+    font-size: 16px;
   }
   
   body {
     @apply bg-background text-foreground transition-colors duration-300;
     font-family: 'Tajawal', 'Cairo', 'Inter', sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  #root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Responsive font size adjustments */
+  @media (max-width: 1280px) {
+    html {
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    html {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    html {
+      font-size: 13px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    html {
+      font-size: 12px;
+    }
   }
 }
 
@@ -139,6 +185,29 @@
   .restopos-accent {
     @apply text-[#ff5722];
   }
+  
+  /* Automatic content scaling utilities */
+  .auto-fit-content {
+    width: 100%;
+    height: 100%;
+    max-width: var(--content-max-width);
+    overflow: auto;
+    padding: var(--viewport-padding);
+  }
+  
+  .auto-scale-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .content-container {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+  }
 }
 
 /* RestoPOS Specific Styles */
@@ -166,4 +235,41 @@
 .dark .card,
 .dark .dialog-content {
   @apply border-orange-500/40;
+}
+
+/* Responsive layout classes */
+.auto-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+}
+
+.auto-responsive-tight {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 0.5rem;
+}
+
+.auto-responsive-wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: 1.5rem;
+}
+
+/* Flexible table for responsive displays */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsive-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.flex-grow-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden;
 }
