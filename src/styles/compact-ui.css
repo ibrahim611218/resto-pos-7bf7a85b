@@ -1,0 +1,74 @@
+
+/* Compact UI elements */
+.compact-ui .p-4 {
+  padding: 0.75rem !important;
+}
+
+.compact-ui .text-2xl {
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
+}
+
+.compact-ui .text-xl {
+  font-size: 1.125rem !important;
+  line-height: 1.5rem !important;
+}
+
+.compact-ui .text-lg {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+.compact-ui .space-y-4 {
+  margin-top: 0.5rem !important;
+}
+
+.compact-ui .my-4 {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.compact-ui .gap-4 {
+  gap: 0.5rem !important;
+}
+
+.compact-ui .h-14 {
+  height: 2.5rem !important;
+}
+
+.compact-ui .py-2 {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+}
+
+.compact-ui .px-4 {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+.compact-ui input, 
+.compact-ui select, 
+.compact-ui textarea {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+}
+
+.compact-ui .mb-4 {
+  margin-bottom: 0.5rem !important;
+}
+
+.compact-ui .mb-6 {
+  margin-bottom: 0.75rem !important;
+}
+
+.compact-ui .card-header {
+  padding: 1rem !important;
+}
+
+.compact-ui .card-content {
+  padding: 0.75rem !important;
+}
+
+.compact-ui .card-footer {
+  padding: 0.75rem !important;
+}

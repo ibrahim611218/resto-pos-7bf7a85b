@@ -7,7 +7,7 @@ interface ProductGridProps {
   products: Product[];
   isArabic: boolean;
   onProductClick: (product: Product) => void;
-  getGridCols: () => string;
+  getGridCols: string | (() => string);
 }
 
 // Using memo to prevent unnecessary re-renders
@@ -17,8 +17,10 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   onProductClick,
   getGridCols,
 }) => {
+  const gridColsClass = typeof getGridCols === 'function' ? getGridCols() : getGridCols;
+  
   return (
-    <div className={`grid ${getGridCols()} gap-2`}>
+    <div className={`grid ${gridColsClass} gap-2`}>
       {products.map((product, index) => (
         <GlassCard
           key={product.id}
