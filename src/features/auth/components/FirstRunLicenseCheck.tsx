@@ -5,7 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../hooks/useAuth';
 
-const FirstRunLicenseCheck: React.FC = () => {
+interface FirstRunLicenseCheckProps {
+  children: React.ReactNode;
+}
+
+const FirstRunLicenseCheck: React.FC<FirstRunLicenseCheckProps> = ({ children }) => {
   const { checkLicense } = useLicense();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -51,15 +55,18 @@ const FirstRunLicenseCheck: React.FC = () => {
   
   // If the admin is logged in, don't show the activation page button
   if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
-    return null;
+    return <>{children}</>;
   }
   
   return (
-    <div className="fixed bottom-4 left-4 z-50">
-      <Button onClick={handleNavigateToActivation} variant="outline">
-        صفحة التفعيل
-      </Button>
-    </div>
+    <>
+      {children}
+      <div className="fixed bottom-4 left-4 z-50">
+        <Button onClick={handleNavigateToActivation} variant="outline">
+          صفحة التفعيل
+        </Button>
+      </div>
+    </>
   );
 };
 

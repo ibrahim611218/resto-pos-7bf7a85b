@@ -1,16 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLicense } from '../hooks/useLicense';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
-interface LicenseCheckProps {
-  children: React.ReactNode;
-}
-
-const LicenseCheck: React.FC<LicenseCheckProps> = ({ children }) => {
+const LicenseCheck: React.FC = () => {
   const { checkLicense, getLicenseInfo } = useLicense();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -64,7 +60,7 @@ const LicenseCheck: React.FC<LicenseCheckProps> = ({ children }) => {
   
   // Don't show warning for admin
   if (isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com') {
-    return <>{children}</>;
+    return <Outlet />;
   }
   
   return (
@@ -78,7 +74,7 @@ const LicenseCheck: React.FC<LicenseCheckProps> = ({ children }) => {
           </AlertDescription>
         </Alert>
       )}
-      {children}
+      <Outlet />
     </>
   );
 };

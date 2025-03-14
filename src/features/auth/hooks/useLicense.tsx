@@ -42,6 +42,17 @@ export const useLicense = () => {
     }
   };
 
+  // Get license info
+  const getLicenseInfo = async () => {
+    try {
+      const activeLicense = await licenseService.getActivatedLicense();
+      return activeLicense;
+    } catch (error) {
+      console.error('Error getting license info:', error);
+      return null;
+    }
+  };
+
   // Activate a license
   const activateLicense = async (licenseKey: string) => {
     try {
@@ -117,6 +128,7 @@ export const useLicense = () => {
     licenseStatus,
     isLoading,
     checkLicense,
+    getLicenseInfo,
     activateLicense,
     generateLicense,
     getAllLicenses,
