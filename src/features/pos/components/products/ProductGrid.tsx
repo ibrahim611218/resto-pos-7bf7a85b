@@ -17,6 +17,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   onProductClick,
   getGridCols,
 }) => {
+  // Handle both string and function types for getGridCols
   const gridColsClass = typeof getGridCols === 'function' ? getGridCols() : getGridCols;
   
   return (
