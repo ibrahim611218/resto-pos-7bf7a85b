@@ -50,7 +50,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   }, [isMobile, isTablet, width, height]);
 
   return (
-    <div dir={isArabic ? "rtl" : "ltr"} className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`}>
+    <div dir={isArabic ? "rtl" : "ltr"} className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} style={{ minHeight: "100vh" }}>
       {children}
     </div>
   );

@@ -1,7 +1,8 @@
 
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Product } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 
 interface ProductGridProps {
   products: Product[];
@@ -17,13 +18,26 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   onProductClick,
   getGridCols,
 }) => {
-  // Handle both string and function types for getGridCols
-  const gridColsClass = typeof getGridCols === 'function' ? getGridCols() : getGridCols;
+  const { width, height } = useWindowDimensions();
+  const [gridClass, setGridClass] = useState("");
+  
+  // Dynamically adjust grid based on screen size
+  useEffect(() => {
+    // Handle both string and function types for getGridCols
+    const gridColsClass = typeof getGridCols === 'function' ? getGridCols() : getGridCols;
+    
+    // Add additional responsive classes based on screen dimensions
+    const responsiveClass = width > 1600 ? 'gap-4' : 'gap-2';
+    
+    setGridClass(`${gridColsClass} ${responsiveClass}`);
+  }, [getGridCols, width, height]);
   
   if (!products || products.length === 0) {
     return (
-      <div className="text-center p-4 text-muted-foreground">
-        {isArabic ? "لا توجد منتجات" : "No products found"}
+      <div className="text-center p-4 text-muted-foreground w-full h-full flex items-center justify-center">
+        <div className="bg-muted/30 p-6 rounded-lg w-full max-w-md">
+          {isArabic ? "لا توجد منتجات" : "No products found"}
+        </div>
       </div>
     );
   }
@@ -34,7 +48,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   };
   
   return (
-    <div className={`grid ${gridColsClass} gap-2`}>
+    <div className={`grid ${gridClass} w-full`} style={{ minHeight: "100px" }}>
       {products.map((product, index) => (
         <GlassCard
           key={product.id}
