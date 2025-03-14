@@ -32,7 +32,12 @@ export const useLicense = () => {
       const result = await licenseService.activateLicense(licenseKey);
       
       if (result.success) {
-        await fetchLicenseState();
+        const newState = await fetchLicenseState();
+        toast.success(
+          newState.isTrial 
+            ? "تم تفعيل الإصدار التجريبي بنجاح" 
+            : "تم تفعيل الترخيص بنجاح"
+        );
         return true;
       } else {
         toast.error(result.error || "فشل في تفعيل الترخيص");
