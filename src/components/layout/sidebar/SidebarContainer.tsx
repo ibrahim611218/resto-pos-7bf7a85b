@@ -48,9 +48,14 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",
-          pointerEvents: "auto", // Ensure clicks work
-          touchAction: "auto", // Ensure touch events work
+          pointerEvents: "auto", 
+          touchAction: "auto", 
+          zIndex: 999,
+          userSelect: "none",
+          backgroundColor: "var(--background)",
+          position: "fixed"
         }}
+        data-sidebar="sidebar"
       >
         <SidebarContextProvider collapsed={collapsed} onToggle={onToggle}>
           {children}

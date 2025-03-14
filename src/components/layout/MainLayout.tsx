@@ -79,21 +79,21 @@ const MainLayout = () => {
             position: "relative" 
           }}
         >
-          <div className={`fixed top-4 z-40 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
+          <div className={`fixed top-4 z-1000 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
             <FullscreenToggle />
             
             {(isMobile || sidebarCollapsed || isFullscreen) && (
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="bg-background/80 backdrop-blur-sm shadow-sm"
+                className="bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-button"
                 onClick={toggleSidebar}
                 title={isArabic ? "فتح القائمة الرئيسية" : "Open Menu"}
                 style={{ 
                   pointerEvents: "auto",
                   touchAction: "manipulation",
-                  zIndex: 50,
-                  position: "relative"
+                  zIndex: 1000,
+                  position: "fixed"
                 }}
               >
                 <Menu className="h-6 w-6" />

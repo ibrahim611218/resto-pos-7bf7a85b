@@ -62,7 +62,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const submenuPaddingClass = isArabic ? "pr-8" : "pl-8";
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1" style={{ pointerEvents: "auto", zIndex: 1001, position: "relative" }}>
       <button
         onClick={handleItemClick}
         className={cn(
@@ -72,6 +72,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             : "hover:bg-accent hover:text-accent-foreground",
           collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between"
         )}
+        style={{ 
+          pointerEvents: "auto", 
+          touchAction: "manipulation",
+          cursor: "pointer",
+          userSelect: "none",
+          zIndex: 1001,
+          position: "relative"
+        }}
       >
         <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse" : "")}>
           <Icon className={cn("h-5 w-5", iconMarginClass())} />
@@ -89,7 +97,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       </button>
 
       {hasSubMenu && isOpen && !collapsed && (
-        <div className={cn("space-y-1", submenuPaddingClass)}>
+        <div 
+          className={cn("space-y-1", submenuPaddingClass)}
+          style={{ pointerEvents: "auto", zIndex: 1001, position: "relative" }}
+        >
           {subMenuItems.map((subItem) => {
             const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
             const isSubItemActive = currentPath === subItem.path;
@@ -105,6 +116,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                     : "hover:bg-accent hover:text-accent-foreground",
                   isArabic ? "flex-row-reverse justify-end" : ""
                 )}
+                style={{ 
+                  pointerEvents: "auto", 
+                  touchAction: "manipulation",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  zIndex: 1001,
+                  position: "relative"
+                }}
               >
                 {subItem.icon && typeof SubIcon === 'function' && 
                   <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />

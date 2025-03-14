@@ -59,7 +59,16 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   };
 
   return (
-    <nav className={cn("mt-4 flex-1 space-y-1 px-3 overflow-y-auto", isArabic ? "scrollbar-rtl" : "")}>
+    <nav 
+      className={cn("mt-4 flex-1 space-y-1 px-3 overflow-y-auto", isArabic ? "scrollbar-rtl" : "")}
+      style={{ 
+        pointerEvents: "auto", 
+        touchAction: "auto", 
+        zIndex: 1001, 
+        position: "relative",
+        WebkitOverflowScrolling: "touch"
+      }}
+    >
       {filteredLinks.map((link) => {
         const IconComponent = link.icon as React.ComponentType<{ className?: string }>;
         return (

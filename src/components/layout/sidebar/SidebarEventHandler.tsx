@@ -36,7 +36,20 @@ const SidebarEventHandler: React.FC<SidebarEventHandlerProps> = ({ onToggle, chi
     };
   }, [onToggle]);
 
-  return <div dir={isArabic ? "rtl" : "ltr"}>{children}</div>;
+  return (
+    <div 
+      dir={isArabic ? "rtl" : "ltr"} 
+      style={{ 
+        pointerEvents: "auto", 
+        touchAction: "auto", 
+        position: "relative", 
+        zIndex: 60,
+        userSelect: "none"
+      }}
+    >
+      {children}
+    </div>
+  );
 };
 
 export default SidebarEventHandler;

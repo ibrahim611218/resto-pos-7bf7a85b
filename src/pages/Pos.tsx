@@ -65,8 +65,8 @@ const PosPage: React.FC = () => {
     // Special event to help other components know POS is active
     window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: true } }));
     
-    // Do not force collapse the sidebar, let the user control it
-    // window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
+    // Important - add a className to ensure the sidebar can be interacted with
+    document.documentElement.classList.add('pos-page-active');
     
     // Cleanup on unmount
     return () => {
@@ -77,6 +77,7 @@ const PosPage: React.FC = () => {
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
       document.body.classList.remove('pos-active');
+      document.documentElement.classList.remove('pos-page-active');
       document.body.style.pointerEvents = "";
       document.documentElement.style.pointerEvents = "";
       
@@ -129,7 +130,7 @@ const PosPage: React.FC = () => {
         pointerEvents: 'auto',
         touchAction: 'auto',
         // Set a lower z-index to ensure the sidebar can overlay
-        zIndex: 0
+        zIndex: 1
       }}>
       <Pos />
     </div>

@@ -40,33 +40,58 @@ const Sidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({
 
   // Handle navigation from sidebar item clicks
   const handleNavigate = (path: string) => {
+    console.log("Navigating to:", path);
     navigate(path);
+    
+    // On mobile, collapse the sidebar after navigation with a delay
+    if (isMobile) {
+      setTimeout(() => {
+        onToggle();
+      }, 300);
+    }
+  };
+
+  // Log clicks to help with debugging
+  const handleClick = (e: React.MouseEvent) => {
+    console.log("Sidebar clicked");
+    e.stopPropagation();
   };
 
   return (
     <SidebarProvider>
-      <SidebarEventHandler onToggle={onToggle}>
-        <SidebarContainer 
-          collapsed={collapsed} 
-          onToggle={onToggle} 
-          isInitialized={isInitialized}
-          isMobile={isMobile}
-        >
-          <SidebarHeader collapsed={collapsed} onToggle={onToggle} />
-          <SidebarUserProfile user={user} collapsed={collapsed} />
-          <SidebarNavigation 
-            links={sidebarLinks} 
+      <div 
+        onClick={handleClick}
+        style={{ 
+          pointerEvents: "auto", 
+          touchAction: "auto", 
+          position: "relative", 
+          zIndex: 1000,
+          isolation: "isolate" 
+        }}
+      >
+        <SidebarEventHandler onToggle={onToggle}>
+          <SidebarContainer 
             collapsed={collapsed} 
-            currentPath={location.pathname}
-            onNavigate={handleNavigate} 
-          />
-          <SidebarFooter 
-            collapsed={collapsed} 
-            language={language} 
-            onLogout={logout} 
-          />
-        </SidebarContainer>
-      </SidebarEventHandler>
+            onToggle={onToggle} 
+            isInitialized={isInitialized}
+            isMobile={isMobile}
+          >
+            <SidebarHeader collapsed={collapsed} onToggle={onToggle} />
+            <SidebarUserProfile user={user} collapsed={collapsed} />
+            <SidebarNavigation 
+              links={sidebarLinks} 
+              collapsed={collapsed} 
+              currentPath={location.pathname}
+              onNavigate={handleNavigate} 
+            />
+            <SidebarFooter 
+              collapsed={collapsed} 
+              language={language} 
+              onLogout={logout} 
+            />
+          </SidebarContainer>
+        </SidebarEventHandler>
+      </div>
     </SidebarProvider>
   );
 };

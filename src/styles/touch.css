@@ -95,7 +95,7 @@ html, body, #root, #app, .app-container {
 
 /* Fix for sidebar in POS mode */
 .sidebar-toggle-button {
-  z-index: 60 !important;
+  z-index: 2000 !important;
   position: fixed !important;
   pointer-events: auto !important;
   touch-action: manipulation !important;
@@ -103,7 +103,7 @@ html, body, #root, #app, .app-container {
 
 /* Ensure the sidebar appears above content but can be interacted with */
 [data-sidebar="sidebar"] {
-  z-index: 60 !important;
+  z-index: 1999 !important;
   pointer-events: auto !important;
   touch-action: auto !important;
 }
@@ -115,13 +115,51 @@ html, body, #root, #app, .app-container {
 [data-sidebar="sidebar"] .interactive-element {
   pointer-events: auto !important;
   touch-action: manipulation !important;
-  z-index: 65 !important;
+  z-index: 2000 !important;
   position: relative !important;
 }
 
 /* Fix sidebar toggle trigger */
 [data-sidebar="trigger"] {
-  z-index: 70 !important;
+  z-index: 2001 !important;
   pointer-events: auto !important;
   touch-action: manipulation !important;
+}
+
+/* POS page specific sidebar fixes */
+.pos-page-active [data-sidebar="sidebar"] {
+  isolation: isolate;
+  position: fixed !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pos-page-active [data-sidebar="sidebar"] > * {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+.pos-page-active .sidebar-toggle-button {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Improve sidebar nav item visibility */
+[data-sidebar="sidebar"] nav {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+[data-sidebar="sidebar"] button {
+  min-height: 40px !important;
+  margin-bottom: 0.25rem !important;
+  border-radius: 8px !important;
+}
+
+/* Fix interaction in fullscreen POS mode */
+.in-fullscreen [data-sidebar="sidebar"] {
+  z-index: 9999 !important;
+}
+
+.in-fullscreen .sidebar-toggle-button {
+  z-index: 10000 !important;
 }
