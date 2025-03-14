@@ -66,11 +66,14 @@ const MainLayout = () => {
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <AnimatedTransition animation="fade" delay={100}>
         <div 
-          className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container ${
-            !sidebarCollapsed && !isMobile ? isArabic ? "md:ml-64" : "md:mr-64" : "mx-0"
-          }`}
+          className={cn(
+            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container",
+            !sidebarCollapsed && !isMobile ? 
+              isArabic ? "md:mr-64" : "md:ml-64" 
+              : "mx-0"
+          )}
         >
-          <div className={`fixed top-4 z-30 flex gap-2 ${isArabic ? "left-4" : "right-4"}`}>
+          <div className={`fixed top-4 z-30 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
             <FullscreenToggle />
             
             {(isMobile || sidebarCollapsed || isFullscreen) && (

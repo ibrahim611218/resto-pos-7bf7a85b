@@ -28,6 +28,7 @@ const SidebarEventHandler: React.FC<SidebarEventHandlerProps> = ({ onToggle, chi
       }
     };
 
+    // Listen for sidebar toggle event
     window.addEventListener('toggle-sidebar', handleToggleSidebar);
     
     return () => {
