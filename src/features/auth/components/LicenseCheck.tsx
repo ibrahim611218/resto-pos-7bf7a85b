@@ -19,8 +19,11 @@ const LicenseCheck: React.FC = () => {
   }, [isAuthenticated, user?.email]);
   
   useEffect(() => {
+    let isMounted = true;
+    
     const verifyLicense = async () => {
       try {
+        if (!isMounted) return;
         setIsChecking(true);
         
         // Skip license check for admin users
@@ -30,27 +33,35 @@ const LicenseCheck: React.FC = () => {
         }
         
         const hasValidLicense = await checkLicense();
-        if (!hasValidLicense) {
+        if (!hasValidLicense && isMounted) {
           navigate('/activate');
           return;
         }
         
         // Get license info if valid
-        const licenseInfo = await getLicenseInfo();
-        if (licenseInfo) {
-          const expiryDate = new Date(licenseInfo.expiryDate);
-          const currentDate = new Date();
-          const diffTime = expiryDate.getTime() - currentDate.getTime();
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          setExpiryDays(diffDays);
+        if (isMounted) {
+          const licenseInfo = await getLicenseInfo();
+          if (licenseInfo) {
+            const expiryDate = new Date(licenseInfo.expiryDate);
+            const currentDate = new Date();
+            const diffTime = expiryDate.getTime() - currentDate.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            setExpiryDays(diffDays);
+          }
         }
       } finally {
-        setIsChecking(false);
+        if (isMounted) {
+          setIsChecking(false);
+        }
       }
     };
     
     verifyLicense();
-    // Dependency array includes all values that trigger the effect
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [checkLicense, getLicenseInfo, navigate, isAdminUser]);
   
   // Show loading only if needed
@@ -76,18 +87,6 @@ const LicenseCheck: React.FC = () => {
       )}
       <Outlet />
     </>
-  );
-};
-
-// Loading component moved to its own file, just imported here
-const LicenseCheckLoading = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4 text-2xl font-bold">جاري التحقق من الترخيص...</div>
-        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
-      </div>
-    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLicense } from '@/features/auth/hooks/useLicense';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -14,16 +14,20 @@ export const useLicenseManager = () => {
   
   const [licenses, setLicenses] = useState<License[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isInitialMount = useRef(true);
   
-  // Check authorization
+  // Check authorization - only once
   useEffect(() => {
-    if (user?.email !== 'eng.ibrahimabdalfatah@gmail.com') {
+    // Prevent double navigation
+    if (user && user.email !== 'eng.ibrahimabdalfatah@gmail.com') {
       navigate('/unauthorized');
     }
   }, [user, navigate]);
   
   // Load licenses - using useCallback to avoid recreation of function
   const loadLicenses = useCallback(async () => {
+    if (!user || user.email !== 'eng.ibrahimabdalfatah@gmail.com') return;
+    
     setIsLoading(true);
     try {
       const data = await getAllLicenses();
@@ -33,11 +37,14 @@ export const useLicenseManager = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [getAllLicenses]);
+  }, [getAllLicenses, user]);
   
-  // Initialize licenses
+  // Initialize licenses - only once on initial mount
   useEffect(() => {
-    loadLicenses();
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      loadLicenses();
+    }
   }, [loadLicenses]);
   
   const handleLicenseGenerated = useCallback((license: License) => {

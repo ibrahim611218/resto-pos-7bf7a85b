@@ -33,11 +33,12 @@ function App() {
     <>
       <Toaster position="top-center" richColors dir="rtl" />
       <Routes>
+        {/* Public routes - no auth or license required */}
         <Route path="/login" element={<Login language={language} />} />
         <Route path="/activate" element={<LicenseActivation />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
-        {/* Admin route for license generation - outside of LicenseCheck */}
+        {/* Admin route for license generation - completely outside the license check system */}
         <Route 
           path="/license-generator" 
           element={
@@ -47,6 +48,7 @@ function App() {
           } 
         />
         
+        {/* Protected routes - require authentication and license */}
         <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
