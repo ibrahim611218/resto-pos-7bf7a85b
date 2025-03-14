@@ -1,5 +1,10 @@
 
 // Import all CSS files to be used in the application
+import './base-elements.css';
+import './saudi-theme.css';
+import './utilities.css';
+import './restopos-theme.css';
+import './responsive-grid.css';
 import './base.css';
 import './pos.css';
 import './products.css';

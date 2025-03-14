@@ -1,0 +1,27 @@
+
+/* RestoPOS Specific Styles */
+.restopos-header {
+  @apply bg-[#004d40] text-white;
+}
+
+.restopos-btn-primary {
+  @apply bg-[#004d40] hover:bg-[#00352c] text-white;
+}
+
+.restopos-btn-accent {
+  @apply bg-[#ff5722] hover:bg-[#e64a19] text-white;
+}
+
+.restopos-sidebar {
+  @apply bg-[#004d40] text-white border-r border-[#00695c] dark:border-orange-500/40;
+}
+
+/* Dark mode orange border highlights */
+.dark .border {
+  @apply border-orange-500/40;
+}
+
+.dark .card,
+.dark .dialog-content {
+  @apply border-orange-500/40;
+}
