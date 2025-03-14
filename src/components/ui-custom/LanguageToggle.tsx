@@ -8,7 +8,7 @@ interface LanguageToggleProps {
   language: Language;
 }
 
-// This component is now a stub since we only support Arabic
+// هذا المكون أصبح فارغاً لأننا نستخدم اللغة العربية فقط
 const LanguageToggle = ({ 
   className, 
   collapsed = false, 

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { Language } from '@/types';
 
 interface LanguageContextType {
@@ -9,7 +9,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Fixed to only Arabic language
+  // ثابت للغة العربية فقط
   const language: Language = 'ar';
 
   return (

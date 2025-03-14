@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Bell, Sun, Moon, Menu, X, Globe } from "lucide-react";
+import { Bell, Sun, Moon, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -53,23 +53,7 @@ const Header = ({
         )}
       </div>
 
-      <div className="ml-auto flex items-center space-x-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Globe size={18} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setLanguage("en")}>
-              English {language === "en" && "✓"}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setLanguage("ar")}>
-              العربية {language === "ar" && "✓"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
+      <div className="mr-auto flex items-center space-x-2">
         <Button variant="ghost" size="icon" onClick={toggleTheme}>
           {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
         </Button>
@@ -89,9 +73,9 @@ const Header = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem>الملف الشخصي</DropdownMenuItem>
+            <DropdownMenuItem>الإعدادات</DropdownMenuItem>
+            <DropdownMenuItem>تسجيل الخروج</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
