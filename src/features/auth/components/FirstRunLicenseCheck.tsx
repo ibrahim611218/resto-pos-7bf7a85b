@@ -18,7 +18,7 @@ const FirstRunLicenseCheck: React.FC<FirstRunLicenseCheckProps> = ({ children })
     const isFirstRun = !localStorage.getItem('app_initialized');
     setFirstRun(isFirstRun);
     
-    // If not first run, mark as initialized
+    // If first run, mark as initialized
     if (isFirstRun) {
       localStorage.setItem('app_initialized', 'true');
     }
