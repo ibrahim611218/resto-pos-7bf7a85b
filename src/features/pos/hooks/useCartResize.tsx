@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface UseCartResizeProps {
   isArabic: boolean;
@@ -13,30 +13,59 @@ export const useCartResize = ({ isArabic, isMobile, isTablet }: UseCartResizePro
   const [startX, setStartX] = useState<number | null>(null);
   const [width, setWidth] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-
-  // Initialize width on component mount
-  useEffect(() => {
-    if (resizeRef.current) {
-      // Set initial width based on screen size
-      const initialWidth = isMobile ? window.innerWidth : 
-                        isTablet ? window.innerWidth / 3 : 
-                        window.innerWidth / 4;
-      setWidth(initialWidth);
-      resizeRef.current.style.width = `${initialWidth}px`;
-    }
-  }, [isMobile, isTablet]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
+  
+  // Use callback to prevent recreating function on each render
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (resizeRef.current) {
       setStartWidth(resizeRef.current.offsetWidth);
       setStartX(e.clientX);
       setIsDragging(true);
       document.body.style.cursor = 'ew-resize';
     }
-  };
+  }, []);
+
+  // Initialize width on component mount with debounced resize
+  useEffect(() => {
+    let timeoutId: number;
+    
+    const updateWidth = () => {
+      if (resizeRef.current) {
+        // Set initial width based on screen size
+        const initialWidth = isMobile ? window.innerWidth : 
+                          isTablet ? window.innerWidth / 3 : 
+                          window.innerWidth / 4;
+        setWidth(initialWidth);
+        resizeRef.current.style.width = `${initialWidth}px`;
+      }
+    };
+    
+    // Initial update
+    updateWidth();
+    
+    // Debounced resize handler
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(updateWidth, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [isMobile, isTablet]);
 
   useEffect(() => {
+    // Throttled mouse move handler for better performance
+    let lastUpdateTime = 0;
+    const throttleTime = 16; // ~60fps
+    
     const handleMouseMove = (e: MouseEvent) => {
+      const now = Date.now();
+      if (now - lastUpdateTime < throttleTime) return;
+      lastUpdateTime = now;
+      
       if (startX !== null && startWidth !== null) {
         // Calculate width change based on drag direction and RTL/LTR layout
         const diff = isArabic ? (e.clientX - startX) : (startX - e.clientX);

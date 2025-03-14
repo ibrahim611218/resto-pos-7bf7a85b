@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Product } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
 
@@ -10,7 +10,8 @@ interface ProductGridProps {
   getGridCols: () => string;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({
+// Using memo to prevent unnecessary re-renders
+const ProductGrid: React.FC<ProductGridProps> = memo(({
   products,
   isArabic,
   onProductClick,
@@ -22,8 +23,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         <GlassCard
           key={product.id}
           animation="fade"
-          delay={index * 50}
-          className="cursor-pointer hover:shadow-md bg-secondary/30 p-1"
+          delay={Math.min(index * 30, 300)} // Cap the delay at 300ms for better performance
+          className="cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card"
           onClick={() => onProductClick(product)}
         >
           <div className="w-full aspect-square overflow-hidden rounded-md bg-muted mb-1">
@@ -31,7 +32,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
               <img 
                 src={product.image} 
                 alt={isArabic ? product.nameAr || product.name : product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover product-image"
+                loading="lazy" // Add lazy loading for better performance
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
@@ -51,6 +53,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       ))}
     </div>
   );
-};
+});
+
+// Display name for debugging
+ProductGrid.displayName = "ProductGrid";
 
 export default ProductGrid;

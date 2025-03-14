@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
@@ -34,9 +34,17 @@ const MainLayout = () => {
     };
   }, [sidebarCollapsed]);
 
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
+  // Memoize toggle function to prevent unnecessary re-renders
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed(prevState => !prevState);
+  }, []);
+
+  // Handle route changes by auto-closing sidebar on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(true);
+    }
+  }, [location.pathname, isMobile]);
 
   return (
     <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">

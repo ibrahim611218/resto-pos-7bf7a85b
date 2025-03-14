@@ -1,11 +1,12 @@
 
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import { useMemo } from "react";
 
 export const useGridColumns = () => {
   const { width, isMobile, isTablet } = useWindowDimensions();
   
-  // Calculate grid columns based on screen size - enhanced for better product display
-  const getGridCols = () => {
+  // Memoize grid columns based on screen size to prevent unnecessary recalculations
+  const getGridCols = useMemo(() => {
     if (width < 500) return "grid-cols-2"; // Very small screens
     if (width < 640) return "grid-cols-3"; // Small mobile
     if (width < 768) return "grid-cols-3"; // Mobile
@@ -13,7 +14,7 @@ export const useGridColumns = () => {
     if (width < 1280) return "grid-cols-5"; // Tablet/small desktop
     if (width < 1536) return "grid-cols-6"; // Medium desktop
     return "grid-cols-8"; // Large desktop
-  };
+  }, [width]);
 
   // Function to get pixel-based grid columns - useful for programmatic calculations
   const getColumnsCount = (): number => {
@@ -27,11 +28,11 @@ export const useGridColumns = () => {
   };
 
   // Calculate optimal height for product cards
-  const getCardHeight = (): string => {
+  const getCardHeight = useMemo(() => {
     if (isMobile) return "130px";
     if (isTablet) return "150px";
     return "170px";
-  };
+  }, [isMobile, isTablet]);
 
   return { 
     getGridCols,

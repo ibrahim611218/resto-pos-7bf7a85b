@@ -27,8 +27,30 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
     }
   }, [isMobile, isTablet, width, height]);
 
+  // Add a debounced resize handler to prevent too many re-renders
+  useEffect(() => {
+    let resizeTimeout: number;
+    
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        if (isMobile || width < 768 || (width < height && width < 1024)) {
+          setLayoutClass("flex-col");
+        } else {
+          setLayoutClass("flex-row");
+        }
+      }, 100); // 100ms debounce
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [isMobile, isTablet, width, height]);
+
   return (
-    <div className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`}>
+    <div dir={isArabic ? "rtl" : "ltr"} className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`}>
       {children}
     </div>
   );
