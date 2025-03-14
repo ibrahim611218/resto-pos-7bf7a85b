@@ -13,8 +13,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   SidebarProvider,
-  SIDEBAR_WIDTH,
-  SIDEBAR_WIDTH_ICON 
+  useSidebar
 } from "@/components/ui/sidebar";
 
 // Sidebar component that wraps all sidebar sections

@@ -1,11 +1,9 @@
-
 import React from "react";
 import { cn } from "@/lib/utils";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { SidebarContextProvider } from "./SidebarContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
-import { SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "@/components/ui/sidebar";
 
 interface SidebarContainerProps {
   collapsed: boolean;
