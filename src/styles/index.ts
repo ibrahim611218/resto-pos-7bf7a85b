@@ -1,8 +1,9 @@
 
 // Import all CSS files to be used in the application
+// Order matters for Tailwind's layer system
 import './base-elements.css';
-import './saudi-theme.css';
 import './utilities.css';
+import './saudi-theme.css';
 import './restopos-theme.css';
 import './responsive-grid.css';
 import './base.css';

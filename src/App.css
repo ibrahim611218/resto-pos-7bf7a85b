@@ -1,8 +1,8 @@
 
-/* This file now imports all the modular CSS files */
+/* Reordering imports to ensure proper layer loading */
 @import './styles/base-elements.css';
-@import './styles/saudi-theme.css';
 @import './styles/utilities.css';
+@import './styles/saudi-theme.css';
 @import './styles/restopos-theme.css';
 @import './styles/responsive-grid.css';
 @import './styles/base.css';

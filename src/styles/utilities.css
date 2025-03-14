@@ -1,4 +1,6 @@
 
+@tailwind utilities;
+
 @layer utilities {
   .glass {
     @apply bg-[#004d40]/80 dark:bg-[#004d40]/90 backdrop-blur-lg border border-white/20 dark:border-orange-500/40 shadow-lg text-white;
