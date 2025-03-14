@@ -65,18 +65,8 @@ const PosPage: React.FC = () => {
     // Special event to help other components know POS is active
     window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: true } }));
     
-    // Collapse sidebar when POS page is active
-    window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
-    
-    // Auto enter fullscreen after a short delay
-    /* Commenting out auto-fullscreen to fix normal mode
-    if (!isFullscreen) {
-      const fullscreenTimeout = setTimeout(() => {
-        toggleFullscreen();
-      }, 500);
-      timeoutIds.push(fullscreenTimeout);
-    }
-    */
+    // Do not force collapse the sidebar, let the user control it
+    // window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
     
     // Cleanup on unmount
     return () => {
@@ -137,7 +127,9 @@ const PosPage: React.FC = () => {
     <div className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen" 
       style={{ 
         pointerEvents: 'auto',
-        touchAction: 'auto'
+        touchAction: 'auto',
+        // Set a lower z-index to ensure the sidebar can overlay
+        zIndex: 0
       }}>
       <Pos />
     </div>

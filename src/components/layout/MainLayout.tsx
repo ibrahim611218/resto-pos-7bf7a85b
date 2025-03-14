@@ -57,6 +57,7 @@ const MainLayout = () => {
   // Toggle sidebar function - used by button and passed to child components
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
+    // Ensure the toggle event is dispatched properly
     window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
       detail: { collapsed: !sidebarCollapsed } 
     }));
@@ -73,8 +74,12 @@ const MainLayout = () => {
               isArabic ? "md:mr-64" : "md:ml-64" 
               : "mx-0"
           )}
+          style={{ 
+            zIndex: 1, 
+            position: "relative" 
+          }}
         >
-          <div className={`fixed top-4 z-30 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
+          <div className={`fixed top-4 z-40 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
             <FullscreenToggle />
             
             {(isMobile || sidebarCollapsed || isFullscreen) && (
@@ -84,6 +89,12 @@ const MainLayout = () => {
                 className="bg-background/80 backdrop-blur-sm shadow-sm"
                 onClick={toggleSidebar}
                 title={isArabic ? "فتح القائمة الرئيسية" : "Open Menu"}
+                style={{ 
+                  pointerEvents: "auto",
+                  touchAction: "manipulation",
+                  zIndex: 50,
+                  position: "relative"
+                }}
               >
                 <Menu className="h-6 w-6" />
               </Button>

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { cn } from "@/lib/utils";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
@@ -24,9 +25,6 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
   const { language } = useLanguage();
   const isArabic = language === "ar";
   
-  // Don't return null in fullscreen or mobile, keep the sidebar consistently available
-  if (isMobile && collapsed && !isFullscreen) return null;
-
   // Determine sidebar position (left or right) based on RTL setting
   const sidePosition = isArabic ? "right-0" : "left-0";
   
@@ -45,10 +43,13 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
-          isFullscreen ? "fullscreen-sidebar" : ""
+          isFullscreen ? "fullscreen-sidebar" : "",
+          collapsed && isMobile ? "transform -translate-x-full rtl:translate-x-full" : "transform translate-x-0"
         )}
         style={{ 
-          direction: isArabic ? "rtl" : "ltr"
+          direction: isArabic ? "rtl" : "ltr",
+          pointerEvents: "auto", // Ensure clicks work
+          touchAction: "auto", // Ensure touch events work
         }}
       >
         <SidebarContextProvider collapsed={collapsed} onToggle={onToggle}>

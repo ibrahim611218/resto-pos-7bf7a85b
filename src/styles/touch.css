@@ -92,3 +92,36 @@ html, body, #root, #app, .app-container {
   backface-visibility: hidden;
   perspective: 1000;
 }
+
+/* Fix for sidebar in POS mode */
+.sidebar-toggle-button {
+  z-index: 60 !important;
+  position: fixed !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Ensure the sidebar appears above content but can be interacted with */
+[data-sidebar="sidebar"] {
+  z-index: 60 !important;
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+/* Make sure clickable elements in the sidebar work correctly */
+[data-sidebar="sidebar"] button,
+[data-sidebar="sidebar"] [role="button"],
+[data-sidebar="sidebar"] a,
+[data-sidebar="sidebar"] .interactive-element {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  z-index: 65 !important;
+  position: relative !important;
+}
+
+/* Fix sidebar toggle trigger */
+[data-sidebar="trigger"] {
+  z-index: 70 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}

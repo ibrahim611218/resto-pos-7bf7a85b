@@ -20,8 +20,8 @@ const SidebarEventHandler: React.FC<SidebarEventHandlerProps> = ({ onToggle, chi
       if (customEvent.detail?.forceCollapse) {
         // This event just wants to force the sidebar closed
         console.log("Force collapsing sidebar from event");
-        // We don't call onToggle directly, instead dispatch another event
-        window.dispatchEvent(new CustomEvent('sidebar-force-collapse'));
+        // Call onToggle directly to ensure sidebar collapses
+        onToggle();
       } else {
         // Normal toggle behavior
         onToggle();
