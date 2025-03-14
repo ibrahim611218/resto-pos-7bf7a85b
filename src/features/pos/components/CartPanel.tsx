@@ -24,7 +24,6 @@ interface CartPanelProps {
   paymentMethod: PaymentMethod;
   createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => Invoice; 
   clearCart: () => void;
-  getSizeLabel: (size: string) => string;
   updateQuantity: (itemId: string, change: number) => void;
   removeItem: (itemId: string) => void;
   setDiscount: (discount: number) => void;
@@ -32,16 +31,17 @@ interface CartPanelProps {
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
-  // New props from payment handling
-  paidAmount: number;
-  showPaidAmountDialog: boolean;
-  setShowPaidAmountDialog: (show: boolean) => void;
-  handlePaidAmountClick: () => void;
-  handlePaidAmountConfirm: (amount: number) => void;
-  showPaymentMethodDialog: boolean;
-  setShowPaymentMethodDialog: (show: boolean) => void;
-  handleCreateInvoice: () => void;
-  handlePaymentMethodSelectedWithAmount: (method: PaymentMethod) => void;
+  getSizeLabel?: (size: string) => string;
+  // The following props are optional and may be provided by usePaymentHandling
+  paidAmount?: number;
+  showPaidAmountDialog?: boolean;
+  setShowPaidAmountDialog?: (show: boolean) => void;
+  handlePaidAmountClick?: () => void;
+  handlePaidAmountConfirm?: (amount: number) => void;
+  showPaymentMethodDialog?: boolean;
+  setShowPaymentMethodDialog?: (show: boolean) => void;
+  handleCreateInvoice?: () => void;
+  handlePaymentMethodSelectedWithAmount?: (method: PaymentMethod) => void;
 }
 
 const CartPanel: React.FC<CartPanelProps> = ({
@@ -66,16 +66,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
   setOrderType,
   setTableNumber,
   setPaymentMethod,
-  // Payment handling props
-  paidAmount,
-  showPaidAmountDialog,
-  setShowPaidAmountDialog,
-  handlePaidAmountClick,
-  handlePaidAmountConfirm,
-  showPaymentMethodDialog,
-  setShowPaymentMethodDialog,
-  handleCreateInvoice,
-  handlePaymentMethodSelectedWithAmount
+  // Payment handling props (optional)
+  paidAmount = 0,
+  showPaidAmountDialog = false,
+  setShowPaidAmountDialog = () => {},
+  handlePaidAmountClick = () => {},
+  handlePaidAmountConfirm = () => {},
+  showPaymentMethodDialog = false,
+  setShowPaymentMethodDialog = () => {},
+  handleCreateInvoice = () => {},
+  handlePaymentMethodSelectedWithAmount = () => {}
 }) => {
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
@@ -128,7 +128,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         cartItems={cartItems}
         isMobile={isMobile}
         isArabic={isArabic}
-        getSizeLabel={getSizeLabel}
+        getSizeLabel={getSizeLabel || ((size) => size)}
         updateQuantity={updateQuantity}
         removeItem={removeItem}
       />

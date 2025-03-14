@@ -105,3 +105,34 @@ body, html, #root {
     flex-direction: row;
   }
 }
+
+/* Ensure the POS UI fills the available space */
+.auto-scale-container {
+  width: 100% !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Ensure content stretches to fill available space */
+.stretch-content {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+/* Handle large displays better */
+@media (min-width: 2560px) {
+  .product-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  }
+}
+
+/* Ensure rendering at all window sizes */
+@media only screen and (min-height: 100px) and (max-height: 3000px) {
+  .pos-screen {
+    display: flex !important;
+    height: 100vh !important;
+  }
+}

@@ -7,7 +7,6 @@ import { getSizeLabel } from "./utils/sizeLabels";
 import { categories, products } from "./data/mockData";
 import { formatInvoiceDate } from "./utils/formatters";
 import PosHeader from "./components/PosHeader";
-import PosContent from "./components/PosContent";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
@@ -15,6 +14,7 @@ import PosLayout from "./components/layout/PosLayout";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import PosProductsRenderer from "./components/PosProductsRenderer";
 import PosCartRenderer from "./components/PosCartRenderer";
+import { PaymentMethod } from "@/types";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
@@ -122,6 +122,19 @@ const Pos: React.FC = () => {
     }
   };
   
+  // Type-safe wrapper functions to handle type conversions
+  const handleSetDiscountType = (type: "percentage" | "fixed") => {
+    setDiscountType(type);
+  };
+  
+  const handleSetOrderType = (type: "takeaway" | "dineIn") => {
+    setOrderType(type);
+  };
+  
+  const handleSetPaymentMethod = (method: PaymentMethod) => {
+    setPaymentMethod(method);
+  };
+  
   return (
     <div 
       className={`h-screen max-w-full flex flex-col m-0 p-0 ${
@@ -166,10 +179,11 @@ const Pos: React.FC = () => {
             clearCart={clearCart}
             createInvoice={handleCreateInvoice}
             setDiscount={setDiscount}
-            setDiscountType={setDiscountType}
-            setOrderType={setOrderType}
+            setDiscountType={handleSetDiscountType}
+            setOrderType={handleSetOrderType}
             setTableNumber={setTableNumber}
-            setPaymentMethod={setPaymentMethod}
+            setPaymentMethod={handleSetPaymentMethod}
+            getSizeLabel={getSizeLabelFn}
           />
         </PosLayout>
       </div>

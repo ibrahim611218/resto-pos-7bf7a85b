@@ -4,19 +4,20 @@ import CartPanel from "./CartPanel";
 import { useCartResize } from "../hooks/useCartResize";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import CartResizeHandler from "./cart/CartResizeHandler";
+import { Language, PaymentMethod } from "@/types";
 
 interface PosCartRendererProps {
   cartItems: any[];
   isArabic: boolean;
-  language: string;
+  language: Language;
   subtotal: number;
   taxAmount: number;
   total: number;
   discount: number;
-  discountType: string;
-  orderType: string;
+  discountType: "percentage" | "fixed";
+  orderType: "takeaway" | "dineIn";
   tableNumber: string;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
   updateQuantity: (item: any, quantity: number) => void;
   removeItem: (item: any) => void;
   clearCart: () => void;
@@ -29,10 +30,11 @@ interface PosCartRendererProps {
     paidAmount?: number
   ) => any;
   setDiscount: (discount: number) => void;
-  setDiscountType: (type: string) => void;
-  setOrderType: (type: string) => void;
+  setDiscountType: (type: "percentage" | "fixed") => void;
+  setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
-  setPaymentMethod: (method: string) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
+  getSizeLabel?: (size: string) => string;
 }
 
 /**
@@ -85,6 +87,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         setOrderType={props.setOrderType}
         setTableNumber={props.setTableNumber}
         setPaymentMethod={props.setPaymentMethod}
+        getSizeLabel={props.getSizeLabel}
       />
     </div>
   );

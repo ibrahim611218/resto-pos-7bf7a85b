@@ -29,10 +29,24 @@ const PosPage: React.FC = () => {
     // Force layout recalculation
     window.dispatchEvent(new Event('resize'));
     
-    // Set a timeout to trigger another resize event after components have rendered
-    const timeoutId = setTimeout(() => {
+    // Set multiple timeouts to trigger resize events after components have rendered
+    const timeoutIds = [];
+    [100, 300, 600, 1000, 2000].forEach(delay => {
+      const id = setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, delay);
+      timeoutIds.push(id);
+    });
+    
+    // Set an interval to check periodically for the first few seconds
+    const intervalId = setInterval(() => {
       window.dispatchEvent(new Event('resize'));
-    }, 300);
+    }, 500);
+    
+    // Clear the interval after 5 seconds
+    const clearIntervalId = setTimeout(() => {
+      clearInterval(intervalId);
+    }, 5000);
     
     // Cleanup on unmount
     return () => {
@@ -42,7 +56,29 @@ const PosPage: React.FC = () => {
       document.body.style.overflow = originalBodyStyle.overflow;
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
-      clearTimeout(timeoutId);
+      
+      // Clear all timeouts
+      timeoutIds.forEach(id => clearTimeout(id));
+      clearTimeout(clearIntervalId);
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  // Listen for window resize events
+  useEffect(() => {
+    const handleResize = () => {
+      // Force another resize event after a short delay
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, []);
 

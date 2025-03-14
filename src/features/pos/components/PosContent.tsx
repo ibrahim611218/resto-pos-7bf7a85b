@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Product, Invoice } from "@/types";
+import { Product, Invoice, PaymentMethod } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
 import PosLayout from "./layout/PosLayout";
 import MobilePosLayout from "./layout/MobilePosLayout";
@@ -20,7 +20,7 @@ interface PosContentProps {
   discountType: "percentage" | "fixed";
   orderType: "takeaway" | "dineIn";
   tableNumber: string;
-  paymentMethod: any;
+  paymentMethod: PaymentMethod;
   addToCart: (product: Product, variantId: string) => void;
   updateQuantity: (itemId: string, change: number) => void;
   removeItem: (itemId: string) => void;
@@ -30,7 +30,7 @@ interface PosContentProps {
   setDiscountType: (type: "percentage" | "fixed") => void;
   setOrderType: (type: "takeaway" | "dineIn") => void;
   setTableNumber: (number: string) => void;
-  setPaymentMethod: (method: any) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   activeCategory: string | null;
@@ -80,7 +80,6 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       paymentMethod={props.paymentMethod}
       createInvoice={props.createInvoice}
       clearCart={props.clearCart}
-      getSizeLabel={props.getSizeLabel}
       updateQuantity={props.updateQuantity}
       removeItem={props.removeItem}
       setDiscount={props.setDiscount}
@@ -88,6 +87,7 @@ const PosContent: React.FC<PosContentProps> = (props) => {
       setOrderType={props.setOrderType}
       setTableNumber={props.setTableNumber}
       setPaymentMethod={props.setPaymentMethod}
+      getSizeLabel={props.getSizeLabel}
     />
   );
 
