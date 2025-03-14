@@ -1,3 +1,4 @@
+
 /* Responsive breakpoints */
 @media (max-width: 640px) {
   .compact-ui {
@@ -204,30 +205,9 @@ html, body, #root, #app, .app-container {
 }
 
 /* Fullscreen specific styles */
-:-webkit-full-screen {
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
-:-moz-full-screen {
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
-:-ms-fullscreen {
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
+:-webkit-full-screen,
+:-moz-full-screen,
+:-ms-fullscreen,
 :fullscreen {
   width: 100% !important;
   height: 100% !important;
@@ -256,9 +236,38 @@ html, body, #root, #app, .app-container {
   transition: opacity 0.3s ease !important;
 }
 
-:fullscreen .fullscreen-controls:hover,
-:-webkit-full-screen .fullscreen-controls:hover,
-:-moz-full-screen .fullscreen-controls:hover,
-:-ms-fullscreen .fullscreen-controls:hover {
+/* Ensure sidebar works in fullscreen mode */
+.in-fullscreen .glass {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Fix for Sidebar visibility in fullscreen */
+.in-fullscreen aside {
+  z-index: 1000 !important;
+}
+
+/* Ensure POS content is visible in fullscreen */
+.in-fullscreen .pos-screen,
+.in-fullscreen .auto-scale-container {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Fix for content visibility during fullscreen transitions */
+.in-fullscreen .content-container,
+.in-fullscreen .flex-grow-container {
+  z-index: 5 !important;
+  visibility: visible !important;
+  display: flex !important;
+  flex: 1 !important;
+  flex-direction: column !important;
+}
+
+/* Fix POS screen in fullscreen */
+.in-fullscreen .pos-screen {
+  display: flex !important;
+  flex: 1 !important;
+  visibility: visible !important;
   opacity: 1 !important;
 }

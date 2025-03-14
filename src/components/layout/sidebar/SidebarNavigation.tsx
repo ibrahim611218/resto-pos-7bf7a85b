@@ -4,6 +4,8 @@ import SidebarItem from "./SidebarItem";
 import { SidebarLink } from "./types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useSidebarContext } from "./SidebarContext";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 interface SidebarNavigationProps {
   links: SidebarLink[];
@@ -20,6 +22,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 }) => {
   const { user } = useAuth();
   const { openCategories, toggleCategory } = useSidebarContext();
+  const isMobile = useIsMobile();
+  const { isFullscreen } = useFullscreen();
 
   // Filter links based on admin access and required email
   const filteredLinks = links.filter(link => {
@@ -33,6 +37,20 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     
     return true;
   });
+
+  // Enhanced navigation handler that also collapses sidebar on mobile/fullscreen
+  const handleNavigate = (path: string) => {
+    onNavigate(path);
+    
+    // If in mobile or fullscreen, dispatch event to collapse sidebar
+    if (isMobile || isFullscreen) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('toggle-sidebar', { 
+          detail: { forceCollapse: true }
+        }));
+      }, 100);
+    }
+  };
 
   return (
     <nav className="mt-4 flex-1 space-y-1 px-3 overflow-y-auto">
@@ -49,7 +67,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             isOpen={openCategories[link.path.replace("/", "")] || false}
             currentPath={currentPath}
             onToggleCategory={() => toggleCategory(link.path.replace("/", ""))}
-            onNavigate={onNavigate}
+            onNavigate={handleNavigate}
           />
         );
       })}

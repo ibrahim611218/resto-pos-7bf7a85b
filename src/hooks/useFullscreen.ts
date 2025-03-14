@@ -17,17 +17,25 @@ export const useFullscreen = () => {
   // Update state when fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(
-        !!(
-          document.fullscreenElement ||
-          // @ts-ignore - Vendor prefixed properties
-          document.webkitFullscreenElement ||
-          // @ts-ignore
-          document.mozFullScreenElement ||
-          // @ts-ignore
-          document.msFullscreenElement
-        )
-      );
+      const fullscreenElement = 
+        document.fullscreenElement ||
+        // @ts-ignore - Vendor prefixed properties
+        document.webkitFullscreenElement ||
+        // @ts-ignore
+        document.mozFullScreenElement ||
+        // @ts-ignore
+        document.msFullscreenElement;
+      
+      setIsFullscreen(!!fullscreenElement);
+      
+      // Add/remove fullscreen class to body
+      if (fullscreenElement) {
+        document.body.classList.add('in-fullscreen');
+        document.documentElement.classList.add('in-fullscreen');
+      } else {
+        document.body.classList.remove('in-fullscreen');
+        document.documentElement.classList.remove('in-fullscreen');
+      }
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);

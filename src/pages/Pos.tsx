@@ -1,8 +1,11 @@
 
 import React, { useEffect } from "react";
 import Pos from "@/features/pos/Pos";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 const PosPage: React.FC = () => {
+  const { isFullscreen } = useFullscreen();
+
   // Force the page to take the full viewport on mount
   useEffect(() => {
     // Save original styles to restore on unmount
@@ -51,6 +54,9 @@ const PosPage: React.FC = () => {
     // Special event to help other components know POS is active
     window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: true } }));
     
+    // Collapse sidebar when POS page is active
+    window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
+    
     // Cleanup on unmount
     return () => {
       document.documentElement.style.height = originalHtmlStyle.height;
@@ -88,15 +94,16 @@ const PosPage: React.FC = () => {
     };
   }, []);
 
-  // Collapse sidebar when POS page is active
+  // Re-apply styles when fullscreen state changes
   useEffect(() => {
-    // Dispatch a custom event to collapse the sidebar
-    window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
-    
-    return () => {
-      // No need to restore since that's handled by the sidebar itself
-    };
-  }, []);
+    if (isFullscreen) {
+      document.body.classList.add('in-fullscreen');
+      document.documentElement.classList.add('in-fullscreen');
+    } else {
+      document.body.classList.remove('in-fullscreen');
+      document.documentElement.classList.remove('in-fullscreen');
+    }
+  }, [isFullscreen]);
 
   return (
     <div className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen">

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -22,8 +23,14 @@ const MainLayout = () => {
   }, [isMobile, isTablet, width]);
 
   useEffect(() => {
-    const handleToggleSidebar = () => {
-      setSidebarCollapsed(prevState => !prevState);
+    const handleToggleSidebar = (e: Event) => {
+      // Check if there is a detail with forceCollapse
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.forceCollapse) {
+        setSidebarCollapsed(true);
+      } else {
+        setSidebarCollapsed(prevState => !prevState);
+      }
     };
 
     window.addEventListener('toggle-sidebar', handleToggleSidebar);
@@ -62,7 +69,7 @@ const MainLayout = () => {
                 size="icon" 
                 className="bg-background/80 backdrop-blur-sm shadow-sm"
                 onClick={toggleSidebar}
-                title="فتح القائمة الرئيسية"
+                title={isArabic ? "فتح القائمة الرئيسية" : "Open Menu"}
               >
                 <Menu className="h-6 w-6" />
               </Button>

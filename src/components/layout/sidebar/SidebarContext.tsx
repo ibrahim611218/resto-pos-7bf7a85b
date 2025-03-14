@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 interface SidebarContextType {
   openCategories: Record<string, boolean>;
@@ -32,7 +33,9 @@ export const SidebarContextProvider: React.FC<SidebarContextProviderProps> = ({
   onToggle
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { isFullscreen } = useFullscreen();
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -81,6 +84,34 @@ export const SidebarContextProvider: React.FC<SidebarContextProviderProps> = ({
       }));
     }
   }, [collapsed, onToggle]);
+
+  // Handle navigation with proper sidebar behavior
+  const handleNavigate = useCallback((path: string) => {
+    navigate(path);
+    
+    // If in mobile or fullscreen, collapse sidebar after navigation
+    if (isMobile || isFullscreen) {
+      setTimeout(() => {
+        onToggle();
+      }, 100);
+    }
+  }, [navigate, isMobile, isFullscreen, onToggle]);
+
+  // Update component when children try to navigate
+  useEffect(() => {
+    const handleSidebarNavigate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.path) {
+        handleNavigate(customEvent.detail.path);
+      }
+    };
+    
+    window.addEventListener('sidebar-navigate', handleSidebarNavigate);
+    
+    return () => {
+      window.removeEventListener('sidebar-navigate', handleSidebarNavigate);
+    };
+  }, [handleNavigate]);
 
   return (
     <SidebarContext.Provider 
