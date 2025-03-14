@@ -16,7 +16,7 @@ import InventoryReport from "@/pages/InventoryReport";
 import CustomersReport from "@/pages/CustomersReport";
 import BusinessSettings from "@/pages/BusinessSettings";
 import UserManagement from "@/pages/UserManagement";
-import Login from "@/pages/Login";
+import Login from "@/features/auth/Login";
 import RetrieveInvoice from "@/pages/RetrieveInvoice";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
@@ -24,13 +24,16 @@ import LicenseActivation from "./pages/LicenseActivation";
 import LicenseGenerator from "./pages/LicenseGenerator";
 import FirstRunLicenseCheck from "./features/auth/components/FirstRunLicenseCheck";
 import LicenseCheck from "./features/auth/components/LicenseCheck";
+import { useLanguage } from "./context/LanguageContext";
 
 function App() {
+  const { language } = useLanguage();
+  
   return (
     <>
       <Toaster position="top-center" richColors dir="rtl" />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login language={language} />} />
         <Route path="/activate" element={<LicenseActivation />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
