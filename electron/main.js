@@ -14,7 +14,7 @@ function startApp() {
   }
   
   // Set up IPC handlers for database communication
-  setupIpcHandlers();
+  setupIpcHandlers(app);
   
   // Create the browser window
   createWindow();

@@ -14,6 +14,7 @@ import {
   FileSearch,
   Home,
   Download,
+  Key
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
@@ -142,6 +143,14 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Settings",
       path: "/settings",
       icon: Settings,
+    },
+    {
+      name: "إدارة التراخيص",
+      name_en: "License Manager",
+      path: "/license-generator",
+      icon: Key,
+      isAdminOnly: true,
+      requiredEmail: "eng.ibrahimabdalfatah@gmail.com"
     },
   ];
 };

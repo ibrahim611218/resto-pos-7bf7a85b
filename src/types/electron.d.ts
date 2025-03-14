@@ -14,4 +14,7 @@ interface Window {
     getSettings: () => Promise<any>;
     saveSettings: (settings: any) => Promise<any>;
   };
+  electron?: {
+    invoke: (channel: string, ...args: any[]) => Promise<any>;
+  };
 }
