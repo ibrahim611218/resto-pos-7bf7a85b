@@ -7,6 +7,7 @@ import { useSidebarContext } from "./SidebarContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface SidebarNavigationProps {
   links: SidebarLink[];
@@ -27,6 +28,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const { isFullscreen } = useFullscreen();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const sidebarContext = useSidebar();
 
   // Filter links based on admin access and required email
   const filteredLinks = links.filter(link => {
