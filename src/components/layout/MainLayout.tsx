@@ -7,12 +7,15 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import FullscreenToggle from "../ui-custom/FullscreenToggle";
+import { useLanguage } from "@/context/LanguageContext";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   const location = useLocation();
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
   
   useEffect(() => {
     if (isMobile || (isTablet && width < 768)) {
