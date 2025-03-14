@@ -14,7 +14,7 @@ import {
   FileSearch,
   Home,
   Download,
-  Key
+  KeyRound
 } from "lucide-react";
 import { SidebarLink } from "./types";
 
@@ -148,7 +148,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name: "إدارة التراخيص",
       name_en: "License Manager",
       path: "/license-generator",
-      icon: Key,
+      icon: KeyRound,
       isAdminOnly: true,
       requiredEmail: "eng.ibrahimabdalfatah@gmail.com"
     },

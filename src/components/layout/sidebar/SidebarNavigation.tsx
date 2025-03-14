@@ -48,7 +48,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             collapsed={collapsed}
             isOpen={openCategories[link.path.replace("/", "")] || false}
             currentPath={location.pathname}
-            onToggleCategory={onToggleCategory}
+            onToggleCategory={() => onToggleCategory(link.path.replace("/", ""))}
           />
         );
       })}
