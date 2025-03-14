@@ -5,6 +5,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import LicenseCheckLoading from './LicenseCheckLoading';
 
 const LicenseCheck: React.FC = () => {
   const { checkLicense, getLicenseInfo } = useLicense();
