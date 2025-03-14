@@ -58,6 +58,11 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
     );
   }
   
+  // Ensure card size is appropriate for screen size
+  const cardSizeClass = width > 1920 ? 'min-h-[200px]' : 
+                       width > 1280 ? 'min-h-[180px]' : 
+                       width > 768 ? 'min-h-[150px]' : 'min-h-[120px]';
+  
   return (
     <div 
       className={`grid ${gridClass} w-full`} 
@@ -70,7 +75,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
           key={product.id || `product-${index}`}
           animation="fade"
           delay={Math.min(index * 30, 300)} // Cap the delay at 300ms for better performance
-          className="cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card transition-transform duration-200 ease-in-out transform hover:scale-105"
+          className={`cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card transition-transform duration-200 ease-in-out transform hover:scale-105 ${cardSizeClass}`}
           onClick={() => handleProductClick(product)}
           role="button"
           tabIndex={0}

@@ -11,11 +11,16 @@ import PosContent from "./components/PosContent";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import PosLayout from "./components/layout/PosLayout";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import PosProductsRenderer from "./components/PosProductsRenderer";
+import PosCartRenderer from "./components/PosCartRenderer";
 
 const Pos: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { settings } = useBusinessSettings();
+  const { width, height } = useWindowDimensions();
   
   // Force a resize event when component mounts to ensure proper layout
   useEffect(() => {
@@ -24,8 +29,26 @@ const Pos: React.FC = () => {
       window.dispatchEvent(new Event('resize'));
     }, 100);
     
-    return () => clearTimeout(timeoutId);
+    // Set up periodic resize events during the initial load sequence
+    const resizeIntervalId = setInterval(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 500);
+    
+    // Clear the interval after 2 seconds
+    setTimeout(() => {
+      clearInterval(resizeIntervalId);
+    }, 2000);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(resizeIntervalId);
+    };
   }, []);
+  
+  // Recheck layout on width/height changes
+  useEffect(() => {
+    window.dispatchEvent(new Event('resize'));
+  }, [width, height]);
   
   const {
     // Cart items
@@ -110,39 +133,45 @@ const Pos: React.FC = () => {
       <PosHeader />
 
       <div className="flex-1 overflow-hidden stretch-content">
-        <PosContent 
-          cartItems={cartItems}
-          isArabic={isArabic}
-          language={language}
-          subtotal={subtotal}
-          taxAmount={taxAmount}
-          total={total}
-          discount={discount}
-          discountType={discountType}
-          orderType={orderType}
-          tableNumber={tableNumber}
-          paymentMethod={paymentMethod}
-          addToCart={handleAddToCart}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-          clearCart={clearCart}
-          createInvoice={handleCreateInvoice}
-          setDiscount={setDiscount}
-          setDiscountType={setDiscountType}
-          setOrderType={setOrderType}
-          setTableNumber={setTableNumber}
-          setPaymentMethod={setPaymentMethod}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          categories={categories}
-          filteredProducts={filteredProducts || []}
-          searchedProducts={searchedProducts || []}
-          getSizeLabel={getSizeLabelFn}
-          showAllProducts={showAllProducts}
-          setShowAllProducts={setShowAllProducts}
-        />
+        <PosLayout isArabic={isArabic}>
+          <PosProductsRenderer
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            categories={categories}
+            filteredProducts={filteredProducts || []}
+            searchedProducts={searchedProducts || []}
+            onAddToCart={handleAddToCart}
+            isArabic={isArabic}
+            getSizeLabel={getSizeLabelFn}
+            showAllProducts={showAllProducts}
+            setShowAllProducts={setShowAllProducts}
+          />
+          
+          <PosCartRenderer
+            cartItems={cartItems}
+            isArabic={isArabic}
+            language={language}
+            subtotal={subtotal}
+            taxAmount={taxAmount}
+            total={total}
+            discount={discount}
+            discountType={discountType}
+            orderType={orderType}
+            tableNumber={tableNumber}
+            paymentMethod={paymentMethod}
+            updateQuantity={updateQuantity}
+            removeItem={removeItem}
+            clearCart={clearCart}
+            createInvoice={handleCreateInvoice}
+            setDiscount={setDiscount}
+            setDiscountType={setDiscountType}
+            setOrderType={setOrderType}
+            setTableNumber={setTableNumber}
+            setPaymentMethod={setPaymentMethod}
+          />
+        </PosLayout>
       </div>
 
       <InvoiceDetailsModal 

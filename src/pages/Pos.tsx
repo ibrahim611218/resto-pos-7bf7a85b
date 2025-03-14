@@ -29,6 +29,11 @@ const PosPage: React.FC = () => {
     // Force layout recalculation
     window.dispatchEvent(new Event('resize'));
     
+    // Set a timeout to trigger another resize event after components have rendered
+    const timeoutId = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 300);
+    
     // Cleanup on unmount
     return () => {
       document.documentElement.style.height = originalHtmlStyle.height;
@@ -37,6 +42,7 @@ const PosPage: React.FC = () => {
       document.body.style.overflow = originalBodyStyle.overflow;
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
+      clearTimeout(timeoutId);
     };
   }, []);
 

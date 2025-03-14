@@ -1,6 +1,8 @@
 
 import React, { ReactNode, useEffect, useState } from "react";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import MobilePosLayout from "./MobilePosLayout";
+import DesktopPosLayout from "./DesktopPosLayout";
 
 interface PosLayoutProps {
   isArabic: boolean;
@@ -14,6 +16,13 @@ interface PosLayoutProps {
 const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
   const { isMobile, isTablet, width, height } = useWindowDimensions();
   const [layoutClass, setLayoutClass] = useState("flex-row");
+  const [childrenArray, setChildrenArray] = useState<ReactNode[]>([]);
+  
+  // Split children into array for proper layout placement
+  useEffect(() => {
+    const childArray = React.Children.toArray(children);
+    setChildrenArray(childArray);
+  }, [children]);
   
   // Update layout direction based on screen size and orientation
   useEffect(() => {
@@ -72,6 +81,31 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
     };
   }, [isMobile, isTablet, width, height]);
 
+  // Get the product and cart panels from children
+  const productsPanel = childrenArray[0] || null;
+  const cartPanel = childrenArray[1] || null;
+
+  // Use different layout components based on screen size
+  if (isMobile || width < 768 || (width < height && width < 1024)) {
+    return (
+      <div 
+        dir={isArabic ? "rtl" : "ltr"} 
+        className={`flex flex-col h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
+        style={{ 
+          minHeight: "100vh", 
+          maxWidth: "100vw",
+          maxHeight: "100vh" 
+        }}
+      >
+        <MobilePosLayout
+          isArabic={isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
+      </div>
+    );
+  }
+
   return (
     <div 
       dir={isArabic ? "rtl" : "ltr"} 
@@ -82,7 +116,11 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
         maxHeight: "100vh" 
       }}
     >
-      {children}
+      <DesktopPosLayout
+        isArabic={isArabic}
+        productsPanel={productsPanel}
+        cartPanel={cartPanel}
+      />
     </div>
   );
 };

@@ -1,78 +1,92 @@
 
 import React from "react";
 import CartPanel from "./CartPanel";
-import { usePaymentHandling } from "../hooks/usePaymentHandling";
+import { useCartResize } from "../hooks/useCartResize";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import CartResizeHandler from "./cart/CartResizeHandler";
 
 interface PosCartRendererProps {
   cartItems: any[];
   isArabic: boolean;
-  language: any;
+  language: string;
   subtotal: number;
   taxAmount: number;
   total: number;
   discount: number;
-  discountType: "percentage" | "fixed";
-  orderType: "takeaway" | "dineIn";
+  discountType: string;
+  orderType: string;
   tableNumber: string;
-  paymentMethod: any;
-  createInvoice: (customerName?: string, customerTaxNumber?: string, customerId?: string, commercialRegister?: string, address?: string, paidAmount?: number) => any;
+  paymentMethod: string;
+  updateQuantity: (item: any, quantity: number) => void;
+  removeItem: (item: any) => void;
   clearCart: () => void;
-  getSizeLabel: (size: string) => string;
-  updateQuantity: (itemId: string, change: number) => void;
-  removeItem: (itemId: string) => void;
+  createInvoice: (
+    customerName?: string,
+    customerTaxNumber?: string,
+    customerId?: string,
+    commercialRegister?: string,
+    address?: string,
+    paidAmount?: number
+  ) => any;
   setDiscount: (discount: number) => void;
-  setDiscountType: (type: "percentage" | "fixed") => void;
-  setOrderType: (type: "takeaway" | "dineIn") => void;
+  setDiscountType: (type: string) => void;
+  setOrderType: (type: string) => void;
   setTableNumber: (number: string) => void;
-  setPaymentMethod: (method: any) => void;
+  setPaymentMethod: (method: string) => void;
 }
 
 /**
- * Component that renders the cart panel with all cart-related functionality
+ * Component that renders the cart and handles cart resizing
  */
 const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
-  // Use the payment handling hook to manage all payment-related logic
-  const paymentHandling = usePaymentHandling({
-    total: props.total,
-    paymentMethod: props.paymentMethod,
-    setPaymentMethod: props.setPaymentMethod,
-    createInvoice: props.createInvoice
+  const { isMobile, isTablet } = useWindowDimensions();
+  const { resizeRef, handleMouseDown, isDragging } = useCartResize({
+    isArabic: props.isArabic,
+    isMobile,
+    isTablet
   });
 
   return (
-    <CartPanel 
-      cartItems={props.cartItems}
-      isArabic={props.isArabic}
-      language={props.language}
-      subtotal={props.subtotal}
-      taxAmount={props.taxAmount}
-      total={props.total}
-      discount={props.discount}
-      discountType={props.discountType}
-      orderType={props.orderType}
-      tableNumber={props.tableNumber}
-      paymentMethod={props.paymentMethod}
-      createInvoice={props.createInvoice}
-      clearCart={props.clearCart}
-      getSizeLabel={props.getSizeLabel}
-      updateQuantity={props.updateQuantity}
-      removeItem={props.removeItem}
-      setDiscount={props.setDiscount}
-      setDiscountType={props.setDiscountType}
-      setOrderType={props.setOrderType}
-      setTableNumber={props.setTableNumber}
-      setPaymentMethod={props.setPaymentMethod}
-      // Pass payment handling props
-      paidAmount={paymentHandling.paidAmount}
-      showPaidAmountDialog={paymentHandling.showPaidAmountDialog}
-      setShowPaidAmountDialog={paymentHandling.setShowPaidAmountDialog}
-      handlePaidAmountClick={paymentHandling.handlePaidAmountClick}
-      handlePaidAmountConfirm={paymentHandling.handlePaidAmountConfirm}
-      showPaymentMethodDialog={paymentHandling.showPaymentMethodDialog}
-      setShowPaymentMethodDialog={paymentHandling.setShowPaymentMethodDialog}
-      handleCreateInvoice={paymentHandling.handleCreateInvoice}
-      handlePaymentMethodSelectedWithAmount={paymentHandling.handlePaymentMethodSelectedWithAmount}
-    />
+    <div
+      ref={resizeRef}
+      className={`relative h-full overflow-hidden ${
+        isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
+      } border-border bg-card/30 backdrop-blur-sm`}
+      style={{
+        width: isMobile ? "100%" : "35%",
+        minWidth: isMobile ? "100%" : "300px",
+        maxWidth: isMobile ? "100%" : "600px"
+      }}
+    >
+      <CartResizeHandler
+        isMobile={isMobile}
+        onMouseDown={handleMouseDown}
+        isArabic={props.isArabic}
+        isDragging={isDragging}
+      />
+      <CartPanel 
+        cartItems={props.cartItems}
+        isArabic={props.isArabic}
+        language={props.language}
+        subtotal={props.subtotal}
+        taxAmount={props.taxAmount}
+        total={props.total}
+        discount={props.discount}
+        discountType={props.discountType}
+        orderType={props.orderType}
+        tableNumber={props.tableNumber}
+        paymentMethod={props.paymentMethod}
+        updateQuantity={props.updateQuantity}
+        removeItem={props.removeItem}
+        clearCart={props.clearCart}
+        createInvoice={props.createInvoice}
+        setDiscount={props.setDiscount}
+        setDiscountType={props.setDiscountType}
+        setOrderType={props.setOrderType}
+        setTableNumber={props.setTableNumber}
+        setPaymentMethod={props.setPaymentMethod}
+      />
+    </div>
   );
 };
 

@@ -10,6 +10,7 @@ interface WindowDimensions {
   isDesktop: boolean;
   isSmallScreen: boolean;
   scaleFactor: number;
+  orientation: 'portrait' | 'landscape';
 }
 
 export const useWindowDimensions = (): WindowDimensions => {
@@ -21,7 +22,8 @@ export const useWindowDimensions = (): WindowDimensions => {
     isTablet: false,
     isDesktop: true,
     isSmallScreen: false,
-    scaleFactor: 1
+    scaleFactor: 1,
+    orientation: 'landscape'
   });
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export const useWindowDimensions = (): WindowDimensions => {
       const isTablet = width >= 640 && width < 1024;
       const isDesktop = width >= 1024;
       const isSmallScreen = height < 700;
+      const orientation = width >= height ? 'landscape' : 'portrait';
       
       // Calculate a scale factor based on screen size to help with responsive sizing
       // Base scale is 1 at 1280px width
@@ -48,7 +51,8 @@ export const useWindowDimensions = (): WindowDimensions => {
         isTablet,
         isDesktop,
         isSmallScreen,
-        scaleFactor
+        scaleFactor,
+        orientation
       });
     };
 
@@ -61,10 +65,31 @@ export const useWindowDimensions = (): WindowDimensions => {
     };
     
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
     
-    // Cleanup listener on unmount
+    // Set up a resize observer to detect container size changes
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        calculateDimensions();
+      });
+      
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        resizeObserver.observe(rootElement);
+      }
+      
+      return () => {
+        if (rootElement) resizeObserver.unobserve(rootElement);
+        resizeObserver.disconnect();
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
+      };
+    }
+    
+    // Fallback cleanup without ResizeObserver
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, []);
 
@@ -73,7 +98,7 @@ export const useWindowDimensions = (): WindowDimensions => {
 
 // Shorthand hook for responsive layout decisions
 export const useResponsiveLayout = () => {
-  const { isMobile, isTablet, isDesktop, isSmallScreen, width, height } = useWindowDimensions();
+  const { isMobile, isTablet, isDesktop, isSmallScreen, width, height, orientation } = useWindowDimensions();
   
   // Utility function to get the appropriate column count for grids
   const getGridColumns = (baseColumns: number = 4): number => {
@@ -97,6 +122,7 @@ export const useResponsiveLayout = () => {
     isSmallScreen,
     width,
     height,
+    orientation,
     getGridColumns,
     getSpacing
   };
