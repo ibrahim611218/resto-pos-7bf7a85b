@@ -13,23 +13,19 @@ const LicenseCheck: React.FC<LicenseCheckProps> = ({ children }) => {
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   
+  // Temporarily bypass license check to allow access to dashboard
   useEffect(() => {
     if (!loading) {
       const isActivatePath = location.pathname === "/activate";
       
-      // If not licensed and not on the activate page, redirect to activate
-      if (!licenseState.isLicensed && !isActivatePath) {
-        navigate("/activate");
-      }
-      
-      // If licensed and on the activate page, redirect to home
-      if (licenseState.isLicensed && isActivatePath) {
+      // If on the activate page and user wants to bypass, go to dashboard
+      if (isActivatePath) {
         navigate("/");
       }
       
       setIsChecking(false);
     }
-  }, [licenseState, loading, navigate, location.pathname]);
+  }, [loading, navigate, location.pathname]);
   
   if (loading || isChecking) {
     return (
