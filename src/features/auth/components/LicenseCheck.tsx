@@ -13,19 +13,22 @@ const LicenseCheck: React.FC = () => {
   const [isChecking, setIsChecking] = useState(true);
   const [expiryDays, setExpiryDays] = useState<number | null>(null);
   
-  const isAdminUser = isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com';
+  // Optimize the check for admin user
+  const isAdminUser = React.useMemo(() => {
+    return isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com';
+  }, [isAuthenticated, user?.email]);
   
   useEffect(() => {
     const verifyLicense = async () => {
-      setIsChecking(true);
-      
-      // Skip license check for admin users - immediately set checking to false
-      if (isAdminUser) {
-        setIsChecking(false);
-        return;
-      }
-      
       try {
+        setIsChecking(true);
+        
+        // Skip license check for admin users
+        if (isAdminUser) {
+          setIsChecking(false);
+          return;
+        }
+        
         const hasValidLicense = await checkLicense();
         if (!hasValidLicense) {
           navigate('/activate');
@@ -47,7 +50,8 @@ const LicenseCheck: React.FC = () => {
     };
     
     verifyLicense();
-  }, [checkLicense, getLicenseInfo, navigate, isAuthenticated, user, isAdminUser]);
+    // Dependency array includes all values that trigger the effect
+  }, [checkLicense, getLicenseInfo, navigate, isAdminUser]);
   
   // Show loading only if needed
   if (isChecking) {
@@ -75,7 +79,7 @@ const LicenseCheck: React.FC = () => {
   );
 };
 
-// Import the loading component to avoid circular dependencies
+// Loading component moved to its own file, just imported here
 const LicenseCheckLoading = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">

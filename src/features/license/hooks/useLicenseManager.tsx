@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLicense } from '@/features/auth/hooks/useLicense';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -22,33 +22,34 @@ export const useLicenseManager = () => {
     }
   }, [user, navigate]);
   
-  // Load licenses
-  useEffect(() => {
-    const loadLicenses = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getAllLicenses();
-        setLicenses(data);
-      } catch (error) {
-        console.error('Error loading licenses:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadLicenses();
+  // Load licenses - using useCallback to avoid recreation of function
+  const loadLicenses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await getAllLicenses();
+      setLicenses(data);
+    } catch (error) {
+      console.error('Error loading licenses:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [getAllLicenses]);
   
-  const handleLicenseGenerated = (license: License) => {
-    setLicenses(prev => [license, ...prev]);
-  };
+  // Initialize licenses
+  useEffect(() => {
+    loadLicenses();
+  }, [loadLicenses]);
   
-  const handleCopyLicense = (key: string) => {
+  const handleLicenseGenerated = useCallback((license: License) => {
+    setLicenses(prev => [license, ...prev]);
+  }, []);
+  
+  const handleCopyLicense = useCallback((key: string) => {
     navigator.clipboard.writeText(key);
     toast.success('تم نسخ رمز التفعيل');
-  };
+  }, []);
   
-  const handleExportLicenses = () => {
+  const handleExportLicenses = useCallback(() => {
     try {
       const exportData = licenses.map(license => ({
         'رمز التفعيل': license.key,
@@ -74,7 +75,7 @@ export const useLicenseManager = () => {
       console.error('Error exporting licenses:', error);
       toast.error('حدث خطأ أثناء تصدير رموز التفعيل');
     }
-  };
+  }, [licenses]);
   
   return {
     licenses,

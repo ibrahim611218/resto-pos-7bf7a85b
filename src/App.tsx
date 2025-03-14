@@ -37,7 +37,7 @@ function App() {
         <Route path="/activate" element={<LicenseActivation />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
-        {/* Admin route for license generation */}
+        {/* Admin route for license generation - outside of LicenseCheck */}
         <Route 
           path="/license-generator" 
           element={
