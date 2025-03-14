@@ -14,7 +14,8 @@ const LicenseGenerator = () => {
   } = useLicenseManager();
   
   return (
-    <div className="container p-4" dir="rtl">
+    <div className="container p-6 mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-center">مولد التراخيص</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <LicenseForm 
           onLicenseGenerated={handleLicenseGenerated}

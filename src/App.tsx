@@ -38,16 +38,6 @@ function App() {
         <Route path="/activate" element={<LicenseActivation />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         
-        {/* Admin route for license generation - completely outside the license check system */}
-        <Route 
-          path="/license-generator" 
-          element={
-            <ProtectedRoute>
-              <LicenseGenerator />
-            </ProtectedRoute>
-          } 
-        />
-        
         {/* Protected routes - require authentication and license */}
         <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
           <Route element={<ProtectedRoute />}>
@@ -66,6 +56,7 @@ function App() {
               <Route path="/reports/customers" element={<CustomersReport />} />
               <Route path="/settings" element={<BusinessSettings />} />
               <Route path="/users" element={<UserManagement />} />
+              <Route path="/license-generator" element={<LicenseGenerator />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Route>
