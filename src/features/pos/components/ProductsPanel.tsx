@@ -98,10 +98,10 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           
           <TabsContent value="categories">
             <CategoriesTabContent 
-              categories={categories}
+              categories={categories || []}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
-              searchedProducts={searchedProducts}
+              searchedProducts={searchedProducts || []}
               isArabic={isArabic}
               onProductClick={handleProductClick}
               getGridCols={getGridCols}
@@ -111,7 +111,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           
           <TabsContent value="all">
             <AllProductsTabContent 
-              searchedProducts={searchedProducts}
+              searchedProducts={searchedProducts || []}
               isArabic={isArabic}
               onProductClick={handleProductClick}
               getGridCols={getGridCols}

@@ -20,6 +20,14 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   // Handle both string and function types for getGridCols
   const gridColsClass = typeof getGridCols === 'function' ? getGridCols() : getGridCols;
   
+  if (!products || products.length === 0) {
+    return (
+      <div className="text-center p-4 text-muted-foreground">
+        {isArabic ? "لا توجد منتجات" : "No products found"}
+      </div>
+    );
+  }
+  
   return (
     <div className={`grid ${gridColsClass} gap-2`}>
       {products.map((product, index) => (
@@ -49,7 +57,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
               {isArabic ? product.nameAr : product.name}
             </p>
             <p className="text-xs text-white mt-0.5 bg-black/70 rounded-full px-2 py-0.5 inline-block">
-              {product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
+              {product.variants && product.variants.length > 0 ? product.variants[0].price : product.price} {isArabic ? "ر.س" : "SAR"}
             </p>
           </div>
         </GlassCard>
