@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useFullscreen } from "@/hooks/useFullscreen";
@@ -14,6 +14,24 @@ const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "" }) =
   const { language } = useLanguage();
   const isArabic = language === "ar";
 
+  // Force a resize event when fullscreen state changes
+  useEffect(() => {
+    const resizeHandler = () => {
+      window.dispatchEvent(new Event('resize'));
+    };
+    
+    // Set multiple timeouts to ensure all components have updated
+    if (isFullscreen !== null) {
+      const timeouts = [10, 100, 300, 500].map(delay => 
+        setTimeout(resizeHandler, delay)
+      );
+      
+      return () => {
+        timeouts.forEach(id => clearTimeout(id));
+      };
+    }
+  }, [isFullscreen]);
+
   if (!fullscreenEnabled) return null;
 
   return (
@@ -21,7 +39,7 @@ const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "" }) =
       variant="ghost"
       size="icon"
       onClick={toggleFullscreen}
-      className={`bg-background/80 backdrop-blur-sm shadow-sm ${className}`}
+      className={`bg-background/80 backdrop-blur-sm shadow-sm z-50 ${className}`}
       title={isArabic 
         ? (isFullscreen ? "إلغاء وضع ملء الشاشة" : "ملء الشاشة") 
         : (isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen")

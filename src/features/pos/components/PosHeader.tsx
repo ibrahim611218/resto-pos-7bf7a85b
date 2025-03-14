@@ -6,6 +6,7 @@ import { Clock, Home } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { formatDate } from "@/utils/formatters";
 import FullscreenToggle from "@/components/ui-custom/FullscreenToggle";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 interface PosHeaderProps {
   onToggleSidebar?: () => void;
@@ -16,6 +17,7 @@ const PosHeader: React.FC<PosHeaderProps> = ({ onToggleSidebar }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [currentTime, setCurrentTime] = React.useState(new Date());
+  const { isFullscreen } = useFullscreen();
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -28,7 +30,7 @@ const PosHeader: React.FC<PosHeaderProps> = ({ onToggleSidebar }) => {
   }, []);
 
   return (
-    <div className="bg-primary text-primary-foreground px-4 py-2 flex justify-between items-center flex-shrink-0">
+    <div className={`bg-primary text-primary-foreground px-4 py-2 flex justify-between items-center flex-shrink-0 ${isFullscreen ? 'fullscreen-header' : ''}`}>
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"

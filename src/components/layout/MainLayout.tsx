@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import FullscreenToggle from "../ui-custom/FullscreenToggle";
 import { useLanguage } from "@/context/LanguageContext";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -16,14 +17,15 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { isFullscreen } = useFullscreen();
   
   useEffect(() => {
-    if (isMobile || (isTablet && width < 768)) {
+    if (isMobile || (isTablet && width < 768) || isFullscreen) {
       setSidebarCollapsed(true);
     } else {
       setSidebarCollapsed(false);
     }
-  }, [isMobile, isTablet, width]);
+  }, [isMobile, isTablet, width, isFullscreen]);
 
   useEffect(() => {
     const handleToggleSidebar = (e: Event) => {
@@ -44,10 +46,10 @@ const MainLayout = () => {
   }, []);
 
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile || isFullscreen) {
       setSidebarCollapsed(true);
     }
-  }, [location.pathname, isMobile]);
+  }, [location.pathname, isMobile, isFullscreen]);
 
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
@@ -55,18 +57,18 @@ const MainLayout = () => {
   }, [sidebarCollapsed]);
 
   return (
-    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">
+    <div className={`flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden ${isFullscreen ? 'fullscreen-active' : ''}`}>
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={`flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container ${
-            !sidebarCollapsed && !isMobile ? "md:mr-64" : "mr-0"
+            !sidebarCollapsed && !isMobile && !isFullscreen ? "md:mr-64" : "mr-0"
           }`}
         >
           <div className="fixed top-4 right-4 z-30 flex gap-2">
             <FullscreenToggle />
             
-            {(isMobile || sidebarCollapsed) && (
+            {(isMobile || sidebarCollapsed || isFullscreen) && (
               <Button 
                 variant="ghost" 
                 size="icon" 

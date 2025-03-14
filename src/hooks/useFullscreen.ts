@@ -32,9 +32,19 @@ export const useFullscreen = () => {
       if (fullscreenElement) {
         document.body.classList.add('in-fullscreen');
         document.documentElement.classList.add('in-fullscreen');
+        
+        // Force resize event to update layout
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
       } else {
         document.body.classList.remove('in-fullscreen');
         document.documentElement.classList.remove('in-fullscreen');
+        
+        // Force resize event to update layout
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
       }
     };
 

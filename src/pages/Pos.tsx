@@ -4,7 +4,7 @@ import Pos from "@/features/pos/Pos";
 import { useFullscreen } from "@/hooks/useFullscreen";
 
 const PosPage: React.FC = () => {
-  const { isFullscreen } = useFullscreen();
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   // Force the page to take the full viewport on mount
   useEffect(() => {
@@ -28,6 +28,9 @@ const PosPage: React.FC = () => {
     document.body.style.overflow = "hidden";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+    
+    // Add POS-specific class
+    document.body.classList.add('pos-active');
     
     // Force layout recalculation
     window.dispatchEvent(new Event('resize'));
@@ -57,6 +60,14 @@ const PosPage: React.FC = () => {
     // Collapse sidebar when POS page is active
     window.dispatchEvent(new CustomEvent('toggle-sidebar', { detail: { forceCollapse: true } }));
     
+    // Auto enter fullscreen after a short delay
+    if (!isFullscreen) {
+      const fullscreenTimeout = setTimeout(() => {
+        toggleFullscreen();
+      }, 500);
+      timeoutIds.push(fullscreenTimeout);
+    }
+    
     // Cleanup on unmount
     return () => {
       document.documentElement.style.height = originalHtmlStyle.height;
@@ -65,6 +76,7 @@ const PosPage: React.FC = () => {
       document.body.style.overflow = originalBodyStyle.overflow;
       document.body.style.margin = originalBodyStyle.margin;
       document.body.style.padding = originalBodyStyle.padding;
+      document.body.classList.remove('pos-active');
       
       // Clear all timeouts
       timeoutIds.forEach(id => clearTimeout(id));
@@ -74,7 +86,7 @@ const PosPage: React.FC = () => {
       // Notify components that POS is no longer active
       window.dispatchEvent(new CustomEvent('pos-active', { detail: { active: false } }));
     };
-  }, []);
+  }, [isFullscreen, toggleFullscreen]);
 
   // Listen for window resize events and orientation changes
   useEffect(() => {
