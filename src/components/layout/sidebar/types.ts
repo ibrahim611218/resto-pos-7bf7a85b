@@ -9,6 +9,8 @@ export interface SidebarLink {
   subMenuItems?: SidebarLink[];
   isAction?: boolean;
   action?: string;
+  isAdminOnly?: boolean;
+  requiredEmail?: string;
 }
 
 export interface SidebarProps {
