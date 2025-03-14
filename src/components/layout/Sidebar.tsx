@@ -46,6 +46,19 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     setIsInitialized(true);
   }, [location.pathname]);
 
+  // Listen for custom toggle sidebar event
+  useEffect(() => {
+    const handleToggleSidebar = () => {
+      onToggle();
+    };
+
+    window.addEventListener('toggle-sidebar', handleToggleSidebar);
+    
+    return () => {
+      window.removeEventListener('toggle-sidebar', handleToggleSidebar);
+    };
+  }, [onToggle]);
+
   const toggleCategory = (category: string) => {
     if (collapsed) {
       onToggle();
