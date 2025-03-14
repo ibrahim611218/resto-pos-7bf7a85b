@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -52,27 +53,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
   
-  const displayPrice = product.variants.length > 0 
+  const displayPrice = product.variants && product.variants.length > 0 
     ? `${product.variants[0].price.toFixed(2)}+` 
     : product.price ? `${product.price.toFixed(2)}` : "-";
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
   const handleClick = () => {
+    console.log("ProductCard clicked:", product.name);
+    
     if (onClick) {
       onClick();
     } else if (onAddToCart) {
       // Handling different product types:
       // 1. Single variant products - add directly to cart
-      if (product.variants.length === 1) {
+      if (product.variants && product.variants.length === 1) {
         onAddToCart(product, product.variants[0].id);
       } 
       // 2. Multiple variants - show size selection dialog
-      else if (product.variants.length > 1) {
+      else if (product.variants && product.variants.length > 1) {
         onClick?.();
       }
       // 3. Products without variants (simple products) - add directly using "simple" as variantId
-      else if (product.variants.length === 0 && product.price) {
+      else if ((!product.variants || product.variants.length === 0) && product.price) {
         console.log("Adding simple product to cart:", product.name);
         onAddToCart(product, "simple");
       }

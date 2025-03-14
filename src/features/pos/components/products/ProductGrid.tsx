@@ -28,6 +28,11 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
     );
   }
   
+  const handleProductClick = (product: Product) => {
+    console.log("Product clicked:", product.name);
+    onProductClick(product);
+  };
+  
   return (
     <div className={`grid ${gridColsClass} gap-2`}>
       {products.map((product, index) => (
@@ -36,7 +41,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
           animation="fade"
           delay={Math.min(index * 30, 300)} // Cap the delay at 300ms for better performance
           className="cursor-pointer hover:shadow-md bg-secondary/30 p-1 product-card"
-          onClick={() => onProductClick(product)}
+          onClick={() => handleProductClick(product)}
         >
           <div className="w-full aspect-square overflow-hidden rounded-md bg-muted mb-1">
             {product.image ? (

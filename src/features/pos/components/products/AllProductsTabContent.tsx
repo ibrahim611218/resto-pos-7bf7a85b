@@ -16,12 +16,17 @@ const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({
   onProductClick,
   getGridCols,
 }) => {
+  const handleProductClick = (product: Product) => {
+    console.log("Product clicked in AllProductsTabContent:", product.name);
+    onProductClick(product);
+  };
+
   return (
     <div className="mt-2 space-y-3">
       <ProductGrid 
         products={searchedProducts}
         isArabic={isArabic}
-        onProductClick={onProductClick}
+        onProductClick={handleProductClick}
         getGridCols={getGridCols}
       />
     </div>
