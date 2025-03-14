@@ -9,6 +9,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import FullscreenToggle from "../ui-custom/FullscreenToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
+import { cn } from "@/lib/utils";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
