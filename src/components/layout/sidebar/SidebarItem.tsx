@@ -32,6 +32,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   const handleItemClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (hasSubMenu) {
       onToggleCategory(path.replace("/", ""));
@@ -45,6 +46,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     e.stopPropagation();
     onNavigate(subPath);
   };
+
+  // Handle special action links (like Windows Export)
+  const isAction = path === "#";
 
   return (
     <div className="space-y-1">

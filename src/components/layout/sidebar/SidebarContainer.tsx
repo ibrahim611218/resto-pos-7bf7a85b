@@ -1,4 +1,3 @@
-
 import React from "react";
 import { cn } from "@/lib/utils";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
@@ -22,8 +21,8 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
 }) => {
   const { isFullscreen } = useFullscreen();
   
-  // Hide sidebar completely in these cases
-  if ((isMobile && collapsed) || (isFullscreen && collapsed)) return null;
+  // Don't return null in fullscreen, just keep the sidebar visible but collapsed
+  if (isMobile && collapsed) return null;
 
   const sidebarTransition = collapsed ? "w-20" : "w-64";
 

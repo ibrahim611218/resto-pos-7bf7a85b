@@ -68,9 +68,12 @@ export const SidebarContextProvider: React.FC<SidebarContextProviderProps> = ({
     setIsInitialized(true);
   }, [location.pathname]);
 
+  // Improved toggle category function
   const toggleCategory = useCallback((category: string) => {
     if (collapsed) {
+      // First expand the sidebar
       onToggle();
+      // Then open the category after a short delay
       setTimeout(() => {
         setOpenCategories((prev) => ({
           ...prev,
@@ -78,6 +81,7 @@ export const SidebarContextProvider: React.FC<SidebarContextProviderProps> = ({
         }));
       }, 300);
     } else {
+      // If sidebar is already expanded, just toggle the category
       setOpenCategories((prev) => ({
         ...prev,
         [category]: !prev[category],

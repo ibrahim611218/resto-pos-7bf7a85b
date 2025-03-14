@@ -42,13 +42,13 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const handleNavigate = (path: string) => {
     onNavigate(path);
     
-    // If in mobile or fullscreen, dispatch event to collapse sidebar
+    // If in mobile or fullscreen, dispatch event to collapse sidebar with a slight delay
     if (isMobile || isFullscreen) {
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent('toggle-sidebar', { 
           detail: { forceCollapse: true }
         }));
-      }, 100);
+      }, 150);
     }
   };
 

@@ -19,6 +19,7 @@ const MainLayout = () => {
   const isArabic = language === "ar";
   const { isFullscreen } = useFullscreen();
   
+  // Handle sidebar state based on screen size and fullscreen state
   useEffect(() => {
     if (isMobile || (isTablet && width < 768) || isFullscreen) {
       setSidebarCollapsed(true);
@@ -27,7 +28,12 @@ const MainLayout = () => {
     }
   }, [isMobile, isTablet, width, isFullscreen]);
 
+  // Handle global toggle sidebar events
   useEffect(() => {
+    const handleForceCollapse = () => {
+      setSidebarCollapsed(true);
+    };
+
     const handleToggleSidebar = (e: Event) => {
       // Check if there is a detail with forceCollapse
       const customEvent = e as CustomEvent;
@@ -39,21 +45,27 @@ const MainLayout = () => {
     };
 
     window.addEventListener('toggle-sidebar', handleToggleSidebar);
+    window.addEventListener('sidebar-force-collapse', handleForceCollapse);
     
     return () => {
       window.removeEventListener('toggle-sidebar', handleToggleSidebar);
+      window.removeEventListener('sidebar-force-collapse', handleForceCollapse);
     };
   }, []);
 
+  // Collapse sidebar on route change in mobile or fullscreen
   useEffect(() => {
     if (isMobile || isFullscreen) {
       setSidebarCollapsed(true);
     }
   }, [location.pathname, isMobile, isFullscreen]);
 
+  // Toggle sidebar function - used by button and passed to child components
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed(prevState => !prevState);
-    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { collapsed: !sidebarCollapsed } }));
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
+      detail: { collapsed: !sidebarCollapsed } 
+    }));
   }, [sidebarCollapsed]);
 
   return (

@@ -12,6 +12,7 @@ import SidebarNavigation from "./sidebar/SidebarNavigation";
 import SidebarFooter from "./sidebar/SidebarFooter";
 import SidebarContainer from "./sidebar/SidebarContainer";
 import SidebarEventHandler from "./sidebar/SidebarEventHandler";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   const isMobile = useIsMobile();
   const { user, logout, hasPermission } = useAuth();
   const { language } = useLanguage();
+  const { isFullscreen } = useFullscreen();
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Mark sidebar as initialized after first render
@@ -26,10 +28,20 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     setIsInitialized(true);
   }, []);
   
+  // Improved navigation handler
   const handleNavigate = (path: string) => {
+    // Special case for action links
+    if (path === "#") {
+      // Handle desktop export action
+      window.dispatchEvent(new CustomEvent('desktop-export-action'));
+      return;
+    }
+    
+    // Regular navigation
     navigate(path);
-    // Auto-collapse sidebar on mobile after navigation
-    if (isMobile) {
+    
+    // Auto-collapse sidebar on mobile or fullscreen after navigation
+    if (isMobile || isFullscreen) {
       setTimeout(() => {
         onToggle();
       }, 150);
