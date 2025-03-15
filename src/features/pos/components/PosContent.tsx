@@ -9,6 +9,9 @@ import DesktopPosLayout from "./layout/DesktopPosLayout";
 import PosProductsRenderer from "./PosProductsRenderer";
 import PosCartRenderer from "./PosCartRenderer";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar/sidebar-context";
 
 interface PosContentProps {
   cartItems: any[];
@@ -46,28 +49,27 @@ interface PosContentProps {
 
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile } = useScreenSize();
+  const { toggleSidebar, open } = useSidebar();
 
-  // Prepare product panel component with scroll area
+  // Prepare product panel component
   const productsPanel = (
-    <ScrollArea className="h-full w-full overflow-auto">
-      <PosProductsRenderer
-        searchTerm={props.searchTerm}
-        setSearchTerm={props.setSearchTerm}
-        activeCategory={props.activeCategory}
-        setActiveCategory={props.setActiveCategory}
-        categories={props.categories}
-        filteredProducts={props.filteredProducts}
-        searchedProducts={props.searchedProducts}
-        onAddToCart={props.addToCart}
-        isArabic={props.isArabic}
-        getSizeLabel={props.getSizeLabel}
-        showAllProducts={props.showAllProducts}
-        setShowAllProducts={props.setShowAllProducts}
-      />
-    </ScrollArea>
+    <PosProductsRenderer
+      searchTerm={props.searchTerm}
+      setSearchTerm={props.setSearchTerm}
+      activeCategory={props.activeCategory}
+      setActiveCategory={props.setActiveCategory}
+      categories={props.categories}
+      filteredProducts={props.filteredProducts}
+      searchedProducts={props.searchedProducts}
+      onAddToCart={props.addToCart}
+      isArabic={props.isArabic}
+      getSizeLabel={props.getSizeLabel}
+      showAllProducts={props.showAllProducts}
+      setShowAllProducts={props.setShowAllProducts}
+    />
   );
 
-  // Prepare cart panel component with scroll area
+  // Prepare cart panel component
   const cartPanel = (
     <PosCartRenderer
       cartItems={props.cartItems}
@@ -94,8 +96,21 @@ const PosContent: React.FC<PosContentProps> = (props) => {
     />
   );
 
+  // Add a sidebar toggle button when sidebar is closed
+  const sidebarToggle = !open && (
+    <Button 
+      variant="outline" 
+      size="icon" 
+      className="fixed top-4 left-4 z-50 bg-background shadow-md" 
+      onClick={toggleSidebar}
+    >
+      <Menu className="h-5 w-5" />
+    </Button>
+  );
+
   return (
     <PosLayout isArabic={props.isArabic}>
+      {sidebarToggle}
       {isMobile ? (
         <MobilePosLayout
           isArabic={props.isArabic}

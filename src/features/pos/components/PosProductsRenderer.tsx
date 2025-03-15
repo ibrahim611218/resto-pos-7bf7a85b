@@ -24,7 +24,7 @@ interface PosProductsRendererProps {
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   return (
-    <ScrollArea className="h-full w-full overflow-auto">
+    <div className="h-full w-full flex flex-col overflow-hidden">
       <ProductsPanel 
         searchTerm={props.searchTerm}
         setSearchTerm={props.setSearchTerm}
@@ -39,7 +39,7 @@ const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
         showAllProducts={props.showAllProducts}
         setShowAllProducts={props.setShowAllProducts}
       />
-    </ScrollArea>
+    </div>
   );
 };
 

@@ -52,7 +52,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
   return (
     <div
       ref={resizeRef}
-      className={`relative h-full overflow-hidden ${
+      className={`relative h-full overflow-hidden flex flex-col ${
         isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
       } border-border bg-card/30 backdrop-blur-sm`}
       style={{
@@ -68,31 +68,29 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         isDragging={isDragging}
       />
       
-      <ScrollArea className="h-full w-full overflow-auto">
-        <CartPanel 
-          cartItems={props.cartItems}
-          isArabic={props.isArabic}
-          language={props.language}
-          subtotal={props.subtotal}
-          taxAmount={props.taxAmount}
-          total={props.total}
-          discount={props.discount}
-          discountType={props.discountType}
-          orderType={props.orderType}
-          tableNumber={props.tableNumber}
-          paymentMethod={props.paymentMethod}
-          updateQuantity={props.updateQuantity}
-          removeItem={props.removeItem}
-          clearCart={props.clearCart}
-          createInvoice={props.createInvoice}
-          setDiscount={props.setDiscount}
-          setDiscountType={props.setDiscountType}
-          setOrderType={props.setOrderType}
-          setTableNumber={props.setTableNumber}
-          setPaymentMethod={props.setPaymentMethod}
-          getSizeLabel={props.getSizeLabel}
-        />
-      </ScrollArea>
+      <CartPanel 
+        cartItems={props.cartItems}
+        isArabic={props.isArabic}
+        language={props.language}
+        subtotal={props.subtotal}
+        taxAmount={props.taxAmount}
+        total={props.total}
+        discount={props.discount}
+        discountType={props.discountType}
+        orderType={props.orderType}
+        tableNumber={props.tableNumber}
+        paymentMethod={props.paymentMethod}
+        updateQuantity={props.updateQuantity}
+        removeItem={props.removeItem}
+        clearCart={props.clearCart}
+        createInvoice={props.createInvoice}
+        setDiscount={props.setDiscount}
+        setDiscountType={props.setDiscountType}
+        setOrderType={props.setOrderType}
+        setTableNumber={props.setTableNumber}
+        setPaymentMethod={props.setPaymentMethod}
+        getSizeLabel={props.getSizeLabel}
+      />
     </div>
   );
 };

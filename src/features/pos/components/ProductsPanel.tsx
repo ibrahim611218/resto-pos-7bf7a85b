@@ -8,6 +8,7 @@ import { useScreenSize } from "@/hooks/use-mobile";
 import { useGridColumns } from "../hooks/useGridColumns";
 import CategoriesTabContent from "./products/CategoriesTabContent";
 import AllProductsTabContent from "./products/AllProductsTabContent";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProductsPanelProps {
   searchTerm: string;
@@ -71,23 +72,22 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden border-r">
-      <div className="container mx-auto px-4 py-2 border-b">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="sticky top-0 z-10 bg-background p-2">
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           placeholder={isArabic ? "بحث عن منتجات..." : "Search products..."}
+          className="mb-2"
         />
-      </div>
-      
-      <div className="container mx-auto flex-1 overflow-y-auto px-4 py-4 pb-24">
+        
         <Tabs 
           defaultValue="categories" 
           value={activeTab}
           onValueChange={handleTabChange}
-          className="mb-2"
+          className="w-full"
         >
-          <TabsList className="grid grid-cols-2 mb-2 sticky top-0 z-10">
+          <TabsList className="grid grid-cols-2 w-full mb-2">
             <TabsTrigger value="categories" className={isMobile ? "text-sm" : "text-base"}>
               {isArabic ? "الفئات" : "Categories"}
             </TabsTrigger>
@@ -95,8 +95,17 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
               {isArabic ? "كل المنتجات" : "All Products"}
             </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="categories">
+        </Tabs>
+      </div>
+      
+      <ScrollArea className="flex-1 px-2 pb-20">
+        <Tabs 
+          defaultValue="categories" 
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-full"
+        >
+          <TabsContent value="categories" className="mt-0">
             <CategoriesTabContent 
               categories={categories || []}
               activeCategory={activeCategory}
@@ -109,7 +118,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             />
           </TabsContent>
           
-          <TabsContent value="all">
+          <TabsContent value="all" className="mt-0">
             <AllProductsTabContent 
               searchedProducts={searchedProducts || []}
               isArabic={isArabic}
@@ -118,7 +127,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
             />
           </TabsContent>
         </Tabs>
-      </div>
+      </ScrollArea>
       
       <SizeSelectionDialog
         product={selectedProduct}

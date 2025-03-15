@@ -3,6 +3,7 @@ import React, { memo, useEffect, useState, useCallback } from "react";
 import { Product } from "@/types";
 import GlassCard from "@/components/ui-custom/GlassCard";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProductGridProps {
   products: Product[];
@@ -58,7 +59,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({
   
   if (!products || products.length === 0) {
     return (
-      <div className="text-center p-4 text-muted-foreground w-full h-full flex items-center justify-center">
+      <div className="text-center p-4 text-muted-foreground w-full flex items-center justify-center">
         <div className="bg-muted/30 p-6 rounded-lg w-full max-w-md">
           {isArabic ? "لا توجد منتجات" : "No products found"}
         </div>
