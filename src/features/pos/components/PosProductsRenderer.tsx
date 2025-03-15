@@ -24,7 +24,7 @@ interface PosProductsRendererProps {
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   return (
-    <div className="h-full w-full flex flex-col overflow-hidden">
+    <div className="h-full w-full flex flex-col overflow-auto">
       <ProductsPanel 
         searchTerm={props.searchTerm}
         setSearchTerm={props.setSearchTerm}

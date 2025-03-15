@@ -21,11 +21,11 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
   
   return (
     <>
-      <div className={`flex-1 h-full ${productsOrder}`}>
+      <div className={`flex-1 h-full overflow-auto ${productsOrder}`}>
         {productsPanel}
       </div>
       
-      <div className={`h-full ${cartOrder}`}>
+      <div className={`h-full overflow-auto ${cartOrder}`}>
         {cartPanel}
       </div>
     </>

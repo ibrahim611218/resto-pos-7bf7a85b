@@ -100,12 +100,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
       <div 
         key={`mobile-layout-${layoutKey}`}
         dir={isArabic ? "rtl" : "ltr"} 
-        className={`flex flex-col h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
-        style={{ 
-          minHeight: "100vh", 
-          maxWidth: "100vw",
-          maxHeight: "100vh" 
-        }}
+        className="flex flex-col h-full w-full overflow-hidden"
       >
         <MobilePosLayout
           isArabic={isArabic}
@@ -120,12 +115,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
     <div 
       key={`desktop-layout-${layoutKey}`}
       dir={isArabic ? "rtl" : "ltr"} 
-      className={`flex ${layoutClass} h-full w-full overflow-hidden m-0 p-0 auto-scale-container`} 
-      style={{ 
-        minHeight: "100vh", 
-        maxWidth: "100vw",
-        maxHeight: "100vh" 
-      }}
+      className={`flex ${layoutClass} h-full w-full overflow-hidden`}
     >
       <DesktopPosLayout
         isArabic={isArabic}

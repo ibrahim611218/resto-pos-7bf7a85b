@@ -52,13 +52,13 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
   return (
     <div
       ref={resizeRef}
-      className={`relative h-full overflow-hidden flex flex-col ${
+      className={`relative h-full overflow-auto flex flex-col ${
         isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
       } border-border bg-card/30 backdrop-blur-sm`}
       style={{
-        width: isMobile ? "100%" : "35%",
-        minWidth: isMobile ? "100%" : "300px",
-        maxWidth: isMobile ? "100%" : "500px"
+        width: isMobile ? "100%" : "30%",
+        minWidth: isMobile ? "100%" : "280px",
+        maxWidth: isMobile ? "100%" : "400px"
       }}
     >
       <CartResizeHandler

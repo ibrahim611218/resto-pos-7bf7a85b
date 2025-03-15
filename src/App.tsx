@@ -51,11 +51,14 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/inventory" element={<Inventory />} />
-              <Route path="/reports/sales" element={<SalesReport />} />
-              <Route path="/reports/inventory" element={<InventoryReport />} />
-              <Route path="/reports/customers" element={<CustomersReport />} />
-              <Route path="/settings" element={<BusinessSettings />} />
-              <Route path="/users" element={<UserManagement />} />
+              {/* Fix reports routes */}
+              <Route path="/sales-report" element={<SalesReport />} />
+              <Route path="/inventory-report" element={<InventoryReport />} />
+              <Route path="/customers-report" element={<CustomersReport />} />
+              {/* Fix settings route */}
+              <Route path="/business-settings" element={<BusinessSettings />} />
+              {/* Fix users route */}
+              <Route path="/user-management" element={<UserManagement />} />
               <Route path="/license-generator" element={<LicenseGenerator />} />
               <Route path="*" element={<NotFound />} />
             </Route>

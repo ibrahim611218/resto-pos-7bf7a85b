@@ -24,8 +24,8 @@ const ProductsList: React.FC<ProductsListProps> = ({
   const displayProducts = searchTerm ? searchResults : products;
 
   return (
-    <ScrollArea className="w-full h-full pb-20">
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pb-24 px-2">
+    <ScrollArea className="w-full h-full">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pb-4 px-2">
         {displayProducts && displayProducts.length > 0 ? (
           displayProducts.map((product) => (
             <ProductCard

@@ -1,12 +1,11 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
-import FullscreenToggle from "../ui-custom/FullscreenToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { cn } from "@/lib/utils";
@@ -15,8 +14,6 @@ const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
-  const location = useLocation();
-  const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isFullscreen } = useFullscreen();
@@ -102,41 +99,18 @@ const MainLayout = () => {
             position: "relative" 
           }}
         >
-          <div className={`fixed top-4 z-1000 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
-            <FullscreenToggle />
-            
-            {/* Show floating toggle button when sidebar is hidden */}
-            {sidebarHidden && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-floating"
-                onClick={showSidebar}
-                title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
-            )}
-            
-            {/* Show regular toggle button when sidebar is visible but collapsed or on mobile */}
-            {(!sidebarHidden && (isMobile || sidebarCollapsed || isFullscreen)) && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-button"
-                onClick={toggleSidebar}
-                title={isArabic ? "فتح القائمة الرئيسية" : "Open Menu"}
-                style={{ 
-                  pointerEvents: "auto",
-                  touchAction: "manipulation",
-                  zIndex: 1000,
-                  position: "fixed"
-                }}
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
-            )}
-          </div>
+          {/* Show floating toggle button when sidebar is hidden */}
+          {sidebarHidden && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`fixed top-4 ${isArabic ? "right-4" : "left-4"} z-50 bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-floating`}
+              onClick={showSidebar}
+              title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          )}
           
           <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container scrollable-content">
             <Outlet />
