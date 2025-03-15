@@ -9,6 +9,7 @@ import CartItemsList from "./cart/CartItemsList";
 import CartFooter from "./cart/CartFooter";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import PaidAmountDialog from "./cart/PaidAmountDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -99,7 +100,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div 
-      ref={resizeRef}
       className={`flex flex-col h-full ${borderClasses} bg-card overflow-hidden relative ${
         isMobile ? (expanded ? 'w-full' : 'w-full') : ''
       }`}
@@ -108,13 +108,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         width: width ? `${width}px` : undefined,
       }}
     >
-      <CartResizeHandler 
-        isMobile={isMobile}
-        onMouseDown={handleMouseDown}
-        isArabic={isArabic}
-        isDragging={isDragging}
-      />
-      
       <CartHeader
         isMobile={isMobile}
         expanded={expanded}
@@ -124,14 +117,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
         isArabic={isArabic}
       />
       
-      <CartItemsList
-        cartItems={cartItems}
-        isMobile={isMobile}
-        isArabic={isArabic}
-        getSizeLabel={getSizeLabel || ((size) => size)}
-        updateQuantity={updateQuantity}
-        removeItem={removeItem}
-      />
+      <ScrollArea className="flex-1 overflow-auto pos-cart-items">
+        <CartItemsList
+          cartItems={cartItems}
+          isMobile={isMobile}
+          isArabic={isArabic}
+          getSizeLabel={getSizeLabel || ((size) => size)}
+          updateQuantity={updateQuantity}
+          removeItem={removeItem}
+        />
+      </ScrollArea>
       
       <CartFooter
         isMobile={isMobile}

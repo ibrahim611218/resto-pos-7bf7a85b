@@ -5,6 +5,7 @@ import { useCartResize } from "../hooks/useCartResize";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import { Language, PaymentMethod } from "@/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PosCartRendererProps {
   cartItems: any[];
@@ -57,7 +58,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       style={{
         width: isMobile ? "100%" : "35%",
         minWidth: isMobile ? "100%" : "300px",
-        maxWidth: isMobile ? "100%" : "600px"
+        maxWidth: isMobile ? "100%" : "500px"
       }}
     >
       <CartResizeHandler
@@ -66,29 +67,32 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         isArabic={props.isArabic}
         isDragging={isDragging}
       />
-      <CartPanel 
-        cartItems={props.cartItems}
-        isArabic={props.isArabic}
-        language={props.language}
-        subtotal={props.subtotal}
-        taxAmount={props.taxAmount}
-        total={props.total}
-        discount={props.discount}
-        discountType={props.discountType}
-        orderType={props.orderType}
-        tableNumber={props.tableNumber}
-        paymentMethod={props.paymentMethod}
-        updateQuantity={props.updateQuantity}
-        removeItem={props.removeItem}
-        clearCart={props.clearCart}
-        createInvoice={props.createInvoice}
-        setDiscount={props.setDiscount}
-        setDiscountType={props.setDiscountType}
-        setOrderType={props.setOrderType}
-        setTableNumber={props.setTableNumber}
-        setPaymentMethod={props.setPaymentMethod}
-        getSizeLabel={props.getSizeLabel}
-      />
+      
+      <ScrollArea className="h-full w-full overflow-auto">
+        <CartPanel 
+          cartItems={props.cartItems}
+          isArabic={props.isArabic}
+          language={props.language}
+          subtotal={props.subtotal}
+          taxAmount={props.taxAmount}
+          total={props.total}
+          discount={props.discount}
+          discountType={props.discountType}
+          orderType={props.orderType}
+          tableNumber={props.tableNumber}
+          paymentMethod={props.paymentMethod}
+          updateQuantity={props.updateQuantity}
+          removeItem={props.removeItem}
+          clearCart={props.clearCart}
+          createInvoice={props.createInvoice}
+          setDiscount={props.setDiscount}
+          setDiscountType={props.setDiscountType}
+          setOrderType={props.setOrderType}
+          setTableNumber={props.setTableNumber}
+          setPaymentMethod={props.setPaymentMethod}
+          getSizeLabel={props.getSizeLabel}
+        />
+      </ScrollArea>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import React from "react";
 import { Product } from "@/types";
 import ProductsPanel from "./ProductsPanel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PosProductsRendererProps {
   searchTerm: string;
@@ -23,20 +24,22 @@ interface PosProductsRendererProps {
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   return (
-    <ProductsPanel 
-      searchTerm={props.searchTerm}
-      setSearchTerm={props.setSearchTerm}
-      activeCategory={props.activeCategory}
-      setActiveCategory={props.setActiveCategory}
-      categories={props.categories}
-      filteredProducts={props.filteredProducts}
-      searchedProducts={props.searchedProducts}
-      onAddToCart={props.onAddToCart}
-      isArabic={props.isArabic}
-      getSizeLabel={props.getSizeLabel}
-      showAllProducts={props.showAllProducts}
-      setShowAllProducts={props.setShowAllProducts}
-    />
+    <ScrollArea className="h-full w-full overflow-auto">
+      <ProductsPanel 
+        searchTerm={props.searchTerm}
+        setSearchTerm={props.setSearchTerm}
+        activeCategory={props.activeCategory}
+        setActiveCategory={props.setActiveCategory}
+        categories={props.categories}
+        filteredProducts={props.filteredProducts}
+        searchedProducts={props.searchedProducts}
+        onAddToCart={props.onAddToCart}
+        isArabic={props.isArabic}
+        getSizeLabel={props.getSizeLabel}
+        showAllProducts={props.showAllProducts}
+        setShowAllProducts={props.setShowAllProducts}
+      />
+    </ScrollArea>
   );
 };
 

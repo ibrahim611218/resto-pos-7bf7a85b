@@ -15,11 +15,18 @@ import {
   SidebarProvider,
   useSidebar
 } from "@/components/ui/sidebar";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Sidebar component that wraps all sidebar sections
-const Sidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({ 
+const Sidebar: React.FC<{ 
+  collapsed: boolean; 
+  onToggle: () => void; 
+  onHide: () => void;
+}> = ({ 
   collapsed, 
-  onToggle 
+  onToggle,
+  onHide
 }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -28,6 +35,7 @@ const Sidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({
   const isMobile = useIsMobile();
   const [isInitialized, setIsInitialized] = useState(false);
   const sidebarLinks = getSidebarLinks();
+  const isArabic = language === "ar";
 
   // Set initialized after a brief delay to allow for animation
   useEffect(() => {
@@ -89,6 +97,24 @@ const Sidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({
               language={language} 
               onLogout={logout} 
             />
+            
+            {/* Add hide sidebar button */}
+            <div className="p-3 flex justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onHide}
+                className="w-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                title={isArabic ? "إخفاء القائمة الجانبية" : "Hide Sidebar"}
+              >
+                {isArabic ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                {!collapsed && (
+                  <span className="ml-2">
+                    {isArabic ? "إخفاء القائمة" : "Hide Sidebar"}
+                  </span>
+                )}
+              </Button>
+            </div>
           </SidebarContainer>
         </SidebarEventHandler>
       </div>

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarHidden, setSidebarHidden] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,8 +25,10 @@ const MainLayout = () => {
   useEffect(() => {
     if (isMobile || (isTablet && width < 768) || isFullscreen) {
       setSidebarCollapsed(true);
+      setSidebarHidden(true);
     } else {
       setSidebarCollapsed(false);
+      setSidebarHidden(false);
     }
   }, [isMobile, isTablet, width, isFullscreen]);
 
@@ -33,6 +36,7 @@ const MainLayout = () => {
   useEffect(() => {
     const handleForceCollapse = () => {
       setSidebarCollapsed(true);
+      setSidebarHidden(true);
     };
 
     const handleToggleSidebar = (e: Event) => {
@@ -40,8 +44,9 @@ const MainLayout = () => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail?.forceCollapse) {
         setSidebarCollapsed(true);
+        setSidebarHidden(true);
       } else {
-        setSidebarCollapsed(prevState => !prevState);
+        toggleSidebar();
       }
     };
 
@@ -56,6 +61,7 @@ const MainLayout = () => {
 
   // Toggle sidebar function - used by button and passed to child components
   const toggleSidebar = useCallback(() => {
+    setSidebarHidden(false); // Always show the sidebar when toggling
     setSidebarCollapsed(prevState => !prevState);
     // Ensure the toggle event is dispatched properly
     window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
@@ -63,14 +69,31 @@ const MainLayout = () => {
     }));
   }, [sidebarCollapsed]);
 
+  // Function to completely hide the sidebar
+  const hideSidebar = useCallback(() => {
+    setSidebarHidden(true);
+  }, []);
+
+  // Function to show the sidebar
+  const showSidebar = useCallback(() => {
+    setSidebarHidden(false);
+  }, []);
+
   return (
     <div className={`flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden ${isFullscreen ? 'fullscreen-active' : ''}`}>
-      <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+      {!sidebarHidden && (
+        <Sidebar 
+          collapsed={sidebarCollapsed} 
+          onToggle={toggleSidebar} 
+          onHide={hideSidebar}
+        />
+      )}
+      
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={cn(
             "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container",
-            !sidebarCollapsed && !isMobile ? 
+            !sidebarHidden && !sidebarCollapsed && !isMobile ? 
               isArabic ? "md:mr-64" : "md:ml-64" 
               : "mx-0"
           )}
@@ -82,7 +105,21 @@ const MainLayout = () => {
           <div className={`fixed top-4 z-1000 flex gap-2 ${isArabic ? "right-4" : "left-4"}`}>
             <FullscreenToggle />
             
-            {(isMobile || sidebarCollapsed || isFullscreen) && (
+            {/* Show floating toggle button when sidebar is hidden */}
+            {sidebarHidden && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-floating"
+                onClick={showSidebar}
+                title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            )}
+            
+            {/* Show regular toggle button when sidebar is visible but collapsed or on mobile */}
+            {(!sidebarHidden && (isMobile || sidebarCollapsed || isFullscreen)) && (
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -101,7 +138,7 @@ const MainLayout = () => {
             )}
           </div>
           
-          <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container">
+          <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container scrollable-content">
             <Outlet />
           </div>
         </div>

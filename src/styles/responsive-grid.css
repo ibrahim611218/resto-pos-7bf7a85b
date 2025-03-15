@@ -35,3 +35,37 @@
   flex-grow: 1;
   overflow: hidden;
 }
+
+/* Center content in all pages */
+.centered-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  width: 100%;
+}
+
+/* Scrollable content areas for all pages */
+.page-content {
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+/* Prevent content from being too wide on large screens */
+@media (min-width: 1920px) {
+  .centered-content {
+    max-width: 1600px;
+  }
+}
+
+/* Adjust for smaller screens */
+@media (max-width: 768px) {
+  .centered-content {
+    padding: 0.5rem;
+  }
+  
+  .page-content {
+    height: calc(100vh - 70px);
+  }
+}

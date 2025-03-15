@@ -8,6 +8,7 @@ import MobilePosLayout from "./layout/MobilePosLayout";
 import DesktopPosLayout from "./layout/DesktopPosLayout";
 import PosProductsRenderer from "./PosProductsRenderer";
 import PosCartRenderer from "./PosCartRenderer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PosContentProps {
   cartItems: any[];
@@ -46,25 +47,27 @@ interface PosContentProps {
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile } = useScreenSize();
 
-  // Prepare product panel component
+  // Prepare product panel component with scroll area
   const productsPanel = (
-    <PosProductsRenderer
-      searchTerm={props.searchTerm}
-      setSearchTerm={props.setSearchTerm}
-      activeCategory={props.activeCategory}
-      setActiveCategory={props.setActiveCategory}
-      categories={props.categories}
-      filteredProducts={props.filteredProducts}
-      searchedProducts={props.searchedProducts}
-      onAddToCart={props.addToCart}
-      isArabic={props.isArabic}
-      getSizeLabel={props.getSizeLabel}
-      showAllProducts={props.showAllProducts}
-      setShowAllProducts={props.setShowAllProducts}
-    />
+    <ScrollArea className="h-full w-full overflow-auto">
+      <PosProductsRenderer
+        searchTerm={props.searchTerm}
+        setSearchTerm={props.setSearchTerm}
+        activeCategory={props.activeCategory}
+        setActiveCategory={props.setActiveCategory}
+        categories={props.categories}
+        filteredProducts={props.filteredProducts}
+        searchedProducts={props.searchedProducts}
+        onAddToCart={props.addToCart}
+        isArabic={props.isArabic}
+        getSizeLabel={props.getSizeLabel}
+        showAllProducts={props.showAllProducts}
+        setShowAllProducts={props.setShowAllProducts}
+      />
+    </ScrollArea>
   );
 
-  // Prepare cart panel component
+  // Prepare cart panel component with scroll area
   const cartPanel = (
     <PosCartRenderer
       cartItems={props.cartItems}

@@ -120,6 +120,13 @@
   max-width: 100vw !important;
 }
 
+/* Ensure all content pages have proper scrolling in fullscreen */
+.in-fullscreen .scrollable-content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 100px) !important;
+}
+
 /* Ensure inventory and other components display in fullscreen */
 .in-fullscreen .container {
   opacity: 1 !important;
