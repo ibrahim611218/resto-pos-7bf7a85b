@@ -1,8 +1,6 @@
 
-import React, { ReactNode, useEffect, useState } from "react";
-import { useWindowDimensions } from "@/hooks/useWindowDimensions";
-import MobilePosLayout from "./MobilePosLayout";
-import DesktopPosLayout from "./DesktopPosLayout";
+import React, { ReactNode } from "react";
+import { useScreenSize } from "@/hooks/use-mobile";
 
 interface PosLayoutProps {
   isArabic: boolean;
@@ -10,118 +8,21 @@ interface PosLayoutProps {
 }
 
 /**
- * A responsive layout component for the POS screen
- * Handles different layouts for mobile, tablet and desktop
+ * Main layout component for the POS screen that handles basic styling
  */
-const PosLayout: React.FC<PosLayoutProps> = ({ isArabic, children }) => {
-  const { isMobile, isTablet, width, height } = useWindowDimensions();
-  const [layoutClass, setLayoutClass] = useState("flex-row");
-  const [childrenArray, setChildrenArray] = useState<ReactNode[]>([]);
-  const [layoutKey, setLayoutKey] = useState<number>(Date.now());
+const PosLayout: React.FC<PosLayoutProps> = ({ 
+  isArabic,
+  children
+}) => {
+  const { isMobile } = useScreenSize();
   
-  // Split children into array for proper layout placement
-  useEffect(() => {
-    const childArray = React.Children.toArray(children);
-    setChildrenArray(childArray);
-  }, [children]);
-  
-  // Update layout direction based on screen size and orientation
-  useEffect(() => {
-    // Force layout recalculation on mount and when dimensions change
-    const updateLayout = () => {
-      // Mobile or narrow screens - vertical layout
-      if (isMobile || width < 768 || (width < height && width < 1024)) {
-        setLayoutClass("flex-col");
-      } 
-      // Tablet landscape or desktop - horizontal layout
-      else {
-        setLayoutClass("flex-row");
-      }
-      
-      // Force a re-render by updating the key
-      setLayoutKey(Date.now());
-    };
-    
-    updateLayout();
-    
-    // Ensure the layout updates immediately after render
-    const timeoutId = setTimeout(updateLayout, 50);
-    
-    return () => clearTimeout(timeoutId);
-  }, [isMobile, isTablet, width, height]);
-  
-  // Add a debounced resize handler with immediate execution
-  useEffect(() => {
-    let resizeTimeout: number;
-    
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      
-      // Update immediately for better user experience
-      if (isMobile || width < 768 || (width < height && width < 1024)) {
-        setLayoutClass("flex-col");
-      } else {
-        setLayoutClass("flex-row");
-      }
-      
-      // Then finalize after a short delay
-      resizeTimeout = window.setTimeout(() => {
-        if (isMobile || width < 768 || (width < height && width < 1024)) {
-          setLayoutClass("flex-col");
-        } else {
-          setLayoutClass("flex-row");
-        }
-        
-        // Force a re-render by updating the key
-        setLayoutKey(Date.now());
-      }, 100); // 100ms debounce
-    };
-    
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
-    
-    // Force an initial layout calculation
-    handleResize();
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
-      clearTimeout(resizeTimeout);
-    };
-  }, [isMobile, isTablet, width, height]);
-
-  // Get the product and cart panels from children
-  const productsPanel = childrenArray[0] || null;
-  const cartPanel = childrenArray[1] || null;
-
-  // Use different layout components based on screen size
-  if (isMobile || width < 768 || (width < height && width < 1024)) {
-    return (
-      <div 
-        key={`mobile-layout-${layoutKey}`}
-        dir={isArabic ? "rtl" : "ltr"} 
-        className="flex flex-col h-full w-full overflow-hidden"
-      >
-        <MobilePosLayout
-          isArabic={isArabic}
-          productsPanel={productsPanel}
-          cartPanel={cartPanel}
-        />
-      </div>
-    );
-  }
-
+  // Adjust the layout based on device type and orientation
   return (
     <div 
-      key={`desktop-layout-${layoutKey}`}
-      dir={isArabic ? "rtl" : "ltr"} 
-      className={`flex ${layoutClass} h-full w-full overflow-hidden`}
+      className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full overflow-hidden`}
+      dir={isArabic ? "rtl" : "ltr"}
     >
-      <DesktopPosLayout
-        isArabic={isArabic}
-        productsPanel={productsPanel}
-        cartPanel={cartPanel}
-      />
+      {children}
     </div>
   );
 };
