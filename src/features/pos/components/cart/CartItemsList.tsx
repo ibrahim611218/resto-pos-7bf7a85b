@@ -22,7 +22,7 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
   updateQuantity,
   removeItem,
 }) => {
-  const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
+  const itemsContainerClass = isMobile ? "px-2 pb-2" : "px-3 pb-2";
 
   return (
     <ScrollArea className="flex-grow overflow-y-auto h-full">
@@ -30,7 +30,7 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
         {cartItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className={`space-y-${isMobile ? "1" : "2"} pt-2`}>
+          <div className={`space-y-${isMobile ? "2" : "3"} pt-2`}>
             {cartItems.map((item, index) => (
               <CartItemComponent
                 key={item.id}

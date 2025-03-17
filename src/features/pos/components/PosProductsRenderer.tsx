@@ -28,7 +28,7 @@ const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
 
   return (
-    <div className={`h-full w-full flex flex-col overflow-hidden ${bgClass} border border-border/30 rounded-md`}>
+    <div className={`h-full w-full flex flex-col overflow-hidden ${bgClass} border border-border/30 rounded-lg shadow-sm`}>
       <ScrollArea className="h-full w-full">
         <ProductsPanel 
           searchTerm={props.searchTerm}

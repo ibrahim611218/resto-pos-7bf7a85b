@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
@@ -103,7 +104,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div 
-      className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative ${
+      className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative rounded-lg shadow-sm ${
         isMobile ? (expanded ? 'w-full' : 'w-full') : ''
       }`}
     >

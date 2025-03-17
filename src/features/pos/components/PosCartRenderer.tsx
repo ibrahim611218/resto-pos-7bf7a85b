@@ -1,3 +1,4 @@
+
 import React from "react";
 import CartPanel from "./CartPanel";
 import { useCartResize } from "../hooks/useCartResize";
@@ -57,7 +58,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
       ref={resizeRef}
       className={`relative h-full overflow-hidden flex flex-col ${
         isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
-      } border-border ${bgClass} backdrop-blur-sm`}
+      } border-border ${bgClass} backdrop-blur-sm rounded-lg shadow-md`}
       style={{
         width: isMobile ? "100%" : props.isArabic ? "100%" : "100%",
       }}

@@ -98,7 +98,7 @@ const PosContent: React.FC<PosContentProps> = (props) => {
 
   return (
     <PosLayout isArabic={props.isArabic}>
-      <div className={`w-full h-full ${bgClass} flex`}>
+      <div className={`w-full h-full ${bgClass} flex rounded-lg shadow-md`}>
         {isMobile ? (
           <MobilePosLayout
             isArabic={props.isArabic}

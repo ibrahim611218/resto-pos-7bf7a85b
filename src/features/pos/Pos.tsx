@@ -14,7 +14,7 @@ const Pos: React.FC = () => {
   
   return (
     <div 
-      className={`w-full h-full overflow-hidden ${theme === 'dark' ? 'bg-background' : 'bg-gray-50'}`} 
+      className={`w-full h-full overflow-hidden ${theme === 'dark' ? 'bg-background' : 'bg-gray-50'} rounded-lg max-w-[100vw] mx-auto`} 
       dir={isArabic ? "rtl" : "ltr"}
     >
       <PosContainer />

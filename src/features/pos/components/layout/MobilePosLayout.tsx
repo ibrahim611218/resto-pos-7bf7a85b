@@ -21,15 +21,15 @@ const MobilePosLayout: React.FC<MobilePosLayoutProps> = ({
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
 
   return (
-    <>
-      <ScrollArea className={`flex-1 w-full h-[55%] ${bgClass} ${isArabic ? 'order-2' : 'order-1'}`}>
+    <div className="flex flex-col w-full h-full">
+      <ScrollArea className={`flex-1 w-full h-[60%] ${bgClass} rounded-t-lg ${isArabic ? 'order-2' : 'order-1'}`}>
         {productsPanel}
       </ScrollArea>
       
-      <div className={`w-full h-[45%] overflow-hidden ${isArabic ? 'order-1' : 'order-2'}`}>
+      <div className={`w-full h-[40%] overflow-hidden rounded-b-lg ${isArabic ? 'order-1' : 'order-2'} border-t border-gray-200 dark:border-gray-800`}>
         {cartPanel}
       </div>
-    </>
+    </div>
   );
 };
 

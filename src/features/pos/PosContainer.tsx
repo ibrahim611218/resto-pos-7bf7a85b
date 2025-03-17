@@ -28,7 +28,7 @@ const PosContainer: React.FC = () => {
     // Set up periodic resize events during the initial load sequence
     const resizeIntervalId = setInterval(() => {
       window.dispatchEvent(new Event('resize'));
-    }, 500);
+    }, 300);
     
     // Clear the interval after 2 seconds
     setTimeout(() => {
@@ -53,7 +53,7 @@ const PosContainer: React.FC = () => {
     <div 
       className={`h-full w-full max-w-full flex flex-col m-0 p-0 ${
         isArabic ? "font-[system-ui]" : ""
-      } ${theme === 'light' ? 'bg-gray-50' : 'bg-background'}`}
+      } ${theme === 'light' ? 'bg-gray-50' : 'bg-background'} rounded-lg overflow-hidden`}
       dir={isArabic ? "rtl" : "ltr"}
     >
       <PosHeader />
