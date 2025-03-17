@@ -1,0 +1,48 @@
+
+/* Responsive layout adjustments for different screen sizes */
+@media (max-width: 640px) {
+  .pos-cart-items {
+    max-height: calc(50vh - 220px); /* Adjust for mobile screens */
+  }
+}
+
+@media (min-width: 1280px) {
+  .pos-cart-items {
+    max-height: calc(100vh - 300px); /* Adjust for larger screens */
+  }
+}
+
+@media (min-width: 1920px) {
+  .pos-cart-items {
+    max-height: calc(100vh - 350px); /* Adjust for very large screens */
+  }
+}
+
+/* Vertical layouts */
+@media (orientation: portrait) {
+  .pos-layout-mobile {
+    flex-direction: column;
+  }
+}
+
+/* Horizontal layouts */
+@media (orientation: landscape) {
+  .pos-layout-mobile {
+    flex-direction: row;
+  }
+}
+
+/* Fix for safari viewport height issues */
+@supports (-webkit-touch-callout: none) {
+  .pos-screen, .auto-scale-container {
+    height: -webkit-fill-available !important;
+  }
+}
+
+/* Fix overlaps in portrait mode on mobile */
+@media (orientation: portrait) and (max-width: 768px) {
+  .pos-layout-mobile {
+    height: 100%;
+    overflow: hidden;
+  }
+}
