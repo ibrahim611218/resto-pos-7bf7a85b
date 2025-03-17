@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -11,9 +10,9 @@ interface ProductCardProps {
   isArabic: boolean;
   onAddToCart?: (product: Product, variantId: string) => void;
   getSizeLabel?: (size: string) => string;
+  className?: string;
 }
 
-// Function to get background color based on product category
 const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string => {
   if (isLightTheme) {
     switch (categoryId) {
@@ -31,7 +30,6 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
         return "bg-[#FDE1D3] hover:bg-[#FACEB8] border-orange-200";
     }
   } else {
-    // Dark theme colors - تغيير الألوان للوضع الداكن إلى برتقالي
     switch (categoryId) {
       case "cat1": // Main dishes
         return "bg-green-900/40 hover:bg-green-900/60 border-orange-500";
@@ -49,7 +47,7 @@ const getBackgroundColor = (categoryId: string, isLightTheme: boolean): string =
   }
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, onAddToCart, getSizeLabel }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, onAddToCart, getSizeLabel, className }) => {
   const { theme } = useTheme();
   const isLightTheme = theme === "light";
   
@@ -59,9 +57,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
   
   const bgColorClass = getBackgroundColor(product.categoryId, isLightTheme);
   
-  // Enhanced click handler with improved event handling
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
-    // Stop propagation to prevent issues with nested elements
     e.preventDefault();
     e.stopPropagation();
     
@@ -70,39 +66,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
     if (onClick) {
       onClick();
     } else if (onAddToCart) {
-      // Handling different product types:
-      // 1. Single variant products - add directly to cart
       if (product.variants && product.variants.length === 1) {
         onAddToCart(product, product.variants[0].id);
-      } 
-      // 2. Multiple variants - show size selection dialog
-      else if (product.variants && product.variants.length > 1) {
+      } else if (product.variants && product.variants.length > 1) {
         onClick?.();
-      }
-      // 3. Products without variants (simple products) - add directly using "simple" as variantId
-      else if ((!product.variants || product.variants.length === 0) && product.price) {
+      } else if ((!product.variants || product.variants.length === 0) && product.price) {
         console.log("Adding simple product to cart:", product.name);
         onAddToCart(product, "simple");
       }
     }
   };
   
-  // Updated: Always use white text color for price in both light and dark modes
   const priceClassName = "text-sm mt-1 text-white font-semibold bg-black/50 rounded-full px-2 py-0.5 inline-block";
   
   return (
     <Card 
       className={cn(
         "cursor-pointer transition-all duration-200 hover:shadow-md overflow-hidden h-full interactive",
-        bgColorClass
+        bgColorClass,
+        className
       )} 
       onClick={handleClick}
       onTouchStart={(e) => {
-        // Prevent defaults but don't stop propagation at this stage
         e.preventDefault();
       }}
       onTouchEnd={(e) => {
-        // Stop propagation and then call the click handler
         e.preventDefault();
         e.stopPropagation();
         handleClick(e);
@@ -117,7 +105,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
         }
       }}
       style={{
-        // Force interaction to work
         pointerEvents: 'auto',
         touchAction: 'manipulation',
         position: 'relative',
@@ -132,7 +119,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, isArabic, o
             className="object-cover w-full h-full"
             loading="lazy"
             onError={(e) => {
-              // Fallback for broken images
               const target = e.target as HTMLImageElement;
               target.onerror = null;
               target.src = '/placeholder.svg';
