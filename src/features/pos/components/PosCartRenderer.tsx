@@ -1,11 +1,9 @@
-
 import React from "react";
 import CartPanel from "./CartPanel";
 import { useCartResize } from "../hooks/useCartResize";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import { Language, PaymentMethod } from "@/types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
 interface PosCartRendererProps {
@@ -61,9 +59,7 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
       } border-border ${bgClass} backdrop-blur-sm`}
       style={{
-        width: isMobile ? "100%" : "30%",
-        minWidth: isMobile ? "100%" : "280px",
-        maxWidth: isMobile ? "100%" : "400px"
+        width: isMobile ? "100%" : props.isArabic ? "100%" : "100%",
       }}
     >
       <CartResizeHandler
@@ -73,31 +69,29 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         isDragging={isDragging}
       />
       
-      <ScrollArea className="flex-1 h-full overflow-auto">
-        <CartPanel 
-          cartItems={props.cartItems}
-          isArabic={props.isArabic}
-          language={props.language}
-          subtotal={props.subtotal}
-          taxAmount={props.taxAmount}
-          total={props.total}
-          discount={props.discount}
-          discountType={props.discountType}
-          orderType={props.orderType}
-          tableNumber={props.tableNumber}
-          paymentMethod={props.paymentMethod}
-          updateQuantity={props.updateQuantity}
-          removeItem={props.removeItem}
-          clearCart={props.clearCart}
-          createInvoice={props.createInvoice}
-          setDiscount={props.setDiscount}
-          setDiscountType={props.setDiscountType}
-          setOrderType={props.setOrderType}
-          setTableNumber={props.setTableNumber}
-          setPaymentMethod={props.setPaymentMethod}
-          getSizeLabel={props.getSizeLabel}
-        />
-      </ScrollArea>
+      <CartPanel 
+        cartItems={props.cartItems}
+        isArabic={props.isArabic}
+        language={props.language}
+        subtotal={props.subtotal}
+        taxAmount={props.taxAmount}
+        total={props.total}
+        discount={props.discount}
+        discountType={props.discountType}
+        orderType={props.orderType}
+        tableNumber={props.tableNumber}
+        paymentMethod={props.paymentMethod}
+        updateQuantity={props.updateQuantity}
+        removeItem={props.removeItem}
+        clearCart={props.clearCart}
+        createInvoice={props.createInvoice}
+        setDiscount={props.setDiscount}
+        setDiscountType={props.setDiscountType}
+        setOrderType={props.setOrderType}
+        setTableNumber={props.setTableNumber}
+        setPaymentMethod={props.setPaymentMethod}
+        getSizeLabel={props.getSizeLabel}
+      />
     </div>
   );
 };

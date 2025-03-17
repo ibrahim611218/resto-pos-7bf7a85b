@@ -26,7 +26,7 @@ const PosLayout: React.FC<PosLayoutProps> = ({
   return (
     <SidebarProvider>
       <div 
-        className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full overflow-hidden ${bgClass}`}
+        className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full max-w-full overflow-hidden ${bgClass}`}
         dir={isArabic ? "rtl" : "ltr"}
       >
         {children}

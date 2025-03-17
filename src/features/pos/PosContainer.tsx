@@ -23,10 +23,7 @@ const PosContainer: React.FC = () => {
   
   // Force a resize event when component mounts to ensure proper layout
   useEffect(() => {
-    // Wait for the DOM to be fully rendered
-    const timeoutId = setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
+    window.dispatchEvent(new Event('resize'));
     
     // Set up periodic resize events during the initial load sequence
     const resizeIntervalId = setInterval(() => {
@@ -39,7 +36,6 @@ const PosContainer: React.FC = () => {
     }, 2000);
     
     return () => {
-      clearTimeout(timeoutId);
       clearInterval(resizeIntervalId);
     };
   }, []);
@@ -55,15 +51,14 @@ const PosContainer: React.FC = () => {
   
   return (
     <div 
-      className={`h-screen max-w-full flex flex-col m-0 p-0 ${
+      className={`h-full w-full max-w-full flex flex-col m-0 p-0 ${
         isArabic ? "font-[system-ui]" : ""
-      } auto-scale-container ${theme === 'light' ? 'bg-gray-50' : 'bg-background'}`}
+      } ${theme === 'light' ? 'bg-gray-50' : 'bg-background'}`}
       dir={isArabic ? "rtl" : "ltr"}
-      style={{ zIndex: 10 }}
     >
       <PosHeader />
 
-      <div className="flex-1 overflow-hidden stretch-content">
+      <div className="flex-1 overflow-hidden w-full">
         <PosContent
           cartItems={posState.cartItems}
           isArabic={isArabic}

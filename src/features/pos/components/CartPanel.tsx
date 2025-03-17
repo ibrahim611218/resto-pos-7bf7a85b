@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { CartItem as CartItemType, PaymentMethod, Invoice, Language } from "@/types";
 import { useScreenSize } from "@/hooks/use-mobile";
@@ -9,7 +8,6 @@ import CartItemsList from "./cart/CartItemsList";
 import CartFooter from "./cart/CartFooter";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import PaidAmountDialog from "./cart/PaidAmountDialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
 interface CartPanelProps {
@@ -97,8 +95,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   const isEmpty = cartItems.length === 0;
   const borderClasses = isArabic 
-    ? "border-r border-l-0 shadow-[2px_0_5px_rgba(0,0,0,0.1)]" 
-    : "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]";
+    ? "border-r border-l-0" 
+    : "border-l border-r-0";
   
   // Set background color based on theme
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-card';
@@ -108,10 +106,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
       className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative ${
         isMobile ? (expanded ? 'w-full' : 'w-full') : ''
       }`}
-      style={{ 
-        transition: isMobile ? 'width 0.3s ease' : 'none',
-        width: width ? `${width}px` : undefined,
-      }}
     >
       <CartHeader
         isMobile={isMobile}

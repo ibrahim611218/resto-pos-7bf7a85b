@@ -21,8 +21,9 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
   
   // Determine the order of panels based on language
-  const cartOrder = isArabic ? "order-1" : "order-2";
-  const productsOrder = isArabic ? "order-2" : "order-1";
+  // For Arabic, cart should be on the right (order-2), otherwise on left (order-1)
+  const cartOrder = isArabic ? "order-2" : "order-1";
+  const productsOrder = isArabic ? "order-1" : "order-2";
   
   return (
     <>
@@ -30,7 +31,7 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
         {productsPanel}
       </ScrollArea>
       
-      <div className={`w-1/3 min-w-[320px] h-full overflow-hidden ${cartOrder}`}>
+      <div className={`w-1/3 min-w-[300px] max-w-[400px] h-full overflow-hidden ${cartOrder}`}>
         {cartPanel}
       </div>
     </>
