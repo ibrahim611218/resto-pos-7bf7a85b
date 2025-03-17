@@ -1,6 +1,7 @@
 
 import React, { ReactNode } from "react";
 import { useScreenSize } from "@/hooks/use-mobile";
+import { SidebarProvider } from "@/components/ui/sidebar/sidebar-context";
 
 interface PosLayoutProps {
   isArabic: boolean;
@@ -18,12 +19,14 @@ const PosLayout: React.FC<PosLayoutProps> = ({
   
   // Adjust the layout based on device type and orientation
   return (
-    <div 
-      className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full overflow-hidden`}
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      {children}
-    </div>
+    <SidebarProvider>
+      <div 
+        className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full overflow-auto`}
+        dir={isArabic ? "rtl" : "ltr"}
+      >
+        {children}
+      </div>
+    </SidebarProvider>
   );
 };
 

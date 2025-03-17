@@ -11,7 +11,6 @@ import PosCartRenderer from "./PosCartRenderer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { useSidebar } from "@/components/ui/sidebar/sidebar-context";
 
 interface PosContentProps {
   cartItems: any[];
@@ -49,7 +48,6 @@ interface PosContentProps {
 
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile } = useScreenSize();
-  const { toggleSidebar, open } = useSidebar();
 
   // Prepare product panel component
   const productsPanel = (
@@ -96,21 +94,8 @@ const PosContent: React.FC<PosContentProps> = (props) => {
     />
   );
 
-  // Add a sidebar toggle button when sidebar is closed
-  const sidebarToggle = !open && (
-    <Button 
-      variant="outline" 
-      size="icon" 
-      className="fixed top-4 left-4 z-50 bg-background shadow-md" 
-      onClick={toggleSidebar}
-    >
-      <Menu className="h-5 w-5" />
-    </Button>
-  );
-
   return (
     <PosLayout isArabic={props.isArabic}>
-      {sidebarToggle}
       {isMobile ? (
         <MobilePosLayout
           isArabic={props.isArabic}

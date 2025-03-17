@@ -69,3 +69,35 @@
     height: calc(100vh - 70px);
   }
 }
+
+/* Custom scrollbar for RTL support */
+[dir="rtl"] .scrollbar-rtl {
+  direction: rtl;
+}
+
+[dir="rtl"] .scrollbar-rtl::-webkit-scrollbar {
+  width: 8px;
+}
+
+[dir="rtl"] .scrollbar-rtl::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[dir="rtl"] .scrollbar-rtl::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* Content centering */
+.rtl-content-center {
+  text-align: center;
+}
+
+/* Enhanced scrolling */
+.enhanced-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}

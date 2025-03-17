@@ -25,7 +25,7 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
         {productsPanel}
       </div>
       
-      <div className={`h-full overflow-auto ${cartOrder}`}>
+      <div className={`w-1/3 min-w-[320px] h-full overflow-auto ${cartOrder}`}>
         {cartPanel}
       </div>
     </>

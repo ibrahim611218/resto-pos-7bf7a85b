@@ -2,9 +2,12 @@
 import React, { useEffect } from "react";
 import Pos from "@/features/pos/Pos";
 import { useFullscreen } from "@/hooks/useFullscreen";
+import { useLanguage } from "@/context/LanguageContext";
 
 const PosPage: React.FC = () => {
   const { isFullscreen, toggleFullscreen } = useFullscreen();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
 
   // Force the page to take the full viewport on mount
   useEffect(() => {
@@ -125,13 +128,16 @@ const PosPage: React.FC = () => {
   }, [isFullscreen]);
 
   return (
-    <div className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen" 
+    <div 
+      className="min-h-screen max-w-full w-full h-full overflow-hidden m-0 p-0 pos-screen" 
       style={{ 
         pointerEvents: 'auto',
         touchAction: 'auto',
         // Set a lower z-index to ensure the sidebar can overlay
         zIndex: 1
-      }}>
+      }}
+      dir={isArabic ? "rtl" : "ltr"}
+    >
       <Pos />
     </div>
   );

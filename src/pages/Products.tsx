@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { sampleProducts, sampleCategories } from "@/data/sampleData";
@@ -8,6 +7,7 @@ import { Package, Plus, Tag, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Size } from "@/types";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Products = () => {
   const location = useLocation();
@@ -15,6 +15,8 @@ const Products = () => {
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("category");
   const { isMobile, isTablet, scaleFactor } = useWindowDimensions();
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
 
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
 
@@ -40,13 +42,16 @@ const Products = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 auto-scale-container">
+    <div 
+      className="container mx-auto p-4 overflow-auto h-full"
+      dir={isArabic ? "rtl" : "ltr"}
+    >
       <div className="flex flex-wrap justify-between items-center mb-6 gap-2">
         <div>
-          <h1 className="text-2xl font-bold">الأصناف</h1>
+          <h1 className="text-2xl font-bold">{isArabic ? "الأصناف" : "Products"}</h1>
           {categoryId && (
             <p className="text-muted-foreground">
-              تصنيف: {getCategoryName(categoryId)}
+              {isArabic ? "تصنيف: " : "Category: "}{getCategoryName(categoryId)}
             </p>
           )}
         </div>
@@ -54,31 +59,32 @@ const Products = () => {
           <Button onClick={() => setSelectedSize(null)} 
             variant={selectedSize === null ? "default" : "outline"}
             size={isMobile ? "sm" : "default"}>
-            الكل
+            {isArabic ? "الكل" : "All"}
           </Button>
           <Button onClick={() => setSelectedSize("small")} 
             variant={selectedSize === "small" ? "default" : "outline"}
             size={isMobile ? "sm" : "default"}>
-            صغير
+            {isArabic ? "صغير" : "Small"}
           </Button>
           <Button onClick={() => setSelectedSize("medium")} 
             variant={selectedSize === "medium" ? "default" : "outline"}
             size={isMobile ? "sm" : "default"}>
-            وسط
+            {isArabic ? "وسط" : "Medium"}
           </Button>
           <Button onClick={() => setSelectedSize("large")} 
             variant={selectedSize === "large" ? "default" : "outline"}
             size={isMobile ? "sm" : "default"}>
-            كبير
+            {isArabic ? "كبير" : "Large"}
           </Button>
         </div>
         <Button onClick={() => navigate("/products/add")}
           size={isMobile ? "sm" : "default"}>
-          <Plus className="ml-2" size={16} /> إضافة صنف
+          <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} /> 
+          {isArabic ? "إضافة صنف" : "Add Product"}
         </Button>
       </div>
 
-      <div className={`grid ${getGridClasses()} gap-4`}>
+      <div className={`grid ${getGridClasses()} gap-4 pb-12`}>
         {filteredProducts.map((product) => {
           // For sized products, filter variants by selected size
           if (product.type === "sized") {
@@ -109,7 +115,7 @@ const Products = () => {
                     src={product.image || "/placeholder.svg"}
                     alt={product.nameAr || product.name}
                     className={`w-full ${isMobile ? "h-32" : "h-40"} object-cover`}
-                    loading="lazy" // Add lazy loading for images
+                    loading="lazy"
                   />
                 </CardContent>
                 <CardFooter className={`pt-4 flex-col ${isMobile ? "p-3" : ""}`}>
