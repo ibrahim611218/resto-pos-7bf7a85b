@@ -3,6 +3,7 @@ import React from "react";
 import { Product } from "@/types";
 import ProductsPanel from "./ProductsPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface PosProductsRendererProps {
   searchTerm: string;
@@ -23,22 +24,27 @@ interface PosProductsRendererProps {
  * Component that renders the products panel with search and filtering functionality
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
+  const { theme } = useTheme();
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
+
   return (
-    <div className="h-full w-full flex flex-col overflow-auto">
-      <ProductsPanel 
-        searchTerm={props.searchTerm}
-        setSearchTerm={props.setSearchTerm}
-        activeCategory={props.activeCategory}
-        setActiveCategory={props.setActiveCategory}
-        categories={props.categories}
-        filteredProducts={props.filteredProducts}
-        searchedProducts={props.searchedProducts}
-        onAddToCart={props.onAddToCart}
-        isArabic={props.isArabic}
-        getSizeLabel={props.getSizeLabel}
-        showAllProducts={props.showAllProducts}
-        setShowAllProducts={props.setShowAllProducts}
-      />
+    <div className={`h-full w-full flex flex-col overflow-hidden ${bgClass} border border-border/30 rounded-md`}>
+      <ScrollArea className="h-full w-full">
+        <ProductsPanel 
+          searchTerm={props.searchTerm}
+          setSearchTerm={props.setSearchTerm}
+          activeCategory={props.activeCategory}
+          setActiveCategory={props.setActiveCategory}
+          categories={props.categories}
+          filteredProducts={props.filteredProducts}
+          searchedProducts={props.searchedProducts}
+          onAddToCart={props.onAddToCart}
+          isArabic={props.isArabic}
+          getSizeLabel={props.getSizeLabel}
+          showAllProducts={props.showAllProducts}
+          setShowAllProducts={props.setShowAllProducts}
+        />
+      </ScrollArea>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import CartResizeHandler from "./cart/CartResizeHandler";
 import { Language, PaymentMethod } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface PosCartRendererProps {
   cartItems: any[];
@@ -48,13 +49,17 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
     isMobile,
     isTablet
   });
+  const { theme } = useTheme();
+
+  // Set background color based on theme
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-card/30';
 
   return (
     <div
       ref={resizeRef}
-      className={`relative h-full overflow-auto flex flex-col ${
+      className={`relative h-full overflow-hidden flex flex-col ${
         isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
-      } border-border bg-card/30 backdrop-blur-sm`}
+      } border-border ${bgClass} backdrop-blur-sm`}
       style={{
         width: isMobile ? "100%" : "30%",
         minWidth: isMobile ? "100%" : "280px",
@@ -68,29 +73,31 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
         isDragging={isDragging}
       />
       
-      <CartPanel 
-        cartItems={props.cartItems}
-        isArabic={props.isArabic}
-        language={props.language}
-        subtotal={props.subtotal}
-        taxAmount={props.taxAmount}
-        total={props.total}
-        discount={props.discount}
-        discountType={props.discountType}
-        orderType={props.orderType}
-        tableNumber={props.tableNumber}
-        paymentMethod={props.paymentMethod}
-        updateQuantity={props.updateQuantity}
-        removeItem={props.removeItem}
-        clearCart={props.clearCart}
-        createInvoice={props.createInvoice}
-        setDiscount={props.setDiscount}
-        setDiscountType={props.setDiscountType}
-        setOrderType={props.setOrderType}
-        setTableNumber={props.setTableNumber}
-        setPaymentMethod={props.setPaymentMethod}
-        getSizeLabel={props.getSizeLabel}
-      />
+      <ScrollArea className="flex-1 h-full overflow-auto">
+        <CartPanel 
+          cartItems={props.cartItems}
+          isArabic={props.isArabic}
+          language={props.language}
+          subtotal={props.subtotal}
+          taxAmount={props.taxAmount}
+          total={props.total}
+          discount={props.discount}
+          discountType={props.discountType}
+          orderType={props.orderType}
+          tableNumber={props.tableNumber}
+          paymentMethod={props.paymentMethod}
+          updateQuantity={props.updateQuantity}
+          removeItem={props.removeItem}
+          clearCart={props.clearCart}
+          createInvoice={props.createInvoice}
+          setDiscount={props.setDiscount}
+          setDiscountType={props.setDiscountType}
+          setOrderType={props.setOrderType}
+          setTableNumber={props.setTableNumber}
+          setPaymentMethod={props.setPaymentMethod}
+          getSizeLabel={props.getSizeLabel}
+        />
+      </ScrollArea>
     </div>
   );
 };

@@ -10,6 +10,7 @@ import CartFooter from "./cart/CartFooter";
 import PaymentMethodDialog from "./PaymentMethodDialog";
 import PaidAmountDialog from "./cart/PaidAmountDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface CartPanelProps {
   cartItems: CartItemType[];
@@ -81,6 +82,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const { isMobile, isTablet } = useScreenSize();
   const [expanded, setExpanded] = useState(false);
+  const { theme } = useTheme();
 
   // Cart resize hook
   const { resizeRef, width, isDragging, handleMouseDown } = useCartResize({
@@ -97,10 +99,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const borderClasses = isArabic 
     ? "border-r border-l-0 shadow-[2px_0_5px_rgba(0,0,0,0.1)]" 
     : "border-l border-r-0 shadow-[-2px_0_5px_rgba(0,0,0,0.1)]";
+  
+  // Set background color based on theme
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-card';
 
   return (
     <div 
-      className={`flex flex-col h-full ${borderClasses} bg-card overflow-hidden relative ${
+      className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative ${
         isMobile ? (expanded ? 'w-full' : 'w-full') : ''
       }`}
       style={{ 
@@ -117,7 +122,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         isArabic={isArabic}
       />
       
-      <ScrollArea className="flex-1 overflow-auto pos-cart-items">
+      <div className="flex-1 overflow-auto pos-cart-items">
         <CartItemsList
           cartItems={cartItems}
           isMobile={isMobile}
@@ -126,7 +131,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
           updateQuantity={updateQuantity}
           removeItem={removeItem}
         />
-      </ScrollArea>
+      </div>
       
       <CartFooter
         isMobile={isMobile}

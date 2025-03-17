@@ -9,6 +9,7 @@ import { useGridColumns } from "../hooks/useGridColumns";
 import CategoriesTabContent from "./products/CategoriesTabContent";
 import AllProductsTabContent from "./products/AllProductsTabContent";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface ProductsPanelProps {
   searchTerm: string;
@@ -44,6 +45,11 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   const { isMobile } = useScreenSize();
   const [activeTab, setActiveTab] = useState("categories");
   const { getGridCols } = useGridColumns();
+  const { theme } = useTheme();
+
+  // Background color based on theme
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-card';
+  const headerBgClass = theme === 'light' ? 'bg-gray-50' : 'bg-background';
 
   const handleProductClick = (product: Product) => {
     // For single products with price (not variants), add directly to cart
@@ -72,8 +78,8 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="sticky top-0 z-10 bg-background p-2">
+    <div className={`flex flex-col h-full overflow-hidden ${bgClass}`}>
+      <div className={`sticky top-0 z-10 ${headerBgClass} p-2`}>
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -110,7 +116,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
               categories={categories || []}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
-              searchedProducts={searchedProducts || []}
+              searchedProducts={filteredProducts || []}
               isArabic={isArabic}
               onProductClick={handleProductClick}
               getGridCols={getGridCols}

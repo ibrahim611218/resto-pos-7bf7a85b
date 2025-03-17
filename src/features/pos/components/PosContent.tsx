@@ -8,9 +8,7 @@ import MobilePosLayout from "./layout/MobilePosLayout";
 import DesktopPosLayout from "./layout/DesktopPosLayout";
 import PosProductsRenderer from "./PosProductsRenderer";
 import PosCartRenderer from "./PosCartRenderer";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface PosContentProps {
   cartItems: any[];
@@ -48,6 +46,7 @@ interface PosContentProps {
 
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile } = useScreenSize();
+  const { theme } = useTheme();
 
   // Prepare product panel component
   const productsPanel = (
@@ -94,21 +93,26 @@ const PosContent: React.FC<PosContentProps> = (props) => {
     />
   );
 
+  // Add background color based on theme
+  const bgClass = theme === 'light' ? 'bg-gray-50' : 'bg-background';
+
   return (
     <PosLayout isArabic={props.isArabic}>
-      {isMobile ? (
-        <MobilePosLayout
-          isArabic={props.isArabic}
-          productsPanel={productsPanel}
-          cartPanel={cartPanel}
-        />
-      ) : (
-        <DesktopPosLayout
-          isArabic={props.isArabic}
-          productsPanel={productsPanel}
-          cartPanel={cartPanel}
-        />
-      )}
+      <div className={`w-full h-full ${bgClass}`}>
+        {isMobile ? (
+          <MobilePosLayout
+            isArabic={props.isArabic}
+            productsPanel={productsPanel}
+            cartPanel={cartPanel}
+          />
+        ) : (
+          <DesktopPosLayout
+            isArabic={props.isArabic}
+            productsPanel={productsPanel}
+            cartPanel={cartPanel}
+          />
+        )}
+      </div>
     </PosLayout>
   );
 };

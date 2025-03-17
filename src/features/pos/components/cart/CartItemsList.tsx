@@ -3,6 +3,7 @@ import React from "react";
 import { CartItem as CartItemType } from "@/types";
 import CartItemComponent from "../CartItem";
 import EmptyCart from "./EmptyCart";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CartItemsListProps {
   cartItems: CartItemType[];
@@ -24,25 +25,27 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
   const itemsContainerClass = isMobile ? "px-1 pb-1" : "px-2 pb-1";
 
   return (
-    <div className={`flex-grow overflow-y-auto ${itemsContainerClass} min-h-0`}>
-      {cartItems.length === 0 ? (
-        <EmptyCart />
-      ) : (
-        <div className={`space-y-${isMobile ? "1" : "2"} pt-2`}>
-          {cartItems.map((item, index) => (
-            <CartItemComponent
-              key={item.id}
-              item={item}
-              index={index}
-              isArabic={isArabic}
-              getSizeLabel={getSizeLabel}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    <ScrollArea className="flex-grow overflow-y-auto h-full">
+      <div className={`${itemsContainerClass} min-h-0`}>
+        {cartItems.length === 0 ? (
+          <EmptyCart />
+        ) : (
+          <div className={`space-y-${isMobile ? "1" : "2"} pt-2`}>
+            {cartItems.map((item, index) => (
+              <CartItemComponent
+                key={item.id}
+                item={item}
+                index={index}
+                isArabic={isArabic}
+                getSizeLabel={getSizeLabel}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </ScrollArea>
   );
 };
 

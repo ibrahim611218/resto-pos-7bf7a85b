@@ -1,5 +1,7 @@
 
 import React, { ReactNode } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface MobilePosLayoutProps {
   isArabic: boolean;
@@ -15,13 +17,16 @@ const MobilePosLayout: React.FC<MobilePosLayoutProps> = ({
   productsPanel,
   cartPanel
 }) => {
+  const { theme } = useTheme();
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
+
   return (
     <>
-      <div className={`flex-1 w-full h-[55%] overflow-auto scrollbar-rtl ${isArabic ? 'order-2' : 'order-1'}`}>
+      <ScrollArea className={`flex-1 w-full h-[55%] ${bgClass} ${isArabic ? 'order-2' : 'order-1'}`}>
         {productsPanel}
-      </div>
+      </ScrollArea>
       
-      <div className={`w-full h-[45%] overflow-auto scrollbar-rtl ${isArabic ? 'order-1' : 'order-2'}`}>
+      <div className={`w-full h-[45%] overflow-hidden ${isArabic ? 'order-1' : 'order-2'}`}>
         {cartPanel}
       </div>
     </>

@@ -9,14 +9,16 @@ import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { usePosState } from "./hooks/usePosState";
+import { useTheme } from "@/context/ThemeContext";
 
 const PosContainer: React.FC = () => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
   const isArabic = language === "ar";
   const { settings } = useBusinessSettings();
   const { width, height } = useWindowDimensions();
   
-  // Use our new custom hook for POS state
+  // Use our custom hook for POS state
   const posState = usePosState();
   
   // Force a resize event when component mounts to ensure proper layout
@@ -55,7 +57,7 @@ const PosContainer: React.FC = () => {
     <div 
       className={`h-screen max-w-full flex flex-col m-0 p-0 ${
         isArabic ? "font-[system-ui]" : ""
-      } auto-scale-container`}
+      } auto-scale-container ${theme === 'light' ? 'bg-gray-50' : 'bg-background'}`}
       dir={isArabic ? "rtl" : "ltr"}
       style={{ zIndex: 10 }}
     >

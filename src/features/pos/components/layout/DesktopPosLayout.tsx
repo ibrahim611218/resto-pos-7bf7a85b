@@ -1,5 +1,7 @@
 
 import React, { ReactNode } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 interface DesktopPosLayoutProps {
   isArabic: boolean;
@@ -15,17 +17,20 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
   productsPanel,
   cartPanel
 }) => {
+  const { theme } = useTheme();
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
+  
   // Determine the order of panels based on language
   const cartOrder = isArabic ? "order-1" : "order-2";
   const productsOrder = isArabic ? "order-2" : "order-1";
   
   return (
     <>
-      <div className={`flex-1 h-full overflow-auto ${productsOrder}`}>
+      <ScrollArea className={`flex-1 h-full ${bgClass} ${productsOrder}`}>
         {productsPanel}
-      </div>
+      </ScrollArea>
       
-      <div className={`w-1/3 min-w-[320px] h-full overflow-auto ${cartOrder}`}>
+      <div className={`w-1/3 min-w-[320px] h-full overflow-hidden ${cartOrder}`}>
         {cartPanel}
       </div>
     </>
