@@ -9,6 +9,7 @@
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
+  contain: layout;
 }
 
 /* Fullscreen container styles */
@@ -18,6 +19,7 @@
   width: 100vw !important;
   height: 100vh !important;
   overflow: hidden !important;
+  contain: layout;
 }
 
 /* Enhanced fullscreen container for all pages */
@@ -33,6 +35,7 @@
   right: 0 !important;
   bottom: 0 !important;
   z-index: 10 !important;
+  contain: layout;
 }
 
 /* Fullscreen header styles */
@@ -77,6 +80,7 @@
 .in-fullscreen .auto-scale-container {
   z-index: 1 !important;
   position: relative !important;
+  contain: layout;
 }
 
 /* Fix for content visibility during fullscreen transitions */
@@ -91,6 +95,7 @@
   max-height: 100vh !important;
   width: 100vw !important;
   height: 100vh !important;
+  contain: layout;
 }
 
 /* Fix POS screen in fullscreen */
@@ -99,6 +104,7 @@
   flex: 1 !important;
   visibility: visible !important;
   opacity: 1 !important;
+  contain: layout;
 }
 
 /* Ensure visibility of UI elements in fullscreen */
@@ -118,6 +124,7 @@
   max-height: 100vh !important;
   width: 100vw !important;
   max-width: 100vw !important;
+  contain: layout;
 }
 
 /* Ensure all content pages have proper scrolling in fullscreen */
@@ -125,6 +132,7 @@
   flex: 1 !important;
   overflow-y: auto !important;
   max-height: calc(100vh - 100px) !important;
+  contain: content;
 }
 
 /* Ensure inventory and other components display in fullscreen */
@@ -132,6 +140,7 @@
   opacity: 1 !important;
   visibility: visible !important;
   z-index: 10 !important;
+  contain: layout;
 }
 
 /* Special fix for inventory page */
@@ -142,4 +151,5 @@
   opacity: 1 !important;
   z-index: 10 !important;
   position: relative !important;
+  contain: layout;
 }

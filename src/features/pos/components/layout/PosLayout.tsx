@@ -26,10 +26,10 @@ const PosLayout: React.FC<PosLayoutProps> = ({
   return (
     <SidebarProvider>
       <div 
-        className={`pos-screen ${bgClass} rounded-lg shadow-sm overflow-hidden`}
+        className={`pos-screen ${bgClass} rounded-lg shadow-sm overflow-hidden max-h-screen`}
         dir={isArabic ? "rtl" : "ltr"}
       >
-        <div className="auto-scale-container h-full">
+        <div className="auto-scale-container h-full max-h-full">
           <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full max-w-full overflow-hidden rounded-lg`}>
             {children}
           </div>

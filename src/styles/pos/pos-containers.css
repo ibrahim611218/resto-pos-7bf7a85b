@@ -9,6 +9,7 @@
   max-width: 1200px;
   margin: 0 auto;
   height: auto;
+  overflow: hidden;
 }
 
 /* Ensure all pages have proper padding and scrolling */
@@ -21,4 +22,64 @@
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
+  contain: content;
+}
+
+/* Main content area containment */
+.content-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  contain: layout;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix for scrollable areas */
+.scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  contain: content;
+  max-height: 100%;
+  flex: 1;
+}
+
+/* Ensure full height on all viewport sizes */
+.full-height-container {
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  contain: layout;
+}
+
+/* Fix for dialog containment */
+.dialog-container {
+  contain: content;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+/* Fix for cart panel containment */
+.cart-panel-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  contain: content;
+}
+
+/* Fix for product grid containment */
+.product-grid-container {
+  contain: content;
+  width: 100%;
+}
+
+/* Fix for all page layouts */
+.layout-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  contain: layout;
+  display: flex;
+  flex-direction: column;
 }

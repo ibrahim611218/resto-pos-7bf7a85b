@@ -34,7 +34,9 @@ const MobilePosLayout: React.FC<MobilePosLayoutProps> = ({
       </div>
       
       <div className={`w-full h-[45%] overflow-hidden rounded-lg ${cartOrder} border-t border-gray-200 dark:border-gray-800`}>
-        {cartPanel}
+        <ScrollArea className="h-full w-full" type="hover">
+          {cartPanel}
+        </ScrollArea>
       </div>
     </div>
   );

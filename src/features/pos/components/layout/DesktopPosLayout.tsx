@@ -34,7 +34,9 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
       </div>
       
       <div className={`w-1/3 min-w-[300px] max-w-[400px] h-full overflow-hidden rounded-lg ${cartOrder}`}>
-        {cartPanel}
+        <ScrollArea className="h-full w-full" type="hover">
+          {cartPanel}
+        </ScrollArea>
       </div>
     </div>
   );
