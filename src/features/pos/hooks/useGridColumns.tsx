@@ -11,7 +11,7 @@ export const useGridColumns = () => {
   
   // Memoize grid columns based on screen size to prevent unnecessary recalculations
   const getGridCols = useMemo(() => {
-    if (width < 500) return "grid-cols-2"; // Very small screens
+    if (width < 400) return "grid-cols-2"; // Very small screens
     if (width < 640) return "grid-cols-3"; // Small mobile
     if (width < 768) return "grid-cols-3"; // Mobile
     if (width < 1024) return "grid-cols-4"; // Small tablet
@@ -22,7 +22,7 @@ export const useGridColumns = () => {
 
   // Function to get pixel-based grid columns - useful for programmatic calculations
   const getColumnsCount = (): number => {
-    if (width < 500) return 2;
+    if (width < 400) return 2;
     if (width < 640) return 3;
     if (width < 768) return 3;
     if (width < 1024) return 4;

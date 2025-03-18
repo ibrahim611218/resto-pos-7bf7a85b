@@ -21,16 +21,24 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   if (products.length === 0) {
     return (
-      <div className="py-4 text-center text-muted-foreground border rounded-md border-dashed">
+      <div className="py-4 px-2 text-center text-muted-foreground border rounded-md border-dashed">
         {isArabic ? "لا توجد منتجات" : "No products found"}
       </div>
     );
   }
 
   return (
-    <div className={`grid ${gridColsClass} gap-3 product-grid-container pb-4`}>
+    <div 
+      className={`grid ${gridColsClass} gap-3 product-grid-container pb-4`}
+      style={{ contain: 'content' }}
+    >
       {products.map((product) => (
-        <div key={product.id} onClick={() => onProductClick(product)}>
+        <div 
+          key={product.id} 
+          onClick={() => onProductClick(product)}
+          className="product-card-wrapper"
+          style={{ contain: 'content' }}
+        >
           <ProductCard
             product={product}
             isArabic={isArabic}

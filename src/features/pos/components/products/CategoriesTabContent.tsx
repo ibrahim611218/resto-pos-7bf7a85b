@@ -26,7 +26,7 @@ const CategoriesTabContent: React.FC<CategoriesTabContentProps> = ({
   isMobile,
 }) => {
   return (
-    <div className="mt-2">
+    <div className="mt-1 px-1" style={{ contain: 'content' }}>
       <CategoryList
         categories={categories}
         activeCategory={activeCategory}
@@ -36,7 +36,7 @@ const CategoriesTabContent: React.FC<CategoriesTabContentProps> = ({
       
       {activeCategory && (
         <div className="mt-2">
-          <h3 className={`font-bold mb-2 ${isMobile ? "text-base" : "text-lg"} sticky top-12 bg-background py-1 z-10`}>
+          <h3 className={`font-bold mb-2 ${isMobile ? "text-base" : "text-lg"} sticky top-12 bg-background py-1 z-10 px-2 rounded-md`}>
             {isArabic 
               ? categories.find(c => c.id === activeCategory)?.nameAr || "الأصناف" 
               : categories.find(c => c.id === activeCategory)?.name || "Products"}

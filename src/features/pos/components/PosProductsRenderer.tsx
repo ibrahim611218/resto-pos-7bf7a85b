@@ -28,7 +28,10 @@ const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-card/30';
 
   return (
-    <div className={`h-full w-full flex flex-col overflow-hidden ${bgClass} border border-border/30 rounded-lg shadow-sm`}>
+    <div 
+      className={`h-full w-full flex flex-col overflow-hidden ${bgClass} rounded-lg`}
+      style={{ contain: 'content' }}
+    >
       <ProductsPanel 
         searchTerm={props.searchTerm}
         setSearchTerm={props.setSearchTerm}

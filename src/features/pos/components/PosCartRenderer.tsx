@@ -62,8 +62,9 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
   return (
     <div
       className={`relative h-full overflow-hidden flex flex-col ${
-        isMobile ? "w-full" : borderClass
-      } ${bgClass} backdrop-blur-sm rounded-lg shadow-md`}
+        isMobile ? "w-full" : ""
+      } ${bgClass} backdrop-blur-sm rounded-lg shadow-md cart-panel`}
+      style={{ contain: 'layout' }}
     >
       <CartResizeHandler
         isMobile={isMobile}

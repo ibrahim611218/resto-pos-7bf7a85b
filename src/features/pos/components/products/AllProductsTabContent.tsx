@@ -37,7 +37,8 @@ const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({
 
   return (
     <div 
-      className="mt-2 space-y-3 custom-scrollbar"
+      className="mt-1 px-1 custom-scrollbar"
+      style={{ contain: 'content' }}
     >
       <ProductGrid 
         products={searchedProducts || []}

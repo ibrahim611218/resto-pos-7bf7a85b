@@ -78,8 +78,11 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
   };
 
   return (
-    <div className={`flex flex-col h-full overflow-hidden ${bgClass}`}>
-      <div className={`sticky top-0 z-10 ${headerBgClass} p-2`}>
+    <div 
+      className={`flex flex-col h-full overflow-hidden ${bgClass} rounded-lg`}
+      style={{ contain: 'layout' }}
+    >
+      <div className={`sticky top-0 z-10 ${headerBgClass} p-2 shadow-sm`}>
         <SearchBox
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -93,11 +96,11 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
           onValueChange={handleTabChange}
           className="w-full"
         >
-          <TabsList className="grid grid-cols-2 w-full mb-2">
-            <TabsTrigger value="categories" className={isMobile ? "text-sm" : "text-base"}>
+          <TabsList className="grid grid-cols-2 w-full mb-1">
+            <TabsTrigger value="categories" className={isMobile ? "text-sm py-1.5" : "text-base"}>
               {isArabic ? "الفئات" : "Categories"}
             </TabsTrigger>
-            <TabsTrigger value="all" className={isMobile ? "text-sm" : "text-base"}>
+            <TabsTrigger value="all" className={isMobile ? "text-sm py-1.5" : "text-base"}>
               {isArabic ? "كل المنتجات" : "All Products"}
             </TabsTrigger>
           </TabsList>
@@ -105,14 +108,14 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
       </div>
       
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full px-2 pb-20" type="always">
+        <ScrollArea className="h-full px-1 pb-20" type="auto">
           <Tabs 
             defaultValue="categories" 
             value={activeTab}
             onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsContent value="categories" className="mt-0">
+            <TabsContent value="categories" className="mt-0 p-0">
               <CategoriesTabContent 
                 categories={categories || []}
                 activeCategory={activeCategory}
@@ -125,7 +128,7 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
               />
             </TabsContent>
             
-            <TabsContent value="all" className="mt-0">
+            <TabsContent value="all" className="mt-0 p-0">
               <AllProductsTabContent 
                 searchedProducts={searchedProducts || []}
                 isArabic={isArabic}

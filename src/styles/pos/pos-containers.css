@@ -10,6 +10,7 @@
   margin: 0 auto;
   height: auto;
   overflow: hidden;
+  contain: content;
 }
 
 /* Ensure all pages have proper padding and scrolling */
@@ -23,6 +24,7 @@
   overflow-x: hidden;
   scrollbar-width: thin;
   contain: content;
+  position: relative;
 }
 
 /* Main content area containment */
@@ -33,6 +35,7 @@
   contain: layout;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* Fix for scrollable areas */
@@ -42,6 +45,7 @@
   contain: content;
   max-height: 100%;
   flex: 1;
+  position: relative;
 }
 
 /* Ensure full height on all viewport sizes */
@@ -50,6 +54,7 @@
   max-height: 100vh;
   overflow: hidden;
   contain: layout;
+  position: relative;
 }
 
 /* Fix for dialog containment */
@@ -57,6 +62,7 @@
   contain: content;
   max-height: 90vh;
   overflow: auto;
+  position: relative;
 }
 
 /* Fix for cart panel containment */
@@ -66,12 +72,15 @@
   flex-direction: column;
   overflow: hidden;
   contain: content;
+  position: relative;
 }
 
 /* Fix for product grid containment */
 .product-grid-container {
   contain: content;
   width: 100%;
+  position: relative;
+  padding: 0.5rem;
 }
 
 /* Fix for all page layouts */
@@ -82,4 +91,44 @@
   contain: layout;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* Better POS product card sizing */
+.pos-product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  contain: content;
+}
+
+.pos-product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* POS main container - ensure everything stays in viewport */
+.pos-main-container {
+  width: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  contain: layout;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* POS content container - maintain proper sizing */
+.pos-content-wrapper {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  contain: layout;
+  display: flex;
+  position: relative;
 }

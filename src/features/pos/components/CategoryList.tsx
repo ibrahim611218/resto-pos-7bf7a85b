@@ -1,8 +1,10 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Category } from "@/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 
 interface CategoryListProps {
   categories: Category[];
@@ -17,46 +19,51 @@ const CategoryList: React.FC<CategoryListProps> = ({
   setActiveCategory,
   isArabic,
 }) => {
-  // Enhanced handleClick with proper event handling
-  const handleClick = (e: React.MouseEvent | React.TouchEvent, categoryId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Category clicked:", categoryId);
-    setActiveCategory(categoryId === activeCategory ? null : categoryId);
+  const { isMobile } = useWindowDimensions();
+
+  // No categories
+  if (!categories || categories.length === 0) {
+    return (
+      <div className="text-center py-2 text-muted-foreground">
+        {isArabic ? "لا توجد فئات" : "No categories found"}
+      </div>
+    );
+  }
+
+  const handleCategoryClick = (categoryId: string) => {
+    // Toggle category if clicking on the active one
+    if (activeCategory === categoryId) {
+      setActiveCategory(null);
+    } else {
+      setActiveCategory(categoryId);
+    }
   };
 
   return (
-    <ScrollArea className="w-full" dir={isArabic ? "rtl" : "ltr"}>
-      <div className="flex overflow-x-auto pb-2 space-x-2 rtl:space-x-reverse interactive-element">
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            variant={activeCategory === category.id ? "default" : "outline"}
-            size="sm"
-            className="flex-shrink-0 interactive category-item"
-            onClick={(e) => handleClick(e, category.id)}
-            onTouchStart={(e) => e.preventDefault()}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleClick(e, category.id);
-            }}
-            role="button"
-            aria-pressed={activeCategory === category.id}
-            tabIndex={0}
-            style={{
-              // Force interaction to work
-              pointerEvents: 'auto',
-              touchAction: 'manipulation',
-              position: 'relative',
-              zIndex: 2
-            }}
-          >
-            {isArabic && category.nameAr ? category.nameAr : category.name}
-          </Button>
-        ))}
-      </div>
-    </ScrollArea>
+    <div className="category-nav mb-2 pb-1 border-b border-border/30">
+      <ScrollArea 
+        className="w-full whitespace-nowrap pb-2" 
+        type="always" 
+        orientation="horizontal"
+      >
+        <div className="flex space-x-1 rtl:space-x-reverse px-1 py-1">
+          {categories.map((category) => (
+            <Badge
+              key={category.id}
+              variant={activeCategory === category.id ? "default" : "outline"}
+              className={cn(
+                "cursor-pointer transition-all duration-200 hover:bg-muted/80 px-3 py-1.5 text-sm",
+                activeCategory === category.id ? "bg-primary text-primary-foreground" : "",
+                isMobile ? "text-xs py-1" : ""
+              )}
+              onClick={() => handleCategoryClick(category.id)}
+            >
+              {isArabic ? category.nameAr || category.name : category.name}
+            </Badge>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
 
