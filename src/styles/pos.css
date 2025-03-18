@@ -1,7 +1,0 @@
-
-/* Import modularized POS styles */
-@import './pos/pos-layout.css';
-@import './pos/pos-cart.css';
-@import './pos/pos-responsive.css';
-@import './pos/pos-scrollable.css';
-@import './pos/pos-containers.css';

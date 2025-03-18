@@ -1,5 +1,5 @@
 
-import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, DollarSign, ChefHat, KeySquare } from "lucide-react";
+import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, ChefHat, KeySquare } from "lucide-react";
 import { SidebarLink } from "./types";
 
 // Function to get sidebar links with proper Arabic labels
@@ -10,12 +10,6 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Home",
       path: "/",
       icon: Home,
-    },
-    {
-      name: "نقطة البيع",
-      name_en: "POS",
-      path: "/pos",
-      icon: DollarSign,
     },
     {
       name: "المنتجات",
