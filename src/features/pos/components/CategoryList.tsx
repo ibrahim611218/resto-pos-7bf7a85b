@@ -43,8 +43,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
     <div className="category-nav mb-2 pb-1 border-b border-border/30">
       <ScrollArea 
         className="w-full whitespace-nowrap pb-2" 
-        type="always" 
-        orientation="horizontal"
+        type="always"
       >
         <div className="flex space-x-1 rtl:space-x-reverse px-1 py-1">
           {categories.map((category) => (
