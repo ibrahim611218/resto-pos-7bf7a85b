@@ -28,6 +28,7 @@
   position: relative;
   z-index: 1;
   border-radius: 0.5rem;
+  user-select: none;
 }
 
 .product-card:hover {
@@ -144,4 +145,30 @@ body, html, #root {
 
 .product-card:hover .product-image {
   transform: scale(1.05);
+}
+
+/* Custom scrollbars for better UX */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Fix overflow issues inside ScrollArea components */
+.scroll-area-viewport {
+  height: 100% !important;
+  width: 100% !important;
 }

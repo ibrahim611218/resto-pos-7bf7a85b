@@ -30,7 +30,6 @@ const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({
   
   // Optimize product click handler with useCallback
   const handleProductClick = useCallback((product: Product) => {
-    console.log("Product clicked in AllProductsTabContent:", product.name);
     if (product && typeof onProductClick === 'function') {
       onProductClick(product);
     }
@@ -38,8 +37,7 @@ const AllProductsTabContent: React.FC<AllProductsTabContentProps> = ({
 
   return (
     <div 
-      className="mt-2 space-y-3 overflow-auto custom-scrollbar stretch-content"
-      style={{ flexGrow: 1, minHeight: 0 }}
+      className="mt-2 space-y-3 custom-scrollbar"
     >
       <ProductGrid 
         products={searchedProducts || []}

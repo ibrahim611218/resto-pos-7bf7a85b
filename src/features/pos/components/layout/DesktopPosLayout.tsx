@@ -26,9 +26,9 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
   const productsOrder = isArabic ? "order-2" : "order-1";
   
   return (
-    <div className="flex w-full h-full gap-4 p-2">
-      <div className={`flex-1 h-full ${bgClass} rounded-lg ${productsOrder}`}>
-        <ScrollArea className="h-full w-full">
+    <div className="flex w-full h-full gap-4 p-2 overflow-hidden">
+      <div className={`flex-1 h-full ${bgClass} rounded-lg ${productsOrder} overflow-hidden`}>
+        <ScrollArea className="h-full w-full" type="hover">
           {productsPanel}
         </ScrollArea>
       </div>

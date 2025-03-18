@@ -2,7 +2,7 @@
 /* Responsive layout adjustments for different screen sizes */
 @media (max-width: 640px) {
   .pos-cart-items {
-    max-height: calc(50vh - 220px); /* Adjust for mobile screens */
+    max-height: 100%; /* Allow it to take the full container height */
   }
   
   .product-grid-container {
@@ -17,7 +17,7 @@
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .pos-cart-items {
-    max-height: calc(70vh - 250px); /* Adjust for tablet screens */
+    max-height: 100%; /* Allow it to take the full container height */
   }
   
   .product-grid-container {
@@ -28,7 +28,7 @@
 
 @media (min-width: 1280px) {
   .pos-cart-items {
-    max-height: calc(100vh - 300px); /* Adjust for larger screens */
+    max-height: 100%; /* Allow it to take the full container height */
   }
   
   .product-grid-container {
@@ -38,7 +38,7 @@
 
 @media (min-width: 1920px) {
   .pos-cart-items {
-    max-height: calc(100vh - 350px); /* Adjust for very large screens */
+    max-height: 100%; /* Allow it to take the full container height */
   }
   
   .product-grid-container {
@@ -51,12 +51,30 @@
   .pos-layout-mobile {
     flex-direction: column;
   }
+
+  .pos-layout-mobile > div:first-child {
+    height: 55% !important;
+  }
+
+  .pos-layout-mobile > div:last-child {
+    height: 45% !important;
+  }
 }
 
 /* Horizontal layouts */
 @media (orientation: landscape) {
   .pos-layout-mobile {
     flex-direction: row;
+  }
+
+  .pos-layout-mobile > div:first-child {
+    width: 60% !important;
+    height: 100% !important;
+  }
+
+  .pos-layout-mobile > div:last-child {
+    width: 40% !important;
+    height: 100% !important;
   }
 }
 

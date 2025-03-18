@@ -163,3 +163,17 @@ html, body, #root, #app, .app-container {
 .in-fullscreen .sidebar-toggle-button {
   z-index: 10000 !important;
 }
+
+/* Better scrolling on all ScrollArea components */
+[data-radix-scroll-area-viewport] {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Fix for sticky headers */
+.products-panel .sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: inherit;
+}

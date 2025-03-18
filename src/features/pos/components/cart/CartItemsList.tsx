@@ -25,7 +25,7 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
   const itemsContainerClass = isMobile ? "px-2 pb-2" : "px-3 pb-2";
 
   return (
-    <ScrollArea className="flex-grow overflow-y-auto h-full">
+    <ScrollArea className="flex-grow overflow-y-auto h-full" type="always">
       <div className={`${itemsContainerClass} min-h-0`}>
         {cartItems.length === 0 ? (
           <EmptyCart />

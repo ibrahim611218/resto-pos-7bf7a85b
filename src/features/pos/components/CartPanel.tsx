@@ -104,9 +104,10 @@ const CartPanel: React.FC<CartPanelProps> = ({
 
   return (
     <div 
-      className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative rounded-lg shadow-sm ${
+      className={`flex flex-col h-full ${borderClasses} ${bgClass} overflow-hidden relative rounded-lg shadow-sm pos-cart ${
         isMobile ? (expanded ? 'w-full' : 'w-full') : ''
       }`}
+      ref={resizeRef}
     >
       <CartHeader
         isMobile={isMobile}
@@ -117,7 +118,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         isArabic={isArabic}
       />
       
-      <div className="flex-1 overflow-auto pos-cart-items">
+      <div className="flex-1 overflow-hidden pos-cart-items">
         <CartItemsList
           cartItems={cartItems}
           isMobile={isMobile}
@@ -148,6 +149,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
         clearCart={clearCart}
         isArabic={isArabic}
         onPaidAmountClick={handlePaidAmountClick}
+      />
+
+      <CartResizeHandler
+        isMobile={isMobile}
+        onMouseDown={handleMouseDown}
+        isArabic={isArabic}
+        isDragging={isDragging}
       />
 
       <PaymentMethodDialog

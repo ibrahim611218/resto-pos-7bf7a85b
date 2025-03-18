@@ -104,36 +104,38 @@ const ProductsPanel: React.FC<ProductsPanelProps> = ({
         </Tabs>
       </div>
       
-      <ScrollArea className="flex-1 px-2 pb-20">
-        <Tabs 
-          defaultValue="categories" 
-          value={activeTab}
-          onValueChange={handleTabChange}
-          className="w-full"
-        >
-          <TabsContent value="categories" className="mt-0">
-            <CategoriesTabContent 
-              categories={categories || []}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-              searchedProducts={filteredProducts || []}
-              isArabic={isArabic}
-              onProductClick={handleProductClick}
-              getGridCols={getGridCols}
-              isMobile={isMobile}
-            />
-          </TabsContent>
-          
-          <TabsContent value="all" className="mt-0">
-            <AllProductsTabContent 
-              searchedProducts={searchedProducts || []}
-              isArabic={isArabic}
-              onProductClick={handleProductClick}
-              getGridCols={getGridCols}
-            />
-          </TabsContent>
-        </Tabs>
-      </ScrollArea>
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full px-2 pb-20" type="always">
+          <Tabs 
+            defaultValue="categories" 
+            value={activeTab}
+            onValueChange={handleTabChange}
+            className="w-full"
+          >
+            <TabsContent value="categories" className="mt-0">
+              <CategoriesTabContent 
+                categories={categories || []}
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+                searchedProducts={filteredProducts || []}
+                isArabic={isArabic}
+                onProductClick={handleProductClick}
+                getGridCols={getGridCols}
+                isMobile={isMobile}
+              />
+            </TabsContent>
+            
+            <TabsContent value="all" className="mt-0">
+              <AllProductsTabContent 
+                searchedProducts={searchedProducts || []}
+                isArabic={isArabic}
+                onProductClick={handleProductClick}
+                getGridCols={getGridCols}
+              />
+            </TabsContent>
+          </Tabs>
+        </ScrollArea>
+      </div>
       
       <SizeSelectionDialog
         product={selectedProduct}

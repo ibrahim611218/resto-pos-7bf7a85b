@@ -2,7 +2,6 @@
 import React from "react";
 import { Product } from "@/types";
 import ProductsPanel from "./ProductsPanel";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
 interface PosProductsRendererProps {

@@ -26,14 +26,14 @@ const MobilePosLayout: React.FC<MobilePosLayoutProps> = ({
   const cartOrder = isArabic ? "order-1" : "order-2";
 
   return (
-    <div className="flex flex-col w-full h-full gap-2 pos-layout-mobile">
-      <div className={`flex-1 w-full h-[60%] ${bgClass} rounded-lg ${productsOrder}`}>
-        <ScrollArea className="h-full w-full">
+    <div className="flex flex-col w-full h-full gap-2 pos-layout-mobile overflow-hidden">
+      <div className={`flex-1 w-full h-[55%] ${bgClass} rounded-lg ${productsOrder} overflow-hidden`}>
+        <ScrollArea className="h-full w-full" type="hover">
           {productsPanel}
         </ScrollArea>
       </div>
       
-      <div className={`w-full h-[40%] overflow-hidden rounded-lg ${cartOrder} border-t border-gray-200 dark:border-gray-800`}>
+      <div className={`w-full h-[45%] overflow-hidden rounded-lg ${cartOrder} border-t border-gray-200 dark:border-gray-800`}>
         {cartPanel}
       </div>
     </div>
