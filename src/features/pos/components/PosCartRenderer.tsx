@@ -40,10 +40,11 @@ interface PosCartRendererProps {
 
 /**
  * Component that renders the cart and handles cart resizing
+ * Includes cart items list, cart summary, and payment options
  */
 const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
   const { isMobile, isTablet } = useWindowDimensions();
-  const { resizeRef, handleMouseDown, isDragging } = useCartResize({
+  const { handleMouseDown, isDragging } = useCartResize({
     isArabic: props.isArabic,
     isMobile,
     isTablet
@@ -52,16 +53,17 @@ const PosCartRenderer: React.FC<PosCartRendererProps> = (props) => {
 
   // Set background color based on theme
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-card/30';
+  
+  // Set border based on language direction
+  const borderClass = props.isArabic 
+    ? "border-l border-border/50" 
+    : "border-r border-border/50";
 
   return (
     <div
-      ref={resizeRef}
       className={`relative h-full overflow-hidden flex flex-col ${
-        isMobile ? "w-full" : props.isArabic ? "border-l" : "border-r"
-      } border-border ${bgClass} backdrop-blur-sm rounded-lg shadow-md`}
-      style={{
-        width: isMobile ? "100%" : props.isArabic ? "100%" : "100%",
-      }}
+        isMobile ? "w-full" : borderClass
+      } ${bgClass} backdrop-blur-sm rounded-lg shadow-md`}
     >
       <CartResizeHandler
         isMobile={isMobile}

@@ -14,6 +14,7 @@
   overflow-y: auto;
   min-height: 0;
   max-height: calc(100vh - 250px);
+  scrollbar-width: thin;
 }
 
 /* Customize the resize handle appearance */
@@ -23,11 +24,37 @@
   background: transparent;
   opacity: 0;
   z-index: 20;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
 .cart-resize-handle:hover,
 .cart-resize-handle.active {
   opacity: 1;
   background: var(--primary);
+}
+
+/* Cart item styling */
+.cart-item {
+  transition: background-color 0.2s ease;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cart-item:hover {
+  background-color: hsl(var(--muted));
+}
+
+/* Cart actions styling */
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+/* Cart summary styling */
+.cart-summary {
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
 }

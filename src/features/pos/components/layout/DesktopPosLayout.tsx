@@ -11,6 +11,7 @@ interface DesktopPosLayoutProps {
 
 /**
  * Desktop/tablet layout component for the POS screen
+ * Shows products on the left/right and cart on the right/left based on language direction
  */
 const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({ 
   isArabic,
@@ -20,21 +21,22 @@ const DesktopPosLayout: React.FC<DesktopPosLayoutProps> = ({
   const { theme } = useTheme();
   const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
   
-  // For Arabic, products should be on the right, cart on the left (opposite of LTR)
-  // For non-Arabic, cart is on the right, products on the left
+  // Define the ordering of elements based on language direction
   const cartOrder = isArabic ? "order-1" : "order-2";
   const productsOrder = isArabic ? "order-2" : "order-1";
   
   return (
-    <>
-      <ScrollArea className={`flex-1 h-full ${bgClass} rounded-lg ${productsOrder}`}>
-        {productsPanel}
-      </ScrollArea>
+    <div className="flex w-full h-full gap-4 p-2">
+      <div className={`flex-1 h-full ${bgClass} rounded-lg ${productsOrder}`}>
+        <ScrollArea className="h-full w-full">
+          {productsPanel}
+        </ScrollArea>
+      </div>
       
       <div className={`w-1/3 min-w-[300px] max-w-[400px] h-full overflow-hidden rounded-lg ${cartOrder}`}>
         {cartPanel}
       </div>
-    </>
+    </div>
   );
 };
 

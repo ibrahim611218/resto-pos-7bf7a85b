@@ -44,6 +44,10 @@ interface PosContentProps {
   setShowAllProducts?: (show: boolean) => void;
 }
 
+/**
+ * Main content component for the POS screen
+ * Handles rendering the product grid and cart based on screen size
+ */
 const PosContent: React.FC<PosContentProps> = (props) => {
   const { isMobile } = useScreenSize();
   const { theme } = useTheme();
@@ -93,26 +97,21 @@ const PosContent: React.FC<PosContentProps> = (props) => {
     />
   );
 
-  // Add background color based on theme
-  const bgClass = theme === 'light' ? 'bg-gray-50' : 'bg-background';
-
   return (
     <PosLayout isArabic={props.isArabic}>
-      <div className={`w-full h-full ${bgClass} flex rounded-lg shadow-md`}>
-        {isMobile ? (
-          <MobilePosLayout
-            isArabic={props.isArabic}
-            productsPanel={productsPanel}
-            cartPanel={cartPanel}
-          />
-        ) : (
-          <DesktopPosLayout
-            isArabic={props.isArabic}
-            productsPanel={productsPanel}
-            cartPanel={cartPanel}
-          />
-        )}
-      </div>
+      {isMobile ? (
+        <MobilePosLayout
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
+      ) : (
+        <DesktopPosLayout
+          isArabic={props.isArabic}
+          productsPanel={productsPanel}
+          cartPanel={cartPanel}
+        />
+      )}
     </PosLayout>
   );
 };

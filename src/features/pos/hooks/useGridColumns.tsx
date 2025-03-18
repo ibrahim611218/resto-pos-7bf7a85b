@@ -2,6 +2,10 @@
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { useMemo } from "react";
 
+/**
+ * Hook that provides responsive grid column settings based on screen size
+ * Used to optimize product grid display on different devices
+ */
 export const useGridColumns = () => {
   const { width, isMobile, isTablet } = useWindowDimensions();
   
@@ -13,7 +17,7 @@ export const useGridColumns = () => {
     if (width < 1024) return "grid-cols-4"; // Small tablet
     if (width < 1280) return "grid-cols-5"; // Tablet/small desktop
     if (width < 1536) return "grid-cols-6"; // Medium desktop
-    return "grid-cols-8"; // Large desktop
+    return "grid-cols-7"; // Large desktop
   }, [width]);
 
   // Function to get pixel-based grid columns - useful for programmatic calculations
@@ -24,7 +28,7 @@ export const useGridColumns = () => {
     if (width < 1024) return 4;
     if (width < 1280) return 5;
     if (width < 1536) return 6;
-    return 8;
+    return 7;
   };
 
   // Calculate optimal height for product cards
@@ -34,9 +38,17 @@ export const useGridColumns = () => {
     return "170px";
   }, [isMobile, isTablet]);
 
+  // Calculate optimal grid gap based on screen size
+  const getGridGap = useMemo(() => {
+    if (isMobile) return "gap-2";
+    if (isTablet) return "gap-3";
+    return "gap-4";
+  }, [isMobile, isTablet]);
+
   return { 
     getGridCols,
     getColumnsCount,
-    getCardHeight
+    getCardHeight,
+    getGridGap
   };
 };

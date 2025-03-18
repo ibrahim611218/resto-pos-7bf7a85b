@@ -10,7 +10,8 @@ interface PosLayoutProps {
 }
 
 /**
- * Main layout component for the POS screen that handles basic styling
+ * Main layout component for the POS screen that handles basic styling and structure
+ * Wraps the entire POS interface and provides proper RTL/LTR support
  */
 const PosLayout: React.FC<PosLayoutProps> = ({ 
   isArabic,
@@ -22,14 +23,17 @@ const PosLayout: React.FC<PosLayoutProps> = ({
   // Background color based on theme
   const bgClass = theme === 'light' ? 'bg-gray-50' : 'bg-background';
   
-  // Adjust the layout based on device type and orientation
   return (
     <SidebarProvider>
       <div 
-        className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full max-w-full overflow-hidden ${bgClass} rounded-lg shadow-sm`}
+        className={`pos-screen ${bgClass} rounded-lg shadow-sm`}
         dir={isArabic ? "rtl" : "ltr"}
       >
-        {children}
+        <div className="auto-scale-container">
+          <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} h-full w-full max-w-full overflow-hidden rounded-lg`}>
+            {children}
+          </div>
+        </div>
       </div>
     </SidebarProvider>
   );

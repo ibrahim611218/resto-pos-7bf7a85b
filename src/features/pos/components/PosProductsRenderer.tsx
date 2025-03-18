@@ -22,29 +22,28 @@ interface PosProductsRendererProps {
 
 /**
  * Component that renders the products panel with search and filtering functionality
+ * Handles product grid display and category navigation
  */
 const PosProductsRenderer: React.FC<PosProductsRendererProps> = (props) => {
   const { theme } = useTheme();
-  const bgClass = theme === 'light' ? 'bg-white' : 'bg-background';
+  const bgClass = theme === 'light' ? 'bg-white' : 'bg-card/30';
 
   return (
     <div className={`h-full w-full flex flex-col overflow-hidden ${bgClass} border border-border/30 rounded-lg shadow-sm`}>
-      <ScrollArea className="h-full w-full">
-        <ProductsPanel 
-          searchTerm={props.searchTerm}
-          setSearchTerm={props.setSearchTerm}
-          activeCategory={props.activeCategory}
-          setActiveCategory={props.setActiveCategory}
-          categories={props.categories}
-          filteredProducts={props.filteredProducts}
-          searchedProducts={props.searchedProducts}
-          onAddToCart={props.onAddToCart}
-          isArabic={props.isArabic}
-          getSizeLabel={props.getSizeLabel}
-          showAllProducts={props.showAllProducts}
-          setShowAllProducts={props.setShowAllProducts}
-        />
-      </ScrollArea>
+      <ProductsPanel 
+        searchTerm={props.searchTerm}
+        setSearchTerm={props.setSearchTerm}
+        activeCategory={props.activeCategory}
+        setActiveCategory={props.setActiveCategory}
+        categories={props.categories}
+        filteredProducts={props.filteredProducts}
+        searchedProducts={props.searchedProducts}
+        onAddToCart={props.onAddToCart}
+        isArabic={props.isArabic}
+        getSizeLabel={props.getSizeLabel}
+        showAllProducts={props.showAllProducts}
+        setShowAllProducts={props.setShowAllProducts}
+      />
     </div>
   );
 };

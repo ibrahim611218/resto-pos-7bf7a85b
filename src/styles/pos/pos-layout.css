@@ -20,13 +20,19 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer !important; /* Force cursor pointer for better UI feedback */
   touch-action: manipulation; /* Optimize for touch */
   /* Ensure clicks work */
   pointer-events: auto !important;
   position: relative;
   z-index: 1;
+  border-radius: 0.5rem;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .product-card:active {
@@ -109,4 +115,33 @@ body, html, #root {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+}
+
+/* Enhanced grid layout */
+.product-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+/* Product image container */
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 0.25rem;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
 }
