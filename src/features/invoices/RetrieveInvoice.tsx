@@ -7,12 +7,14 @@ import { Search } from 'lucide-react';
 import { mockInvoices } from './data/mockInvoices';
 import InvoiceDetailsModal from './components/InvoiceDetailsModal';
 import { Invoice } from '@/types';
+import { useBusinessSettings } from '@/hooks/useBusinessSettings';
 
 const RetrieveInvoice = () => {
   const [invoiceId, setInvoiceId] = useState('');
   const [foundInvoice, setFoundInvoice] = useState<Invoice | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [error, setError] = useState('');
+  const { settings } = useBusinessSettings();
   
   const handleSearch = () => {
     // Clear previous states
@@ -25,7 +27,8 @@ const RetrieveInvoice = () => {
     }
     
     // In a real app, this would be an API call
-    const invoice = mockInvoices.find(inv => inv.invoiceNumber === invoiceId);
+    // Changed from invoiceNumber to number which is the correct property name
+    const invoice = mockInvoices.find(inv => inv.number === invoiceId);
     
     if (invoice) {
       setFoundInvoice(invoice);
@@ -33,6 +36,10 @@ const RetrieveInvoice = () => {
     } else {
       setError('لم يتم العثور على فاتورة بهذا الرقم');
     }
+  };
+
+  const formatInvoiceDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('ar-SA');
   };
   
   return (
@@ -67,7 +74,9 @@ const RetrieveInvoice = () => {
         <InvoiceDetailsModal
           invoice={foundInvoice}
           open={showDetails}
-          onOpenChange={() => setShowDetails(false)}
+          onClose={() => setShowDetails(false)}
+          formatInvoiceDate={formatInvoiceDate}
+          onPrint={() => {}}
         />
       )}
     </div>
