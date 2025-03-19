@@ -8,9 +8,8 @@ import './utilities.css';
 import './desktop.css';
 import './mobile.css';
 import './fullscreen.css';
-import './pos.css';
-import './touch.css'; // Touch-related fixes
 import './products.css';
+import './touch.css'; // Touch-related fixes
 import './compact-ui.css';
 import './responsive-grid.css';
 

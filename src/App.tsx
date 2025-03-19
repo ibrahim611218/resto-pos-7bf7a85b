@@ -4,7 +4,6 @@ import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
-import Pos from "@/pages/Pos";
 import Kitchen from "@/pages/Kitchen";
 import Invoices from "@/pages/Invoices";
 import Customers from "@/pages/Customers";
@@ -43,7 +42,6 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Index />} />
-              <Route path="/pos" element={<Pos />} />
               <Route path="/kitchen" element={<Kitchen />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />

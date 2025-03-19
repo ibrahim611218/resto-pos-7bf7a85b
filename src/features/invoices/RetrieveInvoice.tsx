@@ -1,101 +1,75 @@
 
-import React, { useState } from "react";
-import { useLanguage } from "@/context/LanguageContext";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileSearch } from "lucide-react";
-import { useInvoiceSearch } from "@/features/pos/hooks/useInvoiceSearch";
-import InvoiceDetailsModal from "./components/InvoiceDetailsModal";
-import { formatInvoiceDate } from "@/features/pos/utils/formatters";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
+import { mockInvoices } from './data/mockInvoices';
+import InvoiceDetailsModal from './components/InvoiceDetailsModal';
+import { Invoice } from '@/types';
 
-const RetrieveInvoice: React.FC = () => {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
+const RetrieveInvoice = () => {
+  const [invoiceId, setInvoiceId] = useState('');
+  const [foundInvoice, setFoundInvoice] = useState<Invoice | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [error, setError] = useState('');
   
-  const {
-    invoiceNumber,
-    setInvoiceNumber,
-    currentInvoice,
-    setCurrentInvoice,
-    showInvoiceModal,
-    setShowInvoiceModal,
-    handleInvoiceSearch,
-    handleRefundInvoice,
-  } = useInvoiceSearch();
-
-  const handlePrintInvoice = (invoice: any) => {
-    window.print();
+  const handleSearch = () => {
+    // Clear previous states
+    setError('');
+    setFoundInvoice(null);
+    
+    if (!invoiceId.trim()) {
+      setError('الرجاء إدخال رقم الفاتورة');
+      return;
+    }
+    
+    // In a real app, this would be an API call
+    const invoice = mockInvoices.find(inv => inv.invoiceNumber === invoiceId);
+    
+    if (invoice) {
+      setFoundInvoice(invoice);
+      setShowDetails(true);
+    } else {
+      setError('لم يتم العثور على فاتورة بهذا الرقم');
+    }
   };
-
+  
   return (
-    <div
-      className="container mx-auto py-6"
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      <Card className="max-w-xl mx-auto">
+    <div className="container mx-auto p-4">
+      <Card className="max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold flex items-center gap-2">
-            <FileSearch className="h-6 w-6" />
-            {isArabic ? "استرجاع الفاتورة" : "Retrieve Invoice"}
-          </CardTitle>
+          <CardTitle className="text-xl font-bold">استرجاع فاتورة</CardTitle>
+          <CardDescription>ادخل رقم الفاتورة للبحث عنها</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              {isArabic ? "رقم الفاتورة" : "Invoice Number"}
-            </label>
-            <div className="flex gap-2">
-              <Input
-                value={invoiceNumber}
-                onChange={(e) => setInvoiceNumber(e.target.value)}
-                placeholder={isArabic ? "ادخل رقم الفاتورة" : "Enter invoice number"}
-                className="flex-1"
-              />
-              <Button onClick={handleInvoiceSearch}>
-                {isArabic ? "بحث" : "Search"}
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {isArabic
-                ? "أدخل رقم الفاتورة للبحث عنها واسترجاعها"
-                : "Enter the invoice number to search and retrieve it"}
-            </p>
+        <CardContent>
+          <div className="flex space-x-2 rtl:space-x-reverse">
+            <Input
+              value={invoiceId}
+              onChange={(e) => setInvoiceId(e.target.value)}
+              placeholder="رقم الفاتورة"
+              className="flex-1"
+              dir="rtl"
+            />
+            <Button onClick={handleSearch}>
+              <Search className="h-4 w-4 mr-2" />
+              بحث
+            </Button>
           </div>
           
-          <div className="bg-muted/30 p-4 rounded-md">
-            <h3 className="font-medium mb-2">
-              {isArabic ? "تعليمات" : "Instructions"}
-            </h3>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>
-                {isArabic
-                  ? "أدخل رقم الفاتورة كاملاً كما هو مطبوع على الفاتورة"
-                  : "Enter the complete invoice number as printed on the invoice"}
-              </li>
-              <li>
-                {isArabic
-                  ? "يمكنك طباعة الفاتورة أو إرجاعها"
-                  : "You can print or refund the invoice"}
-              </li>
-              <li>
-                {isArabic
-                  ? "للفواتير القديمة يرجى مراجعة صفحة الفواتير"
-                  : "For older invoices, please check the Invoices page"}
-              </li>
-            </ul>
-          </div>
+          {error && (
+            <p className="text-red-500 mt-2 text-sm">{error}</p>
+          )}
         </CardContent>
       </Card>
-
-      <InvoiceDetailsModal
-        invoice={currentInvoice}
-        open={showInvoiceModal}
-        onClose={() => setShowInvoiceModal(false)}
-        formatInvoiceDate={(date) => formatInvoiceDate(date, language)}
-        onPrint={handlePrintInvoice}
-        onRefund={handleRefundInvoice}
-      />
+      
+      {showDetails && foundInvoice && (
+        <InvoiceDetailsModal
+          invoice={foundInvoice}
+          open={showDetails}
+          onOpenChange={() => setShowDetails(false)}
+        />
+      )}
     </div>
   );
 };
