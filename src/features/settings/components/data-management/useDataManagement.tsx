@@ -3,7 +3,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { sampleCategories } from "@/data/sampleData";
-import { products } from "@/features/pos/data/mockData";
+import { mockProducts } from "@/features/pos/data/mockData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { mockCustomers } from "@/features/customers/hooks/useCustomers";
 
@@ -27,7 +27,7 @@ export const useDataManagement = () => {
     // حذف المنتجات من الذاكرة المحلية
     localStorage.removeItem('products');
     // حذف المنتجات من المصفوفة الافتراضية
-    products.length = 0;
+    mockProducts.length = 0;
   };
 
   const deleteAllCategories = () => {

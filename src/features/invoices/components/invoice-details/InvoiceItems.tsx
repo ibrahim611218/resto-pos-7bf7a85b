@@ -18,7 +18,7 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
             <div>
               <span className="font-medium">{item.nameAr || item.name}</span>
               <span className="text-sm text-muted-foreground mr-2">
-                ({getSizeLabel(item.size, "ar")}) x {item.quantity}
+                ({getSizeLabel(item.size, true)}) x {item.quantity}
               </span>
             </div>
             <span>
