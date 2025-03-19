@@ -1,10 +1,53 @@
 
-import React from "react";
-import { Navigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguage } from "@/context/LanguageContext";
+import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
+import CartPanel from "@/features/pos/components/cart/CartPanel";
+import { Separator } from "@/components/ui/separator";
+import { Grid, List } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Pos = () => {
-  // Since POS is removed, redirect to home
-  return <Navigate to="/" replace />;
+  const { language } = useLanguage();
+  const { isMobile } = useWindowDimensions();
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [cartExpanded, setCartExpanded] = useState(!isMobile);
+  
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === "grid" ? "list" : "grid");
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">نقاط البيع</h1>
+        <Button variant="outline" size="sm" onClick={toggleViewMode}>
+          {viewMode === "grid" ? <List size={18} /> : <Grid size={18} />}
+        </Button>
+      </div>
+      <Separator className="mb-4" />
+      
+      <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
+        {/* Products section */}
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-[calc(100vh-120px)]">
+            <div className="p-4">
+              <ProductsGrid viewMode={viewMode} />
+            </div>
+          </ScrollArea>
+        </div>
+        
+        {/* Cart section */}
+        <CartPanel 
+          expanded={cartExpanded} 
+          onToggleExpand={() => setCartExpanded(prev => !prev)} 
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Pos;

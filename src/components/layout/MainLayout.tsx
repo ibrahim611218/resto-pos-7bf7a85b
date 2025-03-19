@@ -9,6 +9,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -112,9 +113,11 @@ const MainLayout = () => {
             </Button>
           )}
           
-          <div className="h-full w-full overflow-auto m-0 p-0 flex-grow-container scrollable-content">
-            <Outlet />
-          </div>
+          <ScrollArea className="h-full w-full scrollable-content">
+            <div className="centered-content" dir={isArabic ? "rtl" : "ltr"}>
+              <Outlet />
+            </div>
+          </ScrollArea>
         </div>
       </AnimatedTransition>
     </div>

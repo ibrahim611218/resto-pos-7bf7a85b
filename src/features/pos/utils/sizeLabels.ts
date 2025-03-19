@@ -1,9 +1,23 @@
 
-import { Language } from "@/types";
-
-export const getSizeLabel = (size: string, language: Language): string => {
-  if (language === "ar") {
-    return size === "small" ? "صغير" : size === "medium" ? "وسط" : "كبير";
+const sizeLabels = {
+  small: {
+    en: "Small",
+    ar: "صغير"
+  },
+  regular: {
+    en: "Regular",
+    ar: "عادي"
+  },
+  large: {
+    en: "Large",
+    ar: "كبير"
   }
-  return size === "small" ? "S" : size === "medium" ? "M" : "L";
+};
+
+export const getSizeLabel = (size: string, isArabic: boolean): string => {
+  const sizeKey = size as keyof typeof sizeLabels;
+  if (sizeLabels[sizeKey]) {
+    return isArabic ? sizeLabels[sizeKey].ar : sizeLabels[sizeKey].en;
+  }
+  return size;
 };

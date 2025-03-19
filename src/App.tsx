@@ -24,6 +24,8 @@ import LicenseGenerator from "./pages/LicenseGenerator";
 import FirstRunLicenseCheck from "./features/auth/components/FirstRunLicenseCheck";
 import LicenseCheck from "./features/auth/components/LicenseCheck";
 import { useLanguage } from "./context/LanguageContext";
+import Pos from "./pages/Pos";
+import { CartProvider } from "./features/pos/hooks/useCart";
 
 function App() {
   const { language } = useLanguage();
@@ -31,38 +33,41 @@ function App() {
   return (
     <>
       <Toaster position="top-center" richColors dir="rtl" />
-      <Routes>
-        {/* Public routes - no auth or license required */}
-        <Route path="/login" element={<Login language={language} />} />
-        <Route path="/activate" element={<LicenseActivation />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        
-        {/* Protected routes - require authentication and license */}
-        <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
-          <Route element={<ProtectedRoute />}>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/kitchen" element={<Kitchen />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/inventory" element={<Inventory />} />
-              {/* Fix reports routes */}
-              <Route path="/sales-report" element={<SalesReport />} />
-              <Route path="/inventory-report" element={<InventoryReport />} />
-              <Route path="/customers-report" element={<CustomersReport />} />
-              {/* Fix settings route */}
-              <Route path="/business-settings" element={<BusinessSettings />} />
-              {/* Fix users route */}
-              <Route path="/user-management" element={<UserManagement />} />
-              <Route path="/license-generator" element={<LicenseGenerator />} />
-              <Route path="*" element={<NotFound />} />
+      <CartProvider>
+        <Routes>
+          {/* Public routes - no auth or license required */}
+          <Route path="/login" element={<Login language={language} />} />
+          <Route path="/activate" element={<LicenseActivation />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          
+          {/* Protected routes - require authentication and license */}
+          <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
+            <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/pos" element={<Pos />} />
+                <Route path="/kitchen" element={<Kitchen />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/inventory" element={<Inventory />} />
+                {/* Fix reports routes */}
+                <Route path="/sales-report" element={<SalesReport />} />
+                <Route path="/inventory-report" element={<InventoryReport />} />
+                <Route path="/customers-report" element={<CustomersReport />} />
+                {/* Fix settings route */}
+                <Route path="/business-settings" element={<BusinessSettings />} />
+                {/* Fix users route */}
+                <Route path="/user-management" element={<UserManagement />} />
+                <Route path="/license-generator" element={<LicenseGenerator />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
             </Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </CartProvider>
     </>
   );
 }

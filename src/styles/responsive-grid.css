@@ -101,3 +101,23 @@
   scrollbar-width: thin;
   scroll-behavior: smooth;
 }
+
+/* Scrollable content container */
+.scrollable-content {
+  height: 100vh;
+  overflow: auto;
+  display: block;
+}
+
+/* Improved container for full-height pages */
+.full-height-container {
+  min-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Right-aligned content for RTL interfaces */
+.rtl-container {
+  text-align: right;
+  direction: rtl;
+}
