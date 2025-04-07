@@ -15,6 +15,14 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
   // Calculate the remaining amount
   const remainingAmount = invoice.total - invoice.paidAmount;
   
+  // Format payment method for display
+  const getDisplayPaymentMethod = (method: string) => {
+    if (method === "cash") return isArabic ? "نقدي" : "Cash";
+    if (method === "card") return isArabic ? "شبكة" : "Card";
+    if (method === "transfer") return isArabic ? "تحويل" : "Transfer";
+    return method;
+  };
+  
   return (
     <Card className="mb-4">
       <CardContent className="p-4">
@@ -27,10 +35,7 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
             {isArabic ? "وسيلة الدفع" : "Payment Method"}
           </div>
           <div className="font-medium text-right">
-            {invoice.paymentMethod === "cash" ? (isArabic ? "نقدي" : "Cash") :
-             invoice.paymentMethod === "card" ? (isArabic ? "شبكة" : "Card") :
-             invoice.paymentMethod === "transfer" ? (isArabic ? "تحويل" : "Transfer") :
-             invoice.paymentMethod}
+            {getDisplayPaymentMethod(invoice.paymentMethod)}
           </div>
           
           {invoice.paymentMethod === "transfer" && invoice.transferReceiptNumber && (

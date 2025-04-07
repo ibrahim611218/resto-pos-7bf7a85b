@@ -1,6 +1,6 @@
 
 import { exportSalesReportExcel } from './excel-export';
-import { Invoice } from "@/types";
+import { Invoice, PaymentMethod } from "@/types";
 
 /**
  * Creates a printable version of the report in a new window
@@ -181,11 +181,14 @@ export const printSalesReport = ({
             const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? 'ar-SA' : 'en-US');
             const status = invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed");
             
-            let paymentMethod = invoice.paymentMethod;
-            if (paymentMethod === "cash") {
-              paymentMethod = isArabic ? "نقدي" : "Cash";
-            } else if (paymentMethod === "card") {
-              paymentMethod = isArabic ? "بطاقة" : "Card";
+            // Format payment method for display only (not changing the actual type)
+            let displayPaymentMethod: string = invoice.paymentMethod;
+            if (invoice.paymentMethod === "cash") {
+              displayPaymentMethod = isArabic ? "نقدي" : "Cash";
+            } else if (invoice.paymentMethod === "card") {
+              displayPaymentMethod = isArabic ? "بطاقة" : "Card";
+            } else if (invoice.paymentMethod === "transfer") {
+              displayPaymentMethod = isArabic ? "تحويل" : "Transfer";
             }
             
             let orderType = invoice.orderType || "-";
@@ -202,7 +205,7 @@ export const printSalesReport = ({
                 <td>${index + 1}</td>
                 <td>${invoice.number}</td>
                 <td>${invDate}</td>
-                <td>${paymentMethod}</td>
+                <td>${displayPaymentMethod}</td>
                 <td>${orderType}</td>
                 <td>${status}</td>
                 <td>${invoice.total.toFixed(2)} ${isArabic ? 'ريال' : 'SAR'}</td>

@@ -1,6 +1,5 @@
-
 import * as XLSX from "xlsx";
-import { Invoice } from "@/types";
+import { Invoice, PaymentMethod } from "@/types";
 import { toast } from "@/hooks/use-toast";
 
 interface ExportExcelProps {
@@ -38,11 +37,14 @@ export const exportSalesReportExcel = ({
       const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US");
       const status = invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed");
       
-      let paymentMethod = invoice.paymentMethod;
-      if (paymentMethod === "cash") {
-        paymentMethod = isArabic ? "نقدي" : "Cash";
-      } else if (paymentMethod === "card") {
-        paymentMethod = isArabic ? "بطاقة" : "Card";
+      // Format payment method for display only (not changing the actual type)
+      let displayPaymentMethod: string = invoice.paymentMethod;
+      if (invoice.paymentMethod === "cash") {
+        displayPaymentMethod = isArabic ? "نقدي" : "Cash";
+      } else if (invoice.paymentMethod === "card") {
+        displayPaymentMethod = isArabic ? "بطاقة" : "Card";
+      } else if (invoice.paymentMethod === "transfer") {
+        displayPaymentMethod = isArabic ? "تحويل" : "Transfer";
       }
       
       let orderType = invoice.orderType || "-";
@@ -59,7 +61,7 @@ export const exportSalesReportExcel = ({
         invoice.number,
         invDate,
         status,
-        paymentMethod,
+        displayPaymentMethod,
         orderType,
         invoice.total.toFixed(2)
       ];

@@ -7,6 +7,7 @@
 export const formatPaymentMethod = (method: string, isArabic: boolean): string => {
   if (method === "cash") return isArabic ? "نقدي" : "Cash";
   if (method === "card") return isArabic ? "بطاقة" : "Card";
+  if (method === "transfer") return isArabic ? "تحويل" : "Transfer";
   return method;
 };
 
@@ -24,5 +25,8 @@ export const formatOrderType = (type: string | undefined, isArabic: boolean): st
  */
 export const formatOrderStatus = (status: string, isArabic: boolean): string => {
   if (status === "refunded") return isArabic ? "مسترجع" : "Refunded";
-  return isArabic ? "مكتمل" : "Completed";
+  if (status === "completed") return isArabic ? "مكتمل" : "Completed";
+  if (status === "cancelled") return isArabic ? "ملغي" : "Cancelled";
+  if (status === "pending") return isArabic ? "معلق" : "Pending";
+  return isArabic ? "غير محدد" : "Unknown";
 };

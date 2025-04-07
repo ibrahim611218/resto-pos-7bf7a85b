@@ -33,8 +33,8 @@ export const mockInvoices: Invoice[] = [
     subtotal: 100,
     taxAmount: 15,
     total: 115,
-    paidAmount: 115, // Added paidAmount
-    paymentMethod: "Cash",
+    paidAmount: 115,
+    paymentMethod: "cash", // Changed from "Cash" to "cash"
     customer: {
       id: "cust-1",
       name: "Walk-in Customer",
@@ -64,8 +64,8 @@ export const mockInvoices: Invoice[] = [
     subtotal: 45,
     taxAmount: 6.75,
     total: 51.75,
-    paidAmount: 51.75, // Added paidAmount
-    paymentMethod: "Card",
+    paidAmount: 51.75,
+    paymentMethod: "card", // Changed from "Card" to "card"
     cashierId: "1",
     cashierName: "Ahmed Hassan",
     status: "completed"
@@ -101,8 +101,8 @@ export const mockInvoices: Invoice[] = [
     subtotal: 95,
     taxAmount: 14.25,
     total: 109.25,
-    paidAmount: 109.25, // Added paidAmount
-    paymentMethod: "Cash",
+    paidAmount: 109.25,
+    paymentMethod: "cash", // Changed from "Cash" to "cash"
     cashierId: "2",
     cashierName: "Fatima Ali",
     status: "completed"
@@ -127,8 +127,8 @@ export const mockInvoices: Invoice[] = [
     subtotal: 60,
     taxAmount: 9,
     total: 69,
-    paidAmount: 69, // Added paidAmount
-    paymentMethod: "Cash",
+    paidAmount: 69,
+    paymentMethod: "cash", // Changed from "Cash" to "cash"
     cashierId: "2",
     cashierName: "Fatima Ali",
     status: "refunded"
@@ -164,8 +164,8 @@ export const mockInvoices: Invoice[] = [
     subtotal: 140,
     taxAmount: 21,
     total: 161,
-    paidAmount: 161, // Added paidAmount
-    paymentMethod: "Card",
+    paidAmount: 161,
+    paymentMethod: "card", // Changed from "Card" to "card"
     customer: {
       id: "cust-2",
       name: "Mohammad Khalid",

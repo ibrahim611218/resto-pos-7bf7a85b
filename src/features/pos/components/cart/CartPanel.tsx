@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -7,7 +6,7 @@ import CartFooter from "./CartFooter";
 import { cn } from "@/lib/utils";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { createInvoiceObject } from "@/utils/invoice";
-import { Invoice, Size } from "@/types";
+import { Invoice, Size, PaymentMethod } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { usePaymentDialogs } from "../../hooks/usePaymentDialogs";
@@ -71,8 +70,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     total
   });
 
-  const createAndShowInvoice = React.useCallback((paymentMethod: "cash" | "card" | "transfer", paidAmount: number) => {
-    // Convert cart items to the format expected by createInvoiceObject
+  const createAndShowInvoice = React.useCallback((paymentMethod: PaymentMethod, paidAmount: number) => {
     const invoiceCartItems = cartItems.map(item => ({
       id: item.id,
       productId: item.productId,
@@ -95,38 +93,31 @@ const CartPanel: React.FC<CartPanelProps> = ({
       paymentMethod
     );
     
-    // Add additional invoice details
     invoice.paidAmount = paidAmount;
     invoice.orderType = orderType;
     if (orderType === "dineIn" && tableNumber) {
       invoice.tableNumber = tableNumber;
     }
     
-    // Add transfer receipt number if payment method is transfer
     if (paymentMethod === "transfer" && transferReceiptNumber) {
       invoice.transferReceiptNumber = transferReceiptNumber;
     }
     
-    // Add customer information if available
     if (customer) {
       invoice.customer = customer;
     }
     
-    // Save invoice to current state and show invoice modal
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
     
-    // Clear cart
     clearCart();
     
-    // Show success notification
     toast({
       title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
       description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
     });
   }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, setCurrentInvoice, setShowInvoiceModal, transferReceiptNumber, customer]);
   
-  // Override the completeInvoiceProcess method
   React.useEffect(() => {
     if (paymentMethod && paidAmount !== undefined) {
       createAndShowInvoice(paymentMethod, paidAmount);
@@ -187,7 +178,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </div>
       )}
 
-      {/* Dialogs */}
       <InvoiceDialogs
         showPaymentMethodDialog={showPaymentMethodDialog}
         onClosePaymentDialog={() => handlePaymentMethodSelected("card")} 
