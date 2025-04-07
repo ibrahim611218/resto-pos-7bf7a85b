@@ -39,14 +39,12 @@ export const usePaymentDialogs = ({
     } else {
       // For card, assume full amount is paid
       setPaidAmount(total);
-      completeInvoiceProcess();
     }
   };
 
   const handlePaidAmountConfirmed = (amount: number) => {
     setPaidAmount(amount);
     setShowPaidAmountDialog(false);
-    completeInvoiceProcess();
   };
 
   const handleTransferReceiptConfirmed = (receiptNumber: string, selectedCustomer?: Customer) => {
@@ -54,11 +52,6 @@ export const usePaymentDialogs = ({
     setCustomer(selectedCustomer);
     setPaidAmount(total);
     setShowTransferReceiptDialog(false);
-    completeInvoiceProcess();
-  };
-
-  const completeInvoiceProcess = () => {
-    // This method will be called by the parent component
   };
 
   const handleShowPaidAmountDialog = () => {

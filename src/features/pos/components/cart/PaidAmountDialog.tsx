@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
@@ -11,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import NumericKeypad from "./numeric-keypad/NumericKeypad";
 import QuickAmountButtons from "./quick-amount/QuickAmountButtons";
 import AmountField from "./amount-field/AmountField";
+import { PaymentMethod } from "@/types";
 
 interface PaidAmountDialogProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
   onConfirm: (amount: number) => void;
   total: number;
