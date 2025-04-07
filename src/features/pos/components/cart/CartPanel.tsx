@@ -51,6 +51,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const {
     showPaymentMethodDialog,
     showPaidAmountDialog,
+    showTransferReceiptDialog,
     currentInvoice,
     showInvoiceModal,
     setCurrentInvoice,
@@ -58,6 +59,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
     handleCreateInvoice,
     handlePaymentMethodSelected,
     handlePaidAmountConfirmed,
+    handleTransferReceiptConfirmed,
+    transferReceiptNumber,
+    customer,
     handleShowPaidAmountDialog,
     handleCloseInvoiceModal
   } = usePaymentDialogs({
@@ -67,7 +71,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     total
   });
 
-  const createAndShowInvoice = React.useCallback((paymentMethod: "cash" | "card", paidAmount: number) => {
+  const createAndShowInvoice = React.useCallback((paymentMethod: "cash" | "card" | "transfer", paidAmount: number) => {
     // Convert cart items to the format expected by createInvoiceObject
     const invoiceCartItems = cartItems.map(item => ({
       id: item.id,
@@ -98,6 +102,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
       invoice.tableNumber = tableNumber;
     }
     
+    // Add transfer receipt number if payment method is transfer
+    if (paymentMethod === "transfer" && transferReceiptNumber) {
+      invoice.transferReceiptNumber = transferReceiptNumber;
+    }
+    
+    // Add customer information if available
+    if (customer) {
+      invoice.customer = customer;
+    }
+    
     // Save invoice to current state and show invoice modal
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
@@ -110,7 +124,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
       title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
       description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
     });
-  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, setCurrentInvoice, setShowInvoiceModal]);
+  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, setCurrentInvoice, setShowInvoiceModal, transferReceiptNumber, customer]);
   
   // Override the completeInvoiceProcess method
   React.useEffect(() => {
@@ -181,6 +195,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
         showPaidAmountDialog={showPaidAmountDialog}
         onClosePaidAmountDialog={() => handlePaidAmountConfirmed(total)}
         onConfirmPaidAmount={handlePaidAmountConfirmed}
+        showTransferReceiptDialog={showTransferReceiptDialog}
+        onCloseTransferReceiptDialog={() => handleTransferReceiptConfirmed("", undefined)}
+        onConfirmTransferReceipt={handleTransferReceiptConfirmed}
         total={total}
         currentInvoice={currentInvoice}
         showInvoiceModal={showInvoiceModal}

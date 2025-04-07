@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { PaymentMethod } from "@/types";
+import { Coins, CreditCard, Banknote } from "lucide-react";
 
 interface PaymentMethodSelectorProps {
   paymentMethod: PaymentMethod;
@@ -15,24 +16,33 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   isArabic,
 }) => {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-3 gap-4">
       <Button
         variant={paymentMethod === "cash" ? "default" : "outline"}
-        className="h-14 text-lg"
+        className="h-14 text-lg flex flex-col items-center justify-center p-2"
         onClick={() => setPaymentMethod("cash")}
       >
+        <Coins className="h-5 w-5 mb-1" />
         {isArabic ? "نقدي" : "Cash"}
       </Button>
       <Button
         variant={paymentMethod === "card" ? "default" : "outline"}
-        className="h-14 text-lg"
+        className="h-14 text-lg flex flex-col items-center justify-center p-2"
         onClick={() => setPaymentMethod("card")}
       >
+        <CreditCard className="h-5 w-5 mb-1" />
         {isArabic ? "شبكة" : "Card"}
+      </Button>
+      <Button
+        variant={paymentMethod === "transfer" ? "default" : "outline"}
+        className="h-14 text-lg flex flex-col items-center justify-center p-2"
+        onClick={() => setPaymentMethod("transfer")}
+      >
+        <Banknote className="h-5 w-5 mb-1" />
+        {isArabic ? "تحويل" : "Transfer"}
       </Button>
     </div>
   );
 };
 
 export default PaymentMethodSelector;
-

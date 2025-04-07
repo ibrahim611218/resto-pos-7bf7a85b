@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Invoice, PaymentMethod } from "@/types";
+import { Invoice, PaymentMethod, Customer } from "@/types";
 
 interface UsePaymentDialogsProps {
   paymentMethod?: PaymentMethod;
@@ -17,8 +17,11 @@ export const usePaymentDialogs = ({
 }: UsePaymentDialogsProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [showPaidAmountDialog, setShowPaidAmountDialog] = useState(false);
+  const [showTransferReceiptDialog, setShowTransferReceiptDialog] = useState(false);
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [transferReceiptNumber, setTransferReceiptNumber] = useState("");
+  const [customer, setCustomer] = useState<Customer | undefined>(undefined);
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
@@ -28,9 +31,11 @@ export const usePaymentDialogs = ({
     setPaymentMethod(method);
     setShowPaymentMethodDialog(false);
     
-    // If cash payment, show paid amount dialog
+    // Show appropriate dialog based on payment method
     if (method === "cash") {
       setShowPaidAmountDialog(true);
+    } else if (method === "transfer") {
+      setShowTransferReceiptDialog(true);
     } else {
       // For card, assume full amount is paid
       setPaidAmount(total);
@@ -41,6 +46,14 @@ export const usePaymentDialogs = ({
   const handlePaidAmountConfirmed = (amount: number) => {
     setPaidAmount(amount);
     setShowPaidAmountDialog(false);
+    completeInvoiceProcess();
+  };
+
+  const handleTransferReceiptConfirmed = (receiptNumber: string, selectedCustomer?: Customer) => {
+    setTransferReceiptNumber(receiptNumber);
+    setCustomer(selectedCustomer);
+    setPaidAmount(total);
+    setShowTransferReceiptDialog(false);
     completeInvoiceProcess();
   };
 
@@ -64,6 +77,8 @@ export const usePaymentDialogs = ({
     setShowPaymentMethodDialog,
     showPaidAmountDialog,
     setShowPaidAmountDialog,
+    showTransferReceiptDialog,
+    setShowTransferReceiptDialog,
     currentInvoice,
     setCurrentInvoice,
     showInvoiceModal,
@@ -71,6 +86,9 @@ export const usePaymentDialogs = ({
     handleCreateInvoice,
     handlePaymentMethodSelected,
     handlePaidAmountConfirmed,
+    handleTransferReceiptConfirmed,
+    transferReceiptNumber,
+    customer,
     handleShowPaidAmountDialog,
     handleCloseInvoiceModal
   };

@@ -2,8 +2,9 @@
 import React from "react";
 import PaymentMethodDialog from "../payment/PaymentMethodDialog";
 import PaidAmountDialog from "../payment/PaidAmountDialog";
+import TransferReceiptDialog from "../payment/TransferReceiptDialog";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
-import { Invoice, PaymentMethod } from "@/types";
+import { Invoice, PaymentMethod, Customer } from "@/types";
 
 interface InvoiceDialogsProps {
   showPaymentMethodDialog: boolean;
@@ -12,6 +13,9 @@ interface InvoiceDialogsProps {
   showPaidAmountDialog: boolean;
   onClosePaidAmountDialog: () => void;
   onConfirmPaidAmount: (amount: number) => void;
+  showTransferReceiptDialog?: boolean;
+  onCloseTransferReceiptDialog?: () => void;
+  onConfirmTransferReceipt?: (receiptNumber: string, customer?: Customer) => void;
   total: number;
   currentInvoice: Invoice | null;
   showInvoiceModal: boolean;
@@ -27,6 +31,9 @@ const InvoiceDialogs: React.FC<InvoiceDialogsProps> = ({
   showPaidAmountDialog,
   onClosePaidAmountDialog,
   onConfirmPaidAmount,
+  showTransferReceiptDialog = false,
+  onCloseTransferReceiptDialog = () => {},
+  onConfirmTransferReceipt = () => {},
   total,
   currentInvoice,
   showInvoiceModal,
@@ -46,6 +53,13 @@ const InvoiceDialogs: React.FC<InvoiceDialogsProps> = ({
         open={showPaidAmountDialog}
         onClose={onClosePaidAmountDialog}
         onConfirm={onConfirmPaidAmount}
+        total={total}
+      />
+      
+      <TransferReceiptDialog
+        open={showTransferReceiptDialog}
+        onClose={onCloseTransferReceiptDialog}
+        onConfirm={onConfirmTransferReceipt}
         total={total}
       />
       

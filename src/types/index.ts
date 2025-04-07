@@ -1,4 +1,3 @@
-
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -50,7 +49,7 @@ export interface CartItem {
   name: string;
   nameAr?: string;
   variantId: string;
-  size: Size;
+  size: Size | "regular";
   price: number;
   quantity: number;
   taxable: boolean;
@@ -75,7 +74,7 @@ export interface Invoice {
   taxAmount: number;
   total: number;
   paidAmount: number;         // Added paidAmount property to the Invoice interface
-  paymentMethod: "cash" | "card" | string;
+  paymentMethod: PaymentMethod;
   customer?: Customer;
   cashierId: string;
   cashierName: string;
@@ -84,6 +83,7 @@ export interface Invoice {
   discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
   orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
   tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
+  transferReceiptNumber?: string; // رقم إيصال التحويل
 }
 
 export interface BusinessSettings {
@@ -150,7 +150,7 @@ export interface InventoryItem {
 export type InvoiceExportType = "print" | "pdf" | "email";
 
 // Add payment methods type
-export type PaymentMethod = "cash" | "card"; // نقدي أو شبكة
+export type PaymentMethod = "cash" | "card" | "transfer";
 
 // Customer management types
 export interface CustomerFilter {

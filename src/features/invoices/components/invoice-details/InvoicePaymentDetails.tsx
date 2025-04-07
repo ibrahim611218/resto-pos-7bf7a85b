@@ -27,8 +27,22 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
             {isArabic ? "وسيلة الدفع" : "Payment Method"}
           </div>
           <div className="font-medium text-right">
-            {invoice.paymentMethod}
+            {invoice.paymentMethod === "cash" ? (isArabic ? "نقدي" : "Cash") :
+             invoice.paymentMethod === "card" ? (isArabic ? "شبكة" : "Card") :
+             invoice.paymentMethod === "transfer" ? (isArabic ? "تحويل" : "Transfer") :
+             invoice.paymentMethod}
           </div>
+          
+          {invoice.paymentMethod === "transfer" && invoice.transferReceiptNumber && (
+            <>
+              <div className="text-muted-foreground">
+                {isArabic ? "رقم إيصال التحويل" : "Transfer Receipt"}
+              </div>
+              <div className="font-medium text-right">
+                {invoice.transferReceiptNumber}
+              </div>
+            </>
+          )}
           
           <div className="text-muted-foreground">
             {isArabic ? "المبلغ الإجمالي" : "Total Amount"}
@@ -60,6 +74,66 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
              invoice.status === "refunded" ? (isArabic ? "مسترجعة" : "Refunded") : 
              (isArabic ? "معلقة" : "Pending")}
           </div>
+
+          {invoice.customer && (
+            <>
+              <div className="col-span-2 mt-4 mb-2">
+                <h4 className="font-medium text-sm">
+                  {isArabic ? "بيانات العميل" : "Customer Information"}
+                </h4>
+              </div>
+              <div className="text-muted-foreground">
+                {isArabic ? "اسم العميل" : "Customer Name"}
+              </div>
+              <div className="font-medium text-right">
+                {invoice.customer.name}
+              </div>
+              
+              {invoice.customer.phone && (
+                <>
+                  <div className="text-muted-foreground">
+                    {isArabic ? "رقم الهاتف" : "Phone Number"}
+                  </div>
+                  <div className="font-medium text-right">
+                    {invoice.customer.phone}
+                  </div>
+                </>
+              )}
+              
+              {invoice.customer.taxNumber && (
+                <>
+                  <div className="text-muted-foreground">
+                    {isArabic ? "الرقم الضريبي" : "Tax Number"}
+                  </div>
+                  <div className="font-medium text-right">
+                    {invoice.customer.taxNumber}
+                  </div>
+                </>
+              )}
+              
+              {invoice.customer.commercialRegister && (
+                <>
+                  <div className="text-muted-foreground">
+                    {isArabic ? "السجل التجاري" : "Commercial Register"}
+                  </div>
+                  <div className="font-medium text-right">
+                    {invoice.customer.commercialRegister}
+                  </div>
+                </>
+              )}
+              
+              {invoice.customer.address && (
+                <>
+                  <div className="text-muted-foreground">
+                    {isArabic ? "العنوان" : "Address"}
+                  </div>
+                  <div className="font-medium text-right">
+                    {invoice.customer.address}
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </div>
       </CardContent>
     </Card>

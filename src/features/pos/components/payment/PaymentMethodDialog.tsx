@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,13 +7,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Coins } from "lucide-react";
+import { CreditCard, Coins, Banknote } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { PaymentMethod } from "@/types";
 
 interface PaymentMethodDialogProps {
   open: boolean;
   onClose: () => void;
-  onSelectPaymentMethod: (method: "cash" | "card") => void;
+  onSelectPaymentMethod: (method: PaymentMethod) => void;
 }
 
 const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
@@ -33,7 +34,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4 py-6">
+        <div className="grid grid-cols-3 gap-4 py-6">
           <Button
             onClick={() => onSelectPaymentMethod("cash")}
             variant="outline"
@@ -49,6 +50,14 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
           >
             <CreditCard className="h-12 w-12 mb-2" />
             <span>{isArabic ? "بطاقة" : "Card"}</span>
+          </Button>
+          <Button
+            onClick={() => onSelectPaymentMethod("transfer")}
+            variant="outline"
+            className="flex flex-col items-center justify-center h-32 py-6"
+          >
+            <Banknote className="h-12 w-12 mb-2" />
+            <span>{isArabic ? "تحويل" : "Transfer"}</span>
           </Button>
         </div>
       </DialogContent>
