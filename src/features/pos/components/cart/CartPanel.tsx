@@ -27,7 +27,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isMobile } = useWindowDimensions();
-  const { settings } = useBusinessSettings();
   const { formatInvoiceDate, printInvoice } = useInvoiceFormatting();
   
   const { 
@@ -69,7 +68,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     total
   });
 
-  const createAndShowInvoice = (paymentMethod: "cash" | "card", paidAmount: number) => {
+  const createAndShowInvoice = React.useCallback((paymentMethod: "cash" | "card", paidAmount: number) => {
     // Use the cartItems directly since they now have all required properties
     const invoice = createInvoiceObject(
       cartItems,
@@ -100,14 +99,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
       title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
       description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
     });
-  };
+  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, setCurrentInvoice, setShowInvoiceModal]);
   
   // Override the completeInvoiceProcess method
   React.useEffect(() => {
     if (paymentMethod && paidAmount !== undefined) {
       createAndShowInvoice(paymentMethod, paidAmount);
     }
-  }, [paymentMethod, paidAmount]);
+  }, [paymentMethod, paidAmount, createAndShowInvoice]);
 
   return (
     <div 
