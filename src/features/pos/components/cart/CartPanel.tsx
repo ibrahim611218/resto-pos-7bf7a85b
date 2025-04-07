@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import CartHeader from "./CartHeader";
@@ -8,6 +8,14 @@ import CartFooter from "./CartFooter";
 import EmptyCart from "./EmptyCart";
 import { cn } from "@/lib/utils";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
+import PaymentMethodDialog from "../payment/PaymentMethodDialog";
+import PaidAmountDialog from "../payment/PaidAmountDialog";
+import { createInvoiceObject } from "@/utils/invoice";
+import { Invoice } from "@/types";
+import { toast } from "@/hooks/use-toast";
+import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 
 interface CartPanelProps {
   expanded: boolean;
@@ -21,6 +29,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isMobile } = useWindowDimensions();
+  const { settings } = useBusinessSettings();
+  const { formatInvoiceDate, printInvoice } = useInvoiceFormatting();
   const { 
     cartItems, 
     clearCart, 
@@ -36,12 +46,81 @@ const CartPanel: React.FC<CartPanelProps> = ({
     tableNumber,
     setTableNumber,
     paymentMethod,
-    paidAmount
+    paidAmount,
+    setPaymentMethod,
+    setPaidAmount
   } = useCart();
 
+  // State for dialogs
+  const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
+  const [showPaidAmountDialog, setShowPaidAmountDialog] = useState(false);
+  const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+
   const handleCreateInvoice = () => {
-    // TODO: Implement invoice creation
-    console.log("Creating invoice with", cartItems.length, "items");
+    setShowPaymentMethodDialog(true);
+  };
+
+  const handlePaymentMethodSelected = (method: "cash" | "card") => {
+    setPaymentMethod(method);
+    setShowPaymentMethodDialog(false);
+    
+    // If cash payment, show paid amount dialog
+    if (method === "cash") {
+      setShowPaidAmountDialog(true);
+    } else {
+      // For card, assume full amount is paid
+      createAndShowInvoice(method, total);
+    }
+  };
+
+  const handlePaidAmountConfirmed = (amount: number) => {
+    setPaidAmount(amount);
+    setShowPaidAmountDialog(false);
+    createAndShowInvoice("cash", amount);
+  };
+
+  const createAndShowInvoice = (paymentMethod: "cash" | "card", paidAmount: number) => {
+    const invoice = createInvoiceObject(
+      cartItems,
+      subtotal,
+      taxAmount,
+      discount,
+      discountType,
+      total,
+      paymentMethod
+    );
+    
+    // Add additional invoice details
+    invoice.paidAmount = paidAmount;
+    invoice.orderType = orderType;
+    if (orderType === "dineIn" && tableNumber) {
+      invoice.tableNumber = tableNumber;
+    }
+    
+    // Save invoice to current state and show invoice modal
+    setCurrentInvoice(invoice);
+    setShowInvoiceModal(true);
+    
+    // Clear cart
+    clearCart();
+    
+    // Show success notification
+    toast({
+      title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
+      description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
+    });
+  };
+
+  const handlePaidAmountClick = () => {
+    if (paymentMethod === "cash") {
+      setShowPaidAmountDialog(true);
+    }
+  };
+
+  const handleCloseInvoiceModal = () => {
+    setShowInvoiceModal(false);
+    setCurrentInvoice(null);
   };
 
   return (
@@ -90,6 +169,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
             handleCreateInvoice={handleCreateInvoice}
             clearCart={clearCart}
             isArabic={isArabic}
+            onPaidAmountClick={handlePaidAmountClick}
           />
         </>
       ) : (
@@ -101,6 +181,30 @@ const CartPanel: React.FC<CartPanelProps> = ({
             {isArabic ? 'العناصر' : 'Items'}
           </div>
         </div>
+      )}
+
+      {/* Dialogs */}
+      <PaymentMethodDialog
+        open={showPaymentMethodDialog}
+        onClose={() => setShowPaymentMethodDialog(false)}
+        onSelectPaymentMethod={handlePaymentMethodSelected}
+      />
+      
+      <PaidAmountDialog
+        open={showPaidAmountDialog}
+        onClose={() => setShowPaidAmountDialog(false)}
+        onConfirm={handlePaidAmountConfirmed}
+        total={total}
+      />
+      
+      {currentInvoice && (
+        <InvoiceDetailsModal
+          invoice={currentInvoice}
+          open={showInvoiceModal}
+          onClose={handleCloseInvoiceModal}
+          formatInvoiceDate={formatInvoiceDate}
+          onPrint={printInvoice}
+        />
       )}
     </div>
   );
