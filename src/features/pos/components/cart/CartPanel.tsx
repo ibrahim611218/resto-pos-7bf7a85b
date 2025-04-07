@@ -7,9 +7,8 @@ import CartFooter from "./CartFooter";
 import { cn } from "@/lib/utils";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { createInvoiceObject } from "@/utils/invoice";
-import { Invoice } from "@/types";
+import { Invoice, Size } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { usePaymentDialogs } from "../../hooks/usePaymentDialogs";
 import CartContent from "./CartContent";
@@ -69,9 +68,21 @@ const CartPanel: React.FC<CartPanelProps> = ({
   });
 
   const createAndShowInvoice = React.useCallback((paymentMethod: "cash" | "card", paidAmount: number) => {
-    // Use the cartItems directly since they now have all required properties
+    // Convert cart items to the format expected by createInvoiceObject
+    const invoiceCartItems = cartItems.map(item => ({
+      id: item.id,
+      productId: item.productId,
+      name: item.name,
+      nameAr: item.nameAr,
+      variantId: item.variantId,
+      size: item.size as Size,
+      price: item.price,
+      quantity: item.quantity,
+      taxable: item.taxable
+    }));
+    
     const invoice = createInvoiceObject(
-      cartItems,
+      invoiceCartItems,
       subtotal,
       taxAmount,
       discount,

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
+import { Size } from "@/types";
 
 interface ProductListItemProps {
   product: any; // Using any for now, would be better to define a Product type
@@ -18,13 +19,16 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   const handleAddToCart = () => {
     addToCart({
       id: product.id,
+      productId: product.id,
       name: product.name,
       nameAr: product.nameAr,
       price: product.price,
       quantity: 1,
       image: product.image,
-      size: product.defaultSize || "regular",
-      categoryId: product.categoryId
+      size: (product.defaultSize || "regular") as Size | "regular",
+      categoryId: product.categoryId,
+      variantId: product.variantId || product.id,
+      taxable: product.taxable !== undefined ? product.taxable : true
     });
   };
 

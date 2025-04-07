@@ -1,5 +1,6 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { PaymentMethod, CartItem as InvoiceCartItem } from "@/types";
+import { PaymentMethod, CartItem as InvoiceCartItem, Size } from "@/types";
 
 interface CartItem {
   id: string;
@@ -9,7 +10,7 @@ interface CartItem {
   price: number;
   quantity: number;
   image?: string;
-  size: string;
+  size: Size | "regular";
   variantId: string;
   categoryId: string;
   taxable: boolean;
