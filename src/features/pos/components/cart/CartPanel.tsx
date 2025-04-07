@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -5,13 +6,8 @@ import CartHeader from "./CartHeader";
 import CartFooter from "./CartFooter";
 import { cn } from "@/lib/utils";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
-import { createInvoiceObject } from "@/utils/invoice";
-import { Invoice, Size, PaymentMethod } from "@/types";
-import { toast } from "@/hooks/use-toast";
-import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
-import { usePaymentDialogs } from "../../hooks/usePaymentDialogs";
 import CartContent from "./CartContent";
-import InvoiceDialogs from "./InvoiceDialogs";
+import { useCartInvoice } from "../../hooks/useCartInvoice";
 
 interface CartPanelProps {
   expanded: boolean;
@@ -25,7 +21,6 @@ const CartPanel: React.FC<CartPanelProps> = ({
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isMobile } = useWindowDimensions();
-  const { formatInvoiceDate, printInvoice } = useInvoiceFormatting();
   
   const { 
     cartItems, 
@@ -53,76 +48,28 @@ const CartPanel: React.FC<CartPanelProps> = ({
     showTransferReceiptDialog,
     currentInvoice,
     showInvoiceModal,
-    setCurrentInvoice,
-    setShowInvoiceModal,
     handleCreateInvoice,
     handlePaymentMethodSelected,
     handlePaidAmountConfirmed,
     handleTransferReceiptConfirmed,
-    transferReceiptNumber,
-    customer,
     handleShowPaidAmountDialog,
-    handleCloseInvoiceModal
-  } = usePaymentDialogs({
+    handleInvoiceModalClose
+  } = useCartInvoice({
+    cartItems,
+    subtotal,
+    taxAmount,
+    discount,
+    discountType,
+    total,
+    orderType,
+    tableNumber,
     paymentMethod,
+    paidAmount,
     setPaymentMethod,
     setPaidAmount,
-    total
+    clearCart,
+    isArabic
   });
-
-  const createAndShowInvoice = React.useCallback((paymentMethod: PaymentMethod, paidAmount: number) => {
-    const invoiceCartItems = cartItems.map(item => ({
-      id: item.id,
-      productId: item.productId,
-      name: item.name,
-      nameAr: item.nameAr,
-      variantId: item.variantId,
-      size: item.size as Size,
-      price: item.price,
-      quantity: item.quantity,
-      taxable: item.taxable
-    }));
-    
-    const invoice = createInvoiceObject(
-      invoiceCartItems,
-      subtotal,
-      taxAmount,
-      discount,
-      discountType,
-      total,
-      paymentMethod
-    );
-    
-    invoice.paidAmount = paidAmount;
-    invoice.orderType = orderType;
-    if (orderType === "dineIn" && tableNumber) {
-      invoice.tableNumber = tableNumber;
-    }
-    
-    if (paymentMethod === "transfer" && transferReceiptNumber) {
-      invoice.transferReceiptNumber = transferReceiptNumber;
-    }
-    
-    if (customer) {
-      invoice.customer = customer;
-    }
-    
-    setCurrentInvoice(invoice);
-    setShowInvoiceModal(true);
-    
-    clearCart();
-    
-    toast({
-      title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
-      description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
-    });
-  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, setCurrentInvoice, setShowInvoiceModal, transferReceiptNumber, customer]);
-  
-  React.useEffect(() => {
-    if (paymentMethod && paidAmount !== undefined) {
-      createAndShowInvoice(paymentMethod, paidAmount);
-    }
-  }, [paymentMethod, paidAmount, createAndShowInvoice]);
 
   return (
     <div 
@@ -178,22 +125,17 @@ const CartPanel: React.FC<CartPanelProps> = ({
         </div>
       )}
 
-      <InvoiceDialogs
+      <CartInvoiceDialogs
         showPaymentMethodDialog={showPaymentMethodDialog}
-        onClosePaymentDialog={() => handlePaymentMethodSelected("card")} 
-        onSelectPaymentMethod={handlePaymentMethodSelected}
-        showPaidAmountDialog={showPaidAmountDialog}
-        onClosePaidAmountDialog={() => handlePaidAmountConfirmed(total)}
-        onConfirmPaidAmount={handlePaidAmountConfirmed}
+        showPaidAmountDialog={showPaidAmountDialog} 
         showTransferReceiptDialog={showTransferReceiptDialog}
-        onCloseTransferReceiptDialog={() => handleTransferReceiptConfirmed("", undefined)}
-        onConfirmTransferReceipt={handleTransferReceiptConfirmed}
         total={total}
         currentInvoice={currentInvoice}
         showInvoiceModal={showInvoiceModal}
-        onCloseInvoiceModal={handleCloseInvoiceModal}
-        formatInvoiceDate={formatInvoiceDate}
-        onPrintInvoice={printInvoice}
+        onSelectPaymentMethod={handlePaymentMethodSelected}
+        onConfirmPaidAmount={handlePaidAmountConfirmed}
+        onConfirmTransferReceipt={handleTransferReceiptConfirmed}
+        onCloseInvoiceModal={handleInvoiceModalClose}
       />
     </div>
   );

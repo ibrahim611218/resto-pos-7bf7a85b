@@ -1,17 +1,17 @@
 
-import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
+import React, { useState, useEffect } from "react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import NumericKeypad from "../cart/numeric-keypad/NumericKeypad";
+import QuickAmountButtons from "../cart/quick-amount/QuickAmountButtons";
+import AmountField from "../cart/amount-field/AmountField";
 import { useLanguage } from "@/context/LanguageContext";
-import { formatCurrency } from "@/utils/invoice";
 
 interface PaidAmountDialogProps {
   open: boolean;
@@ -28,88 +28,140 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [amount, setAmount] = useState(total.toString());
-  
-  // Quick amounts options (total + common additions)
-  const quickAmounts = [
-    total,
-    Math.ceil(total / 5) * 5, // Round up to nearest 5
-    Math.ceil(total / 10) * 10, // Round up to nearest 10
-    Math.ceil(total / 50) * 50, // Round up to nearest 50
-    Math.ceil(total / 100) * 100, // Round up to nearest 100
-  ];
-  
-  // Filter out duplicates
-  const uniqueQuickAmounts = [...new Set(quickAmounts)].sort((a, b) => a - b);
+  const [paidAmount, setPaidAmount] = useState<number>(total);
+  const [change, setChange] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>(total.toString());
+  const [isFirstInput, setIsFirstInput] = useState(true);
 
-  const handleConfirm = () => {
-    const parsedAmount = parseFloat(amount);
-    if (!isNaN(parsedAmount) && parsedAmount >= 0) {
-      onConfirm(parsedAmount);
+  useEffect(() => {
+    if (open) {
+      setPaidAmount(total);
+      setInputValue(total.toString());
+      setChange(0);
+      setIsFirstInput(true);
+    }
+  }, [open, total]);
+
+  const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputVal = e.target.value;
+    updateAmount(inputVal);
+  };
+
+  const updateAmount = (inputVal: string) => {
+    setInputValue(inputVal);
+    
+    const value = parseFloat(inputVal);
+    if (!isNaN(value)) {
+      setPaidAmount(value);
+      const changeAmount = value - total;
+      setChange(Math.max(0, changeAmount));
+    } else {
+      setPaidAmount(0);
+      setChange(0);
     }
   };
 
+  const handleNumberClick = (digit: string) => {
+    let newValue = inputValue;
+    
+    if (digit === "C") {
+      newValue = "0";
+      setIsFirstInput(true);
+    } else if (digit === "⌫") {
+      newValue = inputValue.slice(0, -1);
+      if (newValue === "") newValue = "0";
+    } else if (digit === ".") {
+      if (!inputValue.includes(".")) {
+        newValue = isFirstInput ? "0." : inputValue + ".";
+        setIsFirstInput(false);
+      }
+    } else {
+      // For regular digits, replace the value on first click
+      if (isFirstInput) {
+        newValue = digit;
+        setIsFirstInput(false);
+      } else {
+        newValue = inputValue + digit;
+      }
+    }
+    
+    updateAmount(newValue);
+  };
+
+  const handleQuickAmountSelect = (amount: string) => {
+    updateAmount(amount);
+    setIsFirstInput(false);
+  };
+
+  const handleConfirm = () => {
+    onConfirm(paidAmount);
+    onClose();
+  };
+
+  const getQuickAmounts = () => {
+    const roundedTotal = Math.ceil(total);
+    const denominations = [10, 20, 50, 100, 200, 500];
+    return denominations.filter(amount => amount >= roundedTotal);
+  };
+
+  const quickAmounts = getQuickAmounts();
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={(openState) => !openState && onClose()}>
+      <DialogContent
+        className="sm:max-w-md"
+        dir={isArabic ? "rtl" : "ltr"}
+      >
         <DialogHeader>
-          <DialogTitle className="text-center">
-            {isArabic ? "أدخل المبلغ المستلم" : "Enter Paid Amount"}
+          <DialogTitle className="text-xl">
+            {isArabic ? "تفاصيل الدفع" : "Payment Details"}
           </DialogTitle>
         </DialogHeader>
-
-        <div className="py-4 space-y-4">
-          <div>
-            <Label htmlFor="amount">{isArabic ? "المبلغ المستلم" : "Paid Amount"}</Label>
-            <Input
-              id="amount"
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="mt-2 text-left"
-              min="0"
-              autoFocus
-            />
-          </div>
+        
+        <div className="grid gap-4 py-4">
+          <AmountField 
+            id="total-amount"
+            label={isArabic ? "المبلغ الإجمالي" : "Total Amount"}
+            value={total}
+            disabled={true}
+            formatAsCurrency={true}
+            isArabic={isArabic}
+          />
           
-          <div>
-            <Label>{isArabic ? "مبالغ سريعة" : "Quick Amounts"}</Label>
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              {uniqueQuickAmounts.map((quickAmount) => (
-                <Button
-                  key={quickAmount}
-                  type="button"
-                  variant="outline"
-                  onClick={() => setAmount(quickAmount.toString())}
-                >
-                  {formatCurrency(quickAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <AmountField 
+            id="paid-amount"
+            label={isArabic ? "المبلغ المستلم" : "Paid Amount"}
+            value={inputValue}
+            onChange={handlePaidAmountChange}
+            onClick={() => setIsFirstInput(true)}
+            isArabic={isArabic}
+          />
           
-          <div className="pt-2">
-            <div className="flex justify-between text-sm">
-              <span>{isArabic ? "المبلغ الإجمالي" : "Total Amount"}:</span>
-              <span className="font-semibold">{formatCurrency(total, isArabic ? "ar-SA" : "en-US", "SAR")}</span>
-            </div>
-            
-            {parseFloat(amount) > total && (
-              <div className="flex justify-between text-sm text-green-600 mt-1">
-                <span>{isArabic ? "المبلغ المتبقي" : "Change"}:</span>
-                <span className="font-semibold">
-                  {formatCurrency(parseFloat(amount) - total, isArabic ? "ar-SA" : "en-US", "SAR")}
-                </span>
-              </div>
-            )}
-          </div>
+          <QuickAmountButtons 
+            quickAmounts={quickAmounts}
+            total={total}
+            isArabic={isArabic}
+            onAmountSelect={handleQuickAmountSelect}
+          />
+          
+          <NumericKeypad onNumberClick={handleNumberClick} />
+          
+          <AmountField 
+            id="change-amount"
+            label={isArabic ? "المبلغ المتبقي للعميل" : "Change Amount"}
+            value={change}
+            disabled={true}
+            formatAsCurrency={true}
+            className={change > 0 ? 'text-green-500' : 'text-gray-500'}
+            isArabic={isArabic}
+          />
         </div>
-
-        <DialogFooter>
-          <Button onClick={onClose} variant="outline">
+        
+        <DialogFooter className={isArabic ? "sm:justify-start" : "sm:justify-end"}>
+          <Button type="button" variant="outline" onClick={onClose}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button onClick={handleConfirm}>
+          <Button type="button" onClick={handleConfirm}>
             {isArabic ? "تأكيد" : "Confirm"}
           </Button>
         </DialogFooter>
