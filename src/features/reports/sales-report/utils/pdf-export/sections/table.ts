@@ -1,6 +1,7 @@
 
 import { jsPDF } from "jspdf";
 import { Invoice } from "@/types";
+import { formatPaymentMethod, formatOrderType, formatOrderStatus } from "../../formatters";
 
 /**
  * Creates table headers for PDF document
@@ -26,23 +27,9 @@ export const createTableData = (
 ): (string | number)[][] => {
   return filteredInvoices.map((invoice, index) => {
     const invDate = new Date(invoice.date).toLocaleDateString(isArabic ? "ar-SA" : "en-US");
-    const status = invoice.status === "refunded" ? (isArabic ? "مسترجع" : "Refunded") : (isArabic ? "مكتمل" : "Completed");
-    
-    let paymentMethod = invoice.paymentMethod;
-    if (paymentMethod === "cash") {
-      paymentMethod = isArabic ? "نقدي" : "Cash";
-    } else if (paymentMethod === "card") {
-      paymentMethod = isArabic ? "بطاقة" : "Card";
-    }
-    
-    let orderType = invoice.orderType || "-";
-    if (orderType === "takeaway") {
-      orderType = isArabic ? "سفري" : "Takeaway"; 
-    } else if (orderType === "dineIn") {
-      orderType = isArabic ? "محلي" : "Dine In";
-    } else {
-      orderType = isArabic ? "غير محدد" : "-";
-    }
+    const status = formatOrderStatus(invoice.status, isArabic);
+    const paymentMethod = formatPaymentMethod(invoice.paymentMethod, isArabic);
+    const orderType = formatOrderType(invoice.orderType, isArabic);
     
     return [
       (index + 1).toString(),

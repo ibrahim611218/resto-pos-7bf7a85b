@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { CreditCard, Coins, Banknote } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { PaymentMethod } from "@/types";
+import { formatPaymentMethod } from "@/features/reports/sales-report/utils/formatters";
 
 interface PaymentMethodDialogProps {
   open: boolean;
@@ -41,7 +42,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             className="flex flex-col items-center justify-center h-32 py-6"
           >
             <Coins className="h-12 w-12 mb-2" />
-            <span>{isArabic ? "نقدي" : "Cash"}</span>
+            <span>{formatPaymentMethod("cash", isArabic)}</span>
           </Button>
           <Button
             onClick={() => onSelectPaymentMethod("card")}
@@ -49,7 +50,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             className="flex flex-col items-center justify-center h-32 py-6"
           >
             <CreditCard className="h-12 w-12 mb-2" />
-            <span>{isArabic ? "بطاقة" : "Card"}</span>
+            <span>{formatPaymentMethod("card", isArabic)}</span>
           </Button>
           <Button
             onClick={() => onSelectPaymentMethod("transfer")}
@@ -57,7 +58,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             className="flex flex-col items-center justify-center h-32 py-6"
           >
             <Banknote className="h-12 w-12 mb-2" />
-            <span>{isArabic ? "تحويل" : "Transfer"}</span>
+            <span>{formatPaymentMethod("transfer", isArabic)}</span>
           </Button>
         </div>
       </DialogContent>

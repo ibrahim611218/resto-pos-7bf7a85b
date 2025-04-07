@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { PaymentMethod } from "@/types";
 import { Coins, CreditCard, Banknote } from "lucide-react";
+import { formatPaymentMethod } from "@/features/reports/sales-report/utils/formatters";
 
 interface PaymentMethodSelectorProps {
   paymentMethod: PaymentMethod;
@@ -23,7 +24,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         onClick={() => setPaymentMethod("cash")}
       >
         <Coins className="h-5 w-5 mb-1" />
-        {isArabic ? "نقدي" : "Cash"}
+        {formatPaymentMethod("cash", isArabic)}
       </Button>
       <Button
         variant={paymentMethod === "card" ? "default" : "outline"}
@@ -31,7 +32,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         onClick={() => setPaymentMethod("card")}
       >
         <CreditCard className="h-5 w-5 mb-1" />
-        {isArabic ? "شبكة" : "Card"}
+        {formatPaymentMethod("card", isArabic)}
       </Button>
       <Button
         variant={paymentMethod === "transfer" ? "default" : "outline"}
@@ -39,7 +40,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         onClick={() => setPaymentMethod("transfer")}
       >
         <Banknote className="h-5 w-5 mb-1" />
-        {isArabic ? "تحويل" : "Transfer"}
+        {formatPaymentMethod("transfer", isArabic)}
       </Button>
     </div>
   );

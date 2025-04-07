@@ -3,6 +3,7 @@ import React from "react";
 import { Invoice } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatPaymentMethod, formatOrderType, formatOrderStatus } from "@/features/reports/sales-report/utils/formatters";
 
 interface InvoicePaymentDetailsProps {
   invoice: Invoice;
@@ -14,14 +15,6 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
   
   // Calculate the remaining amount
   const remainingAmount = invoice.total - invoice.paidAmount;
-  
-  // Format payment method for display
-  const getDisplayPaymentMethod = (method: string) => {
-    if (method === "cash") return isArabic ? "نقدي" : "Cash";
-    if (method === "card") return isArabic ? "شبكة" : "Card";
-    if (method === "transfer") return isArabic ? "تحويل" : "Transfer";
-    return method;
-  };
   
   return (
     <Card className="mb-4">
@@ -35,7 +28,7 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
             {isArabic ? "وسيلة الدفع" : "Payment Method"}
           </div>
           <div className="font-medium text-right">
-            {getDisplayPaymentMethod(invoice.paymentMethod)}
+            {formatPaymentMethod(invoice.paymentMethod, isArabic)}
           </div>
           
           {invoice.paymentMethod === "transfer" && invoice.transferReceiptNumber && (
@@ -74,10 +67,7 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
             {isArabic ? "حالة الفاتورة" : "Invoice Status"}
           </div>
           <div className="font-medium text-right">
-            {invoice.status === "completed" ? (isArabic ? "مكتملة" : "Completed") : 
-             invoice.status === "cancelled" ? (isArabic ? "ملغاة" : "Cancelled") : 
-             invoice.status === "refunded" ? (isArabic ? "مسترجعة" : "Refunded") : 
-             (isArabic ? "معلقة" : "Pending")}
+            {formatOrderStatus(invoice.status, isArabic)}
           </div>
 
           {invoice.customer && (
