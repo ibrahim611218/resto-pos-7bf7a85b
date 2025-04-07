@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -81,6 +80,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   };
 
   const createAndShowInvoice = (paymentMethod: "cash" | "card", paidAmount: number) => {
+    // Use the cartItems directly since they now have all required properties
     const invoice = createInvoiceObject(
       cartItems,
       subtotal,

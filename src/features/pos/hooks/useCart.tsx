@@ -1,16 +1,18 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { PaymentMethod } from "@/types";
+import { PaymentMethod, CartItem as InvoiceCartItem } from "@/types";
 
 interface CartItem {
   id: string;
+  productId: string;
   name: string;
   nameAr?: string;
   price: number;
   quantity: number;
   image?: string;
   size: string;
+  variantId: string;
   categoryId: string;
+  taxable: boolean;
 }
 
 interface CartContextType {
@@ -49,18 +51,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
   const [paidAmount, setPaidAmount] = useState<number>();
 
-  // Calculate subtotal (sum of all item prices * quantities)
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
-  // Calculate tax amount (15% VAT)
   const taxAmount = subtotal * 0.15;
   
-  // Calculate discount amount
   const discountAmount = discountType === "percentage" 
     ? (subtotal + taxAmount) * (discount / 100) 
     : discount;
   
-  // Calculate total
   const total = subtotal + taxAmount - discountAmount;
 
   const addToCart = (newItem: CartItem) => {
@@ -70,12 +68,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
       
       if (existingItemIndex !== -1) {
-        // Item exists, increase quantity
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += newItem.quantity;
         return updatedItems;
       } else {
-        // Item doesn't exist, add new item
         return [...prevItems, newItem];
       }
     });

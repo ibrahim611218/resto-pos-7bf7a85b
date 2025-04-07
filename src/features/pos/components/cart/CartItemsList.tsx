@@ -9,7 +9,7 @@ import RemoveItemButton from "./RemoveItemButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CartItemsListProps {
-  cartItems: any[];
+  cartItems: any[]; // We're using any[] to avoid type conflicts during this transition
   isArabic: boolean;
 }
 
