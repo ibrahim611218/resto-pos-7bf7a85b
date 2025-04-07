@@ -7,9 +7,10 @@ import ItemDetails from "./ItemDetails";
 import QuantityControls from "./QuantityControls";
 import RemoveItemButton from "./RemoveItemButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CartItem } from "@/types";
 
 interface CartItemsListProps {
-  cartItems: any[]; // We're using any[] to avoid type conflicts during this transition
+  cartItems: CartItem[];
   isArabic: boolean;
 }
 
