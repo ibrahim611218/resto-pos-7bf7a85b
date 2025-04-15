@@ -22,15 +22,15 @@ export const getBaseStyles = (): string => `
   .invoice-container {
     position: relative;
     width: 100%;
-    max-width: 21cm; /* A4 width */
+    max-width: 80mm; /* Standard thermal receipt width */
     margin: 0 auto;
-    padding: 1cm;
+    padding: 10mm;
     box-sizing: border-box;
   }
 
   @media print {
     @page {
-      size: A4;
+      size: 80mm 297mm; /* Standard thermal receipt size */
       margin: 0;
     }
     
@@ -38,16 +38,21 @@ export const getBaseStyles = (): string => `
       background-color: white;
       padding: 0;
       margin: 0;
+      width: 80mm;
     }
     
     .invoice-container {
-      width: 100%;
+      width: 80mm;
       max-width: none;
-      margin: 0 auto;
-      height: 100%;
-      padding: 1cm;
+      margin: 0;
+      padding: 5mm;
       box-sizing: border-box;
       page-break-after: always;
+    }
+
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
   }
 `;

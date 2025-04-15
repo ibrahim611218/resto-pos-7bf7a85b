@@ -14,19 +14,20 @@ export const getQRCodeStyles = (): string => `
     border: 1px solid #e5e5e5;
   }
   
-  .qr-code img {
+  .qr-code canvas {
     display: inline-block !important;
-    width: 100px;
-    height: 100px;
+    width: 100px !important;
+    height: 100px !important;
   }
 
   @media print {
     .qr-code {
       display: block !important;
       margin: 20px auto !important;
+      page-break-inside: avoid;
     }
     
-    .qr-code img, .qr-code canvas {
+    .qr-code canvas {
       display: inline-block !important;
       width: 100px !important;
       height: 100px !important;

@@ -24,6 +24,13 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
             size={120}
             bgColor="#FFFFFF"
             fgColor="#000000"
+            level="H"
+            includeMargin={true}
+            style={{
+              width: '100px',
+              height: '100px',
+              display: 'inline-block'
+            }}
           />
         </div>
       </div>
