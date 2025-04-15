@@ -14,7 +14,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
   return (
     <>
       <div className="flex justify-center">
-        <div className="bg-white p-2 rounded">
+        <div className="bg-white p-2 rounded border border-gray-200">
           <QRCodeSVG value={qrCodeData} size={120} />
         </div>
       </div>

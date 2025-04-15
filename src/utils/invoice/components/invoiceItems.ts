@@ -15,10 +15,10 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
     `;
   }
   
-  // إضافة سجل تصحيح للتأكد من البيانات
+  // For debugging purposes
   console.log("Invoice items data:", JSON.stringify(invoice.items));
   
-  return `
+  let tableHTML = `
     <table class="invoice-table">
       <thead>
         <tr>
@@ -30,21 +30,46 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
         </tr>
       </thead>
       <tbody>
-        ${invoice.items.map((item, index) => {
-          // إضافة سجل لكل عنصر
-          console.log(`Processing item ${index+1}:`, item.nameAr || item.name);
-          
-          return `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${item.nameAr || item.name} ${item.size ? `(${item.size})` : ''}</td>
-              <td>${item.price.toFixed(2)} ر.س</td>
-              <td>${item.quantity}</td>
-              <td>${(item.price * item.quantity).toFixed(2)} ر.س</td>
-            </tr>
-          `;
-        }).join('')}
+  `;
+
+  // Process each item individually to catch errors
+  invoice.items.forEach((item, index) => {
+    try {
+      console.log(`Processing item ${index+1}:`, item.nameAr || item.name);
+      
+      const itemName = item.nameAr || item.name || "غير معروف";
+      const itemSize = item.size ? `(${item.size})` : '';
+      const itemPrice = typeof item.price === 'number' ? item.price.toFixed(2) : '0.00';
+      const itemQuantity = item.quantity || 1;
+      const itemTotal = (Number(item.price) * Number(itemQuantity)).toFixed(2);
+      
+      tableHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${itemName} ${itemSize}</td>
+          <td>${itemPrice} ر.س</td>
+          <td>${itemQuantity}</td>
+          <td>${itemTotal} ر.س</td>
+        </tr>
+      `;
+    } catch (error) {
+      console.error(`Error processing item ${index+1}:`, error);
+      tableHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>خطأ في بيانات المنتج</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      `;
+    }
+  });
+  
+  tableHTML += `
       </tbody>
     </table>
   `;
+  
+  return tableHTML;
 };

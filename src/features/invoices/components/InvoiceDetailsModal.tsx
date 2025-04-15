@@ -45,11 +45,19 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
     ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
     : invoice.discount;
 
-  // Handle print using handleInvoiceExport instead of the passed onPrint function
+  // Handle print using handleInvoiceExport with complete data
   const handlePrint = () => {
-    // Pass the complete invoice object and settings to ensure all data is available
-    console.log("Printing invoice:", JSON.stringify(invoice));
-    handleInvoiceExport("print", invoice, settings);
+    // Make sure we have all the data we need
+    console.log("Printing invoice with settings:", settings);
+    if (invoice && settings) {
+      // Pass the complete invoice object and settings
+      handleInvoiceExport("print", invoice, settings);
+    } else {
+      console.error("Missing invoice or settings for printing", {
+        hasInvoice: !!invoice,
+        hasSettings: !!settings
+      });
+    }
   };
 
   return (

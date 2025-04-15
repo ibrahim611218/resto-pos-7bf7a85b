@@ -38,7 +38,7 @@ export const exportInvoiceToPDF = (
           @media print {
             .no-print { display: none !important; }
             body { margin: 0; padding: 0; }
-            @page { size: auto; margin: 10mm; }
+            @page { size: auto; margin: 0; }
           }
           .print-button {
             background-color: #0f766e;
@@ -140,14 +140,18 @@ export const handleInvoiceExport = (
           printWindow.document.write(printContent);
           printWindow.document.close();
           
-          // Ensure document is fully loaded before printing
+          // Pre-load fonts and images with a sufficient delay
           printWindow.onload = function() {
             console.log("Print window loaded successfully");
             printWindow.focus();
+            
+            // Force layout recalculation to ensure QR code renders
+            printWindow.document.body.offsetHeight;
+            
             setTimeout(() => {
               console.log("Triggering print");
               printWindow.print();
-            }, 1000);
+            }, 1500); // Increased delay to 1.5 seconds for better rendering
           };
         } else {
           console.error("Failed to open print window");
@@ -159,6 +163,11 @@ export const handleInvoiceExport = (
         }
       } catch (error) {
         console.error("Error in print function:", error);
+        toast({
+          title: "خطأ في الطباعة",
+          description: "حدث خطأ أثناء محاولة الطباعة",
+          variant: "destructive",
+        });
       }
       break;
     case "pdf":
