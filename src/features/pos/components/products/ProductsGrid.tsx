@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
@@ -23,13 +22,11 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load products and categories on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         
-        // Check if we're in Electron environment with DB access
         if (window.db) {
           const [categoriesResult, productsResult] = await Promise.all([
             window.db.getCategories(),
@@ -38,9 +35,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
           setCategories(categoriesResult);
           setProducts(productsResult);
         } else {
-          // In browser preview, use mock data
           console.log('Using mock data for POS preview');
-          // Import mock data
           const { mockProducts, mockCategories } = await import('../../data/mockData');
           setCategories(mockCategories);
           setProducts(mockProducts);
@@ -56,11 +51,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
     loadData();
   }, [isArabic]);
 
-  // Filter products based on search term and selected category
   useEffect(() => {
     let result = [...products];
 
-    // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(product => 
@@ -69,7 +62,6 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
       );
     }
 
-    // Filter by category
     if (selectedCategory !== "all") {
       result = result.filter(product => product.categoryId === selectedCategory);
     }
@@ -86,9 +78,8 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   }
   
   return (
-    <div className="space-y-4">
-      {/* Search and category filter */}
-      <div className="flex flex-col md:flex-row gap-4 sticky top-0 bg-background z-10 pb-4">
+    <div className="space-y-4 h-full">
+      <div className="flex flex-col md:flex-row gap-4 sticky top-0 bg-background z-10 pb-4 px-1">
         <div className="relative flex-1">
           <Search className={`absolute ${isArabic ? 'left-3' : 'right-3'} top-3 h-4 w-4 text-muted-foreground`} />
           <Input
@@ -101,8 +92,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
         </div>
       </div>
 
-      {/* Categories filter */}
-      <div className="overflow-x-auto pb-2">
+      <div className="overflow-x-auto pb-2 px-1">
         <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
           <TabsList className="h-10 p-1 w-full inline-flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
             <TabsTrigger value="all" className="px-4 whitespace-nowrap flex-shrink-0">
@@ -117,19 +107,18 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
         </Tabs>
       </div>
 
-      {/* Products grid/list */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
           {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
         </div>
       ) : viewMode === "grid" ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 px-1">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2 px-1">
           {filteredProducts.map((product) => (
             <ProductListItem key={product.id} product={product} />
           ))}

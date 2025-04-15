@@ -24,7 +24,7 @@ const Pos = () => {
 
   return (
     <div className="flex flex-col h-full pos-screen pos-layout">
-      <div className="p-4 flex justify-between items-center relative z-20 flex-shrink-0">
+      <div className="p-2 flex justify-between items-center relative z-20 flex-shrink-0">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
           <FullscreenToggle className="mr-2" />
@@ -33,19 +33,19 @@ const Pos = () => {
           </Button>
         </div>
       </div>
-      <Separator className="mb-4 flex-shrink-0" />
+      <Separator className="mb-2 flex-shrink-0" />
       
       <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
         {/* Products section */}
         <div className="flex-1 overflow-hidden products-section">
           <ScrollArea className="h-[calc(100vh-120px)] pos-scroll-area">
-            <div className="p-4">
+            <div className="pr-1">
               <ProductsGrid viewMode={viewMode} />
             </div>
           </ScrollArea>
         </div>
         
-        {/* Cart section - ensure it stays within bounds */}
+        {/* Cart section */}
         <div className="cart-container">
           <CartPanel 
             expanded={cartExpanded} 
