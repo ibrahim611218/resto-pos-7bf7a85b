@@ -1,5 +1,5 @@
-
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
@@ -26,6 +26,7 @@ import LicenseCheck from "./features/auth/components/LicenseCheck";
 import { useLanguage } from "./context/LanguageContext";
 import Pos from "./pages/Pos";
 import { CartProvider } from "./features/pos/hooks/useCart";
+import CategoryForm from "./pages/CategoryForm";
 
 function App() {
   const { language } = useLanguage();
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/categories" element={<Categories />} />
+                <Route path="/categories/add" element={<CategoryForm />} />
                 <Route path="/inventory" element={<Inventory />} />
                 {/* Fix reports routes */}
                 <Route path="/sales-report" element={<SalesReport />} />
