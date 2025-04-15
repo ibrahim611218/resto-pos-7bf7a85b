@@ -1,118 +1,8 @@
 
-import { CartItem } from "@/types";
+import { Invoice } from "@/types";
 
 /**
- * Generates a numeric invoice number
- */
-export const generateInvoiceNumber = (): string => {
-  // Get existing invoices from localStorage to find the highest invoice number
-  let nextInvoiceNumber = 1;
-  try {
-    const storedInvoices = localStorage.getItem('invoices');
-    if (storedInvoices) {
-      const invoices = JSON.parse(storedInvoices);
-      // Find the highest invoice number
-      const highestNumber = invoices.reduce((max: number, invoice: any) => {
-        const invoiceNum = parseInt(invoice.number);
-        return isNaN(invoiceNum) ? max : Math.max(max, invoiceNum);
-      }, 0);
-      nextInvoiceNumber = highestNumber + 1;
-    }
-  } catch (error) {
-    console.error("Error getting next invoice number:", error);
-    // Default to 1 if there's an error
-    nextInvoiceNumber = 1;
-  }
-  
-  return nextInvoiceNumber.toString();
-};
-
-/**
- * Calculates invoice subtotal, tax and total amounts based on cart items
- */
-export const calculateInvoiceAmounts = (
-  items: CartItem[],
-  taxRate: number = 15, // Default to 15% if taxRate is invalid
-  discount: number = 0,
-  discountType: "percentage" | "fixed" = "percentage",
-  taxIncluded: boolean = false
-): { subtotal: number; taxAmount: number; total: number } => {
-  // Ensure taxRate is a valid number
-  const validTaxRate = Number(taxRate);
-  const effectiveTaxRate = isNaN(validTaxRate) ? 15 : validTaxRate;
-  
-  // إذا كانت الضريبة مضمنة في السعر، نحتاج إلى استخراج قيمة الضريبة من السعر
-  if (taxIncluded) {
-    // حساب المجموع الإجمالي شامل الضريبة
-    const totalWithTax = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    
-    // استخراج القيمة الضريبية من المجموع
-    const taxAmount = +(totalWithTax - (totalWithTax / (1 + effectiveTaxRate / 100))).toFixed(2);
-    
-    // حساب المجموع بدون ضريبة
-    const subtotal = +(totalWithTax - taxAmount).toFixed(2);
-    
-    // حساب قيمة الخصم
-    const discountAmount = discountType === "percentage" 
-      ? totalWithTax * (discount / 100)
-      : discount;
-    
-    // حساب المجموع النهائي بعد الخصم ويتم تقريبه للرقم الصحيح
-    const totalBeforeRounding = Math.max(0, totalWithTax - discountAmount);
-    const total = Math.round(totalBeforeRounding);
-    
-    return {
-      subtotal,
-      taxAmount,
-      total,
-    };
-  } else {
-    // الطريقة الأصلية لحساب الفاتورة عندما تكون الضريبة غير مضمنة في السعر
-    const subtotal = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    
-    const taxableSubtotal = items
-      .filter((item) => item.taxable)
-      .reduce((sum, item) => sum + item.price * item.quantity, 0);
-    
-    const taxAmount = +(taxableSubtotal * (effectiveTaxRate / 100)).toFixed(2);
-    
-    const discountAmount = discountType === "percentage" 
-      ? (subtotal + taxAmount) * (discount / 100)
-      : discount;
-    
-    const totalBeforeRounding = Math.max(0, subtotal + taxAmount - discountAmount);
-    const total = Math.round(totalBeforeRounding);
-    
-    return {
-      subtotal: +subtotal.toFixed(2),
-      taxAmount: +taxAmount.toFixed(2),
-      total,
-    };
-  }
-};
-
-/**
- * Formats a number as currency
- */
-export const formatCurrency = (
-  amount: number,
-  locale: string = "en-US",
-  currency: string = "SAR"
-): string => {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-  }).format(amount);
-};
-
-/**
- * Calculates the discount amount
+ * Calculate the discount amount based on subtotal, tax, discount value and discount type
  */
 export const calculateDiscountAmount = (
   subtotal: number,
@@ -120,7 +10,88 @@ export const calculateDiscountAmount = (
   discount: number,
   discountType: "percentage" | "fixed"
 ): number => {
-  return discountType === "percentage"
-    ? (subtotal + taxAmount) * (discount / 100)
-    : discount;
+  if (discount <= 0) return 0;
+  
+  if (discountType === "percentage") {
+    return (subtotal + taxAmount) * (discount / 100);
+  } else {
+    return discount;
+  }
+};
+
+/**
+ * Format currency with proper locale and currency code
+ */
+export const formatCurrency = (
+  amount: number,
+  locale: string = "ar-SA",
+  currency: string = "SAR"
+): string => {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
+/**
+ * Generate a unique invoice number
+ */
+export const generateInvoiceNumber = (): string => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
+  
+  return `INV-${year}${month}${day}-${randomDigits}`;
+};
+
+/**
+ * Calculate invoice amounts (subtotal, taxAmount, total)
+ */
+export const calculateInvoiceAmounts = (
+  items: { price: number; quantity: number }[],
+  taxRate: number,
+  taxIncluded: boolean,
+  discount: number,
+  discountType: "percentage" | "fixed"
+): {
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+} => {
+  // Calculate subtotal
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
+  // Calculate tax
+  let taxAmount = 0;
+  if (taxIncluded) {
+    // If tax is included, extract it from subtotal
+    taxAmount = subtotal - subtotal / (1 + taxRate / 100);
+  } else {
+    // If tax is not included, add it to subtotal
+    taxAmount = subtotal * (taxRate / 100);
+  }
+  
+  // Calculate total before discount
+  const totalBeforeDiscount = taxIncluded ? subtotal : subtotal + taxAmount;
+  
+  // Calculate discount
+  let discountAmount = 0;
+  if (discountType === "percentage") {
+    discountAmount = totalBeforeDiscount * (discount / 100);
+  } else {
+    discountAmount = Math.min(discount, totalBeforeDiscount); // Cannot discount more than total
+  }
+  
+  // Calculate final total
+  const total = totalBeforeDiscount - discountAmount;
+  
+  return {
+    subtotal,
+    taxAmount,
+    total
+  };
 };

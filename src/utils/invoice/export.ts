@@ -125,9 +125,13 @@ export const handleInvoiceExport = (
   businessSettings: BusinessSettings,
   email?: string
 ): void => {
+  console.log("Handling invoice export:", exportType, invoice, businessSettings);
+  
   switch (exportType) {
     case "print":
       const printContent = generateInvoiceTemplate(invoice, businessSettings);
+      console.log("Generated print content length:", printContent.length);
+      
       const printWindow = window.open('', '_blank');
       
       if (printWindow) {
@@ -135,10 +139,12 @@ export const handleInvoiceExport = (
         printWindow.document.close();
         
         // Ensure document is fully loaded before printing
-        setTimeout(() => {
+        printWindow.onload = function() {
           printWindow.focus();
-          printWindow.print();
-        }, 500);
+          setTimeout(() => {
+            printWindow.print();
+          }, 500);
+        };
       } else {
         toast({
           title: "تنبيه",

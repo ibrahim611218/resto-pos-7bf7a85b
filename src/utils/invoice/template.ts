@@ -15,6 +15,9 @@ import { generateInvoiceFooter } from "./components/invoiceFooter";
  * Generates HTML content for printable invoice
  */
 export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: BusinessSettings): string => {
+  console.log("Generating invoice template for invoice:", invoice.id, invoice.number);
+  console.log("Using business settings:", businessSettings);
+  
   // Use default settings if none provided
   const settings = businessSettings || {
     name: "مطعم الذواق",
@@ -39,6 +42,9 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       مسترجعة
     </div>
   ` : '';
+  
+  console.log("Invoice items:", invoice.items.length);
+  console.log("Invoice status:", invoice.status);
   
   const htmlContent = `
     <!DOCTYPE html>
@@ -83,13 +89,13 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
 
       <script>
         window.onload = function() {
-          // Auto print when loaded
-          // window.print();
+          console.log("Invoice print window loaded");
         };
       </script>
     </body>
     </html>
   `;
   
+  console.log("HTML content generated with length:", htmlContent.length);
   return htmlContent;
 };
