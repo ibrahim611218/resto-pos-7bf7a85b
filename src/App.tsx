@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
@@ -27,6 +28,7 @@ import { useLanguage } from "./context/LanguageContext";
 import Pos from "./pages/Pos";
 import { CartProvider } from "./features/pos/hooks/useCart";
 import CategoryForm from "./pages/CategoryForm";
+import ProductForm from "./components/ProductForm";
 
 function App() {
   const { language } = useLanguage();
@@ -52,6 +54,8 @@ function App() {
                 <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/products/add" element={<ProductForm />} />
+                <Route path="/products/edit/:id" element={<ProductForm />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/add" element={<CategoryForm />} />
                 <Route path="/inventory" element={<Inventory />} />
