@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FileDown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
-import { exportToExcel } from "@/utils/reports/export";
+import { exportToExcel } from "@/utils/reports";
 
 // Mock customer data
 const customersData = [
@@ -47,7 +47,13 @@ const CustomersReport: React.FC = () => {
       item.taxNumber || ""
     ]);
     
-    exportToExcel(headers, data, 'customers_report');
+    exportToExcel({
+      headers,
+      data,
+      fileName: 'customers_report',
+      title: isArabic ? "تقرير العملاء" : "Customers Report",
+      isArabic
+    });
   };
 
   return (
