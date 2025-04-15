@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -8,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import CartContent from "./CartContent";
 import { useCartInvoice } from "../../hooks/useCartInvoice";
+import CartInvoiceDialogs from "./CartInvoiceDialogs";
 
 interface CartPanelProps {
   expanded: boolean;

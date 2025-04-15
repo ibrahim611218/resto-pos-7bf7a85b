@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";

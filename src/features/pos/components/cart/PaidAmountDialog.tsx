@@ -7,39 +7,39 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import NumericKeypad from "./numeric-keypad/NumericKeypad";
-import QuickAmountButtons from "./quick-amount/QuickAmountButtons";
-import AmountField from "./amount-field/AmountField";
-import { PaymentMethod } from "@/types";
+import NumericKeypad from "../cart/numeric-keypad/NumericKeypad";
+import QuickAmountButtons from "../cart/quick-amount/QuickAmountButtons";
+import AmountField from "../cart/amount-field/AmountField";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface PaidAmountDialogProps {
   open: boolean;
   onClose: () => void;
   onConfirm: (amount: number) => void;
   total: number;
-  isArabic: boolean;
 }
 
 const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
-  isOpen,
+  open,
   onClose,
   onConfirm,
   total,
-  isArabic
 }) => {
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
   const [paidAmount, setPaidAmount] = useState<number>(total);
   const [change, setChange] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string>(total.toString());
   const [isFirstInput, setIsFirstInput] = useState(true);
 
   useEffect(() => {
-    if (isOpen) {
+    if (open) {
       setPaidAmount(total);
       setInputValue(total.toString());
       setChange(0);
       setIsFirstInput(true);
     }
-  }, [isOpen, total]);
+  }, [open, total]);
 
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputVal = e.target.value;
@@ -106,7 +106,7 @@ const PaidAmountDialog: React.FC<PaidAmountDialogProps> = ({
   const quickAmounts = getQuickAmounts();
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={open} onOpenChange={(openState) => !openState && onClose()}>
       <DialogContent
         className="sm:max-w-md"
         dir={isArabic ? "rtl" : "ltr"}
