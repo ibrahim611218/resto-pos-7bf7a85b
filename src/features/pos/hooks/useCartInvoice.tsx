@@ -104,6 +104,7 @@ export const useCartInvoice = ({
       taxable: item.taxable
     }));
     
+    // Use the createInvoiceObject with the proper parameters
     const invoice = createInvoiceObject(
       invoiceCartItems,
       subtotal,

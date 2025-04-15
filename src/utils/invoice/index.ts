@@ -1,5 +1,5 @@
 
-import { Invoice, CartItem, Customer } from "@/types";
+import { Invoice, CartItem, Customer, PaymentMethod } from "@/types";
 import { generateInvoiceTemplate } from "./template";
 import { calculateInvoiceAmounts, calculateDiscountAmount, formatCurrency, generateInvoiceNumber } from "./calculations";
 import { generateInvoiceQRCodeData } from "./qrcode";
@@ -22,7 +22,7 @@ export const createInvoiceObject = (
   discount: number,
   discountType: "percentage" | "fixed",
   total: number,
-  paymentMethod: "cash" | "card",
+  paymentMethod: PaymentMethod,
   customerName?: string,
   customerTaxNumber?: string
 ): Invoice => {
