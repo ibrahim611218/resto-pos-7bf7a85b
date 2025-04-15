@@ -1,8 +1,9 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
 
-export type Size = "small" | "medium" | "large";
+export type Size = "small" | "medium" | "large" | "regular";
 
 export type ProductType = "food" | "drink" | "dessert" | "other" | "sized" | "single";
 
