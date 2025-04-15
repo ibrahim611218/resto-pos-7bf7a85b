@@ -1,63 +1,81 @@
+
 /* Fix POS layout in both fullscreen and normal modes */
 .pos-screen {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  max-height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  width: 100% !important;
   overflow: hidden !important;
-  padding: 0 0.5rem !important;
+  contain: layout !important;
 }
 
-/* Fix cart panel overflow in all modes */
+/* Cart panel layout */
 .cart-panel {
   display: flex !important;
   flex-direction: column !important;
-  max-height: 100vh !important;
-  overflow: hidden !important;
+  height: 100% !important;
   border-left: 1px solid var(--border) !important;
-  margin-right: 0.25rem !important;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1) !important;
   width: 100% !important;
   max-width: 400px !important;
+  margin-right: 0 !important;
+  background-color: var(--background) !important;
 }
 
-/* Ensure cart content scrolls properly and doesn't overflow */
+/* Cart content scroll fix */
 .cart-content {
   flex: 1 !important;
   overflow: auto !important;
   display: flex !important;
   flex-direction: column !important;
-  padding-right: 0.25rem !important;
 }
 
-/* Fix for cart header and footer to stay in place */
+/* Header and footer fixes */
 .cart-header,
 .cart-footer {
   flex-shrink: 0 !important;
+  background-color: var(--background) !important;
+  position: relative !important;
+  z-index: 10 !important;
 }
 
-/* Cart panel bounds fix */
-.pos-layout {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  max-height: 100vh !important;
-  overflow: hidden !important;
-  padding-right: 0.5rem !important;
-}
-
-/* Products section in POS should scroll independently */
+/* Products section layout */
 .products-section {
   flex: 1 !important;
   overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
   padding-right: 0.5rem !important;
+  height: 100% !important;
 }
 
-/* Ensure scroll areas work properly in POS mode */
+/* Scroll area fixes */
 .pos-scroll-area {
   height: 100% !important;
-  max-height: calc(100vh - 120px) !important;
   overflow: hidden !important;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 1024px) {
+  .cart-panel {
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    height: 100dvh !important;
+    z-index: 50 !important;
+  }
+}
+
+/* Product grid container */
+.product-grid-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem !important;
+}
+
+/* Product card size constraints */
+.product-card {
+  max-width: 200px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
 }

@@ -1,7 +1,5 @@
 
 import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/context/LanguageContext";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
@@ -9,6 +7,7 @@ import CartPanel from "@/features/pos/components/cart/CartPanel";
 import { Separator } from "@/components/ui/separator";
 import { Grid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import FullscreenToggle from "@/components/ui-custom/FullscreenToggle";
 
 const Pos = () => {
@@ -23,8 +22,8 @@ const Pos = () => {
   };
 
   return (
-    <div className="flex flex-col h-full pos-screen pos-layout">
-      <div className="p-2 flex justify-between items-center relative z-20 flex-shrink-0">
+    <div className="flex flex-col h-dvh max-h-dvh overflow-hidden">
+      <div className="p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 sticky top-0">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
           <FullscreenToggle className="mr-2" />
@@ -33,25 +32,21 @@ const Pos = () => {
           </Button>
         </div>
       </div>
-      <Separator className="mb-2 flex-shrink-0" />
+      <Separator className="mb-2" />
       
-      <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
-        {/* Products section */}
+      <div className="flex-1 flex h-[calc(100%-4rem)] overflow-hidden">
         <div className="flex-1 overflow-hidden products-section">
-          <ScrollArea className="h-[calc(100vh-120px)] pos-scroll-area">
-            <div className="pr-1">
+          <ScrollArea className="h-full w-full">
+            <div className="px-2">
               <ProductsGrid viewMode={viewMode} />
             </div>
           </ScrollArea>
         </div>
         
-        {/* Cart section */}
-        <div className="cart-container">
-          <CartPanel 
-            expanded={cartExpanded} 
-            onToggleExpand={() => setCartExpanded(prev => !prev)} 
-          />
-        </div>
+        <CartPanel 
+          expanded={cartExpanded} 
+          onToggleExpand={() => setCartExpanded(prev => !prev)} 
+        />
       </div>
     </div>
   );
