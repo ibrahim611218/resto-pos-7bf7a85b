@@ -1,0 +1,10 @@
+
+@import './base.css';
+@import './dropdowns.css';
+@import './pos.css';
+@import './layout.css';
+
+/* Additional global styles */
+body {
+  isolation: isolate;
+}

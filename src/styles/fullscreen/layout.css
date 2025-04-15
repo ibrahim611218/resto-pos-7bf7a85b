@@ -1,0 +1,35 @@
+
+/* Fix for content visibility during fullscreen transitions */
+.in-fullscreen .content-container,
+.in-fullscreen .flex-grow-container {
+  z-index: 5 !important;
+  visibility: visible !important;
+  display: flex !important;
+  flex: 1 !important;
+  flex-direction: column !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  contain: layout;
+}
+
+/* Ensure proper layout for components in fullscreen */
+.in-fullscreen .space-y-2 {
+  padding: 0.25rem !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Fix for sidebar visibility in fullscreen */
+.in-fullscreen aside {
+  z-index: 1000 !important;
+}
+
+/* Fullscreen sidebar */
+.fullscreen-sidebar {
+  position: fixed !important;
+  z-index: 1000 !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+}
