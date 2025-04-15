@@ -36,6 +36,9 @@ const LicenseActivation: React.FC = () => {
       duration: 10000 // وقت أطول لضمان استمرار الرسالة
     });
 
+    // أضف تأخير صغير لضمان تحديث واجهة المستخدم أولاً
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     try {
       // استدعاء وظيفة التفعيل بشكل مباشر مع await
       const success = await activateLicense(licenseKey);
@@ -47,8 +50,11 @@ const LicenseActivation: React.FC = () => {
         // إظهار رسالة النجاح
         toast.success('تم تفعيل الترخيص بنجاح');
         
-        // الانتقال إلى الصفحة الرئيسية
-        navigate('/', { replace: true });
+        // الانتقال إلى الصفحة الرئيسية بعد تأخير قصير
+        // للسماح بعرض رسالة النجاح
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 500);
       } else {
         // إظهار رسالة الخطأ
         toast.error('فشل تفعيل الرمز، يرجى التأكد من صحة الرمز والمحاولة مرة أخرى');

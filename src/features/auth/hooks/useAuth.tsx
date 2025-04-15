@@ -11,6 +11,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { permissionsMap, getUserPermissions, updateUserPermissions: updatePermissions } = useUserPermissions();
 
   // Check for stored user on init
@@ -30,37 +31,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (email: string, password: string): boolean => {
-    // In a real app, this would make an API request
-    const foundUser = mockUsers.find(
-      u => u.email === email && u.password === password
-    );
-
-    if (foundUser) {
-      // Don't store the password in localStorage for security
-      const { password, ...userWithoutPassword } = foundUser;
+  const login = async (email: string, password: string): Promise<boolean> => {
+    if (isProcessing) return false;
+    
+    try {
+      setIsProcessing(true);
       
-      try {
-        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-        setUser(userWithoutPassword);
-        setIsAuthenticated(true);
-        return true;
-      } catch (error) {
-        console.error("Failed to save user to localStorage:", error);
-        return false;
+      // Add small delay to allow UI state update
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
+      // In a real app, this would make an API request
+      const foundUser = mockUsers.find(
+        u => u.email === email && u.password === password
+      );
+
+      if (foundUser) {
+        // Don't store the password in localStorage for security
+        const { password, ...userWithoutPassword } = foundUser;
+        
+        try {
+          localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+          setUser(userWithoutPassword);
+          setIsAuthenticated(true);
+          return true;
+        } catch (error) {
+          console.error("Failed to save user to localStorage:", error);
+          return false;
+        }
       }
+      return false;
+    } finally {
+      setIsProcessing(false);
     }
-    return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (isProcessing) return;
+    
     try {
-      localStorage.removeItem('user');
-    } catch (error) {
-      console.error("Error removing user from localStorage:", error);
+      setIsProcessing(true);
+      
+      // Add small delay to allow UI state update
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
+      try {
+        localStorage.removeItem('user');
+      } catch (error) {
+        console.error("Error removing user from localStorage:", error);
+      } finally {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
     } finally {
-      setUser(null);
-      setIsAuthenticated(false);
+      setIsProcessing(false);
     }
   };
 
@@ -113,7 +136,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider value={{ 
       user, 
-      isAuthenticated, 
+      isAuthenticated,
+      isProcessing,
       login, 
       logout, 
       hasPermission,

@@ -19,14 +19,24 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { login } = useAuth();
+  const { login, isProcessing } = useAuth();
   const isArabic = language === "ar";
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (email && password) {
-      const success = login(email, password);
+    if (!email || !password) {
+      toast.error(
+        isArabic
+          ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
+          : "Please enter email and password"
+      );
+      return;
+    }
+    
+    try {
+      const success = await login(email, password);
+      
       if (success) {
         toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
         navigate("/");
@@ -37,11 +47,12 @@ const Login: React.FC<LoginProps> = ({ language }) => {
             : "Invalid login credentials"
         );
       }
-    } else {
+    } catch (error) {
+      console.error("Login error:", error);
       toast.error(
         isArabic
-          ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-          : "Please enter email and password"
+          ? "حدث خطأ أثناء تسجيل الدخول"
+          : "An error occurred during login"
       );
     }
   };
@@ -70,6 +81,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-12"
+                  disabled={isProcessing}
                 />
               </div>
               <div className="space-y-2">
@@ -80,6 +92,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12"
+                  disabled={isProcessing}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -90,6 +103,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                     onCheckedChange={(checked) => 
                       setRememberMe(checked as boolean)
                     }
+                    disabled={isProcessing}
                   />
                   <label
                     htmlFor="remember"
@@ -98,12 +112,15 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                     {isArabic ? "تذكرني" : "Remember me"}
                   </label>
                 </div>
-                <Button variant="link" className="px-0">
+                <Button variant="link" className="px-0" disabled={isProcessing}>
                   {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
                 </Button>
               </div>
-              <Button type="submit" className="w-full h-12">
-                {isArabic ? "تسجيل الدخول" : "Sign in"}
+              <Button type="submit" className="w-full h-12" disabled={isProcessing}>
+                {isProcessing 
+                  ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
+                  : (isArabic ? "تسجيل الدخول" : "Sign in")
+                }
               </Button>
             </form>
           </CardContent>

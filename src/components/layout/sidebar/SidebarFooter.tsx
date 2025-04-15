@@ -7,6 +7,7 @@ import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import ThemeToggle from "../../ui-custom/ThemeToggle";
 import { Language } from "@/types";
 import FullscreenToggle from "../../ui-custom/FullscreenToggle";
+import { toast } from "sonner";
 
 interface SidebarFooterProps {
   collapsed: boolean;
@@ -19,6 +20,24 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
   language, 
   onLogout 
 }) => {
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    
+    try {
+      setIsLoggingOut(true);
+      // Add small delay to allow UI state update to render
+      await new Promise(resolve => setTimeout(resolve, 10));
+      onLogout();
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("حدث خطأ أثناء تسجيل الخروج");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <div className="border-t p-3 space-y-2">
       <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
@@ -36,12 +55,13 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
           "w-full transition-all duration-300 ease-in-out bg-transparent border-orange-500 text-orange-500 hover:text-white hover:bg-orange-600",
           collapsed ? "justify-center" : "justify-start"
         )}
-        onClick={onLogout}
+        onClick={handleLogout}
+        disabled={isLoggingOut}
       >
         <LogOut size={18} />
         {!collapsed && (
           <AnimatedTransition animation="fade">
-            <span className="mr-2">تسجيل الخروج</span>
+            <span className="mr-2">{isLoggingOut ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}</span>
           </AnimatedTransition>
         )}
       </Button>
