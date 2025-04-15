@@ -171,6 +171,7 @@ export const useCartInvoice = ({
     handleTransferReceiptConfirmed,
     transferReceiptNumber,
     customer,
+    setCustomer,
     handleShowPaidAmountDialog,
     handleInvoiceModalClose,
     formatInvoiceDate,

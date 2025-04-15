@@ -29,7 +29,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
 
   const handleAddToCart = () => {
     // If product has multiple sizes, show size selection dialog
-    if (product.type === "sized" && product.variants.length > 1) {
+    if (product.variants.length > 1) {
       setSelectedSize(product.variants[0].size);
       setShowSizeDialog(true);
     } else {
@@ -99,7 +99,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               <h3 className="font-medium">
                 {isArabic ? product.nameAr || product.name : product.name}
               </h3>
-              {product.type === "sized" && product.variants.length > 1 ? (
+              {product.variants.length > 1 ? (
                 <p className="text-sm text-muted-foreground">
                   {product.variants[0].price.toFixed(2)} - {product.variants[product.variants.length - 1].price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
                 </p>

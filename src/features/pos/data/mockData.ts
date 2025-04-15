@@ -46,7 +46,9 @@ export const mockProducts = [
     type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var2", size: "regular" as Size, price: 15 }
+      { id: "var2-s", size: "small" as Size, price: 13 },
+      { id: "var2-r", size: "regular" as Size, price: 15 },
+      { id: "var2-l", size: "large" as Size, price: 17 }
     ]
   },
   {
@@ -58,7 +60,9 @@ export const mockProducts = [
     type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var3", size: "regular" as Size, price: 18 }
+      { id: "var3-s", size: "small" as Size, price: 16 },
+      { id: "var3-r", size: "regular" as Size, price: 18 },
+      { id: "var3-l", size: "large" as Size, price: 20 }
     ]
   },
   {
@@ -70,7 +74,9 @@ export const mockProducts = [
     type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var4", size: "regular" as Size, price: 18 }
+      { id: "var4-s", size: "small" as Size, price: 16 },
+      { id: "var4-r", size: "regular" as Size, price: 18 },
+      { id: "var4-l", size: "large" as Size, price: 20 }
     ]
   },
   {
@@ -82,7 +88,9 @@ export const mockProducts = [
     type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var5", size: "regular" as Size, price: 20 }
+      { id: "var5-s", size: "small" as Size, price: 18 },
+      { id: "var5-r", size: "regular" as Size, price: 20 },
+      { id: "var5-l", size: "large" as Size, price: 22 }
     ]
   },
   {
@@ -94,7 +102,9 @@ export const mockProducts = [
     type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var6", size: "regular" as Size, price: 22 }
+      { id: "var6-s", size: "small" as Size, price: 20 },
+      { id: "var6-r", size: "regular" as Size, price: 22 },
+      { id: "var6-l", size: "large" as Size, price: 24 }
     ]
   },
   {

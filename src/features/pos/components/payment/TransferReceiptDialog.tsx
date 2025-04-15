@@ -1,18 +1,11 @@
 
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Customer } from "@/types";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import CustomerSelectionForm from "./CustomerSelectionForm";
 import { useLanguage } from "@/context/LanguageContext";
-import { Customer } from "@/types";
 
 interface TransferReceiptDialogProps {
   open: boolean;
@@ -25,7 +18,7 @@ const TransferReceiptDialog: React.FC<TransferReceiptDialogProps> = ({
   open,
   onClose,
   onConfirm,
-  total,
+  total
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -33,72 +26,35 @@ const TransferReceiptDialog: React.FC<TransferReceiptDialogProps> = ({
   const [customer, setCustomer] = useState<Customer | undefined>(undefined);
 
   const handleConfirm = () => {
-    if (!receiptNumber) {
-      return; // Don't allow empty receipt number
-    }
     onConfirm(receiptNumber, customer);
-    resetForm();
   };
 
-  const handleClose = () => {
-    onClose();
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setReceiptNumber("");
-    setCustomer(undefined);
-  };
-
-  // Handle customer selection
   const handleCustomerChange = (selectedCustomer?: Customer) => {
     setCustomer(selectedCustomer);
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent
-        className="sm:max-w-md"
-        dir={isArabic ? "rtl" : "ltr"}
-      >
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent className="sm:max-w-[500px]" dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
-          <DialogTitle className="text-xl">
-            {isArabic ? "تفاصيل التحويل البنكي" : "Bank Transfer Details"}
+          <DialogTitle className="text-center">
+            {isArabic ? "رقم إيصال التحويل" : "Transfer Receipt Number"}
           </DialogTitle>
         </DialogHeader>
-
-        <div className="grid gap-4 py-4">
-          <div>
-            <Label htmlFor="receiptNumber" className="mb-2 block">
-              {isArabic ? "رقم إيصال التحويل" : "Transfer Receipt Number"}
-              <span className="text-red-500">*</span>
-            </Label>
+        
+        <div className="space-y-6 py-4">
+          <div className="space-y-2">
             <Input
-              id="receiptNumber"
+              placeholder={isArabic ? "أدخل رقم إيصال التحويل" : "Enter receipt number"}
               value={receiptNumber}
               onChange={(e) => setReceiptNumber(e.target.value)}
-              placeholder={
-                isArabic
-                  ? "أدخل رقم إيصال التحويل البنكي"
-                  : "Enter bank transfer receipt number"
-              }
-              className="w-full"
-              dir={isArabic ? "rtl" : "ltr"}
+              className={isArabic ? "text-right" : ""}
             />
           </div>
-
-          <div className="my-4">
-            <Label className="mb-2 block">
-              {isArabic ? "إجمالي المبلغ" : "Total Amount"}
-            </Label>
-            <div className="font-bold text-lg">
-              {total.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-            </div>
-          </div>
-
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-medium mb-4">
-              {isArabic ? "معلومات العميل" : "Customer Information"}
+          
+          <div className="space-y-4">
+            <h3 className="font-medium">
+              {isArabic ? "بيانات العميل (اختياري)" : "Customer Information (Optional)"}
             </h3>
             <CustomerSelectionForm 
               onCustomerChange={handleCustomerChange}
@@ -106,16 +62,9 @@ const TransferReceiptDialog: React.FC<TransferReceiptDialogProps> = ({
             />
           </div>
         </div>
-
-        <DialogFooter className={isArabic ? "sm:justify-start" : "sm:justify-end"}>
-          <Button type="button" variant="outline" onClick={handleClose}>
-            {isArabic ? "إلغاء" : "Cancel"}
-          </Button>
-          <Button 
-            type="button" 
-            onClick={handleConfirm}
-            disabled={!receiptNumber}
-          >
+        
+        <DialogFooter className={isArabic ? "justify-start" : ""}>
+          <Button onClick={handleConfirm} disabled={!receiptNumber}>
             {isArabic ? "تأكيد" : "Confirm"}
           </Button>
         </DialogFooter>
