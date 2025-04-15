@@ -1,6 +1,7 @@
 
 import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, ChefHat, KeySquare, ShoppingCart } from "lucide-react";
 import { SidebarLink } from "./types";
+import { UserRole } from "@/types";
 
 // Function to get sidebar links with proper Arabic labels
 export const getSidebarLinks = (): SidebarLink[] => {
@@ -10,72 +11,84 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Home",
       path: "/",
       icon: Home,
+      // Home is accessible to all roles
     },
     {
       name: "نقاط البيع",
       name_en: "POS",
       path: "/pos",
       icon: ShoppingCart,
+      roles: ["cashier", "supervisor", "admin", "owner"]
     },
     {
       name: "المنتجات",
       name_en: "Products",
       path: "/products",
       icon: ShoppingBag,
+      roles: ["supervisor", "admin", "owner"]
     },
     {
       name: "التصنيفات",
       name_en: "Categories",
       path: "/categories",
       icon: Box,
+      roles: ["supervisor", "admin", "owner"]
     },
     {
       name: "الفواتير",
       name_en: "Invoices",
       path: "/invoices",
       icon: ReceiptText,
+      roles: ["cashier", "supervisor", "admin", "owner"]
     },
     {
       name: "العملاء",
       name_en: "Customers",
       path: "/customers",
       icon: Users,
+      roles: ["cashier", "supervisor", "admin", "owner"]
     },
     {
       name: "المخزون",
       name_en: "Inventory",
       path: "/inventory",
       icon: Box,
+      roles: ["supervisor", "admin", "owner"]
     },
     {
       name: "المطبخ",
       name_en: "Kitchen",
       path: "/kitchen",
       icon: ChefHat,
+      roles: ["kitchen", "supervisor", "admin", "owner"]
     },
     {
       name: "التقارير",
       name_en: "Reports",
       path: "/reports",
       icon: BarChart3,
+      roles: ["supervisor", "admin", "owner"],
       subMenuItems: [
         {
           name: "تقرير المبيعات",
           name_en: "Sales Report",
           path: "/sales-report",
           icon: BarChart3,
+          roles: ["supervisor", "admin", "owner"]
         },
         {
           name: "تقرير المخزون",
           name_en: "Inventory Report",
           path: "/inventory-report",
           icon: Box,
+          roles: ["supervisor", "admin", "owner"]
         },
         {
           name: "تقرير العملاء",
           name_en: "Customers Report",
           path: "/customers-report",
           icon: Users,
+          roles: ["supervisor", "admin", "owner"]
         },
       ],
     },
@@ -84,13 +97,14 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "User Management",
       path: "/user-management",
       icon: Users,
-      isAdminOnly: true,
+      roles: ["admin", "owner"]
     },
     {
       name: "الإعدادات",
       name_en: "Settings",
       path: "/business-settings",
       icon: Settings,
+      roles: ["admin", "owner"]
     },
     {
       name: "مولد التراخيص",

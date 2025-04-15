@@ -1,19 +1,13 @@
 
-import { ElementType, ReactNode } from "react";
+import { UserRole } from "@/types";
 
 export interface SidebarLink {
   name: string;
   name_en: string;
   path: string;
-  icon: ElementType;
-  subMenuItems?: SidebarLink[];
-  isAction?: boolean;
-  action?: string;
+  icon: React.ComponentType<any>;
   isAdminOnly?: boolean;
   requiredEmail?: string;
-}
-
-export interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
+  roles?: UserRole[];
+  subMenuItems?: SidebarLink[];
 }

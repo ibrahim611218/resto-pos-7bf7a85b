@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from 'react';
 import { User, UserRole } from '@/types';
 import { mockUsers } from '../data/mockUsers';
@@ -38,16 +37,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsProcessing(true);
       
       // Add small delay to allow UI state update
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // In a real app, this would make an API request
+      // Trim the email to handle whitespace issues
+      const trimmedEmail = email.trim();
+      
+      // Find user by email (case insensitive)
       const foundUser = mockUsers.find(
-        u => u.email === email && u.password === password
+        u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
       );
 
       if (foundUser) {
         // Don't store the password in localStorage for security
-        const { password, ...userWithoutPassword } = foundUser;
+        const { password: _, ...userWithoutPassword } = foundUser;
         
         try {
           localStorage.setItem('user', JSON.stringify(userWithoutPassword));
@@ -61,7 +63,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return false;
     } finally {
-      setIsProcessing(false);
+      // Add a small delay before setting processing to false
+      // to ensure UI updates properly
+      setTimeout(() => {
+        setIsProcessing(false);
+      }, 300);
     }
   };
 
@@ -72,9 +78,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsProcessing(true);
       
       // Add small delay to allow UI state update
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       try {
+        // We keep the permissions data in localStorage to persist
+        // user preferences even after logout
         localStorage.removeItem('user');
       } catch (error) {
         console.error("Error removing user from localStorage:", error);
@@ -83,7 +91,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(false);
       }
     } finally {
-      setIsProcessing(false);
+      // Add a small delay before setting processing to false
+      // to ensure UI updates properly
+      setTimeout(() => {
+        setIsProcessing(false);
+      }, 300);
     }
   };
 

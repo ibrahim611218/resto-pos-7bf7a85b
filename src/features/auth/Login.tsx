@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +19,15 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { login, isProcessing } = useAuth();
+  const { login, isProcessing, isAuthenticated } = useAuth();
   const isArabic = language === "ar";
+  
+  // Check if already authenticated and redirect to home
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +123,11 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                   {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
                 </Button>
               </div>
-              <Button type="submit" className="w-full h-12" disabled={isProcessing}>
+              <Button 
+                type="submit" 
+                className="w-full h-12" 
+                disabled={isProcessing}
+              >
                 {isProcessing 
                   ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
                   : (isArabic ? "تسجيل الدخول" : "Sign in")

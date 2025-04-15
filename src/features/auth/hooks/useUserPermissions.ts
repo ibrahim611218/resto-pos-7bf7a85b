@@ -4,15 +4,32 @@ import { User } from '@/types';
 import { mockUsers } from '../data/mockUsers';
 import { allPermissions } from '../data/permissions';
 
+const PERMISSIONS_STORAGE_KEY = 'user_permissions_data';
+
 export function useUserPermissions() {
   const [permissionsMap, setPermissionsMap] = useState<Record<string, string[]>>({});
 
+  // Load permissions from localStorage on init
+  useEffect(() => {
+    try {
+      const storedPermissions = localStorage.getItem(PERMISSIONS_STORAGE_KEY);
+      if (storedPermissions) {
+        setPermissionsMap(JSON.parse(storedPermissions));
+      }
+    } catch (error) {
+      console.error("Error loading permissions from localStorage:", error);
+    }
+  }, []);
+
   // Initialize default permissions for users if not already set
   useEffect(() => {
-    const initialPermissions: Record<string, string[]> = {};
+    const initialPermissions: Record<string, string[]> = { ...permissionsMap };
+    let hasChanges = false;
     
     mockUsers.forEach(user => {
-      if (!permissionsMap[user.id]) {
+      if (!initialPermissions[user.id]) {
+        hasChanges = true;
+        
         switch (user.role) {
           case 'owner':
           case 'admin':
@@ -31,27 +48,41 @@ export function useUserPermissions() {
             initialPermissions[user.id] = ['manage_kitchen'];
             break;
         }
-      } else {
-        initialPermissions[user.id] = permissionsMap[user.id];
       }
     });
     
-    setPermissionsMap(initialPermissions);
-  }, []);
+    if (hasChanges) {
+      setPermissionsMap(initialPermissions);
+      // Save to localStorage
+      try {
+        localStorage.setItem(PERMISSIONS_STORAGE_KEY, JSON.stringify(initialPermissions));
+      } catch (error) {
+        console.error("Error saving permissions to localStorage:", error);
+      }
+    }
+  }, [permissionsMap]);
 
   const getUserPermissions = (userId: string): string[] => {
     return permissionsMap[userId] || [];
   };
   
-  // Fix: Update the function signature to match AuthContextType
   const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
-    // Implementation can handle the current user check internally
-    setPermissionsMap({
+    const updatedPermissionsMap = {
       ...permissionsMap,
       [userId]: permissions
-    });
+    };
     
-    return true;
+    // Save to state
+    setPermissionsMap(updatedPermissionsMap);
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem(PERMISSIONS_STORAGE_KEY, JSON.stringify(updatedPermissionsMap));
+      return true;
+    } catch (error) {
+      console.error("Error saving permissions to localStorage:", error);
+      return false;
+    }
   };
 
   return {

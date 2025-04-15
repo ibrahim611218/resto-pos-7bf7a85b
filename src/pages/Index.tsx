@@ -13,17 +13,45 @@ interface IndexProps {
 const Index: React.FC<IndexProps> = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { user } = useAuth();
+  const { user, hasPermission } = useAuth();
   const sidebarLinks = getSidebarLinks();
   
-  // Filter links based on user role and permissions
+  // Filter links based on user role, permissions, and required email
   const filteredLinks = sidebarLinks.filter(link => {
-    if (link.isAdminOnly && (!user || user.role !== 'admin')) {
+    // If link requires admin role, check if user has admin permissions
+    if (link.isAdminOnly && (!user || !hasPermission(['admin', 'owner']))) {
       return false;
     }
+    
+    // If link requires specific email, check user email
     if (link.requiredEmail && (!user || user.email !== link.requiredEmail)) {
       return false;
     }
+    
+    // Check role-specific menu items
+    if (link.roles && (!user || !link.roles.includes(user.role))) {
+      return false;
+    }
+
+    // Handle role-specific submenu items
+    if (link.subMenuItems && link.subMenuItems.length > 0) {
+      // Filter submenu items based on roles
+      const filteredSubMenuItems = link.subMenuItems.filter(subItem => {
+        if (subItem.roles && (!user || !subItem.roles.includes(user.role))) {
+          return false;
+        }
+        return true;
+      });
+      
+      // If no submenu items left after filtering, hide the entire menu
+      if (filteredSubMenuItems.length === 0) {
+        return false;
+      }
+      
+      // Update the subMenuItems array with filtered items
+      link.subMenuItems = filteredSubMenuItems;
+    }
+    
     return true;
   });
 

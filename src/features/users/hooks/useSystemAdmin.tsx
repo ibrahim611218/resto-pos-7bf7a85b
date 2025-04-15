@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { UserWithPassword } from "../types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
+const SYSTEM_ADMIN_CREATED_KEY = 'system_admin_initialized';
+
 export const useSystemAdmin = (
   users: UserWithPassword[],
   setUsers: React.Dispatch<React.SetStateAction<UserWithPassword[]>>
@@ -10,11 +12,16 @@ export const useSystemAdmin = (
   const { allPermissions, updateUserPermissions } = useAuth();
 
   useEffect(() => {
+    // Check if we've already created the system admin in this session
+    const systemAdminInitialized = localStorage.getItem(SYSTEM_ADMIN_CREATED_KEY);
+    
+    // Check if system admin exists in users array
     const systemAdminExists = users.some(user => 
       user.email === "system_admin@example.com" && user.role === "owner"
     );
     
-    if (!systemAdminExists) {
+    // Only create if not initialized and not in the users array
+    if (!systemAdminInitialized && !systemAdminExists) {
       const systemAdmin: UserWithPassword = {
         id: "sys-admin-1",
         name: "مدير النظام",
@@ -28,6 +35,9 @@ export const useSystemAdmin = (
       // Ensure system admin has all permissions
       const allPermissionValues = allPermissions.map(p => p.value);
       updateUserPermissions(systemAdmin.id, allPermissionValues);
+      
+      // Mark as initialized in localStorage
+      localStorage.setItem(SYSTEM_ADMIN_CREATED_KEY, 'true');
     }
   }, [users, allPermissions, updateUserPermissions, setUsers]);
 };
