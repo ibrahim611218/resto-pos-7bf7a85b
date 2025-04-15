@@ -24,12 +24,12 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         value={categoryId} 
         onValueChange={handleCategoryChange}
       >
-        <SelectTrigger id="category">
+        <SelectTrigger id="category" className="relative z-10">
           <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
         </SelectTrigger>
         <SelectContent 
           position="popper" 
-          className="z-[9999]" 
+          className="z-[9999] bg-background" 
           sideOffset={4}
           align="start"
         >
