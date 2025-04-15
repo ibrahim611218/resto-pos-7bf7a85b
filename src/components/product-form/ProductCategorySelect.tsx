@@ -18,23 +18,24 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
   isArabic,
 }) => {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 relative z-10">
       <Label htmlFor="category">{isArabic ? "التصنيف" : "Category"}</Label>
       <Select 
         value={categoryId} 
         onValueChange={handleCategoryChange}
       >
-        <SelectTrigger id="category">
+        <SelectTrigger id="category" className="bg-background">
           <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
         </SelectTrigger>
         <SelectContent 
           position="popper" 
-          className="z-[9999]" 
+          className="z-[9999] bg-background" 
           sideOffset={4}
           align="start"
+          avoidCollisions={true}
         >
           {categories.map(category => (
-            <SelectItem key={category.id} value={category.id}>
+            <SelectItem key={category.id} value={category.id} className="cursor-pointer">
               {isArabic ? (category.nameAr || category.name) : category.name}
             </SelectItem>
           ))}

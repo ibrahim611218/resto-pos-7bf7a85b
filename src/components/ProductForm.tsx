@@ -11,6 +11,7 @@ import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
 import { useProductForm } from "./product-form/useProductForm";
+import { useFullscreen } from "@/hooks/useFullscreen";
 
 const ProductForm = () => {
   const {
@@ -30,54 +31,68 @@ const ProductForm = () => {
     handleSubmit,
     navigate
   } = useProductForm();
+  
+  const { isFullscreen } = useFullscreen();
 
   return (
-    <div className="container mx-auto p-4">
-      <Card>
+    <div className={`container mx-auto p-4 product-form-container ${isFullscreen ? 'scrollable-content' : ''}`}>
+      <Card className="product-form-card">
         <form onSubmit={handleSubmit}>
           <ProductFormHeader isEditing={isEditing} isArabic={isArabic} />
           
           <CardContent className="space-y-4">
-            <ProductBasicInfo 
-              product={product}
-              handleInputChange={handleInputChange}
-              handleImageChange={handleImageChange}
-              isArabic={isArabic}
-            />
+            <div className="form-section">
+              <ProductBasicInfo 
+                product={product}
+                handleInputChange={handleInputChange}
+                handleImageChange={handleImageChange}
+                isArabic={isArabic}
+              />
+            </div>
             
-            <ProductCategorySelect 
-              categoryId={product.categoryId}
-              handleCategoryChange={handleCategoryChange}
-              categories={sampleCategories}
-              isArabic={isArabic}
-            />
+            <div className="form-section select-container">
+              <ProductCategorySelect 
+                categoryId={product.categoryId}
+                handleCategoryChange={handleCategoryChange}
+                categories={sampleCategories}
+                isArabic={isArabic}
+              />
+            </div>
             
-            <ProductTypeRadio 
-              productType={product.type}
-              handleTypeChange={handleTypeChange}
-              isArabic={isArabic}
-            />
+            <div className="form-section">
+              <ProductTypeRadio 
+                productType={product.type}
+                handleTypeChange={handleTypeChange}
+                isArabic={isArabic}
+              />
+            </div>
             
-            <ProductTaxSwitch 
-              taxable={product.taxable}
-              handleSwitchChange={handleSwitchChange}
-              isArabic={isArabic}
-            />
+            <div className="form-section">
+              <ProductTaxSwitch 
+                taxable={product.taxable}
+                handleSwitchChange={handleSwitchChange}
+                isArabic={isArabic}
+              />
+            </div>
             
             {product.type === "single" ? (
-              <ProductPriceInput 
-                price={product.price}
-                handlePriceChange={handlePriceChange}
-                isArabic={isArabic}
-              />
+              <div className="form-section">
+                <ProductPriceInput 
+                  price={product.price}
+                  handlePriceChange={handlePriceChange}
+                  isArabic={isArabic}
+                />
+              </div>
             ) : (
-              <ProductVariantsManager 
-                variants={variants}
-                addVariant={addVariant}
-                updateVariant={updateVariant}
-                removeVariant={removeVariant}
-                isArabic={isArabic}
-              />
+              <div className="form-section">
+                <ProductVariantsManager 
+                  variants={variants}
+                  addVariant={addVariant}
+                  updateVariant={updateVariant}
+                  removeVariant={removeVariant}
+                  isArabic={isArabic}
+                />
+              </div>
             )}
           </CardContent>
           
