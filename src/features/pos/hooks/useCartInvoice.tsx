@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+
+import { useState, useCallback, useEffect } from "react";
 import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
@@ -139,11 +140,11 @@ export const useCartInvoice = ({
   }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, paymentMethod, paidAmount, transferReceiptNumber, customer]);
   
   // Create invoice when payment method and paid amount are set
-  useState(() => {
+  useEffect(() => {
     if (paymentMethod && paidAmount !== undefined) {
       createAndShowInvoice();
     }
-  });
+  }, [paymentMethod, paidAmount, createAndShowInvoice]);
 
   return {
     showPaymentMethodDialog,
