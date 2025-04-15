@@ -1,6 +1,6 @@
 
 import React from "react";
-import { FileTextIcon, PrinterIcon } from "lucide-react";
+import { FileTextIcon, PrinterIcon, ReceiptText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Invoice } from "@/types";
 import { formatCurrency } from "@/utils/invoice";
@@ -20,6 +20,7 @@ interface EnhancedInvoiceTableProps {
   getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
+  onRefund?: (invoice: Invoice) => void;
   filteredStatus?: "completed" | "refunded" | null;
 }
 
@@ -30,6 +31,7 @@ const EnhancedInvoiceTable: React.FC<EnhancedInvoiceTableProps> = ({
   getStatusBadgeColor,
   viewInvoiceDetails,
   printInvoice,
+  onRefund,
   filteredStatus
 }) => {
   const filteredInvoices = filteredStatus
@@ -105,6 +107,19 @@ const EnhancedInvoiceTable: React.FC<EnhancedInvoiceTableProps> = ({
                       {isArabic ? "طباعة" : "Print"}
                     </span>
                   </Button>
+                  {onRefund && invoice.status === "completed" && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => onRefund(invoice)}
+                      className="h-8 px-2 text-red-500 hover:text-red-700"
+                    >
+                      <ReceiptText className="h-4 w-4" />
+                      <span className="sr-only">
+                        {isArabic ? "استرداد" : "Refund"}
+                      </span>
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
