@@ -85,7 +85,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-md transition-shadow">
+      <Card 
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+        onClick={handleAddToCart}
+      >
         <CardContent className="p-0">
           <div className="aspect-square bg-gray-100 relative">
             {product.image ? (
@@ -103,7 +106,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               variant="ghost" 
               size="icon" 
               className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full h-8 w-8"
-              onClick={handleAddToCart}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click event
+                handleAddToCart();
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>

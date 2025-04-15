@@ -5,7 +5,7 @@ import ProductListItem from "./ProductListItem";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product } from "@/types";
 
-// Mock data - in a real app, this would come from a database or API
+// Extended mock data - in a real app, this would come from a database or API
 const mockProducts = [
   {
     id: "1",
@@ -57,8 +57,91 @@ const mockProducts = [
     variants: [{ id: "4-1", size: "regular", price: 15 }],
     taxable: true,
     type: "single"
+  },
+  {
+    id: "5",
+    name: "Latte",
+    nameAr: "لاتيه",
+    price: 12,
+    categoryId: "1",
+    variants: [
+      { id: "5-1", size: "small", price: 12 },
+      { id: "5-2", size: "medium", price: 16 },
+      { id: "5-3", size: "large", price: 20 }
+    ],
+    taxable: true,
+    type: "sized"
+  },
+  {
+    id: "6",
+    name: "Cappuccino",
+    nameAr: "كابتشينو",
+    price: 13,
+    categoryId: "1",
+    variants: [
+      { id: "6-1", size: "small", price: 13 },
+      { id: "6-2", size: "medium", price: 17 },
+      { id: "6-3", size: "large", price: 21 }
+    ],
+    taxable: true,
+    type: "sized"
+  },
+  {
+    id: "7",
+    name: "Chocolate Cake",
+    nameAr: "كيك الشوكولاتة",
+    price: 14,
+    categoryId: "2",
+    variants: [{ id: "7-1", size: "regular", price: 14 }],
+    taxable: true,
+    type: "single"
+  },
+  {
+    id: "8",
+    name: "Apple Pie",
+    nameAr: "فطيرة التفاح",
+    price: 12,
+    categoryId: "2",
+    variants: [{ id: "8-1", size: "regular", price: 12 }],
+    taxable: true,
+    type: "single"
+  },
+  {
+    id: "9",
+    name: "Tea",
+    nameAr: "شاي",
+    price: 6,
+    categoryId: "1",
+    variants: [
+      { id: "9-1", size: "small", price: 6 },
+      { id: "9-2", size: "medium", price: 9 },
+      { id: "9-3", size: "large", price: 12 }
+    ],
+    taxable: true,
+    type: "sized"
+  },
+  {
+    id: "10",
+    name: "Muffin",
+    nameAr: "مافن",
+    price: 8,
+    categoryId: "2",
+    variants: [{ id: "10-1", size: "regular", price: 8 }],
+    taxable: true,
+    type: "single"
   }
 ];
+
+// In a real application, you would fetch data from the electron handlers or use React Query
+// For example:
+// import { useQuery } from '@tanstack/react-query';
+// const { data: products, isLoading } = useQuery({
+//   queryKey: ['products'],
+//   queryFn: async () => {
+//     const products = await window.electron.invoke('db:getProducts');
+//     return products;
+//   }
+// });
 
 interface ProductsGridProps {
   viewMode: "grid" | "list";
@@ -71,7 +154,21 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
 
   // In a real app, you would fetch products from an API or database
   useEffect(() => {
-    setProducts(mockProducts as Product[]);
+    // Simulate loading all products
+    const loadProducts = async () => {
+      try {
+        // In a real app, use the Electron API or React Query to load products
+        // const loadedProducts = await window.electron.invoke('db:getProducts');
+        // setProducts(loadedProducts);
+        
+        // For now, use the extended mock data
+        setProducts(mockProducts as Product[]);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    };
+    
+    loadProducts();
   }, []);
 
   return (

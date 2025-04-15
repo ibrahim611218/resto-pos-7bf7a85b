@@ -1,7 +1,7 @@
 
 import React from "react";
 import PaymentMethodDialog from "../payment/PaymentMethodDialog";
-import PaidAmountDialog from "@/features/pos/components/payment/PaidAmountDialog";
+import PaidAmountDialog from "../payment/PaidAmountDialog";
 import TransferReceiptDialog from "../payment/TransferReceiptDialog";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { Invoice, PaymentMethod, Customer } from "@/types";

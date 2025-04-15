@@ -85,7 +85,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-md transition-shadow">
+      <Card 
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+        onClick={handleAddToCart}
+      >
         <CardContent className="p-2">
           <div className="flex items-center">
             <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
@@ -119,7 +122,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
               variant="ghost" 
               size="icon" 
               className="ml-2 flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
-              onClick={handleAddToCart}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent card click event
+                handleAddToCart();
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>

@@ -74,7 +74,9 @@ export const useCartInvoice = ({
 
   const handleTransferReceiptConfirmed = (receiptNumber: string, selectedCustomer?: Customer) => {
     setTransferReceiptNumber(receiptNumber);
-    setCustomer(selectedCustomer);
+    if (selectedCustomer) {
+      setCustomer(selectedCustomer);
+    }
     setPaidAmount(total);
     setShowTransferReceiptDialog(false);
   };
@@ -126,6 +128,7 @@ export const useCartInvoice = ({
       invoice.transferReceiptNumber = transferReceiptNumber;
     }
     
+    // Add customer data to invoice
     if (customer) {
       invoice.customer = customer;
     }
