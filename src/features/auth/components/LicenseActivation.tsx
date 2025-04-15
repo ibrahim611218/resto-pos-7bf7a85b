@@ -16,7 +16,7 @@ const LicenseActivation: React.FC = () => {
   const { activateLicense } = useLicense();
   const navigate = useNavigate();
   
-  const handleActivate = async () => {
+  const handleActivate = () => {
     if (!licenseKey.trim()) {
       toast.error('الرجاء إدخال رمز التفعيل');
       return;
@@ -25,21 +25,22 @@ const LicenseActivation: React.FC = () => {
     setIsActivating(true);
     
     try {
-      // تطبيق فاصل زمني قصير لتفادي تجميد واجهة المستخدم
-      setTimeout(async () => {
-        try {
-          const result = await activateLicense(licenseKey);
-          
+      // استدعاء وظيفة التفعيل مباشرة بدون استخدام setTimeout
+      activateLicense(licenseKey)
+        .then(result => {
           if (result) {
+            // انتقال إلى الصفحة الرئيسية بعد التفعيل الناجح
+            toast.success('تم تفعيل الترخيص بنجاح');
             navigate('/');
           }
-        } catch (error) {
+        })
+        .catch(error => {
           console.error('خطأ في تفعيل الترخيص:', error);
           toast.error('حدث خطأ أثناء تفعيل الترخيص، يرجى المحاولة مرة أخرى');
-        } finally {
+        })
+        .finally(() => {
           setIsActivating(false);
-        }
-      }, 100);
+        });
     } catch (error) {
       console.error('خطأ غير متوقع:', error);
       setIsActivating(false);
