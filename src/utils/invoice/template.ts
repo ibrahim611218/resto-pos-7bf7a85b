@@ -33,10 +33,15 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   };
   
   // Generate QR code with explicit size
+  const qrCodeData = generateInvoiceQRCodeData(invoice);
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
-    value: generateInvoiceQRCodeData(invoice), 
-    size: 120,
-    style: { width: '100px', height: '100px' }
+    value: qrCodeData, 
+    size: 200,
+    style: { width: '120px', height: '120px' },
+    bgColor: "#FFFFFF",
+    fgColor: "#000000",
+    level: "H",
+    includeMargin: true,
   });
   const qrCodeString = renderToString(qrCodeElement);
   
@@ -53,7 +58,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   // Force inline styles for QR code to ensure it displays properly
   const explicitQRCode = `
     <div class="qr-code" style="text-align: center; margin: 20px auto; padding: 10px; background-color: white; display: block; width: fit-content; border-radius: 8px; border: 1px solid #e5e5e5;">
-      ${qrCodeString.replace('<canvas', '<canvas style="width: 100px; height: 100px; display: inline-block !important;"')}
+      ${qrCodeString.replace('<canvas', '<canvas style="width: 120px; height: 120px; display: inline-block !important;"')}
     </div>
   `;
   
@@ -93,7 +98,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
           setTimeout(function() {
             document.body.offsetHeight;
             window.focus();
-          }, 300);
+          }, 500);
         };
       </script>
     </body>

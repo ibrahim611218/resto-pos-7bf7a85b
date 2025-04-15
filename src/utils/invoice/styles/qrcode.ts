@@ -7,8 +7,8 @@ export const getQRCodeStyles = (): string => `
     text-align: center; 
     margin: 20px auto;
     padding: 10px;
-    background-color: white;
-    display: block;
+    background-color: white !important;
+    display: block !important;
     width: fit-content;
     border-radius: 8px;
     border: 1px solid #e5e5e5;
@@ -17,8 +17,8 @@ export const getQRCodeStyles = (): string => `
   .qr-code svg,
   .qr-code canvas {
     display: inline-block !important;
-    width: 100px !important;
-    height: 100px !important;
+    width: 120px !important;
+    height: 120px !important;
   }
 
   @media print {
@@ -33,8 +33,8 @@ export const getQRCodeStyles = (): string => `
     .qr-code svg,
     .qr-code canvas {
       display: inline-block !important;
-      width: 100px !important;
-      height: 100px !important;
+      width: 120px !important;
+      height: 120px !important;
     }
   }
 `;
