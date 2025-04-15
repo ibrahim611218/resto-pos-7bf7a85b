@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/context/LanguageContext";
@@ -23,8 +23,8 @@ const Pos = () => {
   };
 
   return (
-    <div className="flex flex-col h-full pos-screen">
-      <div className="p-4 flex justify-between items-center relative z-20">
+    <div className="flex flex-col h-full pos-screen pos-layout">
+      <div className="p-4 flex justify-between items-center relative z-20 flex-shrink-0">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
           <FullscreenToggle className="mr-2" />
@@ -33,12 +33,12 @@ const Pos = () => {
           </Button>
         </div>
       </div>
-      <Separator className="mb-4" />
+      <Separator className="mb-4 flex-shrink-0" />
       
       <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
         {/* Products section */}
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-[calc(100vh-120px)]">
+        <div className="flex-1 overflow-hidden products-section">
+          <ScrollArea className="h-[calc(100vh-120px)] pos-scroll-area">
             <div className="p-4">
               <ProductsGrid viewMode={viewMode} />
             </div>

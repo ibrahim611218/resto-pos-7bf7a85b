@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CartHeaderProps {
   isMobile: boolean;
@@ -10,6 +11,7 @@ interface CartHeaderProps {
   toggleExpand: () => void;
   clearCart: () => void;
   isArabic: boolean;
+  className?: string;
 }
 
 const CartHeader: React.FC<CartHeaderProps> = ({
@@ -19,11 +21,12 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   toggleExpand,
   clearCart,
   isArabic,
+  className,
 }) => {
   const headerClass = isMobile ? "p-1 text-sm" : "p-2";
 
   return (
-    <div className={`${headerClass} flex-shrink-0 flex justify-between items-center border-b`}>
+    <div className={cn(`${headerClass} flex-shrink-0 flex justify-between items-center border-b`, className)}>
       <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
         {isArabic ? "السلة" : "Cart"}
       </h2>

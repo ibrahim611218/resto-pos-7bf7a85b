@@ -6,6 +6,7 @@ import OrderTypeSection from "./footer/OrderTypeSection";
 import DiscountSection from "./footer/DiscountSection";
 import SummarySection from "./footer/SummarySection";
 import ActionsSection from "./footer/ActionsSection";
+import { cn } from "@/lib/utils";
 
 interface CartFooterProps {
   isMobile: boolean;
@@ -28,6 +29,7 @@ interface CartFooterProps {
   isArabic: boolean;
   onPaidAmountClick?: () => void;
   customer?: Customer;
+  className?: string;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -50,12 +52,13 @@ const CartFooter: React.FC<CartFooterProps> = ({
   clearCart,
   isArabic,
   onPaidAmountClick,
-  customer
+  customer,
+  className
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
   return (
-    <div className={`${footerClass} border-t bg-card flex-shrink-0`}>
+    <div className={cn(`${footerClass} border-t bg-card flex-shrink-0`, className)}>
       <Separator className={isMobile ? "mb-1" : "mb-2"} />
       
       <OrderTypeSection

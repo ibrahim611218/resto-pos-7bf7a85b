@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -75,7 +76,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col border-r bg-card",
+        "h-full flex flex-col border-l bg-card cart-panel",
         expanded ? "w-full lg:w-1/3 xl:w-1/4" : "w-20",
         "transition-all duration-300 ease-in-out"
       )}
@@ -87,6 +88,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         toggleExpand={onToggleExpand}
         clearCart={clearCart}
         isArabic={isArabic}
+        className="cart-header"
       />
       
       {expanded ? (
@@ -114,6 +116,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
             isArabic={isArabic}
             onPaidAmountClick={handleShowPaidAmountDialog}
             customer={customer}
+            className="cart-footer"
           />
         </>
       ) : (
