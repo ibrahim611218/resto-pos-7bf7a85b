@@ -160,7 +160,7 @@
 .in-fullscreen [role="listbox"],
 .in-fullscreen .SelectContent,
 .in-fullscreen [data-state="open"] {
-  z-index: 2000 !important;
+  z-index: 3000 !important; /* Higher z-index for dropdowns in fullscreen */
   position: absolute !important;
   background-color: var(--background) !important;
   border: 1px solid var(--border) !important;
@@ -172,9 +172,15 @@
 /* Fix for select content */
 .in-fullscreen .select-content,
 .in-fullscreen [role="presentation"] {
-  z-index: 2000 !important;
+  z-index: 3000 !important; /* Higher z-index for dropdowns in fullscreen */
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
   background-color: var(--background) !important;
+}
+
+/* Additional fix for dropdowns in forms */
+.in-fullscreen form [role="listbox"],
+.in-fullscreen form [data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
 }

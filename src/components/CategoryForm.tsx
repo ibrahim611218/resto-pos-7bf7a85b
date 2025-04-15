@@ -17,7 +17,8 @@ const CategoryForm = () => {
     handleInputChange,
     handleImageChange,
     handleSubmit,
-    navigate
+    navigate,
+    isSubmitting
   } = useCategoryForm();
 
   return (
@@ -75,7 +76,7 @@ const CategoryForm = () => {
             >
               {isArabic ? "إلغاء" : "Cancel"}
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={isSubmitting}>
               {isEditing ? 
                 (isArabic ? "حفظ التغييرات" : "Save Changes") : 
                 (isArabic ? "إضافة الفئة" : "Add Category")}

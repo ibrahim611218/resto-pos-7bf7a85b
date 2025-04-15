@@ -27,7 +27,7 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         <SelectTrigger id="category" className="z-10">
           <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
         </SelectTrigger>
-        <SelectContent className="z-[2000]">
+        <SelectContent className="z-[3000]"> {/* Increased z-index for fullscreen mode */}
           {categories.map(category => (
             <SelectItem key={category.id} value={category.id}>
               {isArabic ? (category.nameAr || category.name) : category.name}
