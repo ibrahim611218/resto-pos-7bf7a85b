@@ -160,34 +160,34 @@
 .in-fullscreen [role="listbox"],
 .in-fullscreen .SelectContent,
 .in-fullscreen [data-state="open"] {
-  z-index: 9999 !important; /* Higher z-index for dropdowns in fullscreen */
-  position: absolute !important;
-  background-color: var(--background) !important;
-  border: 1px solid var(--border) !important;
+  z-index: 9999 !important; 
+  position: fixed !important;
   visibility: visible !important;
   opacity: 1 !important;
-  display: block !important;
 }
 
 /* Fix for select content */
 .in-fullscreen .select-content,
 .in-fullscreen [role="presentation"] {
-  z-index: 9999 !important; /* Higher z-index for dropdowns in fullscreen */
+  z-index: 9999 !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
   background-color: var(--background) !important;
+  position: fixed !important;
 }
 
 /* Additional fix for dropdowns in forms */
 .in-fullscreen form [role="listbox"],
 .in-fullscreen form [data-radix-popper-content-wrapper] {
   z-index: 9999 !important;
+  position: fixed !important;
 }
 
 /* Specific fix for select dropdown in all screens */
 [data-radix-popper-content-wrapper] {
   z-index: 9999 !important;
+  position: fixed !important;
 }
 
 body {
@@ -200,4 +200,26 @@ body {
   position: fixed !important; 
   z-index: 9999 !important;
   background-color: var(--background) !important;
+}
+
+/* Fix specifically for shadow-dom containing select content in fullscreen */
+.in-fullscreen [data-radix-select-content] {
+  position: fixed !important;
+  z-index: 9999 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure form inputs are properly displayed in fullscreen */
+.in-fullscreen input,
+.in-fullscreen select,
+.in-fullscreen textarea {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Fix for dialog/modal content in fullscreen mode */
+.in-fullscreen [role="dialog"] {
+  z-index: 10000 !important;
+  position: fixed !important;
 }

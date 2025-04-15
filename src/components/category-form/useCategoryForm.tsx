@@ -90,8 +90,9 @@ export const useCategoryForm = () => {
     };
 
     try {
-      // Check if window.db is available (electron environment)
+      // Check if running in electron environment
       if (typeof window !== "undefined" && window.db) {
+        console.log("Submitting to Electron DB");
         if (isEditing) {
           const result = await window.db.updateCategory(updatedCategory);
           if (result.success) {
@@ -102,7 +103,6 @@ export const useCategoryForm = () => {
           }
         } else {
           const result = await window.db.addCategory(updatedCategory);
-          
           if (result.success) {
             toast.success(isArabic ? "تم إضافة الفئة بنجاح" : "Category added successfully");
             navigate("/categories");
@@ -111,11 +111,21 @@ export const useCategoryForm = () => {
           }
         }
       } else {
-        // In browser mode, simulate success
-        console.log("Browser mode: Simulating category save", updatedCategory);
+        console.log("Running in browser mode - simulating category save:", updatedCategory);
+        
+        // In browser mode, simulate success and update sample data
+        if (!isEditing) {
+          sampleCategories.push(updatedCategory);
+        } else {
+          const index = sampleCategories.findIndex(c => c.id === updatedCategory.id);
+          if (index !== -1) {
+            sampleCategories[index] = updatedCategory;
+          }
+        }
+        
         toast.success(isArabic ? "تم حفظ الفئة بنجاح (وضع المحاكاة)" : "Category saved successfully (simulation mode)");
         
-        // In a real app, we'd add to localStorage or mock API here
+        // Give some time to show the toast before navigating
         setTimeout(() => {
           navigate("/categories");
         }, 1000);

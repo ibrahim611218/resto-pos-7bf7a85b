@@ -27,15 +27,15 @@ import LicenseCheck from "./features/auth/components/LicenseCheck";
 import { useLanguage } from "./context/LanguageContext";
 import Pos from "./pages/Pos";
 import { CartProvider } from "./features/pos/hooks/useCart";
-import CategoryForm from "./pages/CategoryForm";
 import ProductForm from "./components/ProductForm";
+import CategoryForm from "./components/CategoryForm";
 
 function App() {
   const { language } = useLanguage();
   
   return (
     <>
-      <Toaster position="top-center" richColors dir="rtl" />
+      <Toaster position="top-center" richColors dir={language === "ar" ? "rtl" : "ltr"} />
       <CartProvider>
         <Routes>
           {/* Public routes - no auth or license required */}
@@ -58,14 +58,12 @@ function App() {
                 <Route path="/products/edit/:id" element={<ProductForm />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/categories/add" element={<CategoryForm />} />
+                <Route path="/categories/edit/:id" element={<CategoryForm />} />
                 <Route path="/inventory" element={<Inventory />} />
-                {/* Fix reports routes */}
                 <Route path="/sales-report" element={<SalesReport />} />
                 <Route path="/inventory-report" element={<InventoryReport />} />
                 <Route path="/customers-report" element={<CustomersReport />} />
-                {/* Fix settings route */}
                 <Route path="/business-settings" element={<BusinessSettings />} />
-                {/* Fix users route */}
                 <Route path="/user-management" element={<UserManagement />} />
                 <Route path="/license-generator" element={<LicenseGenerator />} />
                 <Route path="*" element={<NotFound />} />

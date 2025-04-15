@@ -1,19 +1,77 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { sampleCategories } from "@/data/sampleData";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tag, Plus, Pencil } from "lucide-react";
+import { Tag, Plus, Pencil, Trash2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "sonner";
+import { Category } from "@/types";
 
 const Categories = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Check if running in electron environment
+        if (typeof window !== "undefined" && window.db) {
+          const result = await window.db.getCategories();
+          setCategories(result || []);
+        } else {
+          // In browser mode, use sample data
+          console.log("Running in browser mode - using sample data");
+          setCategories(sampleCategories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error(isArabic ? "حدث خطأ أثناء تحميل التصنيفات" : "Error loading categories");
+        // Fallback to sample data
+        setCategories(sampleCategories);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [isArabic]);
+
+  const handleDelete = async (categoryId: string) => {
+    try {
+      if (typeof window !== "undefined" && window.db) {
+        const result = await window.db.deleteCategory(categoryId);
+        if (result.success) {
+          toast.success(isArabic ? "تم حذف التصنيف بنجاح" : "Category deleted successfully");
+          setCategories(prevCategories => prevCategories.filter(cat => cat.id !== categoryId));
+        } else {
+          toast.error(isArabic ? "حدث خطأ أثناء حذف التصنيف" : "Error deleting category");
+        }
+      } else {
+        // In browser mode, simulate success
+        setCategories(prevCategories => prevCategories.filter(cat => cat.id !== categoryId));
+        toast.success(isArabic ? "تم حذف التصنيف بنجاح (وضع المحاكاة)" : "Category deleted successfully (simulation mode)");
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error(isArabic ? "حدث خطأ أثناء حذف التصنيف" : "Error deleting category");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-4 flex justify-center items-center">
+        <div className="text-lg">{isArabic ? "جاري التحميل..." : "Loading..."}</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 scrollable-content">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{isArabic ? "التصنيفات" : "Categories"}</h1>
         <Button onClick={() => navigate("/categories/add")}>
@@ -23,7 +81,7 @@ const Categories = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sampleCategories.map((category) => (
+        {categories.map((category) => (
           <Card key={category.id} className="overflow-hidden">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center">
@@ -45,17 +103,34 @@ const Categories = () => {
               >
                 {isArabic ? "تصفح المنتجات" : "Browse Products"}
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/categories/edit/${category.id}`)}
-              >
-                <Pencil size={16} className={isArabic ? "ml-2" : "mr-2"} />
-                {isArabic ? "تعديل" : "Edit"}
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate(`/categories/edit/${category.id}`)}
+                >
+                  <Pencil size={16} className={isArabic ? "ml-2" : "mr-2"} />
+                  {isArabic ? "تعديل" : "Edit"}
+                </Button>
+                <Button 
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => handleDelete(category.id)}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         ))}
       </div>
+      
+      {categories.length === 0 && (
+        <div className="text-center p-8">
+          <p className="text-muted-foreground text-lg">
+            {isArabic ? "لا توجد تصنيفات. أضف تصنيفًا جديدًا للبدء." : "No categories found. Add a new category to get started."}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

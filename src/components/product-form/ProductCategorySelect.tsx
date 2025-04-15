@@ -29,7 +29,7 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         </SelectTrigger>
         <SelectContent 
           position="popper" 
-          className="z-[9999] bg-popover border-border"
+          className="z-[9999]" 
           sideOffset={4}
           align="start"
         >
