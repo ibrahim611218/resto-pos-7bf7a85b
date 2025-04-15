@@ -17,41 +17,62 @@ const LicenseActivation: React.FC = () => {
   const navigate = useNavigate();
   
   const handleActivate = () => {
+    // التحقق من إدخال رمز التفعيل
     if (!licenseKey.trim()) {
       toast.error('الرجاء إدخال رمز التفعيل');
       return;
     }
     
+    // منع النقرات المتعددة
+    if (isActivating) {
+      return;
+    }
+    
+    // تعيين حالة التفعيل إلى قيد التنفيذ
     setIsActivating(true);
     
-    try {
-      // استدعاء وظيفة التفعيل مباشرة بدون استخدام setTimeout
-      activateLicense(licenseKey)
-        .then(result => {
-          if (result) {
-            // انتقال إلى الصفحة الرئيسية بعد التفعيل الناجح
-            toast.success('تم تفعيل الترخيص بنجاح');
-            navigate('/');
-          }
-        })
-        .catch(error => {
-          console.error('خطأ في تفعيل الترخيص:', error);
-          toast.error('حدث خطأ أثناء تفعيل الترخيص، يرجى المحاولة مرة أخرى');
-        })
-        .finally(() => {
-          setIsActivating(false);
-        });
-    } catch (error) {
-      console.error('خطأ غير متوقع:', error);
-      setIsActivating(false);
-      toast.error('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى');
-    }
+    // إظهار رسالة للمستخدم أن عملية التفعيل قيد التنفيذ
+    toast.loading('جاري التحقق من رمز التفعيل...', {
+      id: 'license-activation',
+      duration: 10000 // وقت أطول لضمان استمرار الرسالة
+    });
+
+    // استدعاء وظيفة التفعيل بسلسلة وعود واضحة
+    activateLicense(licenseKey)
+      .then(success => {
+        if (success) {
+          toast.dismiss('license-activation');
+          toast.success('تم تفعيل الترخيص بنجاح');
+          // تأخير قصير قبل التنقل للتأكد من ظهور رسالة النجاح
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 500);
+          return true;
+        } else {
+          throw new Error('فشل التفعيل');
+        }
+      })
+      .catch(error => {
+        toast.dismiss('license-activation');
+        console.error('خطأ في التفعيل:', error);
+        toast.error('فشل تفعيل الرمز، يرجى التأكد من صحة الرمز والمحاولة مرة أخرى');
+      })
+      .finally(() => {
+        // التأكد من إعادة تعيين حالة التفعيل في جميع الحالات
+        setIsActivating(false);
+      });
   };
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isActivating) {
+      e.preventDefault(); // منع السلوك الافتراضي
       handleActivate();
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // تنسيق رمز التفعيل تلقائياً (إزالة المسافات الزائدة)
+    setLicenseKey(e.target.value.trim().toUpperCase());
   };
   
   return (
@@ -74,10 +95,12 @@ const LicenseActivation: React.FC = () => {
                 id="license-key"
                 placeholder="XXXX-XXXX-XXXX-XXXX"
                 value={licenseKey}
-                onChange={(e) => setLicenseKey(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
                 className="h-12 text-center tracking-widest"
                 disabled={isActivating}
+                autoComplete="off"
+                maxLength={19} // 16 أحرف + 3 شرطات
               />
             </div>
           </CardContent>
