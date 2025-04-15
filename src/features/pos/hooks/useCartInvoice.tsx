@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
@@ -45,16 +44,19 @@ export const useCartInvoice = ({
   const [currentInvoice, setCurrentInvoice] = useState<Invoice | null>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [transferReceiptNumber, setTransferReceiptNumber] = useState("");
-  const [customer, setCustomer] = useState<Customer | undefined>(undefined);
+  const [customer, setCustomer] = useState<Customer | undefined>();
   const { formatInvoiceDate, printInvoice } = useInvoiceFormatting();
 
   const handleCreateInvoice = () => {
     setShowPaymentMethodDialog(true);
   };
 
-  const handlePaymentMethodSelected = (method: PaymentMethod) => {
+  const handlePaymentMethodSelected = (method: PaymentMethod, selectedCustomer?: Customer) => {
     setPaymentMethod(method);
     setShowPaymentMethodDialog(false);
+    if (selectedCustomer) {
+      setCustomer(selectedCustomer);
+    }
     
     // Show appropriate dialog based on payment method
     if (method === "cash") {

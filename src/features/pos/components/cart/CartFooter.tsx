@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { PaymentMethod } from "@/types";
@@ -27,6 +26,7 @@ interface CartFooterProps {
   clearCart: () => void;
   isArabic: boolean;
   onPaidAmountClick?: () => void;
+  customer?: Customer;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -48,7 +48,8 @@ const CartFooter: React.FC<CartFooterProps> = ({
   handleCreateInvoice,
   clearCart,
   isArabic,
-  onPaidAmountClick
+  onPaidAmountClick,
+  customer
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
@@ -94,6 +95,19 @@ const CartFooter: React.FC<CartFooterProps> = ({
         isMobile={isMobile}
         isArabic={isArabic}
       />
+      
+      {customer && (
+        <div className="border-t pt-2">
+          <div className="text-sm">
+            <p className="font-medium">{isArabic ? "العميل:" : "Customer:"} {customer.name}</p>
+            {customer.taxNumber && (
+              <p className="text-muted-foreground">
+                {isArabic ? "الرقم الضريبي:" : "Tax Number:"} {customer.taxNumber}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

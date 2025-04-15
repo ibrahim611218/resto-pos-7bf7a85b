@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
@@ -54,7 +53,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
     handlePaidAmountConfirmed,
     handleTransferReceiptConfirmed,
     handleShowPaidAmountDialog,
-    handleInvoiceModalClose
+    handleInvoiceModalClose,
+    customer
   } = useCartInvoice({
     cartItems,
     subtotal,
@@ -113,6 +113,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
             clearCart={clearCart}
             isArabic={isArabic}
             onPaidAmountClick={handleShowPaidAmountDialog}
+            customer={customer}
           />
         </>
       ) : (
