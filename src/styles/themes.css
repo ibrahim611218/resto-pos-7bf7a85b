@@ -1,0 +1,25 @@
+
+/* Theme styles */
+/* This file contains theme-specific styles across the application */
+
+:root {
+  --primary-theme-color: #004d40;
+  --secondary-theme-color: #00695c;
+  --accent-theme-color: #ff5722;
+  --text-on-theme: #ffffff;
+}
+
+.theme-header {
+  background-color: var(--primary-theme-color);
+  color: var(--text-on-theme);
+}
+
+.theme-button {
+  background-color: var(--primary-theme-color);
+  color: var(--text-on-theme);
+}
+
+.theme-accent {
+  background-color: var(--accent-theme-color);
+  color: var(--text-on-theme);
+}

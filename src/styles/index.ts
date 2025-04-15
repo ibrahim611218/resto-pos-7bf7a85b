@@ -1,5 +1,11 @@
-import './globals.css';
-import './themes.css';
 
-// Import fullscreen styles
+// Import styles from the root directory
+import '../index.css';
+import './themes.css';
 import './fullscreen.css';
+
+// Export a function to be used in main.tsx
+export const loadStyles = () => {
+  // This function exists just to allow importing the CSS files
+  console.log("Styles loaded successfully");
+};
