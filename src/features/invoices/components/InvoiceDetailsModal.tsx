@@ -1,9 +1,9 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Invoice } from "@/types";
-import { generateInvoiceQRCodeData } from "@/utils/invoice";
+import { generateInvoiceQRCodeData, handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 import {
@@ -33,8 +33,8 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   onRefund
 }) => {
   const { settings } = useBusinessSettings();
-  const [showEmailDialog, setShowEmailDialog] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [email, setEmail] = useState("");
   
   if (!invoice) return null;
 
@@ -44,6 +44,11 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   const discountAmount = invoice.discountType === "percentage" 
     ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
     : invoice.discount;
+
+  // Handle print using handleInvoiceExport instead of the passed onPrint function
+  const handlePrint = () => {
+    handleInvoiceExport("print", invoice, settings);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -84,7 +89,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
         <InvoiceActions 
           invoice={invoice}
           settings={settings}
-          onPrint={onPrint}
+          onPrint={handlePrint}
           onShowEmailDialog={() => setShowEmailDialog(true)}
           onRefund={onRefund}
         />

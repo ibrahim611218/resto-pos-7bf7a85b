@@ -34,20 +34,6 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Invoices",
       path: "/invoices",
       icon: ReceiptText,
-      subMenuItems: [
-        {
-          name: "قائمة الفواتير",
-          name_en: "Invoices List",
-          path: "/invoices",
-          icon: FileText,
-        },
-        {
-          name: "استرجاع فاتورة",
-          name_en: "Retrieve Invoice",
-          path: "/retrieve-invoice",
-          icon: ReceiptText,
-        },
-      ],
     },
     {
       name: "العملاء",
