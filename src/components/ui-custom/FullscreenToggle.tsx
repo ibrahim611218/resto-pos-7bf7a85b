@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { useFullscreen } from "@/hooks/useFullscreen";
@@ -48,14 +48,14 @@ const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "", col
       }
     >
       {isFullscreen ? (
-        <Minimize2 className={collapsed ? "" : "mr-2"} size={18} />
+        <Minimize2 className={collapsed ? "" : (isArabic ? "ml-2" : "mr-2")} size={18} />
       ) : (
-        <Maximize2 className={collapsed ? "" : "mr-2"} size={18} />
+        <Maximize2 className={collapsed ? "" : (isArabic ? "ml-2" : "mr-2")} size={18} />
       )}
       
       {!collapsed && (
         <AnimatedTransition animation="fade">
-          <span className={`${isArabic ? 'text-right' : 'text-left'}`}>
+          <span className={`${isArabic ? 'text-right mr-2' : 'text-left ml-2'}`}>
             {isFullscreen 
               ? (isArabic ? "إلغاء ملء الشاشة" : "Exit Fullscreen") 
               : (isArabic ? "ملء الشاشة" : "Enter Fullscreen")}
