@@ -138,3 +138,4 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 };
 
 export default ProductsGrid;
+

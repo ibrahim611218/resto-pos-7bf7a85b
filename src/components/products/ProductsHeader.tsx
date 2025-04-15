@@ -34,3 +34,4 @@ const ProductsHeader: React.FC<ProductsHeaderProps> = ({ categoryId, getCategory
 };
 
 export default ProductsHeader;
+
