@@ -25,7 +25,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
       
       <FullscreenToggle 
         className={cn(
-          "w-full justify-start",
+          "w-full justify-start text-white",
           collapsed ? "justify-center" : ""
         )} 
       />

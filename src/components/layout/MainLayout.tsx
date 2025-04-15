@@ -10,6 +10,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTheme } from "@/context/ThemeContext";
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -18,6 +19,8 @@ const MainLayout = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isFullscreen } = useFullscreen();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   
   // Handle sidebar state based on screen size and fullscreen state
   useEffect(() => {

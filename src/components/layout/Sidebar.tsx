@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/context/ThemeContext";
 
 // Sidebar component that wraps all sidebar sections
 const Sidebar: React.FC<{ 
@@ -36,6 +37,7 @@ const Sidebar: React.FC<{
   const [isInitialized, setIsInitialized] = useState(false);
   const sidebarLinks = getSidebarLinks();
   const isArabic = language === "ar";
+  const { theme } = useTheme();
 
   // Set initialized after a brief delay to allow for animation
   useEffect(() => {
@@ -104,12 +106,12 @@ const Sidebar: React.FC<{
                 variant="ghost"
                 size="sm"
                 onClick={onHide}
-                className="w-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                className="w-full text-white hover:text-primary hover:bg-primary/10"
                 title={isArabic ? "إخفاء القائمة الجانبية" : "Hide Sidebar"}
               >
                 {isArabic ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
                 {!collapsed && (
-                  <span className="ml-2">
+                  <span className="ml-2 text-white">
                     {isArabic ? "إخفاء القائمة" : "Hide Sidebar"}
                   </span>
                 )}

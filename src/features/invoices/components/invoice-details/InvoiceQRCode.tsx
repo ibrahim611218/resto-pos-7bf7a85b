@@ -1,6 +1,7 @@
 
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface InvoiceQRCodeProps {
   qrCodeData: string;
@@ -11,11 +12,19 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
   qrCodeData,
   notes
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  
   return (
     <>
       <div className="flex justify-center">
-        <div className="bg-white p-2 rounded border border-gray-200">
-          <QRCodeSVG value={qrCodeData} size={120} />
+        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200`}>
+          <QRCodeSVG 
+            value={qrCodeData} 
+            size={120}
+            bgColor="#FFFFFF"
+            fgColor="#000000"
+          />
         </div>
       </div>
       

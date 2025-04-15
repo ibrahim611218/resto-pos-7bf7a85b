@@ -12,8 +12,14 @@
   @apply bg-[#ff5722] hover:bg-[#e64a19] text-white;
 }
 
+/* Sidebar styles with improved light/dark mode handling */
 .restopos-sidebar {
   @apply bg-[#004d40] text-white border-r border-[#00695c] dark:border-orange-500/40;
+}
+
+/* Light mode sidebar text */
+.restopos-sidebar-item {
+  @apply text-white hover:text-white;
 }
 
 /* Dark mode orange border highlights */

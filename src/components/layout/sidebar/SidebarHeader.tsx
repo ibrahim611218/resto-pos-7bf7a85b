@@ -15,7 +15,7 @@ interface SidebarHeaderProps {
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
   const { settings } = useBusinessSettings();
   const { theme } = useTheme();
-  const isDark = theme !== "light";
+  const isDark = theme === "light" ? false : true;
   
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b">
@@ -39,14 +39,14 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
         variant="ghost"
         size="icon"
         className={cn(
-          "transition-all duration-200",
+          "transition-all duration-200 text-white",
           collapsed ? "mr-auto" : ""
         )}
         onClick={onToggle}
       >
         {collapsed ? 
-          <ChevronLeft className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-primary'}`} size={18} /> : 
-          <ChevronRight className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-primary'}`} size={18} />
+          <ChevronLeft className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-white'}`} size={18} /> : 
+          <ChevronRight className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-white'}`} size={18} />
         }
       </Button>
     </div>
