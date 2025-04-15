@@ -31,3 +31,30 @@
 .dark .dialog-content {
   @apply border-orange-500/40;
 }
+
+/* Improved sidebar visibility */
+.sidebar-text {
+  @apply text-white font-medium;
+}
+
+.sidebar-subtext {
+  @apply text-gray-200;
+}
+
+/* Improved sidebar item visibility */
+.sidebar-item-active {
+  @apply bg-[#00695c] text-white font-medium;
+}
+
+.sidebar-item-hover {
+  @apply hover:bg-[#00695c] hover:text-white transition-colors;
+}
+
+/* Sidebar light mode improvements */
+.light .restopos-sidebar {
+  @apply bg-[#004d40] text-white;
+}
+
+.light .sidebar-item-active {
+  @apply bg-[#00695c] text-white;
+}

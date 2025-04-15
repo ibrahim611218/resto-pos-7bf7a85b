@@ -68,9 +68,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         className={cn(
           "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
           isActive
-            ? "bg-accent text-accent-foreground"
-            : "hover:bg-accent hover:text-accent-foreground",
-          collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between"
+            ? "bg-[#00695c] text-white sidebar-item-active"
+            : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
+          collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between",
+          "text-white sidebar-text" // Adding consistent text color
         )}
         style={{ 
           pointerEvents: "auto", 
@@ -82,13 +83,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         }}
       >
         <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse" : "")}>
-          <Icon className={cn("h-5 w-5", iconMarginClass())} />
-          {!collapsed && <span>{name}</span>}
+          <Icon className={cn("h-5 w-5 text-white", iconMarginClass())} />
+          {!collapsed && <span className="text-white">{name}</span>}
         </div>
         {hasSubMenu && !collapsed && (
           <ChevronDown
             className={cn(
-              "h-4 w-4 transition-transform",
+              "h-4 w-4 transition-transform text-white",
               isOpen ? "transform rotate-180" : "",
               isArabic ? "transform rotate-180" : ""
             )}
@@ -112,9 +113,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 className={cn(
                   "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
                   isSubItemActive
-                    ? "bg-accent text-accent-foreground"
-                    : "hover:bg-accent hover:text-accent-foreground",
-                  isArabic ? "flex-row-reverse justify-end" : ""
+                    ? "bg-[#00695c] text-white sidebar-item-active"
+                    : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
+                  isArabic ? "flex-row-reverse justify-end" : "",
+                  "text-white sidebar-text" // Adding consistent text color
                 )}
                 style={{ 
                   pointerEvents: "auto", 
@@ -126,9 +128,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 }}
               >
                 {subItem.icon && typeof SubIcon === 'function' && 
-                  <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />
+                  <SubIcon className={cn("h-4 w-4 text-white", isArabic ? "ml-2" : "mr-2")} />
                 }
-                <span>{subItem.name}</span>
+                <span className="text-white">{subItem.name}</span>
               </button>
             );
           })}

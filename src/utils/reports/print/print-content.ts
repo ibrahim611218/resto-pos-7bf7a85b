@@ -46,6 +46,7 @@ const createPrintableHTML = (contentHtml: string, title: string, isArabic: boole
     <html dir="${isArabic ? 'rtl' : 'ltr'}">
     <head>
       <title>${title}</title>
+      <meta charset="UTF-8">
       <style>
         @media print {
           @page { 

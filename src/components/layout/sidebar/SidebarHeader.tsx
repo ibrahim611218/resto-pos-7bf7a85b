@@ -18,7 +18,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
   const isDark = theme === "light" ? false : true;
   
   return (
-    <div className="flex items-center justify-between p-4 h-16 border-b">
+    <div className="flex items-center justify-between p-4 h-16 border-b border-[#00695c]">
       {!collapsed ? (
         <AnimatedTransition animation="fade">
           <div className="flex items-center">
@@ -28,7 +28,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
                 <span className="text-[#00825A]">Resto</span>
                 <span className="text-[#FF6B00]">POS</span>
               </h2>
-              <span className={`text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>نظام المطاعم</span>
+              <span className="text-xs text-gray-200">نظام المطاعم</span>
             </div>
           </div>
         </AnimatedTransition>
@@ -45,8 +45,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
         onClick={onToggle}
       >
         {collapsed ? 
-          <ChevronLeft className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-white'}`} size={18} /> : 
-          <ChevronRight className={`animate-pulse-subtle ${isDark ? 'text-white' : 'text-white'}`} size={18} />
+          <ChevronLeft className="animate-pulse-subtle text-white" size={18} /> : 
+          <ChevronRight className="animate-pulse-subtle text-white" size={18} />
         }
       </Button>
     </div>

@@ -5,6 +5,7 @@ import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { SidebarContextProvider } from "./SidebarContext";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
 interface SidebarContainerProps {
   collapsed: boolean;
@@ -23,7 +24,9 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
 }) => {
   const { isFullscreen } = useFullscreen();
   const { language } = useLanguage();
+  const { theme } = useTheme();
   const isArabic = language === "ar";
+  const isDark = theme === "dark";
   
   // Determine sidebar position (left or right) based on RTL setting
   const sidePosition = isArabic ? "right-0" : "left-0";
@@ -38,13 +41,14 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 z-50 flex h-screen flex-col glass shadow-md",
+          "fixed lg:relative inset-y-0 z-50 flex h-screen flex-col shadow-md",
           sidePosition,
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
           isFullscreen ? "fullscreen-sidebar" : "",
-          collapsed && isMobile ? "transform -translate-x-full rtl:translate-x-full" : "transform translate-x-0"
+          collapsed && isMobile ? "transform -translate-x-full rtl:translate-x-full" : "transform translate-x-0",
+          "bg-[#004d40] text-white restopos-sidebar" // Adding consistent background and text color
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",
@@ -52,7 +56,7 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           touchAction: "auto", 
           zIndex: 999,
           userSelect: "none",
-          backgroundColor: "var(--background)",
+          backgroundColor: "#004d40",
           position: "fixed"
         }}
         data-sidebar="sidebar"
