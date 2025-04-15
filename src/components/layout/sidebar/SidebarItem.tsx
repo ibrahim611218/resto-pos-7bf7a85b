@@ -62,7 +62,15 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const submenuPaddingClass = isArabic ? "pr-8" : "pl-8";
 
   return (
-    <div className="space-y-1" style={{ pointerEvents: "auto", zIndex: 1001, position: "relative" }}>
+    <div 
+      className="space-y-1" 
+      style={{ 
+        pointerEvents: "auto", 
+        zIndex: 1001, 
+        position: "relative",
+        direction: isArabic ? "rtl" : "ltr" 
+      }}
+    >
       <button
         onClick={handleItemClick}
         className={cn(
@@ -71,7 +79,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             ? "bg-[#00695c] text-white sidebar-item-active"
             : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
           collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between",
-          "text-white sidebar-text" // Adding consistent text color
+          "text-white sidebar-text" 
         )}
         style={{ 
           pointerEvents: "auto", 
@@ -84,7 +92,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       >
         <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse" : "")}>
           <Icon className={cn("h-5 w-5 text-white", iconMarginClass())} />
-          {!collapsed && <span className="text-white">{name}</span>}
+          {!collapsed && (
+            <span 
+              className={`text-white ${isArabic ? 'mr-2 text-right' : 'ml-2 text-left'}`}
+            >
+              {name}
+            </span>
+          )}
         </div>
         {hasSubMenu && !collapsed && (
           <ChevronDown
@@ -100,7 +114,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       {hasSubMenu && isOpen && !collapsed && (
         <div 
           className={cn("space-y-1", submenuPaddingClass)}
-          style={{ pointerEvents: "auto", zIndex: 1001, position: "relative" }}
+          style={{ 
+            pointerEvents: "auto", 
+            zIndex: 1001, 
+            position: "relative" 
+          }}
         >
           {subMenuItems.map((subItem) => {
             const SubIcon = subItem.icon as React.ComponentType<{ className?: string }>;
@@ -116,7 +134,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                     ? "bg-[#00695c] text-white sidebar-item-active"
                     : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
                   isArabic ? "flex-row-reverse justify-end" : "",
-                  "text-white sidebar-text" // Adding consistent text color
+                  "text-white sidebar-text"
                 )}
                 style={{ 
                   pointerEvents: "auto", 
@@ -130,7 +148,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 {subItem.icon && typeof SubIcon === 'function' && 
                   <SubIcon className={cn("h-4 w-4 text-white", isArabic ? "ml-2" : "mr-2")} />
                 }
-                <span className="text-white">{subItem.name}</span>
+                <span className={`text-white ${isArabic ? 'text-right mr-2' : 'text-left ml-2'}`}>
+                  {subItem.name}
+                </span>
               </button>
             );
           })}

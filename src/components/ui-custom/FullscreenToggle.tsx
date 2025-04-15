@@ -55,7 +55,7 @@ const FullscreenToggle: React.FC<FullscreenToggleProps> = ({ className = "", col
       
       {!collapsed && (
         <AnimatedTransition animation="fade">
-          <span>
+          <span className={`${isArabic ? 'text-right' : 'text-left'}`}>
             {isFullscreen 
               ? (isArabic ? "إلغاء ملء الشاشة" : "Exit Fullscreen") 
               : (isArabic ? "ملء الشاشة" : "Enter Fullscreen")}
