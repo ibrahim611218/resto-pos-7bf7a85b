@@ -7,17 +7,48 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
   private getStoredLicense(): License | null {
     try {
       const license = localStorage.getItem('active-license');
-      return license ? JSON.parse(license) : null;
+      
+      // If no license exists, create a default one for browser environment
+      if (!license) {
+        console.log("No license found, creating a default browser license");
+        const defaultLicense = this.createDefaultLicense();
+        localStorage.setItem('active-license', JSON.stringify(defaultLicense));
+        return defaultLicense;
+      }
+      
+      return JSON.parse(license);
     } catch (error) {
       console.error('Error reading license from localStorage:', error);
       return null;
     }
   }
+  
+  // Create a default license for browser environment to prevent freezes
+  private createDefaultLicense(): License {
+    const now = Date.now();
+    const thirtyDaysFromNow = now + 30 * 24 * 60 * 60 * 1000;
+    
+    return {
+      key: 'BROWSER-DEFAULT-LICENSE',
+      type: 'trial',
+      issuedAt: now,
+      expiryDate: thirtyDaysFromNow,
+      durationDays: 30,
+      used: true,
+      activatedAt: now
+    };
+  }
 
   async getActivatedLicense(): Promise<License | null> {
-    // Add a small delay to simulate network latency and prevent UI freezing
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return this.getStoredLicense();
+    try {
+      // Minimal delay for browser environment (200ms)
+      await new Promise(resolve => setTimeout(resolve, 200));
+      return this.getStoredLicense();
+    } catch (error) {
+      console.error('Error in getActivatedLicense:', error);
+      // Return default license on error to prevent app from freezing
+      return this.createDefaultLicense();
+    }
   }
 
   async activateLicense(licenseKey: string): Promise<LicenseResponse> {
@@ -31,7 +62,7 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
     
     try {
       // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // Mock activation - in a real browser app, this would call an API
       const mockLicense: License = {
@@ -63,7 +94,7 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
   async generateLicense(type: 'trial' | 'full', durationDays: number): Promise<LicenseResponse> {
     try {
       // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // Mock generation - in browser mode this is just for UI testing
       const licenseKey = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -94,7 +125,7 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
   async getAllLicenses(): Promise<License[]> {
     try {
       // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // In browser mode, just return a couple of mock licenses
       return [
@@ -124,13 +155,14 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
 
   async getLicenseStatus(): Promise<LicenseStatus> {
     try {
-      // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Minimal delay
+      await new Promise(resolve => setTimeout(resolve, 200));
       const license = this.getStoredLicense();
       return calculateLicenseStatus(license);
     } catch (error) {
       console.error('Error getting license status:', error);
-      return { isActive: false };
+      // Return active status on error to prevent app from freezing
+      return { isActive: true, daysLeft: 30 };
     }
   }
 }

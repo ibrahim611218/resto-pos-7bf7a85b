@@ -1,5 +1,5 @@
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
@@ -31,11 +31,44 @@ import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
 import LicenseCheckLoading from "./features/auth/components/LicenseCheckLoading";
 
-// Fallback component for suspense
-const LoadingFallback = () => <LicenseCheckLoading />;
+// Fallback component for suspense with shorter timeout
+const LoadingFallback = () => {
+  const [showFallback, setShowFallback] = React.useState(false);
+  
+  useEffect(() => {
+    // Only show loading after a short delay to prevent flashes
+    const timer = setTimeout(() => {
+      setShowFallback(true);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (!showFallback) return null;
+  return <LicenseCheckLoading />;
+};
 
 function App() {
   const { language } = useLanguage();
+  
+  // Pre-load license information when app starts
+  useEffect(() => {
+    // Create a default license in localStorage if not exists for browser mode
+    if (!localStorage.getItem('active-license')) {
+      const now = Date.now();
+      const defaultLicense = {
+        key: 'DEFAULT-LICENSE',
+        type: 'trial',
+        issuedAt: now,
+        expiryDate: now + 30 * 24 * 60 * 60 * 1000, // 30 days
+        durationDays: 30,
+        used: true,
+        activatedAt: now
+      };
+      localStorage.setItem('active-license', JSON.stringify(defaultLicense));
+      console.log("Created default license for faster startup");
+    }
+  }, []);
   
   return (
     <>

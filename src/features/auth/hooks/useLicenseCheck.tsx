@@ -11,39 +11,52 @@ export const useLicenseCheck = () => {
   const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
   const checkAttempted = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  const isAdminUser = isAuthenticated && user?.email === 'eng.ibrahimabdalfatah@gmail.com';
+  // Optimize admin detection to prevent unnecessary checks
+  const isAdminUser = isAuthenticated && (
+    user?.email === 'eng.ibrahimabdalfatah@gmail.com' || 
+    user?.role === 'admin' || 
+    user?.role === 'owner'
+  );
   
   useEffect(() => {
     let isMounted = true;
     
-    // Only check once per component mount
-    if (checkAttempted.current) return;
+    // Skip check if already completed or admin user
+    if (checkAttempted.current) {
+      console.log("License check already attempted, skipping");
+      return;
+    }
+    
+    if (isAdminUser) {
+      console.log("Admin user detected, skipping license check");
+      setIsChecking(false);
+      checkAttempted.current = true;
+      return;
+    }
+    
     checkAttempted.current = true;
     
-    // Set a timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
+    // Set a timeout to prevent infinite loading (reduced to 6 seconds)
+    timeoutRef.current = setTimeout(() => {
       if (isMounted) {
-        console.log("License check timed out");
+        console.log("License check timed out in useLicenseCheck hook");
         setIsChecking(false);
         toast.error('تعذر التحقق من الترخيص، انتقال إلى صفحة التفعيل');
         navigate('/activate');
       }
-    }, 10000); // 10 seconds timeout
+    }, 6000); // 6 seconds timeout (reduced from 10s)
     
     const checkAppLicense = async () => {
       try {
         setIsChecking(true);
         
-        // Skip license check for admin users (they're already authenticated)
-        if (isAdminUser) {
-          console.log("Admin user detected, skipping useLicenseCheck");
-          clearTimeout(timeoutId);
-          setIsChecking(false);
-          return;
-        }
-        
         console.log("Starting license check in useLicenseCheck");
+        
+        // Add small delay to ensure clean render
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const hasValidLicense = await checkLicense();
         console.log("License check completed in useLicenseCheck:", hasValidLicense);
         
@@ -51,28 +64,34 @@ export const useLicenseCheck = () => {
           if (!hasValidLicense) {
             navigate('/activate');
           }
-          clearTimeout(timeoutId);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
           setIsChecking(false);
         }
       } catch (error) {
         console.error("Error in license check:", error);
         if (isMounted) {
           navigate('/activate');
-          clearTimeout(timeoutId);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
           setIsChecking(false);
           toast.error('حدث خطأ أثناء التحقق من الترخيص');
         }
       }
     };
     
-    // Small delay to ensure auth context is ready
-    setTimeout(() => {
-      checkAppLicense();
-    }, 100);
+    checkAppLicense();
     
     return () => {
       isMounted = false;
-      clearTimeout(timeoutId);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     };
   }, [checkLicense, navigate, isAdminUser]);
   
