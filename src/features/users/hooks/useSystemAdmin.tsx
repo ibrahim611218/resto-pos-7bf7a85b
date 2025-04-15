@@ -29,5 +29,5 @@ export const useSystemAdmin = (
       const allPermissionValues = allPermissions.map(p => p.value);
       updateUserPermissions(systemAdmin.id, allPermissionValues);
     }
-  }, []);
+  }, [users, allPermissions, updateUserPermissions, setUsers]);
 };
