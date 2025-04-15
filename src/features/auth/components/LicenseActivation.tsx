@@ -23,13 +23,33 @@ const LicenseActivation: React.FC = () => {
     }
     
     setIsActivating(true);
+    
     try {
-      const success = await activateLicense(licenseKey);
-      if (success) {
-        navigate('/');
-      }
-    } finally {
+      // تطبيق فاصل زمني قصير لتفادي تجميد واجهة المستخدم
+      setTimeout(async () => {
+        try {
+          const result = await activateLicense(licenseKey);
+          
+          if (result) {
+            navigate('/');
+          }
+        } catch (error) {
+          console.error('خطأ في تفعيل الترخيص:', error);
+          toast.error('حدث خطأ أثناء تفعيل الترخيص، يرجى المحاولة مرة أخرى');
+        } finally {
+          setIsActivating(false);
+        }
+      }, 100);
+    } catch (error) {
+      console.error('خطأ غير متوقع:', error);
       setIsActivating(false);
+      toast.error('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى');
+    }
+  };
+  
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isActivating) {
+      handleActivate();
     }
   };
   
@@ -54,7 +74,9 @@ const LicenseActivation: React.FC = () => {
                 placeholder="XXXX-XXXX-XXXX-XXXX"
                 value={licenseKey}
                 onChange={(e) => setLicenseKey(e.target.value)}
+                onKeyPress={handleKeyPress}
                 className="h-12 text-center tracking-widest"
+                disabled={isActivating}
               />
             </div>
           </CardContent>
