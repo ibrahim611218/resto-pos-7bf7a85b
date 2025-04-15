@@ -15,6 +15,9 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
     `;
   }
   
+  // إضافة سجل تصحيح للتأكد من البيانات
+  console.log("Invoice items data:", JSON.stringify(invoice.items));
+  
   return `
     <table class="invoice-table">
       <thead>
@@ -27,15 +30,20 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
         </tr>
       </thead>
       <tbody>
-        ${invoice.items.map((item, index) => `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${item.nameAr || item.name} (${item.size})</td>
-            <td>${item.price.toFixed(2)} ر.س</td>
-            <td>${item.quantity}</td>
-            <td>${(item.price * item.quantity).toFixed(2)} ر.س</td>
-          </tr>
-        `).join('')}
+        ${invoice.items.map((item, index) => {
+          // إضافة سجل لكل عنصر
+          console.log(`Processing item ${index+1}:`, item.nameAr || item.name);
+          
+          return `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.nameAr || item.name} ${item.size ? `(${item.size})` : ''}</td>
+              <td>${item.price.toFixed(2)} ر.س</td>
+              <td>${item.quantity}</td>
+              <td>${(item.price * item.quantity).toFixed(2)} ر.س</td>
+            </tr>
+          `;
+        }).join('')}
       </tbody>
     </table>
   `;

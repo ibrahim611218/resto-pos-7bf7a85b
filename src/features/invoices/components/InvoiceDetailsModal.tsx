@@ -48,7 +48,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   // Handle print using handleInvoiceExport instead of the passed onPrint function
   const handlePrint = () => {
     // Pass the complete invoice object and settings to ensure all data is available
-    console.log("Printing invoice:", invoice);
+    console.log("Printing invoice:", JSON.stringify(invoice));
     handleInvoiceExport("print", invoice, settings);
   };
 

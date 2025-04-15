@@ -14,7 +14,7 @@ export const getInvoiceStyles = (): string => {
     body { 
       font-family: 'Tajawal', Arial, sans-serif; 
       margin: 0; 
-      padding: 20px; 
+      padding: 10px; 
       direction: rtl;
       color: #333333;
       background-color: #ffffff;
@@ -22,7 +22,10 @@ export const getInvoiceStyles = (): string => {
     .invoice-container {
       position: relative;
       width: 100%;
+      max-width: 800px;
       min-height: 100vh;
+      margin: 0 auto;
+      padding: 10px;
     }
     .invoice-header { 
       text-align: center; 
@@ -68,7 +71,7 @@ export const getInvoiceStyles = (): string => {
     }
     .invoice-table th, .invoice-table td { 
       border: 1px solid #ddd; 
-      padding: 12px; 
+      padding: 8px; 
       text-align: right; 
     }
     .invoice-table th { 
@@ -82,7 +85,8 @@ export const getInvoiceStyles = (): string => {
     .invoice-summary { 
       margin-top: 20px; 
       text-align: left;
-      width: 50%;
+      width: 100%;
+      max-width: 350px;
       margin-left: auto;
       background-color: #f9f9f9;
       padding: 15px;
@@ -145,10 +149,26 @@ export const getInvoiceStyles = (): string => {
       pointer-events: none;
       white-space: nowrap;
     }
+    .invoice-empty-items {
+      text-align: center;
+      padding: 20px;
+      border: 1px dashed #ddd;
+      margin: 20px 0;
+    }
     /* Print-specific styles */
     @media print {
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
       body {
         background-color: white;
+        padding: 0;
+        margin: 0;
+      }
+      .invoice-container {
+        width: 100%;
+        max-width: none;
         padding: 0;
         margin: 0;
       }
@@ -178,6 +198,9 @@ export const getInvoiceStyles = (): string => {
         color: rgba(255, 0, 0, 0.15) !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+      }
+      .no-print {
+        display: none !important;
       }
     }
   `;

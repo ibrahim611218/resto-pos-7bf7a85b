@@ -38,7 +38,7 @@ export const exportInvoiceToPDF = (
           @media print {
             .no-print { display: none !important; }
             body { margin: 0; padding: 0; }
-            @page { size: auto; margin: 0mm; }
+            @page { size: auto; margin: 10mm; }
           }
           .print-button {
             background-color: #0f766e;
@@ -71,7 +71,7 @@ export const exportInvoiceToPDF = (
         // Print automatically after a short delay to ensure content is fully loaded
         setTimeout(() => {
           printWindow.print();
-        }, 500);
+        }, 1000);
         
         toast({
           title: "تم تصدير الفاتورة",
@@ -129,28 +129,36 @@ export const handleInvoiceExport = (
   
   switch (exportType) {
     case "print":
-      const printContent = generateInvoiceTemplate(invoice, businessSettings);
-      console.log("Generated print content length:", printContent.length);
-      
-      const printWindow = window.open('', '_blank');
-      
-      if (printWindow) {
-        printWindow.document.write(printContent);
-        printWindow.document.close();
+      try {
+        console.log("Printing invoice:", JSON.stringify(invoice));
+        const printContent = generateInvoiceTemplate(invoice, businessSettings);
+        console.log("Generated print content length:", printContent.length);
         
-        // Ensure document is fully loaded before printing
-        printWindow.onload = function() {
-          printWindow.focus();
-          setTimeout(() => {
-            printWindow.print();
-          }, 500);
-        };
-      } else {
-        toast({
-          title: "تنبيه",
-          description: "يرجى السماح بالنوافذ المنبثقة للطباعة",
-          variant: "destructive",
-        });
+        const printWindow = window.open('', '_blank');
+        
+        if (printWindow) {
+          printWindow.document.write(printContent);
+          printWindow.document.close();
+          
+          // Ensure document is fully loaded before printing
+          printWindow.onload = function() {
+            console.log("Print window loaded successfully");
+            printWindow.focus();
+            setTimeout(() => {
+              console.log("Triggering print");
+              printWindow.print();
+            }, 1000);
+          };
+        } else {
+          console.error("Failed to open print window");
+          toast({
+            title: "تنبيه",
+            description: "يرجى السماح بالنوافذ المنبثقة للطباعة",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error in print function:", error);
       }
       break;
     case "pdf":
