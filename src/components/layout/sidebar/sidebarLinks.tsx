@@ -98,7 +98,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
       path: "/license-generator",
       icon: KeySquare,
       isAdminOnly: true,
-      requiredEmail: "admin@example.com",
+      requiredEmail: "eng.ibrahimabdalfatah@gmail.com",
     },
   ];
 };
