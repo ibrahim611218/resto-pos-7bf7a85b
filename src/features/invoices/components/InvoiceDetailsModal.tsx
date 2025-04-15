@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Invoice } from "@/types";
 import { generateInvoiceQRCodeData, handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import {
   InvoiceHeader,
@@ -62,47 +63,53 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <InvoiceHeader 
-          invoice={invoice} 
-          settings={settings}
-          formatInvoiceDate={formatInvoiceDate}
-        />
-
-        <div className="space-y-4 relative" id="invoice-printable-content">
-          {invoice.status === "refunded" && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div className="transform rotate-45 text-red-500/20 text-6xl font-bold">
-                مسترجعة
-              </div>
-            </div>
-          )}
-
-          <InvoiceSummary 
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="flex-shrink-0">
+          <InvoiceHeader 
             invoice={invoice} 
             settings={settings}
-            discountAmount={discountAmount}
-          />
-
-          <Separator />
-
-          <InvoiceItems items={invoice.items} />
-
-          <Separator />
-
-          <InvoiceQRCode 
-            qrCodeData={qrCodeData}
-            notes={settings.invoiceNotesAr}
+            formatInvoiceDate={formatInvoiceDate}
           />
         </div>
 
-        <InvoiceActions 
-          invoice={invoice}
-          settings={settings}
-          onPrint={handlePrint}
-          onShowEmailDialog={() => setShowEmailDialog(true)}
-          onRefund={onRefund}
-        />
+        <ScrollArea className="flex-1 my-4">
+          <div className="space-y-4 relative" id="invoice-printable-content">
+            {invoice.status === "refunded" && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                <div className="transform rotate-45 text-red-500/20 text-6xl font-bold">
+                  مسترجعة
+                </div>
+              </div>
+            )}
+
+            <InvoiceSummary 
+              invoice={invoice} 
+              settings={settings}
+              discountAmount={discountAmount}
+            />
+
+            <Separator />
+
+            <InvoiceItems items={invoice.items} />
+
+            <Separator />
+
+            <InvoiceQRCode 
+              qrCodeData={qrCodeData}
+              notes={settings.invoiceNotesAr}
+            />
+          </div>
+        </ScrollArea>
+
+        <div className="flex-shrink-0 pt-4 border-t">
+          <InvoiceActions 
+            invoice={invoice}
+            settings={settings}
+            onPrint={handlePrint}
+            onShowEmailDialog={() => setShowEmailDialog(true)}
+            onRefund={onRefund}
+          />
+        </div>
         
         <EmailDialog 
           email={email}

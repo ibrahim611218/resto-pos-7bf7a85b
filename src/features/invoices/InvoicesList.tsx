@@ -41,6 +41,9 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   }, [loadInvoicesFromStorage]);
 
   const handlePrintInvoice = (invoice: Invoice) => {
+    if (!settings) {
+      console.warn("Business settings not available, using defaults");
+    }
     handleInvoiceExport("print", invoice, settings);
   };
 
@@ -85,13 +88,19 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         onRefund={handleRefundClick}
       />
 
-      <InvoiceDetailsModal
-        invoice={selectedInvoice}
-        open={!!selectedInvoice}
-        onClose={closeInvoiceDetails}
-        formatInvoiceDate={formatInvoiceDate}
-        onPrint={handlePrintInvoice}
-      />
+      {selectedInvoice && (
+        <InvoiceDetailsModal
+          invoice={selectedInvoice}
+          open={!!selectedInvoice}
+          onClose={closeInvoiceDetails}
+          formatInvoiceDate={formatInvoiceDate}
+          onPrint={handlePrintInvoice}
+          onRefund={invoice => {
+            handleRefundClick(invoice);
+            return true;
+          }}
+        />
+      )}
 
       <ReturnOrderDialog
         open={showReturnDialog}

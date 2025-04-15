@@ -39,17 +39,17 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   };
 
   return (
-    <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-6">
+    <DialogFooter className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
       <Button 
         variant="outline" 
-        className="flex-1"
+        className="flex-1 min-w-[120px]"
         onClick={handlePrint}
       >
         <PrinterIcon className="mr-2 h-4 w-4" />
         {isArabic ? "طباعة" : "Print"}
       </Button>
       <Button 
-        className="flex-1"
+        className="flex-1 min-w-[120px]"
         onClick={() => handleInvoiceExport("pdf", invoice, settings)}
       >
         <DownloadIcon className="mr-2 h-4 w-4" />
@@ -57,7 +57,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
       </Button>
       <Button 
         variant="outline"
-        className="flex-1"
+        className="flex-1 min-w-[120px]"
         onClick={onShowEmailDialog}
       >
         <MailIcon className="mr-2 h-4 w-4" />
@@ -66,7 +66,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
       {canRefund && (
         <Button 
           variant="destructive"
-          className="flex-1"
+          className="flex-1 min-w-[120px]"
           onClick={handleRefund}
         >
           <ReceiptText className="mr-2 h-4 w-4" />

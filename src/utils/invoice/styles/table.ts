@@ -1,62 +1,74 @@
 
 /**
- * Styles for invoice table
+ * Table styles for invoice
  */
 export const getTableStyles = (): string => `
-  .invoice-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    margin: 20px 0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    table-layout: fixed;
   }
   
-  .invoice-table th, .invoice-table td { 
-    border: 1px solid #ddd; 
-    padding: 8px; 
-    text-align: right; 
+  .invoice-table th,
+  .invoice-table td {
+    padding: 8px 5px;
+    border: 1px solid #e0e0e0;
+    text-align: right;
+    font-size: 12px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    max-width: 100%;
   }
   
-  .invoice-table th { 
-    background-color: #004d40; 
-    color: white;
+  .invoice-table th {
+    background-color: #f8f9fa;
     font-weight: bold;
+  }
+  
+  .invoice-table th:nth-child(1) {
+    width: 10%;
+  }
+  
+  .invoice-table th:nth-child(2) {
+    width: 40%;
+  }
+  
+  .invoice-table th:nth-child(3),
+  .invoice-table th:nth-child(4),
+  .invoice-table th:nth-child(5) {
+    width: 16.66%;
   }
   
   .invoice-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  .total-row {
-    font-weight: bold;
-    font-size: 1.2em;
-    background-color: #f0f7f4 !important;
+    background-color: #f8f8f8;
   }
   
   .invoice-empty-items {
     text-align: center;
     padding: 20px;
-    border: 1px dashed #ddd;
-    margin: 20px 0;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    color: #999;
+    margin: 15px 0;
   }
-
+  
   @media print {
-    .invoice-table th {
-      background-color: #004d40 !important;
-      color: white !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+    .invoice-table {
+      page-break-inside: auto;
     }
     
-    .invoice-table tr:nth-child(even) {
-      background-color: #f2f2f2 !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+    .invoice-table tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
     }
     
-    .total-row {
-      background-color: #f0f7f4 !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+    .invoice-table thead {
+      display: table-header-group;
+    }
+    
+    .invoice-table tfoot {
+      display: table-footer-group;
     }
   }
 `;

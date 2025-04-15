@@ -6,6 +6,7 @@ import TransferReceiptDialog from "../payment/TransferReceiptDialog";
 import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsModal";
 import { Invoice, PaymentMethod, Customer } from "@/types";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 interface CartInvoiceDialogsProps {
   showPaymentMethodDialog: boolean;
@@ -14,7 +15,7 @@ interface CartInvoiceDialogsProps {
   total: number;
   currentInvoice: Invoice | null;
   showInvoiceModal: boolean;
-  onSelectPaymentMethod: (method: PaymentMethod) => void;
+  onSelectPaymentMethod: (method: PaymentMethod, customer?: Customer) => void;
   onConfirmPaidAmount: (amount: number) => void;
   onConfirmTransferReceipt: (receiptNumber: string, customer?: Customer) => void;
   onCloseInvoiceModal: () => void;
@@ -32,7 +33,17 @@ const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
   onConfirmTransferReceipt,
   onCloseInvoiceModal
 }) => {
-  const { formatInvoiceDate, printInvoice } = useInvoiceFormatting();
+  const { formatInvoiceDate } = useInvoiceFormatting();
+  const { settings } = useBusinessSettings();
+  
+  const handlePrintInvoice = (invoice: Invoice) => {
+    if (invoice && settings) {
+      // Import handleInvoiceExport dynamically to avoid circular dependency
+      import("@/utils/invoice").then(({ handleInvoiceExport }) => {
+        handleInvoiceExport("print", invoice, settings);
+      });
+    }
+  };
   
   return (
     <>
@@ -62,7 +73,7 @@ const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
           open={showInvoiceModal}
           onClose={onCloseInvoiceModal}
           formatInvoiceDate={formatInvoiceDate}
-          onPrint={printInvoice}
+          onPrint={handlePrintInvoice}
         />
       )}
     </>

@@ -16,7 +16,6 @@ import { generateInvoiceFooter } from "./components/invoiceFooter";
  */
 export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: BusinessSettings): string => {
   console.log("Generating invoice template for invoice:", invoice.id, invoice.number);
-  console.log("Using business settings:", businessSettings);
   
   // Use default settings if none provided
   const settings = businessSettings || {
@@ -94,11 +93,11 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <script>
         window.onload = function() {
           console.log("Invoice print window loaded");
-          // Force print after short delay to ensure everything is rendered
+          // Wait a bit longer for fonts and assets to load properly
           setTimeout(function() {
-            document.body.offsetHeight;
             window.focus();
-          }, 500);
+            window.print();
+          }, 1000);
         };
       </script>
     </body>
