@@ -1,11 +1,16 @@
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSalesData } from "./hooks/useSalesData";
 import FilterCard from "./components/FilterCard";
 import SummaryCards from "./components/SummaryCards";
 import ChartsTabs from "./components/ChartsTabs";
 import ReportHeader from "./components/ReportHeader";
+import { useInvoices } from "@/features/invoices/hooks/useInvoices";
+import { SearchIcon, RefreshCw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const CHART_COLORS = [
   "#10B981", // Green
@@ -19,6 +24,7 @@ const SalesReport: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const printableAreaRef = useRef<HTMLDivElement>(null);
+  const { loadInvoicesFromStorage } = useInvoices();
   
   const {
     uniqueUsers,
@@ -39,9 +45,25 @@ const SalesReport: React.FC = () => {
     salesByPaymentMethod,
     salesByOrderType,
     topSellingProducts,
-    resetFilters
+    resetFilters,
+    searchTerm,
+    setSearchTerm,
+    refreshData
   } = useSalesData({ language });
   
+  // Load invoices data when component mounts
+  useEffect(() => {
+    loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage]);
+  
+  const handleRefresh = () => {
+    loadInvoicesFromStorage();
+    refreshData();
+    toast.success(
+      isArabic ? "تم تحديث البيانات بنجاح" : "Data refreshed successfully"
+    );
+  };
+
   return (
     <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
       <ReportHeader
@@ -52,6 +74,29 @@ const SalesReport: React.FC = () => {
         endDate={endDate}
         isArabic={isArabic}
       />
+      
+      <div className="flex justify-between items-center mb-4">
+        <div className="relative w-full max-w-sm">
+          <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                    size={18} />
+          <Input
+            type="text"
+            placeholder={isArabic ? "بحث في الفواتير..." : "Search invoices..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`pl-8 ${isArabic ? 'text-right pr-8 pl-4' : 'text-left'}`}
+          />
+        </div>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={handleRefresh}
+          className="ml-2"
+          title={isArabic ? "تحديث البيانات" : "Refresh data"}
+        >
+          <RefreshCw size={18} />
+        </Button>
+      </div>
       
       <div id="printable-report" ref={printableAreaRef}>
         <FilterCard

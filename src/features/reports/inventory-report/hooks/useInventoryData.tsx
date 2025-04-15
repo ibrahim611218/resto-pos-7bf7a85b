@@ -1,12 +1,22 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 import { InventoryItem } from "../types";
 import { productIngredients, initialInventoryData } from "../data/inventory-data";
+import { toast } from "sonner";
 
 export const useInventoryData = () => {
-  const { invoices } = useInvoices();
+  const { invoices, loadInvoicesFromStorage } = useInvoices();
   const [inventoryData, setInventoryData] = useState<InventoryItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
+  
+  // Function to refresh inventory data
+  const refreshInventoryData = useCallback(() => {
+    setRefreshFlag(prev => !prev);
+    loadInvoicesFromStorage();
+    toast.success("تم تحديث بيانات المخزون");
+  }, [loadInvoicesFromStorage]);
   
   // Update inventory based on invoices
   useEffect(() => {
@@ -42,9 +52,25 @@ export const useInventoryData = () => {
     
     // Update inventory state
     setInventoryData(updatedInventory);
-  }, [invoices]);
+  }, [invoices, refreshFlag]);
+  
+  // Filter inventory based on search term
+  const filteredInventoryData = inventoryData.filter(item => {
+    if (!searchTerm) return true;
+    
+    const term = searchTerm.toLowerCase();
+    
+    return (
+      item.productName.toLowerCase().includes(term) ||
+      (item.productNameAr && item.productNameAr.toLowerCase().includes(term))
+    );
+  });
   
   return {
-    inventoryData
+    inventoryData: filteredInventoryData,
+    searchTerm,
+    setSearchTerm,
+    refreshInventoryData,
+    rawInventoryData: inventoryData
   };
 };

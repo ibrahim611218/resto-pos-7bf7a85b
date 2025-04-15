@@ -1,14 +1,18 @@
+
 import React, { useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import InventoryTable from "./components/InventoryTable";
 import ExportButtons from "./components/ExportButtons";
 import { useInventoryData } from "./hooks/useInventoryData";
 import { calculateInventoryPercentage } from "./utils/inventory-utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { SearchIcon, RefreshCw } from "lucide-react";
 
 const InventoryReport: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { inventoryData } = useInventoryData();
+  const { inventoryData, searchTerm, setSearchTerm, refreshInventoryData } = useInventoryData();
   
   useEffect(() => {
     console.log("InventoryReport rendered, data length:", inventoryData?.length);
@@ -199,6 +203,40 @@ const InventoryReport: React.FC = () => {
   
   return (
     <div className="container p-4">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">
+          {isArabic ? "تقرير المخزون" : "Inventory Report"}
+        </h1>
+        <p className="text-muted-foreground">
+          {isArabic 
+            ? `${inventoryData.length} منتج في المخزون` 
+            : `${inventoryData.length} items in inventory`}
+        </p>
+      </div>
+      
+      <div className="flex justify-between items-center mb-4">
+        <div className="relative w-full max-w-sm">
+          <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                     size={18} />
+          <Input
+            type="text"
+            placeholder={isArabic ? "بحث في المخزون..." : "Search inventory..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`pl-8 ${isArabic ? 'text-right pr-8 pl-4' : 'text-left'}`}
+          />
+        </div>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={refreshInventoryData}
+          className="ml-2"
+          title={isArabic ? "تحديث بيانات المخزون" : "Refresh inventory data"}
+        >
+          <RefreshCw size={18} />
+        </Button>
+      </div>
+      
       <InventoryTable 
         inventoryData={inventoryData}
         isArabic={isArabic}

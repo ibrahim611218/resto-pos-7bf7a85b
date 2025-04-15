@@ -1,5 +1,5 @@
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { useFilterStates } from "./useFilterStates";
@@ -15,6 +15,13 @@ interface SalesDataProps {
 export const useSalesData = ({ language }: SalesDataProps) => {
   const isArabic = language === "ar";
   const { invoices } = useInvoices();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState<number>(0);
+  
+  // Function to refresh data
+  const refreshData = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
   
   // Get filter states
   const {
@@ -36,13 +43,13 @@ export const useSalesData = ({ language }: SalesDataProps) => {
   // Get all invoices (from API or mock)
   const allInvoices = useMemo(() => {
     return invoices.length > 0 ? invoices : mockInvoices;
-  }, [invoices]);
+  }, [invoices, refreshKey]);
   
   // Get unique users from invoices
   const uniqueUsers = useUniqueUsers({ allInvoices });
   
-  // Get filtered invoices based on filter criteria
-  const filteredInvoices = useFilteredInvoices({
+  // Get filtered and searched invoices
+  const initialFilteredInvoices = useFilteredInvoices({
     allInvoices,
     startDate,
     endDate,
@@ -51,6 +58,31 @@ export const useSalesData = ({ language }: SalesDataProps) => {
     cashier,
     includeRefunded
   });
+  
+  // Apply search filter
+  const filteredInvoices = useMemo(() => {
+    if (!searchTerm) return initialFilteredInvoices;
+    
+    const term = searchTerm.toLowerCase();
+    return initialFilteredInvoices.filter(invoice => {
+      // Search by invoice number
+      if (invoice.number.toLowerCase().includes(term)) return true;
+      
+      // Search by customer name
+      if (invoice.customer?.name && invoice.customer.name.toLowerCase().includes(term)) return true;
+      
+      // Search by cashier name
+      if (invoice.cashierName.toLowerCase().includes(term)) return true;
+      
+      // Search by items
+      const hasMatchingItem = invoice.items.some(item => 
+        item.name.toLowerCase().includes(term) ||
+        (item.nameAr && item.nameAr.toLowerCase().includes(term))
+      );
+      
+      return hasMatchingItem;
+    });
+  }, [initialFilteredInvoices, searchTerm]);
   
   // Calculate sales metrics
   const { totalSales, salesByPaymentMethod, salesByOrderType } = useSalesCalculations({
@@ -83,6 +115,9 @@ export const useSalesData = ({ language }: SalesDataProps) => {
     salesByPaymentMethod,
     salesByOrderType,
     topSellingProducts,
-    resetFilters
+    resetFilters,
+    searchTerm,
+    setSearchTerm,
+    refreshData
   };
 };
