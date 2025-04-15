@@ -9,6 +9,8 @@
   position: fixed !important;
   visibility: visible !important;
   opacity: 1 !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Fix for select content */
@@ -20,6 +22,8 @@
   display: block !important;
   background-color: var(--background) !important;
   position: fixed !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Ensure form inputs are properly displayed in fullscreen */
@@ -34,4 +38,7 @@
 .in-fullscreen [role="dialog"] {
   z-index: 10000 !important;
   position: fixed !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2) !important;
 }
+
