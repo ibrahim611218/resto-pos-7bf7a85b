@@ -1,0 +1,21 @@
+
+/* Header and navigation styles in fullscreen */
+.fullscreen-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+.fullscreen-controls {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.fullscreen-sidebar {
+  position: fixed !important;
+  z-index: 1000 !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+}

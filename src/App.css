@@ -10,5 +10,5 @@
 @import './styles/compact-ui.css';
 @import './styles/mobile.css';
 @import './styles/desktop.css';
-@import './styles/fullscreen.css';
+@import './styles/fullscreen/index.css';
 @import './styles/touch.css';
