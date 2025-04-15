@@ -1,55 +1,34 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { KitchenOrder, Language, KitchenOrderStatus } from "@/types";
 import KitchenOrderCard from "./KitchenOrderCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import { toast } from "@/hooks/use-toast";
+import kitchenOrderService from "@/services/kitchen/KitchenOrderService";
 
 interface KitchenOrdersListProps {
   language: Language;
 }
 
-// Mock data for kitchen orders
-const mockKitchenOrders: KitchenOrder[] = [
-  {
-    id: "ko1",
-    invoiceId: "INV-20230001",
-    status: "pending",
-    items: [
-      { id: "item1", name: "Espresso", nameAr: "إسبريسو", quantity: 2, size: "medium", status: "pending" },
-      { id: "item2", name: "Cappuccino", nameAr: "كابتشينو", quantity: 1, size: "large", status: "pending" }
-    ],
-    createdAt: new Date(Date.now() - 15 * 60000).toISOString(), // 15 minutes ago
-    updatedAt: new Date(Date.now() - 15 * 60000).toISOString()
-  },
-  {
-    id: "ko2",
-    invoiceId: "INV-20230002",
-    status: "preparing",
-    items: [
-      { id: "item3", name: "Latte", nameAr: "لاتيه", quantity: 3, size: "small", status: "preparing" },
-      { id: "item4", name: "American Coffee", nameAr: "قهوة أمريكية", quantity: 2, size: "large", status: "preparing" }
-    ],
-    createdAt: new Date(Date.now() - 30 * 60000).toISOString(), // 30 minutes ago
-    updatedAt: new Date(Date.now() - 20 * 60000).toISOString()
-  },
-  {
-    id: "ko3",
-    invoiceId: "INV-20230003",
-    status: "ready",
-    items: [
-      { id: "item5", name: "Tea", nameAr: "شاي", quantity: 4, size: "medium", status: "ready" }
-    ],
-    createdAt: new Date(Date.now() - 45 * 60000).toISOString(), // 45 minutes ago
-    updatedAt: new Date(Date.now() - 5 * 60000).toISOString()
-  }
-];
-
 const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
-  const [orders, setOrders] = useState<KitchenOrder[]>(mockKitchenOrders);
+  const [orders, setOrders] = useState<KitchenOrder[]>([]);
   const [activeTab, setActiveTab] = useState<string>("active");
   const isArabic = language === "ar";
+
+  // Fetch kitchen orders
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const fetchedOrders = await kitchenOrderService.getKitchenOrders();
+      setOrders(fetchedOrders);
+    };
+    
+    fetchOrders();
+    
+    // Poll for new orders every 30 seconds
+    const interval = setInterval(fetchOrders, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Filter orders based on active tab
   const activeOrders = orders.filter((order) => 
@@ -60,32 +39,53 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
     order.status === "completed"
   );
 
-  const handleStatusChange = (orderId: string, newStatus: KitchenOrderStatus) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus, updatedAt: new Date().toISOString() } : order
-      )
-    );
-
-    // Notify the cashier (in a real app, this would send a notification via WebSockets)
-    const changedOrder = orders.find(order => order.id === orderId);
-    if (changedOrder) {
-      // This is just for demo purposes. In a real app, this would be replaced with WebSocket communication
-      console.log(`Order ${changedOrder.invoiceId} status changed to ${newStatus}`);
+  const handleStatusChange = async (orderId: string, newStatus: KitchenOrderStatus) => {
+    try {
+      await kitchenOrderService.updateKitchenOrderStatus(orderId, newStatus);
       
-      // Notify the cashier about the status change
-      if (newStatus === "ready") {
-        // Simulate a notification from the server after a delay
-        setTimeout(() => {
-          toast({
-            title: isArabic ? "طلب جاهز من المطبخ" : "Order Ready from Kitchen",
-            description: isArabic 
-              ? `الطلب رقم ${changedOrder.invoiceId} جاهز للتسليم`
-              : `Order #${changedOrder.invoiceId} is ready for pickup`,
-            variant: "default",
-          });
-        }, 2000);
+      // Update local state
+      if (newStatus === "completed") {
+        setOrders(prev => prev.filter(order => order.id !== orderId));
+      } else {
+        setOrders(prev => prev.map(order => 
+          order.id === orderId 
+            ? { ...order, status: newStatus, updatedAt: new Date().toISOString() } 
+            : order
+        ));
       }
+
+      // Notify about status change
+      const statusMessage = isArabic 
+        ? getArabicStatusMessage(newStatus)
+        : `Order status updated to ${newStatus}`;
+      
+      toast({
+        title: isArabic ? "تم تحديث حالة الطلب" : "Order Status Updated",
+        description: statusMessage,
+      });
+
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      toast({
+        title: isArabic ? "خطأ" : "Error",
+        description: isArabic 
+          ? "حدث خطأ أثناء تحديث حالة الطلب"
+          : "Error updating order status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getArabicStatusMessage = (status: KitchenOrderStatus): string => {
+    switch (status) {
+      case "preparing":
+        return "جاري تحضير الطلب";
+      case "ready":
+        return "الطلب جاهز للتسليم";
+      case "completed":
+        return "تم اكتمال الطلب";
+      default:
+        return "تم تحديث حالة الطلب";
     }
   };
 

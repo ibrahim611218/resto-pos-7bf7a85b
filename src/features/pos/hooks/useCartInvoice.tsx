@@ -4,6 +4,7 @@ import { createInvoiceObject } from "@/utils/invoice";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { toast } from "@/hooks/use-toast";
 import { saveInvoiceToStorage } from "@/features/invoices/hooks/useInvoices";
+import kitchenOrderService from "@/services/kitchen/KitchenOrderService";
 
 interface UseCartInvoiceProps {
   cartItems: CartItem[];
@@ -94,7 +95,7 @@ export const useCartInvoice = ({
     setCurrentInvoice(null);
   };
 
-  const createAndShowInvoice = useCallback(() => {
+  const createAndShowInvoice = useCallback(async () => {
     if (!paymentMethod || paidAmount === undefined) return;
     
     const invoiceCartItems = cartItems.map(item => ({
@@ -109,7 +110,6 @@ export const useCartInvoice = ({
       taxable: item.taxable
     }));
     
-    // Use the createInvoiceObject with the proper parameters
     const invoice = createInvoiceObject(
       invoiceCartItems,
       subtotal,
@@ -130,13 +130,19 @@ export const useCartInvoice = ({
       invoice.transferReceiptNumber = transferReceiptNumber;
     }
     
-    // Add customer data to invoice
     if (customer) {
       invoice.customer = customer;
     }
     
-    // Save invoice to storage so it appears in the invoices list
     saveInvoiceToStorage(invoice);
+    
+    if (invoice.items.length > 0) {
+      try {
+        await kitchenOrderService.createKitchenOrder(invoice);
+      } catch (error) {
+        console.error('Error creating kitchen order:', error);
+      }
+    }
     
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
@@ -149,7 +155,6 @@ export const useCartInvoice = ({
     });
   }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, paymentMethod, paidAmount, transferReceiptNumber, customer]);
   
-  // Create invoice when payment method and paid amount are set
   useEffect(() => {
     if (paymentMethod && paidAmount !== undefined) {
       createAndShowInvoice();
