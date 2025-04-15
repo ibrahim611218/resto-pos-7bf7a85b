@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { getSizeLabel } from "../../utils/sizeLabels";
 
 interface ProductCardProps {
   product: Product;
@@ -71,16 +72,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
     
     setShowSizeDialog(false);
-  };
-
-  // Get size label in Arabic or English
-  const getSizeLabel = (size: string) => {
-    switch(size) {
-      case 'small': return isArabic ? 'صغير' : 'Small';
-      case 'medium': return isArabic ? 'وسط' : 'Medium';
-      case 'large': return isArabic ? 'كبير' : 'Large';
-      default: return isArabic ? 'عادي' : 'Regular';
-    }
   };
 
   return (
@@ -143,11 +134,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="grid gap-3 pt-3"
           >
             {product.variants.map((variant) => (
-              <div key={variant.id} className="flex items-center justify-between border rounded-md p-3">
+              <div 
+                key={variant.id} 
+                className="flex items-center justify-between border rounded-md p-3 cursor-pointer"
+                onClick={() => setSelectedSize(variant.size)}
+              >
                 <div className="flex items-center space-x-2 space-x-reverse">
                   <RadioGroupItem value={variant.size} id={`size-${variant.id}`} />
                   <Label htmlFor={`size-${variant.id}`}>
-                    {getSizeLabel(variant.size)}
+                    {getSizeLabel(variant.size, isArabic)}
                   </Label>
                 </div>
                 <div className="text-sm font-medium">

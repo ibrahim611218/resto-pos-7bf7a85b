@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 
 const Pos = () => {
   const { language } = useLanguage();
+  const isArabic = language === "ar";
   const { isMobile } = useWindowDimensions();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [cartExpanded, setCartExpanded] = useState(!isMobile);
@@ -23,7 +24,7 @@ const Pos = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">نقاط البيع</h1>
+        <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <Button variant="outline" size="sm" onClick={toggleViewMode}>
           {viewMode === "grid" ? <List size={18} /> : <Grid size={18} />}
         </Button>

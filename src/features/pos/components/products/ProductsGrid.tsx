@@ -1,147 +1,13 @@
 
 import React, { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { mockProducts, mockCategories } from "../../data/mockData";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
-import { useLanguage } from "@/context/LanguageContext";
 import { Product } from "@/types";
-
-// Extended mock data - in a real app, this would come from a database or API
-const mockProducts = [
-  {
-    id: "1",
-    name: "Espresso",
-    nameAr: "إسبريسو",
-    description: "Strong coffee",
-    descriptionAr: "قهوة قوية",
-    price: 8,
-    categoryId: "1",
-    image: "/lovable-uploads/b8da0625-ebda-4a08-8f51-5ebf33b24b30.png",
-    variants: [
-      { id: "1-1", size: "small", price: 8 },
-      { id: "1-2", size: "medium", price: 12 },
-      { id: "1-3", size: "large", price: 15 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "2",
-    name: "Americano",
-    nameAr: "أمريكانو",
-    price: 10,
-    categoryId: "1",
-    variants: [
-      { id: "2-1", size: "small", price: 10 },
-      { id: "2-2", size: "medium", price: 14 },
-      { id: "2-3", size: "large", price: 18 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "3",
-    name: "Croissant",
-    nameAr: "كرواسون",
-    price: 7,
-    categoryId: "2",
-    variants: [{ id: "3-1", size: "regular", price: 7 }],
-    taxable: true,
-    type: "single"
-  },
-  {
-    id: "4",
-    name: "Cheesecake",
-    nameAr: "تشيز كيك",
-    price: 15,
-    categoryId: "2",
-    variants: [{ id: "4-1", size: "regular", price: 15 }],
-    taxable: true,
-    type: "single"
-  },
-  {
-    id: "5",
-    name: "Latte",
-    nameAr: "لاتيه",
-    price: 12,
-    categoryId: "1",
-    variants: [
-      { id: "5-1", size: "small", price: 12 },
-      { id: "5-2", size: "medium", price: 16 },
-      { id: "5-3", size: "large", price: 20 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "6",
-    name: "Cappuccino",
-    nameAr: "كابتشينو",
-    price: 13,
-    categoryId: "1",
-    variants: [
-      { id: "6-1", size: "small", price: 13 },
-      { id: "6-2", size: "medium", price: 17 },
-      { id: "6-3", size: "large", price: 21 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "7",
-    name: "Chocolate Cake",
-    nameAr: "كيك الشوكولاتة",
-    price: 14,
-    categoryId: "2",
-    variants: [{ id: "7-1", size: "regular", price: 14 }],
-    taxable: true,
-    type: "single"
-  },
-  {
-    id: "8",
-    name: "Apple Pie",
-    nameAr: "فطيرة التفاح",
-    price: 12,
-    categoryId: "2",
-    variants: [{ id: "8-1", size: "regular", price: 12 }],
-    taxable: true,
-    type: "single"
-  },
-  {
-    id: "9",
-    name: "Tea",
-    nameAr: "شاي",
-    price: 6,
-    categoryId: "1",
-    variants: [
-      { id: "9-1", size: "small", price: 6 },
-      { id: "9-2", size: "medium", price: 9 },
-      { id: "9-3", size: "large", price: 12 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "10",
-    name: "Muffin",
-    nameAr: "مافن",
-    price: 8,
-    categoryId: "2",
-    variants: [{ id: "10-1", size: "regular", price: 8 }],
-    taxable: true,
-    type: "single"
-  }
-];
-
-// In a real application, you would fetch data from the electron handlers or use React Query
-// For example:
-// import { useQuery } from '@tanstack/react-query';
-// const { data: products, isLoading } = useQuery({
-//   queryKey: ['products'],
-//   queryFn: async () => {
-//     const products = await window.electron.invoke('db:getProducts');
-//     return products;
-//   }
-// });
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface ProductsGridProps {
   viewMode: "grid" | "list";
@@ -150,45 +16,78 @@ interface ProductsGridProps {
 const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [products, setProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
 
-  // In a real app, you would fetch products from an API or database
+  // Filter products based on search term and selected category
   useEffect(() => {
-    // Simulate loading all products
-    const loadProducts = async () => {
-      try {
-        // In a real app, use the Electron API or React Query to load products
-        // const loadedProducts = await window.electron.invoke('db:getProducts');
-        // setProducts(loadedProducts);
-        
-        // For now, use the extended mock data
-        setProducts(mockProducts as Product[]);
-      } catch (error) {
-        console.error('Error loading products:', error);
-      }
-    };
-    
-    loadProducts();
-  }, []);
+    let result = mockProducts;
 
+    // Filter by search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(product => 
+        product.name.toLowerCase().includes(term) || 
+        (product.nameAr && product.nameAr.toLowerCase().includes(term))
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      result = result.filter(product => product.categoryId === selectedCategory);
+    }
+
+    setFilteredProducts(result);
+  }, [searchTerm, selectedCategory]);
+  
   return (
-    <div>
-      {viewMode === "grid" ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {products.map((product) => (
-            <ProductCard 
-              key={product.id}
-              product={product}
-            />
+    <div className="space-y-4">
+      {/* Search and category filter */}
+      <div className="flex flex-col md:flex-row gap-4 sticky top-0 bg-background z-10 pb-4">
+        <div className="relative flex-1">
+          <Search className={`absolute ${isArabic ? 'left-3' : 'right-3'} top-3 h-4 w-4 text-muted-foreground`} />
+          <Input
+            placeholder={isArabic ? "بحث عن منتج..." : "Search products..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`pl-10 ${isArabic ? 'text-right pr-4' : ''}`}
+            dir={isArabic ? "rtl" : "ltr"}
+          />
+        </div>
+      </div>
+
+      {/* Categories filter */}
+      <div className="overflow-x-auto pb-2">
+        <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory}>
+          <TabsList className="h-10 p-1">
+            <TabsTrigger value="all" className="px-4">
+              {isArabic ? "جميع الأصناف" : "All Categories"}
+            </TabsTrigger>
+            {mockCategories.map((category) => (
+              <TabsTrigger key={category.id} value={category.id} className="px-4">
+                {isArabic ? category.nameAr || category.name : category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Products grid/list */}
+      {filteredProducts.length === 0 ? (
+        <div className="text-center py-10 text-muted-foreground">
+          {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
+        </div>
+      ) : viewMode === "grid" ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
         <div className="space-y-2">
-          {products.map((product) => (
-            <ProductListItem 
-              key={product.id}
-              product={product}
-            />
+          {filteredProducts.map((product) => (
+            <ProductListItem key={product.id} product={product} />
           ))}
         </div>
       )}
