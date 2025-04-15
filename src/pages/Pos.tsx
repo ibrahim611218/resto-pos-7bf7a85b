@@ -45,11 +45,13 @@ const Pos = () => {
           </ScrollArea>
         </div>
         
-        {/* Cart section */}
-        <CartPanel 
-          expanded={cartExpanded} 
-          onToggleExpand={() => setCartExpanded(prev => !prev)} 
-        />
+        {/* Cart section - ensure it stays within bounds */}
+        <div className="cart-container">
+          <CartPanel 
+            expanded={cartExpanded} 
+            onToggleExpand={() => setCartExpanded(prev => !prev)} 
+          />
+        </div>
       </div>
     </div>
   );

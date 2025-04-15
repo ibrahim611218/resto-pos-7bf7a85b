@@ -11,6 +11,9 @@
   opacity: 1 !important;
   backdrop-filter: blur(12px) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background-color: var(--background) !important;
 }
 
 /* Fix for select content */
@@ -24,6 +27,8 @@
   position: fixed !important;
   backdrop-filter: blur(12px) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Ensure form inputs are properly displayed in fullscreen */
@@ -41,4 +46,3 @@
   backdrop-filter: blur(16px) !important;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2) !important;
 }
-

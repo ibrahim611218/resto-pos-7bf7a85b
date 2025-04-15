@@ -76,10 +76,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col border-l bg-card cart-panel",
+        "h-full flex flex-col border-l bg-card cart-panel rounded-sm",
         expanded ? "w-full lg:w-1/3 xl:w-1/4" : "w-20",
         "transition-all duration-300 ease-in-out"
       )}
+      style={{ maxWidth: expanded ? "100%" : "5rem" }}
     >
       <CartHeader 
         isMobile={isMobile}
