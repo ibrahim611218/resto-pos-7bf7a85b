@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Category } from "@/types";
-import { sampleCategories } from "@/data/sampleData";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -24,13 +23,23 @@ export const useCategoryForm = () => {
   
   useEffect(() => {
     if (isEditing) {
-      const existingCategory = sampleCategories.find(c => c.id === id);
-      if (existingCategory) {
-        setCategory(existingCategory);
-      } else {
-        toast.error(isArabic ? "الفئة غير موجودة" : "Category not found");
-        navigate("/categories");
-      }
+      const loadCategory = async () => {
+        try {
+          const categories = await window.db.getCategories();
+          const existingCategory = categories.find(c => c.id === id);
+          if (existingCategory) {
+            setCategory(existingCategory);
+          } else {
+            toast.error(isArabic ? "الفئة غير موجودة" : "Category not found");
+            navigate("/categories");
+          }
+        } catch (error) {
+          console.error('Error loading category:', error);
+          toast.error(isArabic ? "حدث خطأ أثناء تحميل الفئة" : "Error loading category");
+        }
+      };
+      
+      loadCategory();
     }
   }, [id, isEditing, navigate, isArabic]);
 
@@ -49,7 +58,7 @@ export const useCategoryForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!category.name) {
@@ -62,27 +71,28 @@ export const useCategoryForm = () => {
       id: isEditing ? category.id : `cat-${Date.now()}`,
     };
 
-    // هنا نقوم بحفظ الفئة في قائمة الفئات
-    if (isEditing) {
-      // تحديث الفئة الموجودة
-      const categoryIndex = sampleCategories.findIndex(c => c.id === updatedCategory.id);
-      if (categoryIndex !== -1) {
-        sampleCategories[categoryIndex] = updatedCategory;
+    try {
+      if (isEditing) {
+        const result = await window.db.updateCategory(updatedCategory);
+        if (result.success) {
+          toast.success(isArabic ? "تم تعديل الفئة بنجاح" : "Category updated successfully");
+          navigate("/categories");
+        } else {
+          toast.error(isArabic ? "حدث خطأ أثناء تعديل الفئة" : "Error updating category");
+        }
+      } else {
+        const result = await window.db.addCategory(updatedCategory);
+        if (result.success) {
+          toast.success(isArabic ? "تم إضافة الفئة بنجاح" : "Category added successfully");
+          navigate("/categories");
+        } else {
+          toast.error(isArabic ? "حدث خطأ أثناء إضافة الفئة" : "Error adding category");
+        }
       }
-    } else {
-      // إضافة فئة جديدة
-      sampleCategories.push(updatedCategory);
+    } catch (error) {
+      console.error('Error saving category:', error);
+      toast.error(isArabic ? "حدث خطأ أثناء حفظ الفئة" : "Error saving category");
     }
-
-    console.log("Category saved:", updatedCategory);
-    console.log("Updated categories list:", sampleCategories);
-
-    const successMessage = isEditing 
-      ? isArabic ? "تم تعديل الفئة بنجاح" : "Category updated successfully" 
-      : isArabic ? "تم إضافة الفئة بنجاح" : "Category added successfully";
-    
-    toast.success(successMessage);
-    navigate("/categories");
   };
 
   return {
