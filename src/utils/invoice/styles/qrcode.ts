@@ -14,6 +14,7 @@ export const getQRCodeStyles = (): string => `
     border: 1px solid #e5e5e5;
   }
   
+  .qr-code svg,
   .qr-code canvas {
     display: inline-block !important;
     width: 100px !important;
@@ -25,8 +26,11 @@ export const getQRCodeStyles = (): string => `
       display: block !important;
       margin: 20px auto !important;
       page-break-inside: avoid;
+      background-color: white !important;
+      border: 1px solid #e5e5e5 !important;
     }
     
+    .qr-code svg,
     .qr-code canvas {
       display: inline-block !important;
       width: 100px !important;

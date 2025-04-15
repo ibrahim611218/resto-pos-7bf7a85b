@@ -89,8 +89,11 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <script>
         window.onload = function() {
           console.log("Invoice print window loaded");
-          // Force layout recalculation
-          document.body.offsetHeight;
+          // Force print after short delay to ensure everything is rendered
+          setTimeout(function() {
+            document.body.offsetHeight;
+            window.focus();
+          }, 300);
         };
       </script>
     </body>
