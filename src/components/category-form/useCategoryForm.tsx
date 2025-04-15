@@ -5,6 +5,7 @@ import { Category } from "@/types";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import { v4 as uuidv4 } from 'uuid';
+import { sampleCategories } from "@/data/sampleData";
 
 export const useCategoryForm = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export const useCategoryForm = () => {
           // Check if window.db is available (electron environment)
           if (typeof window !== "undefined" && window.db) {
             const categories = await window.db.getCategories();
-            const existingCategory = categories.find(c => c.id === id);
+            const existingCategory = categories.find((c: Category) => c.id === id);
             if (existingCategory) {
               setCategory(existingCategory);
             } else {
@@ -38,11 +39,15 @@ export const useCategoryForm = () => {
               navigate("/categories");
             }
           } else {
-            // In browser mode, load from mock data or localStorage
-            console.warn("Running in browser mode - using mock data");
-            // You could implement localStorage-based mock data here
-            toast.error(isArabic ? "وضع المتصفح: لا يمكن تحميل البيانات" : "Browser mode: Cannot load data");
-            navigate("/categories");
+            // In browser mode, load from mock data
+            console.log("Running in browser mode - using sample data");
+            const mockCategory = sampleCategories.find(c => c.id === id);
+            if (mockCategory) {
+              setCategory(mockCategory);
+            } else {
+              toast.error(isArabic ? "الفئة غير موجودة" : "Category not found");
+              navigate("/categories");
+            }
           }
         } catch (error) {
           console.error('Error loading category:', error);
@@ -96,9 +101,7 @@ export const useCategoryForm = () => {
             toast.error(isArabic ? "حدث خطأ أثناء تعديل الفئة" : "Error updating category");
           }
         } else {
-          console.log("Adding category:", updatedCategory);
           const result = await window.db.addCategory(updatedCategory);
-          console.log("Add category result:", result);
           
           if (result.success) {
             toast.success(isArabic ? "تم إضافة الفئة بنجاح" : "Category added successfully");
@@ -108,10 +111,14 @@ export const useCategoryForm = () => {
           }
         }
       } else {
-        // In browser mode, show a message and use mock data or localStorage
-        console.warn("Running in browser mode - using mock data");
-        toast.success(isArabic ? "وضع المتصفح: تمت المحاكاة بنجاح" : "Browser mode: Simulation successful");
-        navigate("/categories");
+        // In browser mode, simulate success
+        console.log("Browser mode: Simulating category save", updatedCategory);
+        toast.success(isArabic ? "تم حفظ الفئة بنجاح (وضع المحاكاة)" : "Category saved successfully (simulation mode)");
+        
+        // In a real app, we'd add to localStorage or mock API here
+        setTimeout(() => {
+          navigate("/categories");
+        }, 1000);
       }
     } catch (error) {
       console.error('Error saving category:', error);

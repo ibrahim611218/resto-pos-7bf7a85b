@@ -22,7 +22,7 @@ const CategoryForm = () => {
   } = useCategoryForm();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 scrollable-content">
       <Card>
         <form onSubmit={handleSubmit}>
           <CardHeader>

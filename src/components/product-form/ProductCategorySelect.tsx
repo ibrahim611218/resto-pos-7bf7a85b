@@ -24,10 +24,15 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         value={categoryId} 
         onValueChange={handleCategoryChange}
       >
-        <SelectTrigger id="category" className="z-10">
+        <SelectTrigger id="category">
           <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
         </SelectTrigger>
-        <SelectContent className="z-[3000]"> {/* Increased z-index for fullscreen mode */}
+        <SelectContent 
+          position="popper" 
+          className="z-[9999] bg-popover border-border"
+          sideOffset={4}
+          align="start"
+        >
           {categories.map(category => (
             <SelectItem key={category.id} value={category.id}>
               {isArabic ? (category.nameAr || category.name) : category.name}
