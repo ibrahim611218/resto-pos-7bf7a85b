@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import licenseService, { License, LicenseStatus } from '@/services/license/LicenseService';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -11,15 +11,19 @@ export const useLicense = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const initialCheckComplete = useRef(false);
 
   // Check if license is active
   const checkLicense = async () => {
     try {
+      console.log("Starting checkLicense function");
       setIsLoading(true);
       const activeLicense = await licenseService.getActivatedLicense();
+      console.log("Got active license:", activeLicense ? "Yes" : "No");
       setLicense(activeLicense);
       
       const status = await licenseService.getLicenseStatus();
+      console.log("License status:", status);
       setLicenseStatus(status);
       
       // Show warning toast if license is about to expire
@@ -126,9 +130,22 @@ export const useLicense = () => {
     return true;
   };
 
-  // Check license on first load
+  // Check license on first load - only once
   useEffect(() => {
-    checkLicense();
+    // Skip if we've already done the initial check
+    if (initialCheckComplete.current) return;
+    
+    const initialCheck = async () => {
+      try {
+        await checkLicense();
+      } catch (error) {
+        console.error('Error during initial license check:', error);
+      } finally {
+        initialCheckComplete.current = true;
+      }
+    };
+    
+    initialCheck();
   }, []);
 
   return {

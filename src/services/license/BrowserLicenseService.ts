@@ -15,75 +15,122 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
   }
 
   async getActivatedLicense(): Promise<License | null> {
+    // Add a small delay to simulate network latency and prevent UI freezing
+    await new Promise(resolve => setTimeout(resolve, 300));
     return this.getStoredLicense();
   }
 
   async activateLicense(licenseKey: string): Promise<LicenseResponse> {
-    // Mock activation - in a real browser app, this would call an API
-    const mockLicense: License = {
-      key: licenseKey,
-      type: 'trial',
-      issuedAt: Date.now(),
-      expiryDate: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
-      durationDays: 30,
-      used: true,
-      activatedAt: Date.now()
-    };
+    // Add validation
+    if (!licenseKey || licenseKey.trim() === '') {
+      return {
+        success: false,
+        message: 'يجب إدخال رمز تفعيل صحيح'
+      };
+    }
     
-    localStorage.setItem('active-license', JSON.stringify(mockLicense));
-    
-    return {
-      success: true,
-      message: 'License activated (browser mode)',
-      license: mockLicense
-    };
+    try {
+      // Add a small delay to simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Mock activation - in a real browser app, this would call an API
+      const mockLicense: License = {
+        key: licenseKey,
+        type: 'trial',
+        issuedAt: Date.now(),
+        expiryDate: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
+        durationDays: 30,
+        used: true,
+        activatedAt: Date.now()
+      };
+      
+      localStorage.setItem('active-license', JSON.stringify(mockLicense));
+      
+      return {
+        success: true,
+        message: 'تم تفعيل الرمز بنجاح',
+        license: mockLicense
+      };
+    } catch (error) {
+      console.error('Error activating license:', error);
+      return {
+        success: false,
+        message: 'حدث خطأ أثناء تفعيل الرمز'
+      };
+    }
   }
 
   async generateLicense(type: 'trial' | 'full', durationDays: number): Promise<LicenseResponse> {
-    // Mock generation - in browser mode this is just for UI testing
-    const licenseKey = Math.random().toString(36).substring(2, 10).toUpperCase();
-    
-    const mockLicense: License = {
-      key: licenseKey,
-      type: type,
-      issuedAt: Date.now(),
-      expiryDate: Date.now() + durationDays * 24 * 60 * 60 * 1000,
-      durationDays: durationDays,
-      used: false
-    };
-    
-    return {
-      success: true,
-      message: 'License generated (browser mode)',
-      license: mockLicense
-    };
+    try {
+      // Add a small delay to simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Mock generation - in browser mode this is just for UI testing
+      const licenseKey = Math.random().toString(36).substring(2, 10).toUpperCase();
+      
+      const mockLicense: License = {
+        key: licenseKey,
+        type: type,
+        issuedAt: Date.now(),
+        expiryDate: Date.now() + durationDays * 24 * 60 * 60 * 1000,
+        durationDays: durationDays,
+        used: false
+      };
+      
+      return {
+        success: true,
+        message: 'تم إنشاء رمز التفعيل بنجاح',
+        license: mockLicense
+      };
+    } catch (error) {
+      console.error('Error generating license:', error);
+      return {
+        success: false,
+        message: 'حدث خطأ أثناء إنشاء رمز التفعيل'
+      };
+    }
   }
 
   async getAllLicenses(): Promise<License[]> {
-    // In browser mode, just return a couple of mock licenses
-    return [
-      {
-        key: 'DEMO1234567890',
-        type: 'trial',
-        issuedAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
-        expiryDate: Date.now() + 25 * 24 * 60 * 60 * 1000,
-        durationDays: 30,
-        used: false
-      },
-      {
-        key: 'FULL9876543210',
-        type: 'full',
-        issuedAt: Date.now() - 10 * 24 * 60 * 60 * 1000,
-        expiryDate: Date.now() + 355 * 24 * 60 * 60 * 1000,
-        durationDays: 365,
-        used: true,
-        activatedAt: Date.now() - 10 * 24 * 60 * 60 * 1000
-      }
-    ];
+    try {
+      // Add a small delay to simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // In browser mode, just return a couple of mock licenses
+      return [
+        {
+          key: 'DEMO1234567890',
+          type: 'trial',
+          issuedAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
+          expiryDate: Date.now() + 25 * 24 * 60 * 60 * 1000,
+          durationDays: 30,
+          used: false
+        },
+        {
+          key: 'FULL9876543210',
+          type: 'full',
+          issuedAt: Date.now() - 10 * 24 * 60 * 60 * 1000,
+          expiryDate: Date.now() + 355 * 24 * 60 * 60 * 1000,
+          durationDays: 365,
+          used: true,
+          activatedAt: Date.now() - 10 * 24 * 60 * 60 * 1000
+        }
+      ];
+    } catch (error) {
+      console.error('Error getting licenses:', error);
+      return [];
+    }
   }
 
   async getLicenseStatus(): Promise<LicenseStatus> {
-    const license = this.getStoredLicense();
-    return calculateLicenseStatus(license);
+    try {
+      // Add a small delay to simulate network latency
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const license = this.getStoredLicense();
+      return calculateLicenseStatus(license);
+    } catch (error) {
+      console.error('Error getting license status:', error);
+      return { isActive: false };
+    }
   }
 }

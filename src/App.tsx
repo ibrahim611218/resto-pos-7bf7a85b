@@ -1,6 +1,6 @@
 
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
@@ -29,6 +29,10 @@ import Pos from "./pages/Pos";
 import { CartProvider } from "./features/pos/hooks/useCart";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
+import LicenseCheckLoading from "./features/auth/components/LicenseCheckLoading";
+
+// Fallback component for suspense
+const LoadingFallback = () => <LicenseCheckLoading />;
 
 function App() {
   const { language } = useLanguage();
@@ -37,40 +41,45 @@ function App() {
     <>
       <Toaster position="top-center" richColors dir={language === "ar" ? "rtl" : "ltr"} />
       <CartProvider>
-        <Routes>
-          {/* Public routes - no auth or license required */}
-          <Route path="/login" element={<Login language={language} />} />
-          <Route path="/activate" element={<LicenseActivation />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          
-          {/* Protected routes - require authentication and license */}
-          <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
-            <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/pos" element={<Pos />} />
-                <Route path="/kitchen" element={<Kitchen />} />
-                <Route path="/invoices" element={<Invoices />} />
-                <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
-                <Route path="/customers" element={<Customers />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/add" element={<ProductForm />} />
-                <Route path="/products/edit/:id" element={<ProductForm />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/categories/add" element={<CategoryForm />} />
-                <Route path="/categories/edit/:id" element={<CategoryForm />} />
-                <Route path="/inventory" element={<Inventory />} />
-                <Route path="/sales-report" element={<SalesReport />} />
-                <Route path="/inventory-report" element={<InventoryReport />} />
-                <Route path="/customers-report" element={<CustomersReport />} />
-                <Route path="/business-settings" element={<BusinessSettings />} />
-                <Route path="/user-management" element={<UserManagement />} />
-                <Route path="/license-generator" element={<LicenseGenerator />} />
-                <Route path="*" element={<NotFound />} />
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Public routes - no auth or license required */}
+            <Route path="/login" element={<Login language={language} />} />
+            <Route path="/activate" element={<LicenseActivation />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected routes with license check */}
+            <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
+              <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/pos" element={<Pos />} />
+                  <Route path="/kitchen" element={<Kitchen />} />
+                  <Route path="/invoices" element={<Invoices />} />
+                  <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
+                  <Route path="/customers" element={<Customers />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/add" element={<ProductForm />} />
+                  <Route path="/products/edit/:id" element={<ProductForm />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/categories/add" element={<CategoryForm />} />
+                  <Route path="/categories/edit/:id" element={<CategoryForm />} />
+                  <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/sales-report" element={<SalesReport />} />
+                  <Route path="/inventory-report" element={<InventoryReport />} />
+                  <Route path="/customers-report" element={<CustomersReport />} />
+                  <Route path="/business-settings" element={<BusinessSettings />} />
+                  <Route path="/user-management" element={<UserManagement />} />
+                  <Route path="/license-generator" element={<LicenseGenerator />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
-        </Routes>
+            
+            {/* Fallback redirect */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Suspense>
       </CartProvider>
     </>
   );
