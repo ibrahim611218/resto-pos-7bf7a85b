@@ -18,11 +18,11 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   const isArabic = language === "ar";
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts as Product[]);
 
   // Filter products based on search term and selected category
   useEffect(() => {
-    let result = mockProducts;
+    let result = mockProducts as Product[];
 
     // Filter by search term
     if (searchTerm) {

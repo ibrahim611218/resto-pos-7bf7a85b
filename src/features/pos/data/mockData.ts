@@ -1,4 +1,6 @@
 
+import { Size } from "@/types";
+
 export const mockCategories = [
   {
     id: "cat1",
@@ -29,10 +31,10 @@ export const mockProducts = [
     nameAr: "اسبريسو",
     categoryId: "cat1",
     image: "https://images.unsplash.com/photo-1516684669134-de6f7c473a2a?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var1", size: "regular", price: 12 }
+      { id: "var1", size: "regular" as Size, price: 12 }
     ]
   },
   {
@@ -41,10 +43,10 @@ export const mockProducts = [
     nameAr: "أمريكانو",
     categoryId: "cat1",
     image: "https://images.unsplash.com/photo-1530032582480-edd739014c39?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var2", size: "regular", price: 15 }
+      { id: "var2", size: "regular" as Size, price: 15 }
     ]
   },
   {
@@ -53,10 +55,10 @@ export const mockProducts = [
     nameAr: "لاتيه",
     categoryId: "cat1",
     image: "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var3", size: "regular", price: 18 }
+      { id: "var3", size: "regular" as Size, price: 18 }
     ]
   },
   {
@@ -65,10 +67,10 @@ export const mockProducts = [
     nameAr: "كابتشينو",
     categoryId: "cat1",
     image: "https://images.unsplash.com/photo-1534687941688-651ccaafbff8?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var4", size: "regular", price: 18 }
+      { id: "var4", size: "regular" as Size, price: 18 }
     ]
   },
   {
@@ -77,10 +79,10 @@ export const mockProducts = [
     nameAr: "قهوة مثلجة",
     categoryId: "cat2",
     image: "https://images.unsplash.com/photo-1578314675339-36e3b37b5d48?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var5", size: "regular", price: 20 }
+      { id: "var5", size: "regular" as Size, price: 20 }
     ]
   },
   {
@@ -89,10 +91,10 @@ export const mockProducts = [
     nameAr: "لاتيه مثلج",
     categoryId: "cat2",
     image: "https://images.unsplash.com/photo-1517959105821-eaf2591984ca?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var6", size: "regular", price: 22 }
+      { id: "var6", size: "regular" as Size, price: 22 }
     ]
   },
   {
@@ -101,10 +103,10 @@ export const mockProducts = [
     nameAr: "كيكة شوكولاتة",
     categoryId: "cat4",
     image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var7", size: "regular", price: 25 }
+      { id: "var7", size: "regular" as Size, price: 25 }
     ]
   },
   {
@@ -113,10 +115,10 @@ export const mockProducts = [
     nameAr: "تشيز كيك",
     categoryId: "cat4",
     image: "https://images.unsplash.com/photo-1567254790685-6b6d6abe4689?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var8", size: "regular", price: 28 }
+      { id: "var8", size: "regular" as Size, price: 28 }
     ]
   },
   {
@@ -125,10 +127,10 @@ export const mockProducts = [
     nameAr: "كرواسون",
     categoryId: "cat3",
     image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var9", size: "regular", price: 15 }
+      { id: "var9", size: "regular" as Size, price: 15 }
     ]
   },
   {
@@ -137,10 +139,10 @@ export const mockProducts = [
     nameAr: "ساندويش",
     categoryId: "cat3",
     image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&q=80&w=400",
-    type: "single",
+    type: "single" as const,
     taxable: true,
     variants: [
-      { id: "var10", size: "regular", price: 22 }
+      { id: "var10", size: "regular" as Size, price: 22 }
     ]
   }
 ];
