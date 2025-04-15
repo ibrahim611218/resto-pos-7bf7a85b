@@ -1,6 +1,7 @@
+
 import React from "react";
 import { Separator } from "@/components/ui/separator";
-import { PaymentMethod } from "@/types";
+import { PaymentMethod, Customer } from "@/types";
 import OrderTypeSection from "./footer/OrderTypeSection";
 import DiscountSection from "./footer/DiscountSection";
 import SummarySection from "./footer/SummarySection";
