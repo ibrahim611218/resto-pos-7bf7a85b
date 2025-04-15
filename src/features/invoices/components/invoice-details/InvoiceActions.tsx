@@ -13,7 +13,7 @@ interface InvoiceActionsProps {
   settings: BusinessSettings;
   onPrint: (invoice: Invoice) => void;
   onShowEmailDialog: () => void;
-  onRefund?: (invoiceId: string) => boolean;
+  onRefund?: (invoice: Invoice) => void;  // Changed type to use Invoice object instead of string
 }
 
 export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
@@ -30,7 +30,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   
   const handleRefund = () => {
     if (onRefund) {
-      onRefund(invoice.id);
+      onRefund(invoice);  // Pass the entire invoice object instead of just the ID
     }
   };
 

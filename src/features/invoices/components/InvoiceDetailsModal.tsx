@@ -22,7 +22,7 @@ interface InvoiceDetailsModalProps {
   onClose: () => void;
   formatInvoiceDate: (date: Date) => string;
   onPrint: (invoice: Invoice) => void;
-  onRefund?: (invoiceId: string) => boolean;
+  onRefund?: (invoice: Invoice) => boolean;  // Changed to accept an Invoice object
 }
 
 const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
@@ -42,9 +42,9 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   const qrCodeData = generateInvoiceQRCodeData(invoice);
 
   // Calculate discount amount
-  const discountAmount = invoice.discountType === "percentage" 
+  const discountAmount = invoice.discount && invoice.discountType === "percentage" 
     ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
-    : invoice.discount;
+    : invoice.discount || 0;
 
   // Handle print using handleInvoiceExport with complete data
   const handlePrint = () => {
@@ -96,7 +96,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
             <InvoiceQRCode 
               qrCodeData={qrCodeData}
-              notes={settings.invoiceNotesAr}
+              notes={settings?.invoiceNotesAr}
             />
           </div>
         </ScrollArea>
@@ -107,7 +107,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
             settings={settings}
             onPrint={handlePrint}
             onShowEmailDialog={() => setShowEmailDialog(true)}
-            onRefund={onRefund}
+            onRefund={onRefund ? () => onRefund(invoice) : undefined}  // Updated to pass the full invoice
           />
         </div>
         

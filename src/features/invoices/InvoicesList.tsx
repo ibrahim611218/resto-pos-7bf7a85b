@@ -95,7 +95,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
           onClose={closeInvoiceDetails}
           formatInvoiceDate={formatInvoiceDate}
           onPrint={handlePrintInvoice}
-          onRefund={invoice => {
+          onRefund={(invoice) => {  // Changed to accept an Invoice object, not string
             handleRefundClick(invoice);
             return true;
           }}
