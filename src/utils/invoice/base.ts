@@ -30,7 +30,7 @@ export const getBaseStyles = (): string => `
 
   @media print {
     @page {
-      size: 80mm auto; /* Width fixed, height automatic */
+      size: 80mm auto; /* Fixed width, auto height to prevent second page */
       margin: 0;
     }
     
@@ -44,12 +44,12 @@ export const getBaseStyles = (): string => `
     }
     
     .invoice-container {
-      width: 100%;
+      width: 80mm;
       max-width: none;
       margin: 0;
       padding: 5mm;
       box-sizing: border-box;
-      page-break-after: always;
+      page-break-after: avoid;
     }
 
     * {

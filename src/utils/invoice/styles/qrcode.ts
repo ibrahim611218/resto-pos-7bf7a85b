@@ -28,6 +28,7 @@ export const getQRCodeStyles = (): string => `
       page-break-inside: avoid;
       background-color: white !important;
       border: 1px solid #e5e5e5 !important;
+      max-width: 140px;
     }
     
     .qr-code svg,

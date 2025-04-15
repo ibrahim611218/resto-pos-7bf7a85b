@@ -35,8 +35,8 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const qrCodeData = generateInvoiceQRCodeData(invoice);
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
     value: qrCodeData, 
-    size: 200,
-    style: { width: '120px', height: '120px' },
+    size: 120,
+    style: { width: '120px', height: '120px', display: 'inline-block' },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "H",
@@ -51,13 +51,10 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     </div>
   ` : '';
   
-  console.log("Invoice items:", invoice.items.length);
-  console.log("Invoice status:", invoice.status);
-  
   // Force inline styles for QR code to ensure it displays properly
   const explicitQRCode = `
-    <div class="qr-code" style="text-align: center; margin: 20px auto; padding: 10px; background-color: white; display: block; width: fit-content; border-radius: 8px; border: 1px solid #e5e5e5;">
-      ${qrCodeString.replace('<canvas', '<canvas style="width: 120px; height: 120px; display: inline-block !important;"')}
+    <div class="qr-code">
+      ${qrCodeString}
     </div>
   `;
   
@@ -93,7 +90,6 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <script>
         window.onload = function() {
           console.log("Invoice print window loaded");
-          // Wait a bit longer for fonts and assets to load properly
           setTimeout(function() {
             window.focus();
             window.print();
@@ -104,6 +100,5 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     </html>
   `;
   
-  console.log("HTML content generated with length:", htmlContent.length);
   return htmlContent;
 };
