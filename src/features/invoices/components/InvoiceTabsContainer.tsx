@@ -11,6 +11,7 @@ interface InvoiceTabsContainerProps {
   getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
+  onRefund?: (invoice: Invoice) => void;
 }
 
 const InvoiceTabsContainer: React.FC<InvoiceTabsContainerProps> = ({
@@ -19,56 +20,63 @@ const InvoiceTabsContainer: React.FC<InvoiceTabsContainerProps> = ({
   formatInvoiceDate,
   getStatusBadgeColor,
   viewInvoiceDetails,
-  printInvoice
+  printInvoice,
+  onRefund
 }) => {
+  const completedInvoices = filteredInvoices.filter(inv => inv.status === "completed");
+  const refundedInvoices = filteredInvoices.filter(inv => inv.status === "refunded");
+
   return (
-    <Tabs defaultValue="all" className="w-full">
-      <TabsList className="w-full max-w-md mx-auto mb-6">
-        <TabsTrigger value="all" className="flex-1">
+    <Tabs defaultValue="all" className="mt-6">
+      <TabsList>
+        <TabsTrigger value="all">
           {isArabic ? "جميع الفواتير" : "All Invoices"}
         </TabsTrigger>
-        <TabsTrigger value="completed" className="flex-1">
-          {isArabic ? "مكتملة" : "Completed"}
+        <TabsTrigger value="completed">
+          {isArabic ? "الفواتير المكتملة" : "Completed"}
         </TabsTrigger>
-        <TabsTrigger value="refunded" className="flex-1">
-          {isArabic ? "مستردة" : "Refunded"}
+        <TabsTrigger value="refunded">
+          {isArabic ? "الفواتير المستردة" : "Refunded"}
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="all" className="mt-0">
+      <TabsContent value="all">
         <InvoiceTabPanel
+          title={isArabic ? "جميع الفواتير" : "All Invoices"}
           invoices={filteredInvoices}
           isArabic={isArabic}
           formatInvoiceDate={formatInvoiceDate}
           getStatusBadgeColor={getStatusBadgeColor}
           viewInvoiceDetails={viewInvoiceDetails}
           printInvoice={printInvoice}
+          onRefund={onRefund}
         />
       </TabsContent>
 
-      <TabsContent value="completed" className="mt-0">
+      <TabsContent value="completed">
         <InvoiceTabPanel
-          invoices={filteredInvoices}
+          title={isArabic ? "الفواتير المكتملة" : "Completed Invoices"}
+          invoices={completedInvoices}
           isArabic={isArabic}
           formatInvoiceDate={formatInvoiceDate}
           getStatusBadgeColor={getStatusBadgeColor}
           viewInvoiceDetails={viewInvoiceDetails}
           printInvoice={printInvoice}
+          onRefund={onRefund}
           filteredStatus="completed"
-          showHeader={false}
         />
       </TabsContent>
 
-      <TabsContent value="refunded" className="mt-0">
+      <TabsContent value="refunded">
         <InvoiceTabPanel
-          invoices={filteredInvoices}
+          title={isArabic ? "الفواتير المستردة" : "Refunded Invoices"}
+          invoices={refundedInvoices}
           isArabic={isArabic}
           formatInvoiceDate={formatInvoiceDate}
           getStatusBadgeColor={getStatusBadgeColor}
           viewInvoiceDetails={viewInvoiceDetails}
           printInvoice={printInvoice}
           filteredStatus="refunded"
-          showHeader={false}
         />
       </TabsContent>
     </Tabs>

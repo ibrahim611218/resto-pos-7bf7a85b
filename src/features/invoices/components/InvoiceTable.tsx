@@ -1,9 +1,9 @@
-
 import React from "react";
-import { FileTextIcon, PrinterIcon } from "lucide-react";
+import { FileTextIcon, PrinterIcon, ReceiptText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Invoice } from "@/types";
 import { formatCurrency } from "@/utils/invoice";
+import { toast } from "sonner";
 
 interface InvoiceTableProps {
   invoices: Invoice[];
@@ -13,6 +13,7 @@ interface InvoiceTableProps {
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
   filteredStatus?: "completed" | "refunded" | null;
+  onRefund?: (invoice: Invoice) => void;
 }
 
 const InvoiceTable: React.FC<InvoiceTableProps> = ({
@@ -22,8 +23,19 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
   getStatusBadgeColor,
   viewInvoiceDetails,
   printInvoice,
-  filteredStatus
+  filteredStatus,
+  onRefund
 }) => {
+  const handleRefund = (invoice: Invoice) => {
+    if (invoice.status === "refunded") {
+      toast.error(isArabic ? "تم استرداد هذه الفاتورة مسبقاً" : "This invoice has already been refunded");
+      return;
+    }
+    if (onRefund) {
+      onRefund(invoice);
+    }
+  };
+
   const filteredInvoices = filteredStatus
     ? invoices.filter(invoice => invoice.status === filteredStatus)
     : invoices;
@@ -52,7 +64,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {filteredInvoices.map((invoice) => (
+          {invoices.map((invoice) => (
             <tr key={invoice.id} className="border-b hover:bg-muted/50">
               <td className="py-3 px-4">{invoice.number}</td>
               <td className="py-3 px-4">{formatInvoiceDate(invoice.date)}</td>
@@ -97,6 +109,19 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({
                       {isArabic ? "طباعة" : "Print"}
                     </span>
                   </Button>
+                  {onRefund && invoice.status !== "refunded" && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleRefund(invoice)}
+                      className="h-8 px-2 text-red-500 hover:text-red-700"
+                    >
+                      <ReceiptText className="h-4 w-4" />
+                      <span className="sr-only">
+                        {isArabic ? "استرداد" : "Refund"}
+                      </span>
+                    </Button>
+                  )}
                 </div>
               </td>
             </tr>

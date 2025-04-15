@@ -12,6 +12,7 @@ interface InvoiceTabPanelProps {
   getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;
+  onRefund?: (invoice: Invoice) => void;
   filteredStatus?: "completed" | "refunded" | null;
   showHeader?: boolean;
 }
@@ -24,6 +25,7 @@ const InvoiceTabPanel: React.FC<InvoiceTabPanelProps> = ({
   getStatusBadgeColor,
   viewInvoiceDetails,
   printInvoice,
+  onRefund,
   filteredStatus,
   showHeader = true
 }) => {
@@ -44,6 +46,7 @@ const InvoiceTabPanel: React.FC<InvoiceTabPanelProps> = ({
           getStatusBadgeColor={getStatusBadgeColor}
           viewInvoiceDetails={viewInvoiceDetails}
           printInvoice={printInvoice}
+          onRefund={onRefund}
           filteredStatus={filteredStatus}
         />
       </CardContent>

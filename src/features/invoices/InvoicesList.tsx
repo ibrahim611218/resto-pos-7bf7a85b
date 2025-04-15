@@ -1,12 +1,14 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useInvoices } from "./hooks/useInvoices";
 import InvoiceDetailsModal from "./components/InvoiceDetailsModal";
 import InvoiceListHeader from "./components/InvoiceListHeader";
 import InvoiceTabsContainer from "./components/InvoiceTabsContainer";
+import ReturnOrderDialog from "./components/ReturnOrderDialog";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { Invoice } from "@/types";
+import { toast } from "sonner";
 
 interface InvoicesListProps {
   language?: "en" | "ar";
@@ -15,6 +17,9 @@ interface InvoicesListProps {
 const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   const isArabic = language === "ar";
   const { settings } = useBusinessSettings();
+  const [showReturnDialog, setShowReturnDialog] = useState(false);
+  const [selectedInvoiceForReturn, setSelectedInvoiceForReturn] = useState<Invoice | null>(null);
+  
   const {
     invoices,
     filteredInvoices,
@@ -39,7 +44,6 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     handleInvoiceExport("print", invoice, settings);
   };
 
-  // Create adapter function to match expected parameter types
   const handleViewInvoiceDetails = (id: string) => {
     const invoice = filteredInvoices.find(inv => inv.id === id);
     if (invoice) {
@@ -47,14 +51,19 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     }
   };
 
-  // Create adapter function for refund
-  const handleRefundInvoice = (invoiceId: string): boolean => {
-    const invoice = filteredInvoices.find(inv => inv.id === invoiceId);
-    if (invoice) {
-      refundInvoice(invoice);
-      return true;
-    }
-    return false;
+  const handleRefundClick = (invoice: Invoice) => {
+    setSelectedInvoiceForReturn(invoice);
+    setShowReturnDialog(true);
+  };
+
+  const handleReturnConfirm = (invoice: Invoice, reason: string) => {
+    refundInvoice(invoice);
+    toast.success(isArabic 
+      ? `تم استرداد الفاتورة رقم ${invoice.number} بنجاح` 
+      : `Invoice #${invoice.number} has been refunded successfully`
+    );
+    setShowReturnDialog(false);
+    setSelectedInvoiceForReturn(null);
   };
 
   return (
@@ -73,6 +82,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         getStatusBadgeColor={getStatusBadgeColor}
         viewInvoiceDetails={handleViewInvoiceDetails}
         printInvoice={handlePrintInvoice}
+        onRefund={handleRefundClick}
       />
 
       <InvoiceDetailsModal
@@ -81,7 +91,13 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         onClose={closeInvoiceDetails}
         formatInvoiceDate={formatInvoiceDate}
         onPrint={handlePrintInvoice}
-        onRefund={handleRefundInvoice}
+      />
+
+      <ReturnOrderDialog
+        open={showReturnDialog}
+        onClose={() => setShowReturnDialog(false)}
+        invoice={selectedInvoiceForReturn}
+        onReturn={handleReturnConfirm}
       />
     </div>
   );
