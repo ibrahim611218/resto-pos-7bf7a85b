@@ -6,6 +6,7 @@ import InvoiceListHeader from "./components/InvoiceListHeader";
 import InvoiceTabsContainer from "./components/InvoiceTabsContainer";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { Invoice } from "@/types";
 
 interface InvoicesListProps {
   language?: "en" | "ar";
@@ -34,8 +35,26 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     loadInvoicesFromStorage();
   }, [loadInvoicesFromStorage]);
 
-  const handlePrintInvoice = (invoice: any) => {
+  const handlePrintInvoice = (invoice: Invoice) => {
     handleInvoiceExport("print", invoice, settings);
+  };
+
+  // Create adapter function to match expected parameter types
+  const handleViewInvoiceDetails = (id: string) => {
+    const invoice = filteredInvoices.find(inv => inv.id === id);
+    if (invoice) {
+      viewInvoiceDetails(invoice);
+    }
+  };
+
+  // Create adapter function for refund
+  const handleRefundInvoice = (invoiceId: string): boolean => {
+    const invoice = filteredInvoices.find(inv => inv.id === invoiceId);
+    if (invoice) {
+      refundInvoice(invoice);
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -52,7 +71,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         isArabic={isArabic}
         formatInvoiceDate={formatInvoiceDate}
         getStatusBadgeColor={getStatusBadgeColor}
-        viewInvoiceDetails={viewInvoiceDetails}
+        viewInvoiceDetails={handleViewInvoiceDetails}
         printInvoice={handlePrintInvoice}
       />
 
@@ -62,7 +81,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         onClose={closeInvoiceDetails}
         formatInvoiceDate={formatInvoiceDate}
         onPrint={handlePrintInvoice}
-        onRefund={refundInvoice}
+        onRefund={handleRefundInvoice}
       />
     </div>
   );
