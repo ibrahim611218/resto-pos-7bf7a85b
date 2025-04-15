@@ -16,7 +16,7 @@ const LicenseActivation: React.FC = () => {
   const { activateLicense } = useLicense();
   const navigate = useNavigate();
   
-  const handleActivate = () => {
+  const handleActivate = async () => {
     // التحقق من إدخال رمز التفعيل
     if (!licenseKey.trim()) {
       toast.error('الرجاء إدخال رمز التفعيل');
@@ -32,35 +32,36 @@ const LicenseActivation: React.FC = () => {
     setIsActivating(true);
     
     // إظهار رسالة للمستخدم أن عملية التفعيل قيد التنفيذ
-    toast.loading('جاري التحقق من رمز التفعيل...', {
-      id: 'license-activation',
+    const toastId = toast.loading('جاري التحقق من رمز التفعيل...', {
       duration: 10000 // وقت أطول لضمان استمرار الرسالة
     });
 
-    // استدعاء وظيفة التفعيل بسلسلة وعود واضحة
-    activateLicense(licenseKey)
-      .then(success => {
-        if (success) {
-          toast.dismiss('license-activation');
-          toast.success('تم تفعيل الترخيص بنجاح');
-          // تأخير قصير قبل التنقل للتأكد من ظهور رسالة النجاح
-          setTimeout(() => {
-            navigate('/', { replace: true });
-          }, 500);
-          return true;
-        } else {
-          throw new Error('فشل التفعيل');
-        }
-      })
-      .catch(error => {
-        toast.dismiss('license-activation');
-        console.error('خطأ في التفعيل:', error);
+    try {
+      // استدعاء وظيفة التفعيل بشكل مباشر مع await
+      const success = await activateLicense(licenseKey);
+      
+      // إزالة رسالة التحميل
+      toast.dismiss(toastId);
+      
+      if (success) {
+        // إظهار رسالة النجاح
+        toast.success('تم تفعيل الترخيص بنجاح');
+        
+        // الانتقال إلى الصفحة الرئيسية
+        navigate('/', { replace: true });
+      } else {
+        // إظهار رسالة الخطأ
         toast.error('فشل تفعيل الرمز، يرجى التأكد من صحة الرمز والمحاولة مرة أخرى');
-      })
-      .finally(() => {
-        // التأكد من إعادة تعيين حالة التفعيل في جميع الحالات
-        setIsActivating(false);
-      });
+      }
+    } catch (error) {
+      // إزالة رسالة التحميل في حالة حدوث خطأ
+      toast.dismiss(toastId);
+      console.error('خطأ في التفعيل:', error);
+      toast.error('حدث خطأ غير متوقع أثناء التفعيل، يرجى المحاولة مرة أخرى');
+    } finally {
+      // التأكد من إعادة تعيين حالة التفعيل في جميع الحالات
+      setIsActivating(false);
+    }
   };
   
   const handleKeyPress = (e: React.KeyboardEvent) => {

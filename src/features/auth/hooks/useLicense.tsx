@@ -53,23 +53,28 @@ export const useLicense = () => {
     }
   };
 
-  // Activate a license - مُحسّن ليتعامل مع الأخطاء بشكل أفضل
+  // Activate a license with improved error handling
   const activateLicense = async (licenseKey: string): Promise<boolean> => {
+    if (!licenseKey || licenseKey.trim() === '') {
+      console.error('Invalid license key provided');
+      return false;
+    }
+
     try {
       console.log("بدء عملية التفعيل للرمز:", licenseKey);
       setIsLoading(true);
       
       // تنفيذ عملية التفعيل
-      const result = await licenseService.activateLicense(licenseKey);
+      const result = await licenseService.activateLicense(licenseKey.trim());
       console.log("نتيجة التفعيل:", result);
       
-      if (result.success) {
+      if (result && result.success) {
         setLicense(result.license || null);
-        const licenseCheckResult = await checkLicense();
-        console.log("تم التحقق من الرخصة:", licenseCheckResult);
+        await checkLicense();
+        console.log("تم التحقق من الرخصة");
         return true;
       } else {
-        console.error("فشل التفعيل:", result.message);
+        console.error("فشل التفعيل:", result?.message || 'سبب غير معروف');
         return false;
       }
     } catch (error) {
