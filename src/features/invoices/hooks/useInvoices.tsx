@@ -1,65 +1,142 @@
 
-import { useInvoiceData } from "./useInvoiceData";
-import { useInvoiceFilters } from "./useInvoiceFilters";
-import { useInvoiceSelection } from "./useInvoiceSelection";
-import { useInvoiceFormatting } from "./useInvoiceFormatting";
-import { useInvoiceRefund } from "./useInvoiceRefund";
+import { useState, useCallback, useMemo } from "react";
 import { Invoice } from "@/types";
+import { mockInvoices } from "../data/mockInvoices";
+import { formatDate } from "@/utils/formatters";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { printInvoice } from "@/utils/invoice";
+
+// Helper to save invoice to localStorage
+export const saveInvoiceToStorage = (invoice: Invoice) => {
+  try {
+    // Get existing invoices from localStorage
+    const storedInvoices = localStorage.getItem('invoices');
+    let invoices: Invoice[] = [];
+    
+    if (storedInvoices) {
+      invoices = JSON.parse(storedInvoices);
+    }
+    
+    // Add new invoice to the array
+    invoices.unshift(invoice);
+    
+    // Save back to localStorage
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+    
+    return true;
+  } catch (error) {
+    console.error("Error saving invoice:", error);
+    return false;
+  }
+};
 
 export const useInvoices = () => {
-  // Use our composable hooks
-  const { 
-    invoices, 
-    setInvoices,
-    loading, 
-    error, 
-    loadInvoicesFromStorage, 
-    addNewInvoice 
-  } = useInvoiceData();
-  
-  const { 
-    filteredInvoices, 
-    searchTerm, 
-    setSearchTerm 
-  } = useInvoiceFilters(invoices);
-  
-  const { 
-    selectedInvoice, 
-    setSelectedInvoice,
-    viewInvoiceDetails: baseViewInvoiceDetails, 
-    closeInvoiceDetails 
-  } = useInvoiceSelection();
-  
-  const { 
-    formatInvoiceDate, 
-    getStatusBadgeColor, 
-    printInvoice 
-  } = useInvoiceFormatting();
-  
-  const { 
-    refundInvoice 
-  } = useInvoiceRefund(invoices, setInvoices, selectedInvoice, setSelectedInvoice);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { settings } = useBusinessSettings();
 
-  // Wrap the base viewInvoiceDetails to pass invoices
-  const viewInvoiceDetails = (id: string) => {
-    baseViewInvoiceDetails(id, invoices);
+  // Load invoices from localStorage or fallback to mock data
+  const loadInvoicesFromStorage = useCallback(() => {
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        setInvoices(JSON.parse(storedInvoices));
+      } else {
+        setInvoices(mockInvoices);
+      }
+    } catch (error) {
+      console.error("Error loading invoices:", error);
+      setInvoices(mockInvoices);
+    }
+  }, []);
+
+  // Format invoice date for display
+  const formatInvoiceDate = useCallback((date: Date | string) => {
+    if (!date) return "";
+    return formatDate(new Date(date));
+  }, []);
+
+  // Filter invoices by search term
+  const filteredInvoices = useMemo(() => {
+    if (!searchTerm) return invoices;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return invoices.filter(invoice => 
+      invoice.number.toLowerCase().includes(searchLower) || 
+      (invoice.customer?.name && invoice.customer.name.toLowerCase().includes(searchLower)) ||
+      formatInvoiceDate(invoice.date).toLowerCase().includes(searchLower)
+    );
+  }, [invoices, searchTerm, formatInvoiceDate]);
+
+  // Get badge color based on invoice status
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'refunded': return 'bg-amber-100 text-amber-800';
+      case 'pending': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // View invoice details
+  const viewInvoiceDetails = (invoice: Invoice) => {
+    setSelectedInvoice(invoice);
+  };
+
+  // Close invoice details modal
+  const closeInvoiceDetails = () => {
+    setSelectedInvoice(null);
+  };
+
+  // Refund invoice
+  const refundInvoice = (invoice: Invoice) => {
+    const refundedInvoice = {
+      ...invoice,
+      status: 'refunded' as const
+    };
+    
+    // Update in state
+    setInvoices(prevInvoices => 
+      prevInvoices.map(inv => 
+        inv.id === invoice.id ? refundedInvoice : inv
+      )
+    );
+    
+    // Update in localStorage
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        const parsed = JSON.parse(storedInvoices);
+        const updated = parsed.map((inv: Invoice) => 
+          inv.id === invoice.id ? refundedInvoice : inv
+        );
+        localStorage.setItem('invoices', JSON.stringify(updated));
+      }
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+    }
+    
+    // Update selected invoice if it's the one being refunded
+    if (selectedInvoice?.id === invoice.id) {
+      setSelectedInvoice(refundedInvoice);
+    }
   };
 
   return {
     invoices,
     filteredInvoices,
-    loading,
-    error,
+    selectedInvoice,
     searchTerm,
     setSearchTerm,
-    selectedInvoice,
     viewInvoiceDetails,
     closeInvoiceDetails,
     formatInvoiceDate,
     getStatusBadgeColor,
     printInvoice,
-    addNewInvoice,
     refundInvoice,
-    loadInvoicesFromStorage
+    loadInvoicesFromStorage,
+    saveInvoiceToStorage
   };
 };

@@ -1,73 +1,169 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
-import { Size } from "@/types";
+import { Size, Product } from "@/types";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogFooter, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface ProductListItemProps {
-  product: any; // Using any for now, would be better to define a Product type
+  product: Product;
 }
 
 const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
+  const [showSizeDialog, setShowSizeDialog] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      productId: product.id,
-      name: product.name,
-      nameAr: product.nameAr,
-      price: product.price,
-      quantity: 1,
-      image: product.image,
-      size: (product.defaultSize || "regular") as Size | "regular",
-      categoryId: product.categoryId,
-      variantId: product.variantId || product.id,
-      taxable: product.taxable !== undefined ? product.taxable : true
-    });
+    // If product has multiple sizes, show size selection dialog
+    if (product.type === "sized" && product.variants.length > 1) {
+      setSelectedSize(product.variants[0].size);
+      setShowSizeDialog(true);
+    } else {
+      // For single-size products, add directly to cart
+      const variant = product.variants[0];
+      addToCart({
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        nameAr: product.nameAr,
+        price: variant.price,
+        quantity: 1,
+        image: product.image,
+        size: variant.size as Size | "regular",
+        categoryId: product.categoryId,
+        variantId: variant.id,
+        taxable: product.taxable !== undefined ? product.taxable : true
+      });
+    }
+  };
+
+  const handleSizeSelected = () => {
+    if (!selectedSize) return;
+    
+    const variant = product.variants.find(v => v.size === selectedSize);
+    if (variant) {
+      addToCart({
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        nameAr: product.nameAr,
+        price: variant.price,
+        quantity: 1,
+        image: product.image,
+        size: variant.size as Size | "regular",
+        categoryId: product.categoryId,
+        variantId: variant.id,
+        taxable: product.taxable !== undefined ? product.taxable : true
+      });
+    }
+    
+    setShowSizeDialog(false);
+  };
+
+  // Get size label in Arabic or English
+  const getSizeLabel = (size: string) => {
+    switch(size) {
+      case 'small': return isArabic ? 'صغير' : 'Small';
+      case 'medium': return isArabic ? 'وسط' : 'Medium';
+      case 'large': return isArabic ? 'كبير' : 'Large';
+      default: return isArabic ? 'عادي' : 'Regular';
+    }
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow">
-      <CardContent className="p-2">
-        <div className="flex items-center">
-          <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
-            {product.image ? (
-              <img 
-                src={product.image} 
-                alt={isArabic ? product.nameAr || product.name : product.name}
-                className="w-full h-full object-cover rounded-md" 
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                No Image
-              </div>
-            )}
+    <>
+      <Card className="overflow-hidden hover:shadow-md transition-shadow">
+        <CardContent className="p-2">
+          <div className="flex items-center">
+            <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
+              {product.image ? (
+                <img 
+                  src={product.image} 
+                  alt={isArabic ? product.nameAr || product.name : product.name}
+                  className="w-full h-full object-cover rounded-md" 
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                  No Image
+                </div>
+              )}
+            </div>
+            <div className="flex-1 text-right">
+              <h3 className="font-medium">
+                {isArabic ? product.nameAr || product.name : product.name}
+              </h3>
+              {product.type === "sized" && product.variants.length > 1 ? (
+                <p className="text-sm text-muted-foreground">
+                  {product.variants[0].price.toFixed(2)} - {product.variants[product.variants.length - 1].price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  {product.variants[0].price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                </p>
+              )}
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="ml-2 flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
+              onClick={handleAddToCart}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
           </div>
-          <div className="flex-1 text-right">
-            <h3 className="font-medium">
-              {isArabic ? product.nameAr || product.name : product.name}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {product.price} {isArabic ? "ر.س" : "SAR"}
-            </p>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="ml-2 flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
-            onClick={handleAddToCart}
+        </CardContent>
+      </Card>
+      
+      <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
+        <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
+          <DialogTitle className="text-center">
+            {isArabic ? "اختر الحجم" : "Select Size"}
+          </DialogTitle>
+          
+          <RadioGroup
+            value={selectedSize || ""}
+            onValueChange={setSelectedSize}
+            className="grid gap-3 pt-3"
           >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+            {product.variants.map((variant) => (
+              <div key={variant.id} className="flex items-center justify-between border rounded-md p-3">
+                <div className="flex items-center space-x-2 space-x-reverse">
+                  <RadioGroupItem value={variant.size} id={`list-size-${variant.id}`} />
+                  <Label htmlFor={`list-size-${variant.id}`}>
+                    {getSizeLabel(variant.size)}
+                  </Label>
+                </div>
+                <div className="text-sm font-medium">
+                  {variant.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                </div>
+              </div>
+            ))}
+          </RadioGroup>
+          
+          <DialogFooter>
+            <Button onClick={() => setShowSizeDialog(false)} variant="outline">
+              {isArabic ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button onClick={handleSizeSelected}>
+              {isArabic ? "إضافة" : "Add"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

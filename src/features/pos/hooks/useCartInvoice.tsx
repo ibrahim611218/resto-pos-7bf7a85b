@@ -4,6 +4,7 @@ import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { toast } from "@/hooks/use-toast";
+import { saveInvoiceToStorage } from "@/features/invoices/hooks/useInvoices";
 
 interface UseCartInvoiceProps {
   cartItems: CartItem[];
@@ -128,6 +129,9 @@ export const useCartInvoice = ({
     if (customer) {
       invoice.customer = customer;
     }
+    
+    // Save invoice to storage so it appears in the invoices list
+    saveInvoiceToStorage(invoice);
     
     setCurrentInvoice(invoice);
     setShowInvoiceModal(true);
