@@ -8,6 +8,7 @@ import ProductsHeader from "@/components/products/ProductsHeader";
 import SizeFilters from "@/components/products/SizeFilters";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import { toast } from "sonner";
+import { Product } from "@/types";
 
 // Mock data for browser preview environment
 const mockCategories = [
@@ -16,14 +17,22 @@ const mockCategories = [
   { id: "cat-3", name: "Desserts", nameAr: "حلويات" }
 ];
 
-const mockProducts = [
+// Updated mock products with the required properties: variants, taxable, type
+const mockProducts: Product[] = [
   {
     id: "prod-1", 
     name: "Coffee", 
     nameAr: "قهوة", 
     price: 10, 
     categoryId: "cat-1",
-    image: "/placeholder.svg"
+    image: "/placeholder.svg",
+    variants: [
+      { id: "var-1", size: "small", price: 8 },
+      { id: "var-2", size: "medium", price: 10 },
+      { id: "var-3", size: "large", price: 12 }
+    ],
+    taxable: true,
+    type: "sized"
   },
   {
     id: "prod-2", 
@@ -31,7 +40,13 @@ const mockProducts = [
     nameAr: "شاي", 
     price: 8, 
     categoryId: "cat-1",
-    image: "/placeholder.svg"
+    image: "/placeholder.svg",
+    variants: [
+      { id: "var-4", size: "small", price: 6 },
+      { id: "var-5", size: "medium", price: 8 }
+    ],
+    taxable: true,
+    type: "sized"
   },
   {
     id: "prod-3", 
@@ -39,7 +54,12 @@ const mockProducts = [
     nameAr: "برجر", 
     price: 25, 
     categoryId: "cat-2",
-    image: "/placeholder.svg"
+    image: "/placeholder.svg",
+    variants: [
+      { id: "var-6", size: "regular", price: 25 }
+    ],
+    taxable: true,
+    type: "single"
   }
 ];
 
@@ -53,7 +73,7 @@ const Products = () => {
 
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
   const [categories, setCategories] = useState(mockCategories);
-  const [products, setProducts] = useState(mockProducts);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
