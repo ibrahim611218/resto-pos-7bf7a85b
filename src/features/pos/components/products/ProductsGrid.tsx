@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { mockProducts, mockCategories } from "../../data/mockData";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
 import { Product } from "@/types";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProductsGridProps {
   viewMode: "grid" | "list";
@@ -18,11 +18,47 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   const isArabic = language === "ar";
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts as Product[]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load products and categories on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        
+        // Check if we're in Electron environment with DB access
+        if (window.db) {
+          const [categoriesResult, productsResult] = await Promise.all([
+            window.db.getCategories(),
+            window.db.getProducts()
+          ]);
+          setCategories(categoriesResult);
+          setProducts(productsResult);
+        } else {
+          // In browser preview, use mock data
+          console.log('Using mock data for POS preview');
+          // Import mock data
+          const { mockProducts, mockCategories } = await import('../../data/mockData');
+          setCategories(mockCategories);
+          setProducts(mockProducts);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [isArabic]);
 
   // Filter products based on search term and selected category
   useEffect(() => {
-    let result = mockProducts as Product[];
+    let result = [...products];
 
     // Filter by search term
     if (searchTerm) {
@@ -39,7 +75,15 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
     }
 
     setFilteredProducts(result);
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, products]);
+  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
   
   return (
     <div className="space-y-4">
@@ -59,13 +103,13 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
 
       {/* Categories filter */}
       <div className="overflow-x-auto pb-2">
-        <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="h-10 p-1">
-            <TabsTrigger value="all" className="px-4">
+        <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+          <TabsList className="h-10 p-1 w-full inline-flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+            <TabsTrigger value="all" className="px-4 whitespace-nowrap flex-shrink-0">
               {isArabic ? "جميع الأصناف" : "All Categories"}
             </TabsTrigger>
-            {mockCategories.map((category) => (
-              <TabsTrigger key={category.id} value={category.id} className="px-4">
+            {categories.map((category) => (
+              <TabsTrigger key={category.id} value={category.id} className="px-4 whitespace-nowrap flex-shrink-0">
                 {isArabic ? category.nameAr || category.name : category.name}
               </TabsTrigger>
             ))}

@@ -24,10 +24,10 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         value={categoryId} 
         onValueChange={handleCategoryChange}
       >
-        <SelectTrigger id="category">
+        <SelectTrigger id="category" className="z-10">
           <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[2000]">
           {categories.map(category => (
             <SelectItem key={category.id} value={category.id}>
               {isArabic ? (category.nameAr || category.name) : category.name}

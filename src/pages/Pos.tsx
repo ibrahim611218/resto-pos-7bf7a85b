@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/context/LanguageContext";
@@ -9,6 +9,7 @@ import CartPanel from "@/features/pos/components/cart/CartPanel";
 import { Separator } from "@/components/ui/separator";
 import { Grid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import FullscreenToggle from "@/components/ui-custom/FullscreenToggle";
 
 const Pos = () => {
   const { language } = useLanguage();
@@ -22,12 +23,15 @@ const Pos = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-4 flex justify-between items-center">
+    <div className="flex flex-col h-full pos-screen">
+      <div className="p-4 flex justify-between items-center relative z-20">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
-        <Button variant="outline" size="sm" onClick={toggleViewMode}>
-          {viewMode === "grid" ? <List size={18} /> : <Grid size={18} />}
-        </Button>
+        <div className="flex gap-2">
+          <FullscreenToggle className="mr-2" />
+          <Button variant="outline" size="sm" onClick={toggleViewMode}>
+            {viewMode === "grid" ? <List size={18} /> : <Grid size={18} />}
+          </Button>
+        </div>
       </div>
       <Separator className="mb-4" />
       
