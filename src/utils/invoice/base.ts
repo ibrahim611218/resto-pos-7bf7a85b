@@ -77,3 +77,4 @@ export const getBaseStyles = (): string => `
     text-overflow: ellipsis;
   }
 `;
+

@@ -27,3 +27,4 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
     });
   }
 };
+
