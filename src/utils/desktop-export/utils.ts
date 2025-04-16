@@ -2,6 +2,20 @@
 import { DOWNLOAD_URLS } from './constants';
 
 /**
+ * Check if the application is running in Electron environment
+ * @returns boolean
+ */
+export const isRunningInElectron = (): boolean => {
+  try {
+    // Check if 'window.electron' exists or other Electron-specific objects
+    return window && window.navigator && 
+      /electron/i.test(window.navigator.userAgent);
+  } catch (error) {
+    return false;
+  }
+};
+
+/**
  * Determines the correct download URL based on the user's platform
  * @returns string URL for the appropriate installer
  */
