@@ -1,28 +1,41 @@
 
-import React, { useState } from "react";
-import { Clock, ChefHat, CheckCircle2, CheckCircle } from "lucide-react";
+import React from "react";
+import { 
+  KitchenOrderItem, 
+  Language, 
+  KitchenOrderStatus 
+} from "@/types";
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Language, KitchenOrderStatus } from "@/types";
-import { toast } from "@/hooks/use-toast";
+import { 
+  Clock, 
+  ChefHat, 
+  CheckCircle, 
+  PlayCircle, 
+  CheckCheck,
+  User
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { arSA, enUS } from "date-fns/locale";
+import { ar } from "date-fns/locale";
 
 interface KitchenOrderCardProps {
   id: string;
   invoiceId: string;
-  items: Array<{
-    id: string;
-    name: string;
-    nameAr?: string;
-    quantity: number;
-    size: string;
-  }>;
+  items: KitchenOrderItem[];
   status: KitchenOrderStatus;
   createdAt: string;
+  completedAt?: string;
+  cashierName?: string;
   language: Language;
-  onStatusChange: (orderId: string, newStatus: KitchenOrderStatus) => void;
+  onStatusChange: (id: string, status: KitchenOrderStatus) => void;
+  readOnly?: boolean;
 }
 
 const KitchenOrderCard: React.FC<KitchenOrderCardProps> = ({
@@ -31,155 +44,193 @@ const KitchenOrderCard: React.FC<KitchenOrderCardProps> = ({
   items,
   status,
   createdAt,
+  completedAt,
+  cashierName,
   language,
   onStatusChange,
+  readOnly = false
 }) => {
-  const [isUpdating, setIsUpdating] = useState(false);
   const isArabic = language === "ar";
   
   const getStatusColor = (status: KitchenOrderStatus) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "preparing":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "ready":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+        return "bg-green-100 text-green-800 border-green-200";
       case "completed":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
-    }
-  };
-
-  const getStatusLabel = (status: KitchenOrderStatus) => {
-    switch (status) {
-      case "pending":
-        return isArabic ? "قيد الانتظار" : "Pending";
-      case "preparing":
-        return isArabic ? "قيد التحضير" : "Preparing";
-      case "ready":
-        return isArabic ? "جاهز" : "Ready";
-      case "completed":
-        return isArabic ? "مكتمل" : "Completed";
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
       case "cancelled":
-        return isArabic ? "ملغي" : "Cancelled";
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return status;
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  const getSizeLabel = (size: string) => {
+  const getStatusText = (status: KitchenOrderStatus) => {
     if (isArabic) {
-      return size === "small" ? "صغير" : size === "medium" ? "وسط" : "كبير";
+      switch (status) {
+        case "pending":
+          return "قيد الانتظار";
+        case "preparing":
+          return "جاري التحضير";
+        case "ready":
+          return "جاهز";
+        case "completed":
+          return "مكتمل";
+        case "cancelled":
+          return "ملغي";
+        default:
+          return status;
+      }
     }
-    return size === "small" ? "S" : size === "medium" ? "M" : "L";
+    return status;
   };
-
-  const handleUpdateStatus = (newStatus: KitchenOrderStatus) => {
-    setIsUpdating(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      onStatusChange(id, newStatus);
-      setIsUpdating(false);
-      
-      const statusMessage = getStatusLabel(newStatus);
-      toast({
-        title: isArabic ? "تم تحديث الحالة" : "Status Updated",
-        description: isArabic
-          ? `تم تحديث حالة الطلب ${invoiceId} إلى ${statusMessage}`
-          : `Order ${invoiceId} status updated to ${statusMessage}`,
+  
+  const formatTime = (dateString: string) => {
+    try {
+      return formatDistanceToNow(new Date(dateString), {
+        addSuffix: true,
+        locale: isArabic ? ar : undefined
       });
-    }, 500);
-  };
-
-  const getTimeAgo = (dateString: string) => {
-    return formatDistanceToNow(new Date(dateString), {
-      addSuffix: true,
-      locale: isArabic ? arSA : enUS,
-    });
-  };
-
-  const renderActionButton = () => {
-    switch (status) {
-      case "pending":
-        return (
-          <Button 
-            className="w-full" 
-            onClick={() => handleUpdateStatus("preparing")}
-            disabled={isUpdating}
-          >
-            <ChefHat className="mr-2 h-4 w-4" />
-            {isArabic ? "بدء التحضير" : "Start Preparing"}
-          </Button>
-        );
-      case "preparing":
-        return (
-          <Button 
-            className="w-full" 
-            onClick={() => handleUpdateStatus("ready")}
-            disabled={isUpdating}
-          >
-            <CheckCircle2 className="mr-2 h-4 w-4" />
-            {isArabic ? "تم التحضير" : "Mark as Ready"}
-          </Button>
-        );
-      case "ready":
-        return (
-          <Button 
-            className="w-full" 
-            variant="outline"
-            onClick={() => handleUpdateStatus("completed")}
-            disabled={isUpdating}
-          >
-            <CheckCircle className="mr-2 h-4 w-4" />
-            {isArabic ? "تم التسليم" : "Mark as Completed"}
-          </Button>
-        );
-      default:
-        return null;
+    } catch (error) {
+      return isArabic ? "وقت غير معروف" : "unknown time";
     }
   };
-
+  
+  const calculateCompletionTime = (startDate: string, endDate: string) => {
+    try {
+      const start = new Date(startDate).getTime();
+      const end = new Date(endDate).getTime();
+      const diffMs = end - start;
+      
+      // Convert to minutes
+      const diffMinutes = Math.floor(diffMs / 60000);
+      
+      if (diffMinutes < 60) {
+        return isArabic 
+          ? `${diffMinutes} دقيقة` 
+          : `${diffMinutes} min`;
+      }
+      
+      // Convert to hours and minutes
+      const hours = Math.floor(diffMinutes / 60);
+      const mins = diffMinutes % 60;
+      
+      return isArabic 
+        ? `${hours} ساعة ${mins > 0 ? `و ${mins} دقيقة` : ''}` 
+        : `${hours}h ${mins > 0 ? `${mins}m` : ''}`;
+    } catch (error) {
+      return isArabic ? "وقت غير معروف" : "unknown time";
+    }
+  };
+  
+  const handleStatusChange = (newStatus: KitchenOrderStatus) => {
+    if (readOnly) return;
+    onStatusChange(id, newStatus);
+  };
+  
+  const orderStatusClasses = getStatusColor(status);
+  
   return (
-    <Card className={`${status === "completed" ? "opacity-60" : ""}`}>
+    <Card className={`border-l-4 ${orderStatusClasses} transition-all hover:shadow-md`}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg">
-            {isArabic ? "طلب رقم" : "Order"} #{invoiceId}
+            {isArabic ? `طلب #${invoiceId}` : `Order #${invoiceId}`}
           </CardTitle>
-          <Badge className={`${getStatusColor(status)}`}>
-            {getStatusLabel(status)}
+          <Badge className={orderStatusClasses}>
+            {getStatusText(status)}
           </Badge>
         </div>
-        <div className="text-sm text-muted-foreground flex items-center">
-          <Clock className="h-3 w-3 mr-1" />
-          {getTimeAgo(createdAt)}
+        
+        {cashierName && (
+          <div className="flex items-center text-sm text-muted-foreground mt-1">
+            <User size={14} className="mr-1" />
+            <span>
+              {isArabic ? `الشيف: ${cashierName}` : `Chef: ${cashierName}`}
+            </span>
+          </div>
+        )}
+        
+        <div className="flex items-center text-sm text-muted-foreground">
+          <Clock size={14} className="mr-1" />
+          <span>
+            {isArabic ? `تم الطلب ${formatTime(createdAt)}` : `Ordered ${formatTime(createdAt)}`}
+          </span>
         </div>
+        
+        {completedAt && (
+          <div className="flex items-center text-sm text-green-600 font-medium">
+            <CheckCheck size={14} className="mr-1" />
+            <span>
+              {isArabic 
+                ? `وقت التحضير: ${calculateCompletionTime(createdAt, completedAt)}`
+                : `Completion time: ${calculateCompletionTime(createdAt, completedAt)}`
+              }
+            </span>
+          </div>
+        )}
       </CardHeader>
       
       <CardContent>
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {items.map((item) => (
-            <div key={item.id} className="flex justify-between py-1 border-b">
+            <li key={item.id} className="flex justify-between items-center">
               <div className="flex items-center">
-                <span className="font-medium">
-                  {isArabic && item.nameAr ? item.nameAr : item.name}
+                <span className="font-medium mr-2">
+                  {item.quantity}x
                 </span>
-                <span className="text-xs ml-2 text-muted-foreground">
-                  ({getSizeLabel(item.size)})
+                <span>
+                  {isArabic && item.nameAr ? item.nameAr : item.name}
+                  <span className="text-sm text-muted-foreground ml-1">
+                    ({item.size})
+                  </span>
                 </span>
               </div>
-              <span className="text-sm">x{item.quantity}</span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </CardContent>
       
-      <CardFooter>
-        {renderActionButton()}
-      </CardFooter>
+      {!readOnly && status !== "completed" && status !== "cancelled" && (
+        <CardFooter className="flex gap-2 pt-1">
+          {status === "pending" && (
+            <Button 
+              variant="outline" 
+              className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+              onClick={() => handleStatusChange("preparing")}
+            >
+              <PlayCircle className="w-4 h-4 mr-2" />
+              {isArabic ? "بدء التحضير" : "Start Preparing"}
+            </Button>
+          )}
+          
+          {status === "preparing" && (
+            <Button 
+              variant="outline" 
+              className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              onClick={() => handleStatusChange("ready")}
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              {isArabic ? "تم التحضير" : "Ready"}
+            </Button>
+          )}
+          
+          {status === "ready" && (
+            <Button 
+              variant="outline" 
+              className="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200"
+              onClick={() => handleStatusChange("completed")}
+            >
+              <CheckCheck className="w-4 h-4 mr-2" />
+              {isArabic ? "تم التسليم" : "Complete"}
+            </Button>
+          )}
+        </CardFooter>
+      )}
     </Card>
   );
 };

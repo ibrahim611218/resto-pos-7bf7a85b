@@ -5,6 +5,7 @@ import { BaseService } from "../base/BaseService";
 export interface IKitchenOrderService {
   createKitchenOrder: (invoice: Invoice) => Promise<KitchenOrder>;
   getKitchenOrders: () => Promise<KitchenOrder[]>;
+  getCompletedOrders: () => Promise<KitchenOrder[]>;
   updateKitchenOrderStatus: (orderId: string, status: KitchenOrderStatus) => Promise<void>;
 }
 
@@ -50,6 +51,16 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
       return [];
     }
   }
+  
+  async getCompletedOrders(): Promise<KitchenOrder[]> {
+    try {
+      const storedOrders = localStorage.getItem(this.completedOrdersKey);
+      return storedOrders ? JSON.parse(storedOrders) : [];
+    } catch (error) {
+      console.error('Error getting completed orders:', error);
+      return [];
+    }
+  }
 
   async updateKitchenOrderStatus(orderId: string, status: KitchenOrderStatus): Promise<void> {
     try {
@@ -60,14 +71,14 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
       const updatedOrder = orders.find(order => order.id === orderId);
       
       if (updatedOrder) {
-        // Update the order status
+        // تحديث حالة الطلب
         updatedOrder.status = status;
         updatedOrder.updatedAt = new Date().toISOString();
         
-        // If order is completed, store it in completed orders
+        // إذا كان الطلب مكتملاً، قم بتخزينه في الطلبات المكتملة
         if (status === 'completed') {
-          const completedOrders = this.getCompletedOrders();
-          completedOrders.push({
+          const completedOrders = await this.getCompletedOrders();
+          completedOrders.unshift({
             ...updatedOrder,
             completedAt: new Date().toISOString()
           });
@@ -75,7 +86,7 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
         }
       }
 
-      // Remove completed/cancelled orders from active list
+      // إزالة الطلبات المكتملة / الملغية من القائمة النشطة
       const activeOrders = status === 'completed' || status === 'cancelled' 
         ? orders.filter(order => order.id !== orderId)
         : orders;
@@ -84,16 +95,6 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
     } catch (error) {
       console.error('Error updating kitchen order status:', error);
       throw error;
-    }
-  }
-
-  private getCompletedOrders(): KitchenOrder[] {
-    try {
-      const stored = localStorage.getItem(this.completedOrdersKey);
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.error('Error getting completed orders:', error);
-      return [];
     }
   }
 }

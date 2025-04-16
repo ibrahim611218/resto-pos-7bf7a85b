@@ -12,15 +12,31 @@ interface KitchenOrdersListProps {
 }
 
 const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
-  const [orders, setOrders] = useState<KitchenOrder[]>([]);
+  const [activeOrders, setActiveOrders] = useState<KitchenOrder[]>([]);
+  const [completedOrders, setCompletedOrders] = useState<KitchenOrder[]>([]);
   const [activeTab, setActiveTab] = useState<string>("active");
+  const [loading, setLoading] = useState<boolean>(true);
   const isArabic = language === "ar";
 
   // Fetch kitchen orders
   useEffect(() => {
     const fetchOrders = async () => {
-      const fetchedOrders = await kitchenOrderService.getKitchenOrders();
-      setOrders(fetchedOrders);
+      setLoading(true);
+      try {
+        // 1. الحصول على الطلبات النشطة
+        const fetchedActiveOrders = await kitchenOrderService.getKitchenOrders();
+        setActiveOrders(fetchedActiveOrders.filter(order => 
+          ["pending", "preparing", "ready"].includes(order.status)
+        ));
+        
+        // 2. الحصول على الطلبات المكتملة
+        const fetchedCompletedOrders = await kitchenOrderService.getCompletedOrders();
+        setCompletedOrders(fetchedCompletedOrders.slice(0, 20)); // عرض آخر 20 طلب مكتمل فقط للأداء
+      } catch (error) {
+        console.error("Error fetching kitchen orders:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     
     fetchOrders();
@@ -30,24 +46,24 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Filter orders based on active tab
-  const activeOrders = orders.filter((order) => 
-    ["pending", "preparing", "ready"].includes(order.status)
-  );
-  
-  const completedOrders = orders.filter((order) => 
-    order.status === "completed"
-  );
-
   const handleStatusChange = async (orderId: string, newStatus: KitchenOrderStatus) => {
     try {
       await kitchenOrderService.updateKitchenOrderStatus(orderId, newStatus);
       
       // Update local state
       if (newStatus === "completed") {
-        setOrders(prev => prev.filter(order => order.id !== orderId));
+        const completedOrder = activeOrders.find(order => order.id === orderId);
+        if (completedOrder) {
+          setCompletedOrders(prev => [{
+            ...completedOrder,
+            status: "completed",
+            updatedAt: new Date().toISOString(),
+            completedAt: new Date().toISOString()
+          }, ...prev]);
+        }
+        setActiveOrders(prev => prev.filter(order => order.id !== orderId));
       } else {
-        setOrders(prev => prev.map(order => 
+        setActiveOrders(prev => prev.map(order => 
           order.id === orderId 
             ? { ...order, status: newStatus, updatedAt: new Date().toISOString() } 
             : order
@@ -103,11 +119,20 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
           </TabsTrigger>
           <TabsTrigger value="completed">
             {isArabic ? "الطلبات المكتملة" : "Completed Orders"}
+            {completedOrders.length > 0 && (
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-green-600 text-white">
+                {completedOrders.length}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="active" className="mt-4">
-          {activeOrders.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : activeOrders.length === 0 ? (
             <div className="text-center py-12 bg-muted/30 rounded-lg">
               <p className="text-muted-foreground">
                 {isArabic ? "لا توجد طلبات نشطة" : "No active orders"}
@@ -125,6 +150,7 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
                     createdAt={order.createdAt}
                     language={language}
                     onStatusChange={handleStatusChange}
+                    cashierName={order.cashierName}
                   />
                 </AnimatedTransition>
               ))}
@@ -133,7 +159,11 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
         </TabsContent>
         
         <TabsContent value="completed" className="mt-4">
-          {completedOrders.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : completedOrders.length === 0 ? (
             <div className="text-center py-12 bg-muted/30 rounded-lg">
               <p className="text-muted-foreground">
                 {isArabic ? "لا توجد طلبات مكتملة" : "No completed orders"}
@@ -149,8 +179,11 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
                     items={order.items}
                     status={order.status}
                     createdAt={order.createdAt}
+                    completedAt={order.completedAt}
                     language={language}
                     onStatusChange={handleStatusChange}
+                    cashierName={order.cashierName}
+                    readOnly={true}
                   />
                 </AnimatedTransition>
               ))}

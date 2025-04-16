@@ -1,5 +1,4 @@
 
-
 export interface KitchenOrder {
   id: string;
   invoiceId: string;
@@ -8,8 +7,8 @@ export interface KitchenOrder {
   createdAt: string;
   updatedAt: string;
   notes?: string;
-  cashierName?: string;  // Adding cashierName as optional property
-  completedAt?: string;  // Adding completedAt as optional property
+  cashierName?: string;  // إضافة اسم الكاشير كخاصية اختيارية
+  completedAt?: string;  // إضافة وقت الإكمال كخاصية اختيارية
 }
 
 export interface KitchenOrderItem {
@@ -23,4 +22,3 @@ export interface KitchenOrderItem {
 
 export type KitchenOrderStatus = 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 export type KitchenItemStatus = 'pending' | 'preparing' | 'ready';
-

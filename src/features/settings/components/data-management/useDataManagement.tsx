@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,7 @@ import { mockProducts } from "@/features/pos/data/mockData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { mockCustomers } from "@/features/customers/hooks/useCustomers";
 
-type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all";
+type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all" | "kitchen";
 
 export const useDataManagement = () => {
   const { language } = useLanguage();
@@ -26,6 +27,7 @@ export const useDataManagement = () => {
   const deleteAllProducts = () => {
     // Delete products from localStorage
     localStorage.removeItem('products');
+    localStorage.removeItem('stored-products');
     // Delete products from mockProducts array
     mockProducts.length = 0;
   };
@@ -33,12 +35,13 @@ export const useDataManagement = () => {
   const deleteAllCategories = () => {
     // Delete categories from localStorage
     localStorage.removeItem('categories');
+    localStorage.removeItem('stored-categories');
     // Delete categories from sampleCategories array
     sampleCategories.length = 0;
   };
 
   const deleteAllInventory = () => {
-    // Delete inventory from localStorage
+    // Delete ALL inventory from localStorage
     localStorage.removeItem('inventory-items');
     localStorage.removeItem('stored-inventory');
     // Clear any cached inventory data
@@ -48,6 +51,7 @@ export const useDataManagement = () => {
   const deleteAllInvoices = () => {
     // Delete invoices from localStorage
     localStorage.removeItem('invoices');
+    localStorage.removeItem('stored-invoices');
     // Reset invoice numbers (start from 1 in the next run)
     localStorage.setItem('lastInvoiceNumber', '0');
     // Delete invoices from mockInvoices array
@@ -57,21 +61,31 @@ export const useDataManagement = () => {
   const deleteAllCustomers = () => {
     // Delete customers from localStorage
     localStorage.removeItem('customers');
+    localStorage.removeItem('stored-customers');
     // Delete customers from mockCustomers array
     mockCustomers.length = 0;
+  };
+  
+  const deleteKitchenData = () => {
+    // Delete kitchen orders
+    localStorage.removeItem('kitchenOrders');
+    localStorage.removeItem('completed-kitchen-orders');
+    localStorage.removeItem('stored-kitchen-orders');
   };
 
   const deleteAllData = () => {
     // Delete all data
     deleteAllProducts();
     deleteAllCategories();
-    deleteAllInventory(); // Make sure inventory is cleared
+    deleteAllInventory(); 
     deleteAllInvoices();
     deleteAllCustomers();
+    deleteKitchenData();
     
     // Delete settings
     localStorage.removeItem('business-settings');
     localStorage.removeItem('display-settings');
+    localStorage.removeItem('stored-settings');
     
     // Delete any additional data
     localStorage.removeItem('defaultProducts');
@@ -110,6 +124,11 @@ export const useDataManagement = () => {
           toast.success(isArabic ? "تم حذف جميع العملاء بنجاح" : "All customers have been deleted successfully");
           navigate("/customers");
           break;
+        case "kitchen":
+          deleteKitchenData();
+          toast.success(isArabic ? "تم حذف جميع بيانات المطبخ بنجاح" : "All kitchen data has been deleted successfully");
+          navigate("/kitchen");
+          break;
         case "all":
           deleteAllData();
           toast.success(isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully");
@@ -146,6 +165,10 @@ export const useDataManagement = () => {
         return isArabic 
           ? "هل أنت متأكد من حذف جميع العملاء؟ لا يمكن التراجع عن هذه العملية."
           : "Are you sure you want to delete all customers? This action cannot be undone.";
+      case "kitchen":
+        return isArabic 
+          ? "هل أنت متأكد من حذف جميع بيانات المطبخ؟ لا يمكن التراجع عن هذه العملية."
+          : "Are you sure you want to delete all kitchen data? This action cannot be undone.";
       case "all":
         return isArabic 
           ? "هل أنت متأكد من حذف جميع البيانات؟ لا يمكن التراجع عن هذه العملية."
