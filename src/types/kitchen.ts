@@ -1,4 +1,3 @@
-
 export interface KitchenOrder {
   id: string;
   invoiceId: string;
@@ -7,8 +6,8 @@ export interface KitchenOrder {
   createdAt: string;
   updatedAt: string;
   notes?: string;
-  cashierName?: string;
-  completedAt?: string;
+  cashierName?: string; // Added as optional
+  completedAt?: string; // Added as optional
 }
 
 export interface KitchenOrderItem {
