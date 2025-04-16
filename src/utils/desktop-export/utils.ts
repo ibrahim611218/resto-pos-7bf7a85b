@@ -2,26 +2,12 @@
 import { DOWNLOAD_URLS } from './constants';
 
 /**
- * Detects if the application is running inside Electron
- * @returns boolean indicating if running in Electron
- */
-export const isRunningInElectron = (): boolean => {
-  try {
-    // Check if the window object has Electron specific properties
-    return window?.navigator?.userAgent?.toLowerCase().indexOf(' electron/') > -1;
-  } catch (error) {
-    console.error("Error checking for Electron:", error);
-    return false;
-  }
-};
-
-/**
  * Determines the correct download URL based on the user's platform
  * @returns string URL for the appropriate installer
  */
 export const getDownloadUrl = (): string => {
   try {
-    const platform = window.navigator.platform.toLowerCase();
+    const platform = navigator.platform.toLowerCase();
     let url = '';
     
     // Determine the appropriate download URL based on platform
@@ -32,19 +18,21 @@ export const getDownloadUrl = (): string => {
     } else if (platform.includes('linux')) {
       url = DOWNLOAD_URLS.linux;
     } else {
-      // Default to Windows if platform cannot be determined
+      // Default to Windows download
       url = DOWNLOAD_URLS.windows;
-    }
-    
-    // Make sure we have a valid URL
-    if (!url || url.trim() === '') {
-      console.warn('Invalid download URL, using Windows as fallback');
-      return DOWNLOAD_URLS.windows;
     }
     
     return url;
   } catch (error) {
     console.error("Error getting download URL:", error);
-    return DOWNLOAD_URLS.windows; // Default to Windows on error
+    return DOWNLOAD_URLS.windows; // Default fallback
   }
+};
+
+/**
+ * Opens the download link in a new browser window
+ */
+export const openDownloadLink = () => {
+  const downloadUrl = getDownloadUrl();
+  window.open(downloadUrl, '_blank');
 };

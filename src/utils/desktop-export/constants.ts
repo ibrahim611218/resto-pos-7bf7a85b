@@ -1,14 +1,14 @@
 
 // Constants for desktop export functionality
 
-// Download URLs by platform - Update these URLs with your actual download links
+// Updated Download URLs - Replace with your actual GitHub release or direct download links
 export const DOWNLOAD_URLS = {
   windows: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos-setup.exe',
   mac: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.dmg',
   linux: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.AppImage',
 };
 
-// System requirements
+// Expanded system requirements and installer information
 export const SYSTEM_REQUIREMENTS = {
   os: {
     ar: "نظام التشغيل: Windows 10 أو أحدث (64-bit)",
