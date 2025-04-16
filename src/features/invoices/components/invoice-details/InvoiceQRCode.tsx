@@ -2,6 +2,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "@/context/ThemeContext";
+import { Barcode } from "lucide-react";
 
 interface InvoiceQRCodeProps {
   qrCodeData: string;
@@ -14,6 +15,15 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
 }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  
+  const parsedData = React.useMemo(() => {
+    try {
+      return JSON.parse(qrCodeData);
+    } catch (error) {
+      console.error("Error parsing QR code data:", error);
+      return { total: 0 };
+    }
+  }, [qrCodeData]);
   
   return (
     <>
@@ -38,8 +48,12 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
         
         {/* Amount Barcode */}
         <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block`}>
+          <div className="flex items-center justify-center mb-1">
+            <Barcode size={16} className="mr-1" />
+            <span className="text-xs font-medium">رمز المبلغ</span>
+          </div>
           <QRCodeSVG 
-            value={JSON.parse(qrCodeData).total.toString()}
+            value={parsedData.total ? parsedData.total.toString() : "0"}
             size={80}
             bgColor="#FFFFFF"
             fgColor="#000000"
@@ -53,7 +67,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
             }}
           />
           <div className="text-center text-xs mt-1">
-            المبلغ: {JSON.parse(qrCodeData).total} ر.س
+            المبلغ: {parsedData.total ? parsedData.total.toFixed(2) : "0.00"} ر.س
           </div>
         </div>
       </div>
@@ -66,4 +80,3 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
     </>
   );
 };
-

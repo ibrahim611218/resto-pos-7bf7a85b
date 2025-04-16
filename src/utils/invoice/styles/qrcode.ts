@@ -1,41 +1,54 @@
 
 /**
- * Styles for QR code section
+ * Styles for the QR code section of the invoice
  */
 export const getQRCodeStyles = (): string => `
-  .qr-code { 
-    text-align: center; 
+  .qr-code {
+    text-align: center;
     margin: 20px auto;
-    padding: 10px;
-    background-color: white !important;
-    display: block !important;
-    width: fit-content;
-    border-radius: 8px;
-    border: 1px solid #e5e5e5;
+    max-width: 140px;
   }
   
-  .qr-code svg,
-  .qr-code canvas {
-    display: inline-block !important;
-    width: 120px !important;
-    height: 120px !important;
+  .qr-code canvas,
+  .qr-code img {
+    max-width: 120px !important;
+    height: auto !important;
+    margin: 0 auto;
+    display: block !important;
   }
-
+  
+  .amount-barcode {
+    text-align: center;
+    margin: 10px auto 20px;
+    max-width: 100px;
+  }
+  
+  .amount-barcode canvas,
+  .amount-barcode img {
+    max-width: 80px !important;
+    height: auto !important;
+    margin: 0 auto;
+    display: block !important;
+  }
+  
+  .barcode-label {
+    font-size: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .barcode-amount {
+    font-size: 10px;
+    margin-top: 5px;
+  }
+  
   @media print {
-    .qr-code {
-      display: block !important;
-      margin: 20px auto !important;
+    .qr-code,
+    .amount-barcode {
+      break-inside: avoid;
       page-break-inside: avoid;
-      background-color: white !important;
-      border: 1px solid #e5e5e5 !important;
-      max-width: 140px;
-    }
-    
-    .qr-code svg,
-    .qr-code canvas {
-      display: inline-block !important;
-      width: 120px !important;
-      height: 120px !important;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 `;

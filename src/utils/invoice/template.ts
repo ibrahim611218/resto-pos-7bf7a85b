@@ -31,7 +31,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     invoiceNotesAr: "شكراً لزيارتكم"
   };
   
-  // Generate QR code with explicit size
+  // Generate main QR code with explicit size
   const qrCodeData = generateInvoiceQRCodeData(invoice);
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
     value: qrCodeData, 
@@ -44,6 +44,19 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   });
   const qrCodeString = renderToString(qrCodeElement);
   
+  // Generate amount barcode
+  const parsedQRData = JSON.parse(qrCodeData);
+  const amountBarcodeElement = React.createElement(QRCodeCanvas, { 
+    value: parsedQRData.total.toString(), 
+    size: 80,
+    style: { width: '80px', height: '80px', display: 'inline-block' },
+    bgColor: "#FFFFFF",
+    fgColor: "#000000",
+    level: "M",
+    includeMargin: true,
+  });
+  const amountBarcodeString = renderToString(amountBarcodeElement);
+  
   // إضافة العلامة المائية إذا كانت الفاتورة مسترجعة
   const refundedWatermark = invoice.status === "refunded" ? `
     <div class="watermark">
@@ -55,6 +68,11 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const explicitQRCode = `
     <div class="qr-code">
       ${qrCodeString}
+    </div>
+    <div class="amount-barcode">
+      <div class="barcode-label">رمز المبلغ</div>
+      ${amountBarcodeString}
+      <div class="barcode-amount">المبلغ: ${parsedQRData.total.toFixed(2)} ر.س</div>
     </div>
   `;
   
