@@ -5,13 +5,14 @@
 export const getQRCodeStyles = (): string => `
   .qr-code {
     text-align: center;
-    margin: 20px auto;
-    max-width: 140px;
+    margin: 10px auto;
+    max-width: 120px;
   }
   
   .qr-code canvas,
-  .qr-code img {
-    max-width: 120px !important;
+  .qr-code img,
+  .qr-code svg {
+    max-width: 100px !important;
     height: auto !important;
     margin: 0 auto;
     display: block !important;
@@ -19,27 +20,28 @@ export const getQRCodeStyles = (): string => `
   
   .amount-barcode {
     text-align: center;
-    margin: 10px auto 20px;
-    max-width: 100px;
+    margin: 8px auto 15px;
+    max-width: 90px;
   }
   
   .amount-barcode canvas,
-  .amount-barcode img {
-    max-width: 80px !important;
+  .amount-barcode img,
+  .amount-barcode svg {
+    max-width: 70px !important;
     height: auto !important;
     margin: 0 auto;
     display: block !important;
   }
   
   .barcode-label {
-    font-size: 10px;
-    margin-bottom: 5px;
+    font-size: 9px;
+    margin-bottom: 3px;
     font-weight: bold;
   }
   
   .barcode-amount {
-    font-size: 10px;
-    margin-top: 5px;
+    font-size: 9px;
+    margin-top: 3px;
   }
   
   @media print {

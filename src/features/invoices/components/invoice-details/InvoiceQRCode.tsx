@@ -27,42 +27,42 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
   
   return (
     <>
-      <div className="flex flex-col items-center gap-4 print:block print:w-full">
+      <div className="flex flex-col items-center gap-3 print:block print:w-full">
         {/* Main QR Code */}
-        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block qr-code`}>
+        <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block qr-code`}>
           <QRCodeSVG 
             value={qrCodeData || ""}
-            size={120}
+            size={100}
             bgColor="#FFFFFF"
             fgColor="#000000"
-            level="H"
-            includeMargin={true}
+            level="M"
+            includeMargin={false}
             className="print:block"
             style={{
-              width: '120px',
-              height: '120px',
+              width: '100px',
+              height: '100px',
               display: 'block'
             }}
           />
         </div>
         
         {/* Amount Barcode */}
-        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block amount-barcode`}>
+        <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block amount-barcode`}>
           <div className="flex items-center justify-center mb-1">
-            <Barcode size={16} className="mr-1" />
+            <Barcode size={12} className="mr-1" />
             <span className="text-xs font-medium barcode-label">رمز المبلغ</span>
           </div>
           <QRCodeSVG 
             value={parsedData.total ? parsedData.total.toString() : "0"}
-            size={80}
+            size={70}
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="M"
-            includeMargin={true}
+            includeMargin={false}
             className="print:block"
             style={{
-              width: '80px',
-              height: '80px',
+              width: '70px',
+              height: '70px',
               display: 'block'
             }}
           />

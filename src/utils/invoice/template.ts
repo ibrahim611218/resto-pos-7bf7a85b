@@ -35,12 +35,12 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const qrCodeData = generateInvoiceQRCodeData(invoice);
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
     value: qrCodeData, 
-    size: 120,
-    style: { width: '120px', height: '120px', display: 'inline-block' },
+    size: 100,
+    style: { width: '100px', height: '100px', display: 'inline-block' },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
-    level: "H",
-    includeMargin: true,
+    level: "M",
+    includeMargin: false,
   });
   const qrCodeString = renderToString(qrCodeElement);
   
@@ -48,12 +48,12 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const parsedQRData = JSON.parse(qrCodeData);
   const amountBarcodeElement = React.createElement(QRCodeCanvas, { 
     value: parsedQRData.total.toString(), 
-    size: 80,
-    style: { width: '80px', height: '80px', display: 'inline-block' },
+    size: 70,
+    style: { width: '70px', height: '70px', display: 'inline-block' },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "M",
-    includeMargin: true,
+    includeMargin: false,
   });
   const amountBarcodeString = renderToString(amountBarcodeElement);
   
@@ -111,7 +111,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
           setTimeout(function() {
             window.focus();
             window.print();
-          }, 1000);
+          }, 1500);
         };
       </script>
     </body>
