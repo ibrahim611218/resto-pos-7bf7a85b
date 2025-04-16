@@ -48,8 +48,8 @@ const Index: React.FC<IndexProps> = () => {
         return false;
       }
       
-      // Update the subMenuItems array with filtered items
-      link.subMenuItems = filteredSubMenuItems;
+      // Update the link's subMenuItems with filtered items
+      link.subMenuItems = [...filteredSubMenuItems];
     }
     
     return true;

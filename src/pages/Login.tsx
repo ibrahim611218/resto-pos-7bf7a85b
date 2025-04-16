@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import { Language } from "@/types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface LoginProps {
   language: Language;
@@ -15,22 +16,38 @@ interface LoginProps {
 
 const Login = ({ language }: LoginProps) => {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [rememberMe, setRememberMe] = React.useState(false);
+  const { login, isProcessing } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const isArabic = language === "ar";
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login
-    if (email && password) {
-      toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
-      navigate("/");
-    } else {
+    
+    if (!email || !password) {
       toast.error(
         isArabic
           ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
           : "Please enter email and password"
+      );
+      return;
+    }
+    
+    const success = await login(email, password);
+    
+    if (success) {
+      toast.success(
+        isArabic 
+          ? "تم تسجيل الدخول بنجاح" 
+          : "Successfully logged in"
+      );
+      navigate("/");
+    } else {
+      toast.error(
+        isArabic
+          ? "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+          : "Invalid email or password"
       );
     }
   };
@@ -59,6 +76,7 @@ const Login = ({ language }: LoginProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-12"
+                  disabled={isProcessing}
                 />
               </div>
               <div className="space-y-2">
@@ -69,6 +87,7 @@ const Login = ({ language }: LoginProps) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12"
+                  disabled={isProcessing}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -79,6 +98,7 @@ const Login = ({ language }: LoginProps) => {
                     onCheckedChange={(checked) => 
                       setRememberMe(checked as boolean)
                     }
+                    disabled={isProcessing}
                   />
                   <label
                     htmlFor="remember"
@@ -87,12 +107,14 @@ const Login = ({ language }: LoginProps) => {
                     {isArabic ? "تذكرني" : "Remember me"}
                   </label>
                 </div>
-                <Button variant="link" className="px-0">
+                <Button variant="link" className="px-0" disabled={isProcessing}>
                   {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
                 </Button>
               </div>
-              <Button type="submit" className="w-full h-12">
-                {isArabic ? "تسجيل الدخول" : "Sign in"}
+              <Button type="submit" className="w-full h-12" disabled={isProcessing}>
+                {isProcessing 
+                  ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
+                  : (isArabic ? "تسجيل الدخول" : "Sign in")}
               </Button>
             </form>
           </CardContent>
