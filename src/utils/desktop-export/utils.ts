@@ -36,6 +36,7 @@ export const getDownloadUrl = (): string => {
       url = DOWNLOAD_URLS.windows;
     }
     
+    console.log("Download URL determined:", url);
     return url;
   } catch (error) {
     console.error("Error getting download URL:", error);
@@ -47,6 +48,34 @@ export const getDownloadUrl = (): string => {
  * Opens the download link in a new browser window
  */
 export const openDownloadLink = () => {
-  const downloadUrl = getDownloadUrl();
-  window.open(downloadUrl, '_blank');
+  try {
+    const downloadUrl = getDownloadUrl();
+    console.log("Opening download URL:", downloadUrl);
+    
+    // Check if URL is valid
+    if (!downloadUrl || typeof downloadUrl !== 'string') {
+      throw new Error("Invalid download URL");
+    }
+    
+    // Open in new window
+    const newWindow = window.open(downloadUrl, '_blank');
+    
+    // Handle popup blockers
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      console.warn("Popup may have been blocked, trying alternative method");
+      // Alternative approach
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 100);
+    }
+  } catch (error) {
+    console.error("Error opening download link:", error);
+    alert("خطأ في فتح رابط التحميل. يرجى تمكين النوافذ المنبثقة أو المحاولة مرة أخرى.");
+  }
 };
