@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Size } from "@/types";
@@ -9,59 +8,8 @@ import SizeFilters from "@/components/products/SizeFilters";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import { toast } from "sonner";
 import { Product } from "@/types";
-
-// Mock data for browser preview environment
-const mockCategories = [
-  { id: "cat-1", name: "Beverages", nameAr: "مشروبات" },
-  { id: "cat-2", name: "Food", nameAr: "طعام" },
-  { id: "cat-3", name: "Desserts", nameAr: "حلويات" }
-];
-
-// Updated mock products with the required properties: variants, taxable, type
-const mockProducts: Product[] = [
-  {
-    id: "prod-1", 
-    name: "Coffee", 
-    nameAr: "قهوة", 
-    price: 10, 
-    categoryId: "cat-1",
-    image: "/placeholder.svg",
-    variants: [
-      { id: "var-1", size: "small", price: 8 },
-      { id: "var-2", size: "medium", price: 10 },
-      { id: "var-3", size: "large", price: 12 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "prod-2", 
-    name: "Tea", 
-    nameAr: "شاي", 
-    price: 8, 
-    categoryId: "cat-1",
-    image: "/placeholder.svg",
-    variants: [
-      { id: "var-4", size: "small", price: 6 },
-      { id: "var-5", size: "medium", price: 8 }
-    ],
-    taxable: true,
-    type: "sized"
-  },
-  {
-    id: "prod-3", 
-    name: "Burger", 
-    nameAr: "برجر", 
-    price: 25, 
-    categoryId: "cat-2",
-    image: "/placeholder.svg",
-    variants: [
-      { id: "var-6", size: "regular", price: 25 }
-    ],
-    taxable: true,
-    type: "single"
-  }
-];
+import productService from "@/services/products/ProductService";
+import categoryService from "@/services/categories/CategoryService";
 
 const Products = () => {
   const location = useLocation();
@@ -72,8 +20,8 @@ const Products = () => {
   const isArabic = language === "ar";
 
   const [selectedSize, setSelectedSize] = useState<Size | null>(null);
-  const [categories, setCategories] = useState(mockCategories);
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -90,9 +38,14 @@ const Products = () => {
           setCategories(categoriesResult);
           setProducts(productsResult);
         } else {
-          // In browser preview, we'll use mock data
-          console.log('Using mock data for preview');
-          // Mock data already set as initial state
+          // In browser preview, we'll use our local storage services
+          console.log('Loading data from local storage services');
+          const [categoriesResult, productsResult] = await Promise.all([
+            categoryService.getCategories(),
+            productService.getProducts()
+          ]);
+          setCategories(categoriesResult);
+          setProducts(productsResult);
         }
       } catch (error) {
         console.error('Error loading data:', error);

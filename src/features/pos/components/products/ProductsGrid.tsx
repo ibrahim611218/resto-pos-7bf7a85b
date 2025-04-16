@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
@@ -7,6 +8,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
+import productService from "@/services/products/ProductService";
+import categoryService from "@/services/categories/CategoryService";
 
 interface ProductsGridProps {
   viewMode: "grid" | "list";
@@ -35,10 +38,13 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
           setCategories(categoriesResult);
           setProducts(productsResult);
         } else {
-          console.log('Using mock data for POS preview');
-          const { mockProducts, mockCategories } = await import('../../data/mockData');
-          setCategories(mockCategories);
-          setProducts(mockProducts);
+          console.log('Loading data from local storage services for POS');
+          const [categoriesResult, productsResult] = await Promise.all([
+            categoryService.getCategories(),
+            productService.getProducts()
+          ]);
+          setCategories(categoriesResult);
+          setProducts(productsResult);
         }
       } catch (error) {
         console.error('Error loading data:', error);

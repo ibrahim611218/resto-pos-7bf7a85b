@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, ProductVariant, ProductType } from "@/types";
-import { sampleProducts } from "@/data/sampleData";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
+import productService from "@/services/products/ProductService";
 
 export const useProductForm = () => {
   const navigate = useNavigate();
@@ -31,7 +30,9 @@ export const useProductForm = () => {
   
   useEffect(() => {
     if (isEditing) {
-      const existingProduct = sampleProducts.find(p => p.id === id);
+      const products = productService.getProducts();
+      const existingProduct = products.find(p => p.id === id);
+      
       if (existingProduct) {
         setProduct(existingProduct);
         setVariants([...existingProduct.variants]);
@@ -147,27 +148,18 @@ export const useProductForm = () => {
       variants: product.type === "sized" ? variants : [],
     };
 
-    // هنا نقوم بحفظ المنتج في قائمة المنتجات
-    if (isEditing) {
-      // تحديث المنتج الموجود
-      const productIndex = sampleProducts.findIndex(p => p.id === updatedProduct.id);
-      if (productIndex !== -1) {
-        sampleProducts[productIndex] = updatedProduct;
-      }
-    } else {
-      // إضافة منتج جديد
-      sampleProducts.push(updatedProduct);
-    }
-
-    console.log("Product saved:", updatedProduct);
-    console.log("Updated products list:", sampleProducts);
-
-    const successMessage = isEditing 
-      ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
-      : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
+    const success = productService.saveProduct(updatedProduct);
     
-    toast.success(successMessage);
-    navigate("/products");
+    if (success) {
+      const successMessage = isEditing 
+        ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
+        : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
+      
+      toast.success(successMessage);
+      navigate("/products");
+    } else {
+      toast.error(isArabic ? "حدث خطأ أثناء حفظ المنتج" : "Error saving product");
+    }
   };
 
   return {

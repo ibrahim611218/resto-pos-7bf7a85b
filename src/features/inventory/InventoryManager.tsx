@@ -1,12 +1,12 @@
+
 import React, { useState, useEffect } from "react";
-import { InventoryItem, Language, Product } from "@/types";
+import { InventoryItem, Language } from "@/types";
 import InventoryList from "./components/InventoryList";
 import InventoryForm from "./components/InventoryForm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { mockInventoryItems } from "./data/mockInventory";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { sampleProducts } from "@/data/sampleData";
+import productService from "@/services/products/ProductService";
 
 interface InventoryManagerProps {
   language: Language;
@@ -14,46 +14,91 @@ interface InventoryManagerProps {
 
 const InventoryManager: React.FC<InventoryManagerProps> = ({ language }) => {
   const isArabic = language === "ar";
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(() => {
-    const existingItems = mockInventoryItems;
-    
-    const productIds = new Set(existingItems.map(item => item.productId));
-    const missingProducts = sampleProducts.filter(product => !productIds.has(product.id));
-    
-    const newItems = missingProducts.map(product => ({
-      id: `inv-${product.id}`,
-      productId: product.id,
-      productName: product.name,
-      productNameAr: product.nameAr,
-      quantity: 0,
-      lowStockThreshold: 5,
-      lastUpdated: new Date(),
-      categoryId: product.categoryId,
-    }));
-    
-    return [...existingItems, ...newItems];
-  });
-
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load inventory items from localStorage or initialize from products
+  useEffect(() => {
+    const loadInventory = async () => {
+      setIsLoading(true);
+      try {
+        // Try to load existing inventory from localStorage
+        const storedInventory = localStorage.getItem('inventory-items');
+        let items: InventoryItem[] = [];
+        
+        if (storedInventory) {
+          items = JSON.parse(storedInventory);
+        }
+        
+        // Get all products
+        const products = await productService.getProducts();
+        
+        // Find products that don't have inventory items yet
+        const productIds = new Set(items.map(item => item.productId));
+        const missingProducts = products.filter(product => !productIds.has(product.id));
+        
+        // Create inventory items for new products
+        const newItems = missingProducts.map(product => ({
+          id: `inv-${product.id}`,
+          productId: product.id,
+          productName: product.name,
+          productNameAr: product.nameAr,
+          quantity: 0,
+          lowStockThreshold: 5,
+          lastUpdated: new Date(),
+          categoryId: product.categoryId,
+        }));
+        
+        // Combine existing and new items
+        const combinedItems = [...items, ...newItems];
+        
+        // Save back to localStorage
+        localStorage.setItem('inventory-items', JSON.stringify(combinedItems));
+        
+        setInventoryItems(combinedItems);
+      } catch (error) {
+        console.error('Error loading inventory:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadInventory();
+  }, []);
+
+  const saveInventoryItems = (items: InventoryItem[]) => {
+    try {
+      localStorage.setItem('inventory-items', JSON.stringify(items));
+    } catch (error) {
+      console.error('Error saving inventory items:', error);
+    }
+  };
 
   const handleAddItem = (newItem: InventoryItem) => {
-    setInventoryItems([...inventoryItems, newItem]);
+    const updatedItems = [...inventoryItems, newItem];
+    setInventoryItems(updatedItems);
+    saveInventoryItems(updatedItems);
     setIsFormOpen(false);
     setEditingItem(null);
   };
 
   const handleEditItem = (updatedItem: InventoryItem) => {
-    setInventoryItems(
-      inventoryItems.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+    const updatedItems = inventoryItems.map((item) => 
+      item.id === updatedItem.id ? updatedItem : item
     );
+    setInventoryItems(updatedItems);
+    saveInventoryItems(updatedItems);
     setIsFormOpen(false);
     setEditingItem(null);
   };
 
   const handleDeleteItem = (id: string) => {
-    setInventoryItems(inventoryItems.filter((item) => item.id !== id));
+    const updatedItems = inventoryItems.filter((item) => item.id !== id);
+    setInventoryItems(updatedItems);
+    saveInventoryItems(updatedItems);
   };
 
   const openEditForm = (item: InventoryItem) => {
@@ -79,14 +124,20 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({ language }) => {
         </Button>
       </div>
 
-      <InventoryList
-        items={filteredItems}
-        onEdit={openEditForm}
-        onDelete={handleDeleteItem}
-        language={language}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-      />
+      {isLoading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <InventoryList
+          items={filteredItems}
+          onEdit={openEditForm}
+          onDelete={handleDeleteItem}
+          language={language}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
+      )}
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-md">

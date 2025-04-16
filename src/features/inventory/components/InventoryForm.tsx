@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { sampleProducts, sampleCategories } from "@/data/sampleData";
+import productService from "@/services/products/ProductService";
+import categoryService from "@/services/categories/CategoryService";
 
 interface InventoryFormProps {
   existingItem: InventoryItem | null;
@@ -27,6 +28,33 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       lowStockThreshold: 5,
     }
   );
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  // Load products and categories
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        if (window.db) {
+          const [productsData, categoriesData] = await Promise.all([
+            window.db.getProducts(),
+            window.db.getCategories()
+          ]);
+          setProducts(productsData);
+          setCategories(categoriesData);
+        } else {
+          const productsData = productService.getProducts();
+          const categoriesData = categoryService.getCategories();
+          setProducts(productsData);
+          setCategories(categoriesData);
+        }
+      } catch (error) {
+        console.error('Error loading products/categories:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   useEffect(() => {
     if (existingItem) {
@@ -35,7 +63,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   }, [existingItem]);
 
   const handleProductChange = (productId: string) => {
-    const product = sampleProducts.find((p) => p.id === productId);
+    const product = products.find((p) => p.id === productId);
     if (product) {
       setFormData({
         ...formData,
@@ -76,8 +104,8 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
   };
 
   // Group products by category
-  const productsByCategory: Record<string, typeof sampleProducts> = {};
-  sampleProducts.forEach(product => {
+  const productsByCategory: Record<string, typeof products> = {};
+  products.forEach(product => {
     if (!productsByCategory[product.categoryId]) {
       productsByCategory[product.categoryId] = [];
     }
@@ -98,7 +126,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
               <SelectValue placeholder={isArabic ? "اختر المنتج" : "Select product"} />
             </SelectTrigger>
             <SelectContent>
-              {sampleCategories.map(category => (
+              {categories.map(category => (
                 <React.Fragment key={category.id}>
                   <SelectItem value={category.id} disabled className="font-bold bg-muted">
                     {isArabic ? category.nameAr || category.name : category.name}
