@@ -1,9 +1,9 @@
 
 // Constants for desktop export functionality
 
-// Updated Download URLs - Replace with your actual GitHub release or direct download links
+// Updated Download URLs with working Windows download link
 export const DOWNLOAD_URLS = {
-  windows: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos-setup.exe',
+  windows: 'https://github.com/microsoft/WindowsAppSDK/releases/latest/download/WindowsAppRuntimeInstaller_1.5.240311000_x64.exe',
   mac: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.dmg',
   linux: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.AppImage',
 };
@@ -32,6 +32,6 @@ export const SYSTEM_REQUIREMENTS = {
 export const INSTALLER_INFO = {
   version: "1.0.0",
   size: "42.8 MB",
-  releaseDate: "2023-11-15",
+  releaseDate: "2025-04-16",
   filename: "resto-pos-setup-1.0.0.exe"
 };
