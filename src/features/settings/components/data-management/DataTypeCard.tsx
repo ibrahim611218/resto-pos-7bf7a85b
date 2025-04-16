@@ -3,11 +3,11 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Trash2 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
 
 interface DataTypeCardProps {
   title: string;
-  icon: LucideIcon;
+  icon: React.ReactNode;
+  description: string;
   deleteButtonText: string;
   onDeleteAction: () => void;
   onNavigate: () => void;
@@ -16,7 +16,8 @@ interface DataTypeCardProps {
 
 const DataTypeCard: React.FC<DataTypeCardProps> = ({
   title,
-  icon: Icon,
+  icon,
+  description,
   deleteButtonText,
   onDeleteAction,
   onNavigate,
@@ -26,9 +27,10 @@ const DataTypeCard: React.FC<DataTypeCardProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Icon size={20} />
+          {icon}
           {title}
         </CardTitle>
+        <p className="text-sm text-muted-foreground mt-2">{description}</p>
       </CardHeader>
       <CardFooter className="flex gap-2">
         <Button 

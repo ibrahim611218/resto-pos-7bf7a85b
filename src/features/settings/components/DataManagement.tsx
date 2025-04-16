@@ -39,7 +39,7 @@ const DataManagement: React.FC = () => {
       
       <DataManagementGrid 
         isArabic={isArabic}
-        handleDeleteAction={handleDeleteAction}
+        onDeleteAction={handleDeleteAction}
         navigate={navigate}
       />
       

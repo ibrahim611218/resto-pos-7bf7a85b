@@ -7,8 +7,8 @@ export interface KitchenOrder {
   createdAt: string;
   updatedAt: string;
   notes?: string;
-  cashierName?: string;  // إضافة اسم الكاشير كخاصية اختيارية
-  completedAt?: string;  // إضافة وقت الإكمال كخاصية اختيارية
+  cashierName?: string;
+  completedAt?: string;
 }
 
 export interface KitchenOrderItem {

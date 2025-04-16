@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Grid } from "@/components/ui/grid";
 import DataTypeCard from "./DataTypeCard";
 import DeleteAllDataCard from "./DeleteAllDataCard";
 import { 
@@ -15,14 +14,16 @@ import {
 interface DataManagementGridProps {
   isArabic: boolean;
   onDeleteAction: (type: "products" | "categories" | "inventory" | "invoices" | "customers" | "kitchen" | "all") => void;
+  navigate: (path: string) => void;
 }
 
 const DataManagementGrid: React.FC<DataManagementGridProps> = ({
   isArabic,
   onDeleteAction,
+  navigate
 }) => {
   return (
-    <Grid className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       <DataTypeCard
         icon={<PackageOpen size={20} />}
         title={isArabic ? "المنتجات" : "Products"}
@@ -31,9 +32,10 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع بيانات المنتجات والمخزون المرتبط بها."
             : "Delete all product data and related inventory."
         }
-        buttonText={isArabic ? "حذف المنتجات" : "Delete Products"}
-        onClick={() => onDeleteAction("products")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف المنتجات" : "Delete Products"}
+        onDeleteAction={() => onDeleteAction("products")}
+        onNavigate={() => navigate("/products")}
+        navigateTitle={isArabic ? "عرض المنتجات" : "View Products"}
       />
 
       <DataTypeCard
@@ -44,9 +46,10 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع التصنيفات المخزنة في النظام."
             : "Delete all categories stored in the system."
         }
-        buttonText={isArabic ? "حذف التصنيفات" : "Delete Categories"}
-        onClick={() => onDeleteAction("categories")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف التصنيفات" : "Delete Categories"}
+        onDeleteAction={() => onDeleteAction("categories")}
+        onNavigate={() => navigate("/categories")}
+        navigateTitle={isArabic ? "عرض التصنيفات" : "View Categories"}
       />
 
       <DataTypeCard
@@ -57,9 +60,10 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع بيانات المخزون المخزنة في النظام."
             : "Delete all inventory data stored in the system."
         }
-        buttonText={isArabic ? "حذف بيانات المخزون" : "Delete Inventory"}
-        onClick={() => onDeleteAction("inventory")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف بيانات المخزون" : "Delete Inventory"}
+        onDeleteAction={() => onDeleteAction("inventory")}
+        onNavigate={() => navigate("/inventory")}
+        navigateTitle={isArabic ? "عرض المخزون" : "View Inventory"}
       />
 
       <DataTypeCard
@@ -70,9 +74,10 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع الفواتير وإعادة تعيين أرقام الفواتير."
             : "Delete all invoices and reset invoice numbering."
         }
-        buttonText={isArabic ? "حذف الفواتير" : "Delete Invoices"}
-        onClick={() => onDeleteAction("invoices")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف الفواتير" : "Delete Invoices"}
+        onDeleteAction={() => onDeleteAction("invoices")}
+        onNavigate={() => navigate("/invoices")}
+        navigateTitle={isArabic ? "عرض الفواتير" : "View Invoices"}
       />
 
       <DataTypeCard
@@ -83,9 +88,10 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع بيانات العملاء المخزنة في النظام."
             : "Delete all customer data stored in the system."
         }
-        buttonText={isArabic ? "حذف بيانات العملاء" : "Delete Customers"}
-        onClick={() => onDeleteAction("customers")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف بيانات العملاء" : "Delete Customers"}
+        onDeleteAction={() => onDeleteAction("customers")}
+        onNavigate={() => navigate("/customers")}
+        navigateTitle={isArabic ? "عرض العملاء" : "View Customers"}
       />
       
       <DataTypeCard
@@ -96,13 +102,14 @@ const DataManagementGrid: React.FC<DataManagementGridProps> = ({
             ? "حذف جميع بيانات المطبخ والطلبات المكتملة."
             : "Delete all kitchen data and completed orders."
         }
-        buttonText={isArabic ? "حذف بيانات المطبخ" : "Delete Kitchen Data"}
-        onClick={() => onDeleteAction("kitchen")}
-        isArabic={isArabic}
+        deleteButtonText={isArabic ? "حذف بيانات المطبخ" : "Delete Kitchen Data"}
+        onDeleteAction={() => onDeleteAction("kitchen")}
+        onNavigate={() => navigate("/kitchen")}
+        navigateTitle={isArabic ? "عرض المطبخ" : "View Kitchen"}
       />
 
       <DeleteAllDataCard isArabic={isArabic} onDeleteAction={onDeleteAction} />
-    </Grid>
+    </div>
   );
 };
 
