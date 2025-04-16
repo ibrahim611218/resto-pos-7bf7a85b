@@ -1,5 +1,4 @@
 
-
 export interface KitchenOrder {
   id: string;
   invoiceId: string;
