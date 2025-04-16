@@ -1,3 +1,4 @@
+
 import { KitchenOrder, KitchenOrderStatus, Invoice } from "@/types";
 import { BaseService } from "../base/BaseService";
 
@@ -24,7 +25,8 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
         status: "pending"
       })),
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      cashierName: invoice.cashierName
     };
 
     try {
