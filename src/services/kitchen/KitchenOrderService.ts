@@ -1,4 +1,3 @@
-
 import { KitchenOrder, KitchenOrderStatus, Invoice } from "@/types";
 import { BaseService } from "../base/BaseService";
 
@@ -9,6 +8,8 @@ export interface IKitchenOrderService {
 }
 
 class BrowserKitchenOrderService extends BaseService implements IKitchenOrderService {
+  private completedOrdersKey = 'completed-kitchen-orders';
+  
   async createKitchenOrder(invoice: Invoice): Promise<KitchenOrder> {
     const kitchenOrder: KitchenOrder = {
       id: invoice.id,
@@ -54,26 +55,43 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
       if (!storedOrders) return;
 
       const orders: KitchenOrder[] = JSON.parse(storedOrders);
-      const updatedOrders = orders.map(order => {
-        if (order.id === orderId) {
-          return {
-            ...order,
-            status,
-            updatedAt: new Date().toISOString()
-          };
+      const updatedOrder = orders.find(order => order.id === orderId);
+      
+      if (updatedOrder) {
+        // Update the order status
+        updatedOrder.status = status;
+        updatedOrder.updatedAt = new Date().toISOString();
+        
+        // If order is completed, store it in completed orders
+        if (status === 'completed') {
+          const completedOrders = this.getCompletedOrders();
+          completedOrders.push({
+            ...updatedOrder,
+            completedAt: new Date().toISOString()
+          });
+          localStorage.setItem(this.completedOrdersKey, JSON.stringify(completedOrders));
         }
-        return order;
-      });
+      }
 
-      // If order is completed or cancelled, remove it from the list
-      const filteredOrders = status === 'completed' || status === 'cancelled' 
-        ? updatedOrders.filter(order => order.id !== orderId)
-        : updatedOrders;
+      // Remove completed/cancelled orders from active list
+      const activeOrders = status === 'completed' || status === 'cancelled' 
+        ? orders.filter(order => order.id !== orderId)
+        : orders;
 
-      localStorage.setItem('kitchenOrders', JSON.stringify(filteredOrders));
+      localStorage.setItem('kitchenOrders', JSON.stringify(activeOrders));
     } catch (error) {
       console.error('Error updating kitchen order status:', error);
       throw error;
+    }
+  }
+
+  private getCompletedOrders(): KitchenOrder[] {
+    try {
+      const stored = localStorage.getItem(this.completedOrdersKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error getting completed orders:', error);
+      return [];
     }
   }
 }

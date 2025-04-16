@@ -24,55 +24,56 @@ export const useDataManagement = () => {
   };
 
   const deleteAllProducts = () => {
-    // حذف المنتجات من الذاكرة المحلية
+    // Delete products from localStorage
     localStorage.removeItem('products');
-    // حذف المنتجات من المصفوفة الافتراضية
+    // Delete products from mockProducts array
     mockProducts.length = 0;
   };
 
   const deleteAllCategories = () => {
-    // حذف التصنيفات من الذاكرة المحلية
+    // Delete categories from localStorage
     localStorage.removeItem('categories');
-    // حذف التصنيفات من المصفوفة الافتراضية
+    // Delete categories from sampleCategories array
     sampleCategories.length = 0;
   };
 
   const deleteAllInventory = () => {
-    // حذف المخزون من الذاكرة المحلية
-    localStorage.removeItem('inventory');
-    // حذف بيانات المخزون الافتراضية إذا وجدت
+    // Delete inventory from localStorage
+    localStorage.removeItem('inventory-items');
+    localStorage.removeItem('stored-inventory');
+    // Clear any cached inventory data
     localStorage.removeItem('defaultInventory');
   };
 
   const deleteAllInvoices = () => {
-    // حذف الفواتير من الذاكرة المحلية
+    // Delete invoices from localStorage
     localStorage.removeItem('invoices');
-    // إعادة تعيين أرقام الفواتير (ببدء العد من 1 في المرة القادمة)
+    // Reset invoice numbers (start from 1 in the next run)
     localStorage.setItem('lastInvoiceNumber', '0');
-    // حذف الفواتير من المصفوفة الافتراضية
+    // Delete invoices from mockInvoices array
     mockInvoices.length = 0;
   };
 
   const deleteAllCustomers = () => {
-    // حذف العملاء من الذاكرة المحلية
+    // Delete customers from localStorage
     localStorage.removeItem('customers');
-    // حذف العملاء من المصفوفة الافتراضية
+    // Delete customers from mockCustomers array
     mockCustomers.length = 0;
   };
 
   const deleteAllData = () => {
-    // حذف جميع البيانات
+    // Delete all data
     deleteAllProducts();
     deleteAllCategories();
-    deleteAllInventory();
+    deleteAllInventory(); // Make sure inventory is cleared
     deleteAllInvoices();
     deleteAllCustomers();
     
-    // حذف الإعدادات
+    // Delete settings
     localStorage.removeItem('business-settings');
     localStorage.removeItem('display-settings');
     
-    // حذف أي بيانات إضافية
+    // Delete any additional data
     localStorage.removeItem('defaultProducts');
     localStorage.removeItem('defaultCategories');
     localStorage.removeItem('defaultInventory');
