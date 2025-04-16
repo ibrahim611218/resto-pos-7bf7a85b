@@ -6,8 +6,8 @@ export interface KitchenOrder {
   createdAt: string;
   updatedAt: string;
   notes?: string;
-  cashierName?: string; // Added as optional
-  completedAt?: string; // Added as optional
+  cashierName?: string;
+  completedAt?: string;
 }
 
 export interface KitchenOrderItem {
