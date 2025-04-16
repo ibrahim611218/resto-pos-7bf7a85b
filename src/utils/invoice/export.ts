@@ -11,7 +11,8 @@ export const exportInvoiceToPDF = (
   businessSettings: BusinessSettings
 ): void => {
   try {
-    const printContent = generateInvoiceTemplate(invoice, businessSettings);
+    // For PDF export, we'll use A4 size
+    const printContent = generateInvoiceTemplate(invoice, businessSettings, true);
     
     const printWindow = window.open('', '_blank');
     
@@ -38,7 +39,7 @@ export const exportInvoiceToPDF = (
           @media print {
             .no-print { display: none !important; }
             body { margin: 0; padding: 0; }
-            @page { size: auto; margin: 0; }
+            @page { size: 210mm 297mm; margin: 10mm; }
           }
           .print-button {
             background-color: #0f766e;
@@ -58,6 +59,12 @@ export const exportInvoiceToPDF = (
           }
         `;
         printWindow.document.head.appendChild(style);
+        
+        // Add PDF mode class to container
+        const container = printWindow.document.querySelector('.invoice-container');
+        if (container) {
+          container.classList.add('pdf-mode');
+        }
         
         // Add print button
         const printButton = printWindow.document.createElement('button');
@@ -131,7 +138,8 @@ export const handleInvoiceExport = (
     case "print":
       try {
         console.log("Printing invoice:", JSON.stringify(invoice));
-        const printContent = generateInvoiceTemplate(invoice, businessSettings);
+        // For printing, use thermal receipt size
+        const printContent = generateInvoiceTemplate(invoice, businessSettings, false);
         console.log("Generated print content length:", printContent.length);
         
         const printWindow = window.open('', '_blank');

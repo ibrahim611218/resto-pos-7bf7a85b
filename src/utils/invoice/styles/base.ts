@@ -28,6 +28,13 @@ export const getBaseStyles = (): string => `
     box-sizing: border-box;
   }
 
+  /* Specific styles for PDF download (A4) */
+  .pdf-mode {
+    max-width: 210mm;
+    margin: 0 auto;
+  }
+  
+  /* Print media settings for thermal receipt printer */
   @media print {
     @page {
       size: 80mm auto; /* Fixed width, auto height */

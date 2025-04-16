@@ -1,5 +1,4 @@
 
-
 export interface KitchenOrder {
   id: string;
   invoiceId: string;
@@ -23,4 +22,3 @@ export interface KitchenOrderItem {
 
 export type KitchenOrderStatus = 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 export type KitchenItemStatus = 'pending' | 'preparing' | 'ready';
-

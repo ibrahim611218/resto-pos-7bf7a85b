@@ -14,7 +14,7 @@ import { generateInvoiceFooter } from "./components/invoiceFooter";
 /**
  * Generates HTML content for printable invoice
  */
-export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: BusinessSettings): string => {
+export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: BusinessSettings, isPdf: boolean = false): string => {
   console.log("Generating invoice template for invoice:", invoice.id, invoice.number);
   
   // Use default settings if none provided
@@ -35,8 +35,8 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const qrCodeData = generateInvoiceQRCodeData(invoice);
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
     value: qrCodeData, 
-    size: 100,
-    style: { width: '100px', height: '100px', display: 'inline-block' },
+    size: isPdf ? 120 : 90,
+    style: { width: isPdf ? '120px' : '90px', height: isPdf ? '120px' : '90px', display: 'inline-block' },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "M",
@@ -48,8 +48,8 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   const parsedQRData = JSON.parse(qrCodeData);
   const amountBarcodeElement = React.createElement(QRCodeCanvas, { 
     value: parsedQRData.total.toString(), 
-    size: 70,
-    style: { width: '70px', height: '70px', display: 'inline-block' },
+    size: isPdf ? 80 : 60,
+    style: { width: isPdf ? '80px' : '60px', height: isPdf ? '80px' : '60px', display: 'inline-block' },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "M",
@@ -66,15 +66,19 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   
   // Force inline styles for QR code to ensure it displays properly
   const explicitQRCode = `
-    <div class="qr-code">
-      ${qrCodeString}
-    </div>
-    <div class="amount-barcode">
-      <div class="barcode-label">رمز المبلغ</div>
-      ${amountBarcodeString}
-      <div class="barcode-amount">المبلغ: ${parsedQRData.total.toFixed(2)} ر.س</div>
+    <div class="qr-code-container">
+      <div class="qr-code">
+        ${qrCodeString}
+      </div>
+      <div class="amount-barcode">
+        <div class="barcode-label">رمز المبلغ</div>
+        ${amountBarcodeString}
+        <div class="barcode-amount">المبلغ: ${parsedQRData.total.toFixed(2)} ر.س</div>
+      </div>
     </div>
   `;
+  
+  const containerClass = isPdf ? 'invoice-container pdf-mode' : 'invoice-container';
   
   const htmlContent = `
     <!DOCTYPE html>
@@ -89,7 +93,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div class="invoice-container">
+      <div class="${containerClass}">
         ${refundedWatermark}
         
         ${generateInvoiceHeader(settings)}
@@ -110,7 +114,8 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
           console.log("Invoice print window loaded");
           setTimeout(function() {
             window.focus();
-            window.print();
+            // Don't auto-print in PDF mode
+            ${!isPdf ? 'window.print();' : ''}
           }, 1500);
         };
       </script>

@@ -27,20 +27,20 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
   
   return (
     <>
-      <div className="flex flex-col items-center gap-3 print:block print:w-full">
+      <div className="flex flex-col items-center gap-3 print:block print:w-full qr-code-container">
         {/* Main QR Code */}
         <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block qr-code`}>
           <QRCodeSVG 
             value={qrCodeData || ""}
-            size={100}
+            size={90}
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="M"
             includeMargin={false}
             className="print:block"
             style={{
-              width: '100px',
-              height: '100px',
+              width: '90px',
+              height: '90px',
               display: 'block'
             }}
           />
@@ -48,25 +48,22 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
         
         {/* Amount Barcode */}
         <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block amount-barcode`}>
-          <div className="flex items-center justify-center mb-1">
-            <Barcode size={12} className="mr-1" />
-            <span className="text-xs font-medium barcode-label">رمز المبلغ</span>
-          </div>
+          <div className="barcode-label">رمز المبلغ</div>
           <QRCodeSVG 
             value={parsedData.total ? parsedData.total.toString() : "0"}
-            size={70}
+            size={60}
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="M"
             includeMargin={false}
             className="print:block"
             style={{
-              width: '70px',
-              height: '70px',
+              width: '60px',
+              height: '60px',
               display: 'block'
             }}
           />
-          <div className="text-center text-xs mt-1 barcode-amount">
+          <div className="barcode-amount">
             المبلغ: {parsedData.total ? parsedData.total.toFixed(2) : "0.00"} ر.س
           </div>
         </div>
