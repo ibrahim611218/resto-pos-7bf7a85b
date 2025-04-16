@@ -1,3 +1,4 @@
+
 export type Language = "en" | "ar";
 
 export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
@@ -132,8 +133,8 @@ export interface KitchenOrder {
   items: KitchenOrderItem[];
   createdAt: string;
   updatedAt: string;
-  cashierName?: string;  // Add this property
-  completedAt?: string;  // Add this property
+  cashierName?: string;
+  completedAt?: string;
 }
 
 // Inventory types
