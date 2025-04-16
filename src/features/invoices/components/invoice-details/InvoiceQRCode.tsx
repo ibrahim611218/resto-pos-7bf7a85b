@@ -29,7 +29,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
     <>
       <div className="flex flex-col items-center gap-4 print:block print:w-full">
         {/* Main QR Code */}
-        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block`}>
+        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block qr-code`}>
           <QRCodeSVG 
             value={qrCodeData || ""}
             size={120}
@@ -47,10 +47,10 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
         </div>
         
         {/* Amount Barcode */}
-        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block`}>
+        <div className={`p-2 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-3 print:block amount-barcode`}>
           <div className="flex items-center justify-center mb-1">
             <Barcode size={16} className="mr-1" />
-            <span className="text-xs font-medium">رمز المبلغ</span>
+            <span className="text-xs font-medium barcode-label">رمز المبلغ</span>
           </div>
           <QRCodeSVG 
             value={parsedData.total ? parsedData.total.toString() : "0"}
@@ -66,7 +66,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
               display: 'block'
             }}
           />
-          <div className="text-center text-xs mt-1">
+          <div className="text-center text-xs mt-1 barcode-amount">
             المبلغ: {parsedData.total ? parsedData.total.toFixed(2) : "0.00"} ر.س
           </div>
         </div>
