@@ -42,6 +42,18 @@ function initDatabase(app) {
         data TEXT NOT NULL
       );
       
+      CREATE TABLE IF NOT EXISTS kitchen_orders (
+        id TEXT PRIMARY KEY,
+        invoiceId TEXT NOT NULL,
+        status TEXT NOT NULL,
+        items TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL,
+        completedAt TEXT,
+        cashierName TEXT,
+        notes TEXT
+      );
+      
       CREATE TABLE IF NOT EXISTS products (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
