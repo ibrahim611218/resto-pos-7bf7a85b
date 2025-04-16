@@ -12,6 +12,7 @@ export const useCategoryForm = () => {
   const isEditing = !!id;
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const emptyCategory: Category = {
     id: "",
@@ -59,6 +60,8 @@ export const useCategoryForm = () => {
       return;
     }
 
+    setIsSubmitting(true);
+    
     const updatedCategory: Category = {
       ...category,
       id: isEditing ? category.id : `cat-${Date.now()}`
@@ -77,6 +80,8 @@ export const useCategoryForm = () => {
     } else {
       toast.error(isArabic ? "حدث خطأ أثناء حفظ التصنيف" : "Error saving category");
     }
+    
+    setIsSubmitting(false);
   };
 
   return {
@@ -86,6 +91,7 @@ export const useCategoryForm = () => {
     handleInputChange,
     handleImageChange,
     handleSubmit,
-    navigate
+    navigate,
+    isSubmitting
   };
 };
