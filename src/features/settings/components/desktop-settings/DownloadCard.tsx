@@ -57,8 +57,8 @@ const DownloadCard = () => {
         <p className="text-sm flex items-start gap-2">
           <span className="text-blue-600 dark:text-blue-400">ℹ️</span>
           {isArabic 
-            ? "سيتم تنزيل ملف التثبيت مباشرة. تأكد من تشغيل الملف بعد التنزيل لبدء عملية التثبيت."
-            : "The installer file will be downloaded directly. Make sure to run the file after download to start the installation process."}
+            ? "هذا ملف تجريبي فقط. في الإصدار النهائي، سيكون هذا ملف التثبيت الفعلي."
+            : "This is just a sample file. In the final version, this will be the actual installer file."}
         </p>
       </div>
     </Card>

@@ -46,29 +46,36 @@ export const getDownloadUrl = (): string => {
  */
 export const openDownloadLink = () => {
   try {
-    // For development and testing, show a toast with information
-    // since we don't have the actual exe file in the repo
-    toast.info('تنزيل الملف غير متاح حاليًا', {
-      description: 'مطلوب إعداد ملف التثبيت على الخادم أولًا',
-      duration: 5000,
-    });
-    
-    // In a production environment with actual files, this would work:
-    /*
+    // Create a file with sample content (since we don't have a real installer)
     const downloadUrl = getDownloadUrl();
+    
+    // Create a blob with sample content to simulate a download
+    const sampleContent = `This is a placeholder file for ${INSTALLER_INFO.filename}.\n\n` +
+      `In production, this would be the actual installer file.\n` +
+      `Version: ${INSTALLER_INFO.version}\n` +
+      `Release Date: ${INSTALLER_INFO.releaseDate}`;
+    
+    const blob = new Blob([sampleContent], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create and trigger the download
     const link = document.createElement('a');
-    link.href = downloadUrl;
+    link.href = url;
     link.download = INSTALLER_INFO.filename;
-    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     
-    toast.success('بدأ تنزيل التطبيق', {
-      description: `بعد التنزيل، قم بتشغيل ملف ${INSTALLER_INFO.filename} لتثبيت التطبيق`,
-      duration: 6000,
-    });
-    */
+    // Clean up the blob URL after download starts
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+    
+    toast.success(
+      'بدأ تنزيل التطبيق', 
+      {
+        description: `بعد التنزيل، قم بتشغيل ملف ${INSTALLER_INFO.filename} لتثبيت التطبيق`,
+        duration: 6000,
+      }
+    );
   } catch (error) {
     console.error("Error opening download link:", error);
     toast.error("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");

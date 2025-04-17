@@ -11,11 +11,11 @@ const DesktopAlert = () => {
   return (
     <Alert className="mb-6">
       <AlertTriangle className="h-4 w-4" />
-      <AlertTitle>{isArabic ? "ملف التثبيت غير متاح حاليًا" : "Installer File Not Available Yet"}</AlertTitle>
+      <AlertTitle>{isArabic ? "ملف تثبيت تجريبي" : "Sample Installer File"}</AlertTitle>
       <AlertDescription>
         {isArabic 
-          ? "ملف التثبيت قيد التطوير وسيكون متاحًا قريبًا. استخدم الإصدار المتصل بالإنترنت في الوقت الحالي." 
-          : "The installer file is under development and will be available soon. Please use the online version for now."}
+          ? "سيتم تنزيل ملف تجريبي. في بيئة الإنتاج، سيكون هذا ملف التثبيت الفعلي للتطبيق." 
+          : "A sample file will be downloaded. In production, this would be the actual application installer."}
       </AlertDescription>
     </Alert>
   );
