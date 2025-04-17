@@ -4,3 +4,4 @@ export * from './invoiceDetails';
 export * from './invoiceItems';
 export * from './invoiceSummary';
 export * from './invoiceFooter';
+export * from './invoiceQRCode';

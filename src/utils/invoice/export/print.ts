@@ -3,7 +3,6 @@ import { Invoice, BusinessSettings } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { generateInvoiceTemplate } from "../template";
 import { openPrintWindow, setupPrintWindow } from "./print-helpers";
-import { addQRRenderingScript } from "./qr-helpers";
 
 /**
  * Prints an invoice
@@ -13,36 +12,28 @@ export const printInvoice = (
   businessSettings: BusinessSettings
 ): void => {
   try {
-    console.log("Printing invoice:", JSON.stringify(invoice));
+    console.log("Printing invoice:", invoice.id);
+    
     // For printing, use thermal receipt size
     const printContent = generateInvoiceTemplate(invoice, businessSettings, false);
-    console.log("Generated print content length:", printContent.length);
     
-    const printWindow = openPrintWindow(printContent);
+    const printWindow = openPrintWindow(printContent, {
+      title: `فاتورة ${invoice.number}`,
+      printAutomatically: true,
+      delay: 2000, // Increased delay for better rendering
+    });
     
     if (!printWindow) {
+      console.error("Could not open print window");
       return;
     }
     
-    // Pre-load fonts and images with a sufficient delay
-    printWindow.onload = function() {
-      console.log("Print window loaded successfully");
-      printWindow.focus();
-      
-      // Force layout recalculation to ensure QR code renders
-      printWindow.document.body.offsetHeight;
-      
-      // Force QR code rendering before printing
-      fixQRCodeRendering(printWindow);
-      
-      // Add additional script to ensure QR codes are rendered
-      addQRRenderingScript(printWindow);
-      
-      setTimeout(() => {
-        console.log("Triggering print");
-        printWindow.print();
-      }, 2000); // Increased delay to 2 seconds for better rendering
-    };
+    // Setup print window with extended delay for QR code rendering
+    setupPrintWindow(printWindow, {
+      title: `فاتورة ${invoice.number}`,
+      delay: 2000,
+    });
+    
   } catch (error) {
     console.error("Error in print function:", error);
     toast({
@@ -52,20 +43,3 @@ export const printInvoice = (
     });
   }
 };
-
-/**
- * Fix QR code rendering in the print window
- */
-function fixQRCodeRendering(printWindow: Window): void {
-  const qrElements = printWindow.document.querySelectorAll('.qr-code, .amount-barcode');
-  qrElements.forEach(function(el) {
-    // Force redraw of QR code elements by casting to HTMLElement
-    const htmlEl = el as HTMLElement;
-    htmlEl.style.display = 'block';
-    htmlEl.style.visibility = 'visible';
-    htmlEl.style.opacity = '0.99';
-    setTimeout(function() {
-      htmlEl.style.opacity = '1';
-    }, 50);
-  });
-}

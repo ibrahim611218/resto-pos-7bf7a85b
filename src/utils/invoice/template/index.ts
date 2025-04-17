@@ -1,13 +1,13 @@
 
 import { Invoice, BusinessSettings } from "@/types";
-import { generateQRCodes } from "./qr-generator";
 import { getInvoiceStyles } from "../styles";
 import { 
   generateInvoiceHeader,
   generateInvoiceDetails,
   generateInvoiceItemsTable,
   generateInvoiceSummary,
-  generateInvoiceFooter
+  generateInvoiceFooter,
+  generateInvoiceQRCode
 } from "../components";
 import { generateRefundedWatermark } from "./watermark";
 import { generateScriptContent } from "./scripts";
@@ -31,9 +31,6 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     taxIncluded: false,
     invoiceNotesAr: "شكراً لزيارتكم"
   };
-  
-  // Generate QR code elements
-  const { explicitQRCode } = generateQRCodes(invoice, isPdf);
   
   // Generate refunded watermark if needed
   const refundedWatermark = generateRefundedWatermark(invoice);
@@ -68,7 +65,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
         
         ${generateInvoiceSummary(invoice, settings)}
         
-        ${explicitQRCode}
+        ${generateInvoiceQRCode(invoice, isPdf)}
         
         ${generateInvoiceFooter(settings)}
       </div>
