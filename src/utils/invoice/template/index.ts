@@ -2,11 +2,13 @@
 import { Invoice, BusinessSettings } from "@/types";
 import { generateQRCodes } from "./qr-generator";
 import { getInvoiceStyles } from "../styles";
-import { generateInvoiceHeader } from "../components/invoiceHeader";
-import { generateInvoiceDetails } from "../components/invoiceDetails";
-import { generateInvoiceItemsTable } from "../components/invoiceItems";
-import { generateInvoiceSummary } from "../components/invoiceSummary";
-import { generateInvoiceFooter } from "../components/invoiceFooter";
+import { 
+  generateInvoiceHeader,
+  generateInvoiceDetails,
+  generateInvoiceItemsTable,
+  generateInvoiceSummary,
+  generateInvoiceFooter
+} from "../components";
 import { generateRefundedWatermark } from "./watermark";
 import { generateScriptContent } from "./scripts";
 

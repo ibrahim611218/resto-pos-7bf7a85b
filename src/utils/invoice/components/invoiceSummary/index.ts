@@ -1,6 +1,6 @@
 
 import { Invoice, BusinessSettings } from "@/types";
-import { calculateDiscountAmount } from "../calculations";
+import { calculateDiscountAmount } from "../../calculations";
 
 /**
  * Generates HTML for the invoice summary section

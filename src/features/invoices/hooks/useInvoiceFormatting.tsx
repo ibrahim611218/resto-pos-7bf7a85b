@@ -4,10 +4,12 @@ import { Invoice } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { formatDate } from "@/utils/formatters";
 import { printInvoice as printInvoiceUtil } from "@/utils/invoice";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 
 export const useInvoiceFormatting = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { settings } = useBusinessSettings();
   
   // Format invoice date for display
   const formatInvoiceDate = useCallback((date: Date | string) => {
@@ -17,8 +19,8 @@ export const useInvoiceFormatting = () => {
 
   // Print invoice
   const printInvoice = useCallback((invoice: Invoice) => {
-    printInvoiceUtil(invoice);
-  }, []);
+    printInvoiceUtil(invoice, settings);
+  }, [settings]);
 
   // Get badge color based on invoice status
   const getStatusBadgeColor = useCallback((status: "completed" | "cancelled" | "refunded" | "pending") => {
