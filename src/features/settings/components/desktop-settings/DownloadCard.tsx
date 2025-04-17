@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Download, ShieldAlert } from 'lucide-react';
+import { Download, ShieldAlert, HelpCircle, Info } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -39,6 +39,34 @@ const DownloadCard = () => {
     );
   };
   
+  const showScreenshotGuide = () => {
+    toast(
+      isArabic ? 'حل مشكلة رسالة الخطأ' : 'How to Fix Error Message',
+      {
+        description: isArabic 
+          ? 'انقر على "مزيد من المعلومات" (More info) ثم "تشغيل على أي حال" (Run anyway) في نافذة حماية Windows. إذا لم تظهر هذه الخيارات، استخدم وضع التوافق.'
+          : 'Click "More info" then "Run anyway" in the Windows protection dialog. If these options don\'t appear, use compatibility mode.',
+        duration: 15000,
+        action: {
+          label: isArabic ? 'عرض الصور التوضيحية' : 'Show Screenshots',
+          onClick: () => showExtendedHelp(),
+        }
+      }
+    );
+  };
+  
+  const showExtendedHelp = () => {
+    toast(
+      isArabic ? 'خطوات تفعيل وضع التوافق' : 'Compatibility Mode Steps',
+      {
+        description: isArabic 
+          ? '1. انقر بزر الماوس الأيمن على الملف 2. اختر خصائص 3. انتقل لتبويب "توافق" 4. فعّل "تشغيل هذا البرنامج في وضع التوافق" واختر Windows 8 5. فعّل "تشغيل كمسؤول" 6. انقر موافق'
+          : '1. Right-click the file 2. Select Properties 3. Go to "Compatibility" tab 4. Enable "Run in compatibility mode" and select Windows 8 5. Check "Run as administrator" 6. Click OK',
+        duration: 15000,
+      }
+    );
+  };
+  
   return (
     <Card className="p-6">
       <div className="flex items-center mb-4 gap-3">
@@ -54,10 +82,11 @@ const DownloadCard = () => {
       
       <Button 
         onClick={handleDownload}
-        className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
+        className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 py-6 text-lg"
+        size="lg"
       >
         <Download className="h-5 w-5" />
-        {isArabic ? "تحميل مباشر للنسخة النهائية" : "Direct Download of Final Version"}
+        {isArabic ? "تحميل النسخة المكتبية (حجم كامل)" : "Download Desktop Version (Full Size)"}
       </Button>
       
       <div className="mt-4 text-sm text-muted-foreground">
@@ -88,19 +117,67 @@ const DownloadCard = () => {
             <p className="text-sm font-medium text-amber-800 dark:text-amber-500">
               {isArabic ? "إذا واجهت رسالة خطأ:" : "If you encounter an error message:"}
             </p>
-            <p className="text-sm mt-1">
-              {isArabic 
-                ? "\"لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك\""
-                : "\"This app can't run on your PC\""}
+            <div className="flex items-center gap-1 mt-1">
+              <img 
+                src="/lovable-uploads/19e1159a-767c-4062-b31d-bc1cb300fc61.png" 
+                alt="Error screenshot" 
+                className="h-12 w-auto border border-amber-300 rounded" 
+              />
+              <p className="text-sm">
+                {isArabic 
+                  ? "\"لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك\""
+                  : "\"This app can't run on your PC\""}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-400 dark:border-amber-700 dark:hover:bg-amber-900/50"
+                onClick={showTroubleshooting}
+              >
+                <ShieldAlert className="h-4 w-4 mr-1" />
+                {isArabic ? "حلول المشكلة" : "Solutions"}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-400 dark:border-amber-700 dark:hover:bg-amber-900/50"
+                onClick={showScreenshotGuide}
+              >
+                <HelpCircle className="h-4 w-4 mr-1" />
+                {isArabic ? "شرح مفصّل" : "Detailed Guide"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-md">
+        <div className="flex items-start gap-2">
+          <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-400">
+              {isArabic ? "نصائح إضافية:" : "Additional Tips:"}
             </p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="mt-2 text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-400 dark:border-amber-700 dark:hover:bg-amber-900/50"
-              onClick={showTroubleshooting}
-            >
-              {isArabic ? "عرض حلول المشكلة" : "View Solutions"}
-            </Button>
+            <ul className="text-sm space-y-1 mt-1 list-disc pl-5">
+              <li>
+                {isArabic 
+                  ? "تم زيادة حجم الملف إلى 25 ميجابايت لتفادي مشكلات التوافق"
+                  : "File size increased to 25MB to avoid compatibility issues"}
+              </li>
+              <li>
+                {isArabic 
+                  ? "استخدم وضع التوافق مع Windows 8 إذا استمرت المشكلة"
+                  : "Use Windows 8 compatibility mode if issues persist"}
+              </li>
+              <li>
+                {isArabic 
+                  ? "تأكد من تشغيل الملف كمسؤول دائماً"
+                  : "Always run the file as administrator"}
+              </li>
+            </ul>
           </div>
         </div>
       </div>

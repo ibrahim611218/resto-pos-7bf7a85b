@@ -30,7 +30,7 @@ export const DownloadNowButton = () => {
       size="lg"
     >
       <Download className="h-6 w-6" />
-      {isArabic ? 'تنزيل النسخة المكتبية الآن' : 'Download Desktop Version Now'}
+      {isArabic ? 'تنزيل النظام بالحجم الكامل' : 'Download Full-Size System'}
     </Button>
   );
 };

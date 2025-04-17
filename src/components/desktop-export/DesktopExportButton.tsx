@@ -30,8 +30,8 @@ export const DesktopExportButton = ({ variant = "default" }: { variant?: "defaul
           isArabic ? 'تعليمات مهمة للتثبيت' : 'Important Installation Instructions',
           {
             description: isArabic 
-              ? 'في حال ظهور رسالة خطأ، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"'
-              : 'If you see an error message, right-click the file and select "Run as administrator"',
+              ? 'إذا ظهرت رسالة خطأ "لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك"، انقر على "مزيد من المعلومات" ثم "تشغيل على أي حال"'
+              : 'If you see "This app can\'t run on your PC", click "More info" then "Run anyway"',
             action: {
               label: isArabic ? 'المزيد' : 'More',
               onClick: () => {
@@ -44,7 +44,7 @@ export const DesktopExportButton = ({ variant = "default" }: { variant?: "defaul
                 );
               },
             },
-            duration: 8000,
+            duration: 10000,
           }
         );
       }, 2000);
@@ -58,7 +58,7 @@ export const DesktopExportButton = ({ variant = "default" }: { variant?: "defaul
       className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
     >
       <Download size={18} />
-      {language === 'ar' ? 'تنزيل مباشر' : 'Direct Download'}
+      {language === 'ar' ? 'تنزيل بالحجم الكامل' : 'Full-Size Download'}
     </Button>
   );
 };
