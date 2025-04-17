@@ -1,8 +1,8 @@
-
 import { Invoice, CartItem, Customer, PaymentMethod, BusinessSettings } from "@/types";
 import { generateInvoiceTemplate } from "./template";
 import { calculateInvoiceAmounts, calculateDiscountAmount, formatCurrency, generateInvoiceNumber } from "./calculations";
 import { generateInvoiceQRCodeData } from "./qrcode";
+import { handleInvoiceExport } from "./export";
 
 // Export directly from calculations
 export { 
@@ -14,6 +14,9 @@ export {
 
 // Export from qrcode
 export { generateInvoiceQRCodeData };
+
+// Export from export module
+export { handleInvoiceExport };
 
 export const createInvoiceObject = (
   cartItems: CartItem[],
@@ -64,61 +67,4 @@ export const createInvoicePdf = async (invoice: Invoice): Promise<string> => {
   return generateInvoiceTemplate(invoice);
 };
 
-export const printInvoice = (invoice: Invoice, settings?: BusinessSettings): void => {
-  const invoiceHTML = generateInvoiceTemplate(invoice, settings);
-  const printWindow = window.open('', '_blank');
-  if (printWindow) {
-    printWindow.document.open();
-    printWindow.document.write(invoiceHTML);
-    printWindow.document.close();
-    printWindow.focus();
-    
-    // Wait a little bit to ensure content is loaded
-    setTimeout(() => {
-      try {
-        printWindow.print();
-      } catch (error) {
-        console.error("Error printing invoice:", error);
-      }
-    }, 1000);
-  } else {
-    console.error("Failed to open print window!");
-    alert("لم نتمكن من فتح نافذة الطباعة. يرجى التأكد من السماح بالنوافذ المنبثقة في متصفحك.");
-  }
-};
-
-export const handleInvoiceExport = (
-  type: "print" | "pdf" | "email", 
-  invoice: Invoice, 
-  settings: any, 
-  email?: string
-): void => {
-  switch (type) {
-    case "print":
-      printInvoice(invoice, settings);
-      break;
-    case "pdf":
-      console.log("Generating PDF for invoice:", invoice.number);
-      // Open in new window with print dialog
-      const pdfContent = generateInvoiceTemplate(invoice, settings);
-      const pdfWindow = window.open('', '_blank');
-      if (pdfWindow) {
-        pdfWindow.document.write(pdfContent);
-        pdfWindow.document.close();
-        pdfWindow.focus();
-      } else {
-        alert("يرجى السماح بالنوافذ المنبثقة لعرض الفاتورة");
-      }
-      break;
-    case "email":
-      if (!email) {
-        console.error("Email is required for sending invoice");
-        return;
-      }
-      console.log(`Sending invoice ${invoice.number} to ${email}`);
-      break;
-  }
-};
-
-// Export the template function
 export { generateInvoiceTemplate };
