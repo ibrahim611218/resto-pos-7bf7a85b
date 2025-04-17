@@ -1,9 +1,19 @@
-import { useState, useCallback } from "react";
+
+import { useState, useCallback, useEffect } from "react";
 import { Invoice, PaymentMethod } from "@/types";
 import invoiceService from "@/services/invoices/InvoiceService";
 
 // Ensure type-only exports
 export type { Invoice, PaymentMethod };
+
+// Export saveInvoiceToStorage for use in other components
+export const saveInvoiceToStorage = async (invoice: Invoice): Promise<void> => {
+  try {
+    await invoiceService.saveInvoice(invoice);
+  } catch (error) {
+    console.error("Error saving invoice to storage:", error);
+  }
+};
 
 interface UseInvoicesProps {
   initialInvoices?: Invoice[];
@@ -24,15 +34,6 @@ export const useInvoices = ({ initialInvoices }: UseInvoicesProps = {}) => {
       console.error("Error loading invoices from storage:", error);
     }
   }, []);
-
-  const saveInvoiceToStorage = async (invoice: Invoice) => {
-    try {
-      await invoiceService.saveInvoice(invoice);
-      loadInvoicesFromStorage(); // Reload invoices to reflect the changes
-    } catch (error) {
-      console.error("Error saving invoice to storage:", error);
-    }
-  };
 
   const updateInvoiceInStorage = async (invoice: Invoice) => {
     try {
@@ -101,7 +102,7 @@ export const useInvoices = ({ initialInvoices }: UseInvoicesProps = {}) => {
   }, [invoices, searchTerm]);
 
   // Call filterInvoices whenever invoices or searchTerm changes
-  useState(() => {
+  useEffect(() => {
     filterInvoices();
   }, [invoices, searchTerm, filterInvoices]);
 

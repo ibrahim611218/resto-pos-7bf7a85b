@@ -59,13 +59,11 @@ export const useCartInvoice = ({
       setCustomer(selectedCustomer);
     }
     
-    // Show appropriate dialog based on payment method
     if (method === "cash") {
       setShowPaidAmountDialog(true);
     } else if (method === "transfer") {
       setShowTransferReceiptDialog(true);
     } else {
-      // For card, assume full amount is paid
       setPaidAmount(total);
     }
   };
@@ -134,7 +132,7 @@ export const useCartInvoice = ({
       invoice.customer = customer;
     }
     
-    saveInvoiceToStorage(invoice);
+    await saveInvoiceToStorage(invoice);
     
     if (invoice.items.length > 0) {
       try {
