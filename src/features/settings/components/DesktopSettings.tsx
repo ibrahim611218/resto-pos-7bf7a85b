@@ -8,9 +8,11 @@ import { SYSTEM_REQUIREMENTS, INSTALLER_INFO, APP_INSTRUCTIONS } from '@/utils/d
 import { openDownloadLink } from '@/utils/desktop-export/utils';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
+import { useTheme } from 'next-themes';
 
 const DesktopSettings = () => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
   const isArabic = language === 'ar';
   const requirements = SYSTEM_REQUIREMENTS;
   const instructions = isArabic ? APP_INSTRUCTIONS.ar : APP_INSTRUCTIONS.en;
@@ -64,9 +66,17 @@ const DesktopSettings = () => {
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-6">
-          <h3 className="text-lg font-medium mb-4">
-            {isArabic ? "تحميل نسخة سطح المكتب" : "Download Desktop Version"}
-          </h3>
+          <div className="flex items-center mb-4 gap-3">
+            <img 
+              src="/lovable-uploads/ed39ec95-a279-49a0-b70f-aca7ccdcd2c0.png" 
+              alt="RestoPOS Logo" 
+              className="h-10 w-10" 
+            />
+            <h3 className="text-lg font-medium">
+              {isArabic ? "تحميل نسخة سطح المكتب" : "Download Desktop Version"}
+            </h3>
+          </div>
+          
           <Button 
             onClick={openDownloadLink}
             className="w-full flex items-center justify-center gap-2"
@@ -80,18 +90,27 @@ const DesktopSettings = () => {
             <p>{isArabic ? `الإصدار: ${INSTALLER_INFO.version}` : `Version: ${INSTALLER_INFO.version}`}</p>
             <p>{isArabic ? `الحجم: ${INSTALLER_INFO.size}` : `Size: ${INSTALLER_INFO.size}`}</p>
             <p>{isArabic ? `تاريخ الإصدار: ${INSTALLER_INFO.releaseDate}` : `Release date: ${INSTALLER_INFO.releaseDate}`}</p>
-            <p>{isArabic ? `اسم الملف: ${INSTALLER_INFO.filename}` : `Filename: ${INSTALLER_INFO.filename}`}</p>
+            <p className="font-semibold">{isArabic ? `اسم الملف: ${INSTALLER_INFO.filename}` : `Filename: ${INSTALLER_INFO.filename}`}</p>
           </div>
           
           <Separator className="my-4" />
           
           <div className="mt-4">
             <h4 className="font-medium mb-2">{instructions.title}</h4>
-            <ol className="list-decimal pl-5 space-y-1 text-sm">
+            <ol className="list-decimal pl-5 space-y-2 text-sm">
               {instructions.steps.map((step, index) => (
                 <li key={index}>{step}</li>
               ))}
             </ol>
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-md">
+            <p className="text-sm flex items-start gap-2">
+              <span className="text-blue-600 dark:text-blue-400">ℹ️</span>
+              {isArabic 
+                ? "سيتم تنزيل ملف التثبيت مباشرة. تأكد من تشغيل الملف بعد التنزيل لبدء عملية التثبيت."
+                : "The installer file will be downloaded directly. Make sure to run the file after download to start the installation process."}
+            </p>
           </div>
         </Card>
 
@@ -148,12 +167,12 @@ const DesktopSettings = () => {
           </div>
           <div>
             <h3 className="text-lg font-medium mb-1">
-              {isArabic ? "مشكلة في تشغيل التطبيق؟" : "Having trouble running the app?"}
+              {isArabic ? "مشكلة في تثبيت التطبيق؟" : "Having trouble installing the app?"}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {isArabic 
-                ? "بعد التنزيل، تأكد من استخراج الملفات أولاً ثم البحث عن ملف restopos.exe وتشغيله."
-                : "After downloading, make sure to extract the files first, then look for restopos.exe and run it."}
+                ? `تأكد من النقر مرتين على ملف ${INSTALLER_INFO.filename} بعد التنزيل لبدء عملية التثبيت.`
+                : `Make sure to double-click the ${INSTALLER_INFO.filename} file after downloading to start the installation process.`}
             </p>
             <Button variant="secondary" className="text-sm" onClick={() => {
               window.open('https://github.com/electron/electron', '_blank');

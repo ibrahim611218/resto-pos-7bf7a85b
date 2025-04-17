@@ -1,4 +1,3 @@
-
 import { DOWNLOAD_URLS, INSTALLER_INFO } from './constants';
 import { toast } from 'sonner';
 
@@ -58,29 +57,17 @@ export const openDownloadLink = () => {
       throw new Error("Invalid download URL");
     }
     
-    // Create a blob with custom HTML that will provide instructions
-    const blob = new Blob([
-      `<html>
-        <head>
-          <meta http-equiv="refresh" content="0;url=${downloadUrl}">
-          <title>تنزيل Resto POS</title>
-        </head>
-        <body>
-          <p>جاري التنزيل... إذا لم يبدأ التنزيل تلقائيًا، <a href="${downloadUrl}">انقر هنا</a></p>
-        </body>
-      </html>`
-    ], { type: 'text/html' });
-    
+    // Create a direct download link instead of an HTML page to ensure the file downloads properly
     const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.target = '_blank';
+    link.href = downloadUrl;
+    link.setAttribute('download', INSTALLER_INFO.filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     
     // Show a toast with instructions
     toast.success('بدأ تنزيل التطبيق', {
-      description: 'بعد التنزيل، قم بفك الضغط عن الملف وابحث عن restopos.exe لتشغيل التطبيق',
+      description: 'بعد التنزيل، قم بتشغيل ملف restopos-setup-1.0.0.exe لتثبيت التطبيق',
       duration: 6000,
     });
   } catch (error) {

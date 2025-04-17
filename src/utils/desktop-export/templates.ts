@@ -36,9 +36,16 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+    .logo {
+      display: block;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px auto;
+    }
     h1 {
       color: #2563eb;
       margin-top: 0;
+      text-align: center;
     }
     .download-btn {
       display: inline-block;
@@ -48,9 +55,12 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       text-decoration: none;
       border-radius: 5px;
       font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin: 20px auto;
       transition: background-color 0.3s;
+      text-align: center;
+      width: 80%;
+      max-width: 300px;
+      display: block;
     }
     .download-btn:hover {
       background-color: #1d4ed8;
@@ -91,6 +101,34 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       border-radius: 5px;
       margin-top: 30px;
     }
+    .progress {
+      height: 20px;
+      width: 100%;
+      background: #e2e8f0;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #2563eb;
+      width: 0%;
+      transition: width 0.5s;
+      border-radius: 10px;
+      position: relative;
+    }
+    .progress-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      text-shadow: 0 0 3px rgba(0,0,0,0.5);
+      line-height: 20px;
+    }
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #1a1a1a;
@@ -120,13 +158,21 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
 </head>
 <body>
   <div class="container">
-    <h1>${isArabic ? 'تحميل نسخة سطح المكتب' : 'Download Desktop Version'}</h1>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACkSBTjB+AAAAFpJREFUeNrtwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB3AzkCAAFv9RW5AAAAAElFTkSuQmCC" alt="Resto POS Logo" class="logo">
     
-    <p>${isArabic ? 'اضغط على زر التحميل أدناه لتنزيل نسخة سطح المكتب من تطبيق Resto POS:' : 'Click the download button below to download the desktop version of Resto POS:'}</p>
+    <h1>${isArabic ? 'تحميل برنامج Resto POS' : 'Download Resto POS'}</h1>
     
-    <a href="${downloadUrl}" class="download-btn" id="download-link" download>
+    <p style="text-align: center;">${isArabic ? 'التنزيل سيبدأ تلقائياً. إذا لم يبدأ، اضغط على زر التحميل أدناه:' : 'Your download will start automatically. If not, please click the download button below:'}</p>
+    
+    <a href="${downloadUrl}" class="download-btn" id="download-link" download="${INSTALLER_INFO.filename}">
       ${isArabic ? 'تحميل Resto POS' : 'Download Resto POS'}
     </a>
+
+    <div class="progress">
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-text" id="progress-text">0%</div>
+      </div>
+    </div>
     
     <div class="file-info">
       <div>${isArabic ? 'الإصدار:' : 'Version:'} ${INSTALLER_INFO.version}</div>
@@ -152,18 +198,8 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       </ul>
     </div>
     
-    <div class="steps">
-      <h3>${isArabic ? 'خطوات التثبيت' : 'Installation Steps'}</h3>
-      <ol>
-        <li>${isArabic ? 'قم بتنزيل الملف من الزر أعلاه' : 'Download the file using the button above'}</li>
-        <li>${isArabic ? 'بعد اكتمال التنزيل، افتح ملف التثبيت' : 'After downloading completes, open the installer file'}</li>
-        <li>${isArabic ? 'اتبع تعليمات المثبت لإكمال عملية التثبيت' : 'Follow the installer instructions to complete installation'}</li>
-        <li>${isArabic ? 'قم بتشغيل التطبيق من قائمة ابدأ أو سطح المكتب' : 'Launch the application from Start menu or desktop'}</li>
-      </ol>
-    </div>
-    
     <div class="note">
-      <p><strong>${isArabic ? 'ملاحظة:' : 'Note:'}</strong> ${isArabic ? 'قد يتم تعطيل التنزيل بواسطة برامج مكافحة الفيروسات أو مانع الإعلانات. إذا واجهت مشكلة، قم بتعطيل هذه البرامج مؤقتًا أو أضف هذا الموقع إلى قائمة الاستثناءات.' : 'The download might be blocked by antivirus or ad blockers. If you experience issues, temporarily disable these programs or add this site to their exceptions list.'}</p>
+      <p><strong>${isArabic ? 'ملاحظة هامة:' : 'Important Note:'}</strong> ${isArabic ? 'بعد اكتمال التنزيل، ستحتاج إلى تشغيل ملف التثبيت يدوياً من مجلد التنزيلات الخاص بك.' : 'After the download completes, you will need to manually run the installer file from your downloads folder.'}</p>
     </div>
   </div>
 
@@ -175,9 +211,27 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
         if (link) {
           link.click();
           console.log('Auto-download triggered');
+          simulateProgress();
         }
       }, 800);
     });
+
+    function simulateProgress() {
+      var progressBar = document.getElementById('progress-bar');
+      var progressText = document.getElementById('progress-text');
+      var width = 0;
+      var interval = setInterval(function() {
+        if (width >= 100) {
+          clearInterval(interval);
+          progressText.textContent = '${isArabic ? 'اكتمل التنزيل!' : 'Download Complete!'}';
+        } else {
+          width += Math.random() * 10;
+          if (width > 100) width = 100;
+          progressBar.style.width = width + '%';
+          progressText.textContent = Math.round(width) + '%';
+        }
+      }, 500);
+    }
   </script>
 </body>
 </html>`;
