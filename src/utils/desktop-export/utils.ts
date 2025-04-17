@@ -68,11 +68,12 @@ export const openDownloadLink = () => {
     // Clean up the blob URL after download starts
     setTimeout(() => URL.revokeObjectURL(url), 100);
     
+    // Show more detailed success message with installation instructions
     toast.success(
       'بدأ تنزيل التطبيق', 
       {
-        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} مباشرةً`,
-        duration: 6000,
+        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} مباشرةً. بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
+        duration: 8000,
       }
     );
   } catch (error) {
@@ -88,4 +89,44 @@ export const createDesktopShortcut = async () => {
   // This function would be implemented when we have an actual Electron app running
   console.log("Creating desktop shortcut (not implemented)");
   return false;
+};
+
+/**
+ * Shows installation troubleshooting instructions
+ * @param language The language code (ar or en)
+ */
+export const showInstallationHelp = (language: string = "ar") => {
+  const isArabic = language === "ar";
+  
+  toast(
+    isArabic ? 'تعليمات التثبيت' : 'Installation Help',
+    {
+      description: isArabic 
+        ? 'إذا ظهرت رسالة "لا يمكن تشغيل هذا التطبيق"، انقر بزر الماوس الأيمن واختر "تشغيل كمسؤول"'
+        : 'If you see "This app can\'t run on your PC" message, right-click the file and select "Run as administrator"',
+      duration: 10000,
+      action: {
+        label: isArabic ? 'المزيد من المساعدة' : 'More Help',
+        onClick: () => showExtendedHelp(language),
+      },
+    }
+  );
+};
+
+/**
+ * Shows extended help for installation issues
+ * @param language The language code (ar or en)
+ */
+const showExtendedHelp = (language: string = "ar") => {
+  const isArabic = language === "ar";
+  
+  toast(
+    isArabic ? 'حل مشكلات التثبيت' : 'Installation Troubleshooting',
+    {
+      description: isArabic 
+        ? '1. تحقق من إعدادات الحماية 2. عطل برنامج مكافحة الفيروسات مؤقتًا 3. استخدم خيار "التشغيل كمسؤول"'
+        : '1. Check security settings 2. Temporarily disable antivirus 3. Use "Run as administrator"',
+      duration: 10000,
+    }
+  );
 };

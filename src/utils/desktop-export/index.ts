@@ -1,5 +1,5 @@
 
-import { isRunningInElectron, getDownloadUrl, openDownloadLink } from './utils';
+import { isRunningInElectron, getDownloadUrl, openDownloadLink, showInstallationHelp } from './utils';
 import { showNotification } from './notifications';
 import { generateDownloadPageTemplate } from './templates';
 import { INSTALLER_INFO } from './constants';
@@ -25,6 +25,11 @@ export const handleDesktopExport = (language: string = "ar") => {
     
     // Show success notification
     showNotification("download-started", language);
+    
+    // After a slight delay, show installation help to prevent error messages
+    setTimeout(() => {
+      showInstallationHelp(language);
+    }, 3000);
     
   } catch (error) {
     console.error("Desktop export error:", error);

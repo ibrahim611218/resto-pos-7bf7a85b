@@ -1,3 +1,4 @@
+
 // Constants for desktop export functionality
 
 // Updated Download URLs - we'll use direct file downloads from our server
@@ -40,19 +41,43 @@ export const APP_INSTRUCTIONS = {
   ar: {
     title: "كيفية تثبيت وتشغيل التطبيق",
     steps: [
-      "بعد تنزيل الملف، انقر مرتين على restopos-setup-1.0.0.exe لبدء عملية التثبيت",
+      "بعد تنزيل الملف، انقر بزر الماوس الأيمن على restopos-setup-1.0.0.exe واختر \"تشغيل كمسؤول\"",
+      "إذا ظهرت رسالة \"لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك\"، انقر على \"مزيد من المعلومات\" ثم \"تشغيل على أي حال\"",
       "اتبع تعليمات المثبت واقبل أي طلبات لصلاحيات المسؤول إذا لزم الأمر",
       "حدد مجلد التثبيت واكمل عملية التثبيت",
       "بعد الانتهاء، سيتم إنشاء اختصار على سطح المكتب. انقر عليه لتشغيل التطبيق"
+    ],
+    troubleshooting: [
+      "قم بتعطيل برنامج مكافحة الفيروسات مؤقتًا أثناء التثبيت",
+      "تأكد من تشغيل الملف كمسؤول",
+      "تحقق من إعدادات SmartScreen في Windows وقم بالسماح للتطبيق"
     ]
   },
   en: {
     title: "How to install and run the application",
     steps: [
-      "After downloading, double-click restopos-setup-1.0.0.exe to start the installation",
+      "After downloading, right-click on restopos-setup-1.0.0.exe and select \"Run as administrator\"",
+      "If you see \"This app can't run on your PC\" message, click \"More info\" then \"Run anyway\"",
       "Follow the installer instructions and accept any administrator permission requests if needed",
       "Select the installation folder and complete the installation process",
       "After finishing, a desktop shortcut will be created. Click it to run the application"
+    ],
+    troubleshooting: [
+      "Temporarily disable antivirus during installation",
+      "Make sure to run the file as administrator",
+      "Check Windows SmartScreen settings and allow the application"
     ]
+  }
+};
+
+// Error messages for desktop export
+export const ERROR_MESSAGES = {
+  ar: {
+    cannotRun: "لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك",
+    solution: "للعثور على إصدار الكمبيوتر لديك، ارجع إلى ناشر البرامج."
+  },
+  en: {
+    cannotRun: "This app can't run on your PC",
+    solution: "To find a version for your PC, check with the software publisher."
   }
 };

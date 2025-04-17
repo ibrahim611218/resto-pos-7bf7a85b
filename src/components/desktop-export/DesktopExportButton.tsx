@@ -4,12 +4,42 @@ import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { handleDesktopExport } from '@/utils/desktop-export';
 import { useLanguage } from '@/context/LanguageContext';
+import { toast } from 'sonner';
+import { APP_INSTRUCTIONS } from '@/utils/desktop-export/constants';
 
 export const DesktopExportButton = ({ variant = "default" }: { variant?: "default" | "ghost" | "outline" | "secondary" | "destructive" | "link" }) => {
   const { language } = useLanguage();
   
   const handleClick = () => {
     handleDesktopExport(language);
+    
+    // Show additional help information after a short delay
+    setTimeout(() => {
+      const isArabic = language === 'ar';
+      const troubleshooting = isArabic ? APP_INSTRUCTIONS.ar.troubleshooting : APP_INSTRUCTIONS.en.troubleshooting;
+      
+      toast(
+        isArabic ? 'تعليمات مهمة للتثبيت' : 'Important Installation Instructions',
+        {
+          description: isArabic 
+            ? 'في حال ظهور رسالة خطأ، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"'
+            : 'If you see an error message, right-click the file and select "Run as administrator"',
+          action: {
+            label: isArabic ? 'المزيد' : 'More',
+            onClick: () => {
+              toast(
+                isArabic ? 'حلول إضافية' : 'Additional Solutions',
+                {
+                  description: troubleshooting.join(' • '),
+                  duration: 8000,
+                }
+              );
+            },
+          },
+          duration: 8000,
+        }
+      );
+    }, 2000);
   };
   
   return (
