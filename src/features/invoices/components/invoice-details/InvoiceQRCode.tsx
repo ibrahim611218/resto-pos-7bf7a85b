@@ -2,7 +2,6 @@
 import React, { useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "@/context/ThemeContext";
-import { Barcode } from "lucide-react";
 
 interface InvoiceQRCodeProps {
   qrCodeData: string;
@@ -27,8 +26,9 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
     }
   }, [qrCodeData]);
 
-  // Force QR code re-render on mount to ensure print compatibility
+  // Force QR code re-render on mount and before printing
   useEffect(() => {
+    // Force redraw on mount
     if (qrCodeRef.current && amountCodeRef.current) {
       // Force layout recalculation
       qrCodeRef.current.style.opacity = '0.99';
@@ -40,6 +40,36 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
         }
       }, 100);
     }
+    
+    // Handle print event
+    const beforePrintHandler = () => {
+      console.log("Before print event triggered");
+      if (qrCodeRef.current && amountCodeRef.current) {
+        // Force redraw before printing
+        qrCodeRef.current.style.display = 'block';
+        amountCodeRef.current.style.display = 'block';
+        // Wait a bit and then force layout recalculation
+        setTimeout(() => {
+          if (qrCodeRef.current && amountCodeRef.current) {
+            qrCodeRef.current.style.opacity = '0.99';
+            amountCodeRef.current.style.opacity = '0.99';
+            
+            setTimeout(() => {
+              if (qrCodeRef.current && amountCodeRef.current) {
+                qrCodeRef.current.style.opacity = '1';
+                amountCodeRef.current.style.opacity = '1';
+              }
+            }, 50);
+          }
+        }, 50);
+      }
+    };
+    
+    window.addEventListener('beforeprint', beforePrintHandler);
+    
+    return () => {
+      window.removeEventListener('beforeprint', beforePrintHandler);
+    };
   }, []);
   
   return (
@@ -57,7 +87,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="M"
-            includeMargin={false}
+            includeMargin={true}
             className="print:block"
             style={{
               width: '90px',
@@ -80,7 +110,7 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
             bgColor="#FFFFFF"
             fgColor="#000000"
             level="M"
-            includeMargin={false}
+            includeMargin={true}
             className="print:block"
             style={{
               width: '60px',

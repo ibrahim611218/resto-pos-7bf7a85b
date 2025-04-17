@@ -8,6 +8,7 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
   console.log("Generating QR code data for invoice:", invoice.id);
   
   try {
+    // Create a structured object with all necessary data
     const data = {
       invoiceNumber: invoice.number,
       total: invoice.total,
@@ -15,8 +16,11 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
       businessName: "مطعم الذواق",
       taxNumber: "300000000000003",
       // Add more timestamp to prevent caching issues
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      // Add unique identifier to ensure QR codes are always different
+      uuid: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15)
     };
+    
     return JSON.stringify(data);
   } catch (error) {
     console.error("Error generating QR code data:", error);
@@ -26,7 +30,8 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
       date: new Date().toISOString(),
       businessName: "مطعم الذواق",
       taxNumber: "300000000000003",
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      uuid: Math.random().toString(36).substring(2, 15)
     });
   }
 };

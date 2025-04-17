@@ -10,6 +10,7 @@ export const getQRCodeStyles = (): string => `
     margin: 20px auto;
     width: 100%;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
   
   .qr-code {
@@ -21,6 +22,7 @@ export const getQRCodeStyles = (): string => `
     border-radius: 5px;
     background-color: white;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
   
   .qr-code canvas,
@@ -28,7 +30,7 @@ export const getQRCodeStyles = (): string => `
   .qr-code svg {
     max-width: 100px !important;
     height: auto !important;
-    margin: 0 auto;
+    margin: 0 auto !important;
     display: block !important;
   }
   
@@ -41,6 +43,7 @@ export const getQRCodeStyles = (): string => `
     border-radius: 5px;
     background-color: white;
     page-break-inside: avoid;
+    break-inside: avoid;
   }
   
   .amount-barcode canvas,
@@ -48,7 +51,7 @@ export const getQRCodeStyles = (): string => `
   .amount-barcode svg {
     max-width: 70px !important;
     height: auto !important;
-    margin: 0 auto;
+    margin: 0 auto !important;
     display: block !important;
   }
   
@@ -65,11 +68,17 @@ export const getQRCodeStyles = (): string => `
     text-align: center;
   }
   
+  /* Add more explicit print media styles */
   @media print {
     .qr-code-container {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      margin: 20px auto !important;
+      width: 100% !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
-      margin: 20px auto !important;
+      visibility: visible !important;
     }
     
     .qr-code,
@@ -81,6 +90,10 @@ export const getQRCodeStyles = (): string => `
       padding: 8px !important;
       margin-left: auto !important;
       margin-right: auto !important;
+      margin-top: 10px !important;
+      margin-bottom: 10px !important;
+      visibility: visible !important;
+      display: block !important;
     }
     
     .qr-code canvas,
@@ -89,8 +102,17 @@ export const getQRCodeStyles = (): string => `
     .amount-barcode canvas,
     .amount-barcode img,
     .amount-barcode svg {
-      display: block !important;
+      max-height: 100px !important;
+      width: auto !important;
       margin: 0 auto !important;
+      display: block !important;
+      visibility: visible !important;
+    }
+    
+    .barcode-label,
+    .barcode-amount {
+      visibility: visible !important;
+      display: block !important;
     }
   }
 `;

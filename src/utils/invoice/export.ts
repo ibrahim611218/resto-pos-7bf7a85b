@@ -40,7 +40,31 @@ export const exportInvoiceToPDF = (
             .no-print { display: none !important; }
             body { margin: 0; padding: 0; }
             @page { size: 210mm 297mm; margin: 10mm; }
+            
+            /* Critical QR code print fixes */
+            .qr-code-container {
+              display: flex !important;
+              flex-direction: column !important;
+              align-items: center !important;
+              margin: 20px auto !important;
+              width: 100% !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+              visibility: visible !important;
+            }
+            
+            .qr-code, .amount-barcode {
+              display: block !important;
+              visibility: visible !important;
+              background-color: white !important;
+            }
+            
+            .qr-code svg, .amount-barcode svg {
+              display: block !important;
+              visibility: visible !important;
+            }
           }
+          
           .print-button {
             background-color: #0f766e;
             color: white;
@@ -75,10 +99,22 @@ export const exportInvoiceToPDF = (
         };
         printWindow.document.body.appendChild(printButton);
         
-        // Print automatically after a short delay to ensure content is fully loaded
+        // Force QR code rendering before printing
+        const qrElements = printWindow.document.querySelectorAll('.qr-code, .amount-barcode');
+        qrElements.forEach(function(el) {
+          // Force redraw of QR code elements
+          el.style.display = 'block';
+          el.style.visibility = 'visible';
+          el.style.opacity = '0.99';
+          setTimeout(function() {
+            el.style.opacity = '1';
+          }, 50);
+        });
+        
+        // Print automatically after a longer delay to ensure content is fully loaded
         setTimeout(() => {
           printWindow.print();
-        }, 1000);
+        }, 1500);
         
         toast({
           title: "تم تصدير الفاتورة",
@@ -156,10 +192,44 @@ export const handleInvoiceExport = (
             // Force layout recalculation to ensure QR code renders
             printWindow.document.body.offsetHeight;
             
+            // Force QR code rendering before printing
+            const qrElements = printWindow.document.querySelectorAll('.qr-code, .amount-barcode');
+            qrElements.forEach(function(el) {
+              // Force redraw of QR code elements
+              el.style.display = 'block';
+              el.style.visibility = 'visible';
+              el.style.opacity = '0.99';
+              setTimeout(function() {
+                el.style.opacity = '1';
+              }, 50);
+            });
+            
+            // Add additional script to ensure QR codes are rendered
+            const forceRenderScript = printWindow.document.createElement('script');
+            forceRenderScript.textContent = `
+              function forceQRCodeRender() {
+                var qrElements = document.querySelectorAll('.qr-code, .amount-barcode');
+                qrElements.forEach(function(el) {
+                  el.style.display = 'block';
+                  el.style.visibility = 'visible';
+                });
+                console.log("QR codes forced to render:", qrElements.length);
+              }
+              
+              // Run multiple times to ensure rendering
+              forceQRCodeRender();
+              setTimeout(forceQRCodeRender, 500);
+              setTimeout(forceQRCodeRender, 1000);
+              
+              // Right before print
+              window.addEventListener('beforeprint', forceQRCodeRender);
+            `;
+            printWindow.document.body.appendChild(forceRenderScript);
+            
             setTimeout(() => {
               console.log("Triggering print");
               printWindow.print();
-            }, 1500); // Increased delay to 1.5 seconds for better rendering
+            }, 2000); // Increased delay to 2 seconds for better rendering
           };
         } else {
           console.error("Failed to open print window");
