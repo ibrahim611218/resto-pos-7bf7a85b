@@ -1,4 +1,3 @@
-
 function setupQueryHandler(ipcMain, db) {
   // Generic query handler for custom SQL queries
   ipcMain.handle('db:query', async (event, sql, params = []) => {
@@ -27,6 +26,31 @@ function setupQueryHandler(ipcMain, db) {
     } catch (error) {
       console.error('Error executing query:', error);
       throw error;
+    }
+  });
+
+  // إضافة دالة اختبار الاتصال بقاعدة البيانات
+  ipcMain.handle('db:testConnection', async () => {
+    try {
+      // محاولة تنفيذ استعلام بسيط للتحقق من اتصال قاعدة البيانات
+      const stmt = db.prepare('SELECT sqlite_version() as version');
+      const result = stmt.get();
+      
+      console.log('Database connection test successful');
+      console.log('SQLite Version:', result.version);
+      
+      return {
+        success: true,
+        version: result.version,
+        message: 'اتصال قاعدة البيانات ناجح'
+      };
+    } catch (error) {
+      console.error('Database connection test failed:', error);
+      return {
+        success: false,
+        error: error.message,
+        message: 'فشل الاتصال بقاعدة البيانات'
+      };
     }
   });
 }
