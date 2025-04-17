@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Size } from "@/types";
@@ -31,6 +32,7 @@ const Products = () => {
         
         // Check if we're in Electron environment with DB access
         if (window.db) {
+          console.log('Loading data from Electron database');
           const [categoriesResult, productsResult] = await Promise.all([
             window.db.getCategories(),
             window.db.getProducts()
