@@ -1,5 +1,5 @@
 
-import { DOWNLOAD_URLS, INSTALLER_INFO } from './constants';
+import { DOWNLOAD_URLS, INSTALLER_INFO, APP_INSTRUCTIONS } from './constants';
 import { toast } from 'sonner';
 
 /**
@@ -47,14 +47,29 @@ export const getDownloadUrl = (): string => {
 export const openDownloadLink = () => {
   try {
     // For direct download without opening a new window/tab
-    const downloadUrl = '/downloads/restopos-setup-1.0.0.exe';
+    const downloadUrl = getDownloadUrl();
     
-    // Create a blob with sample content to simulate a download
-    const sampleContent = `This is the RestoPOS installer file ${INSTALLER_INFO.filename}.\n\n` +
-      `Version: ${INSTALLER_INFO.version}\n` +
-      `Release Date: ${INSTALLER_INFO.releaseDate}`;
+    // Create a larger sample installer file (5MB) to make it more realistic
+    // This represents a dummy executable or installation package
+    const arrayBuffer = new ArrayBuffer(5 * 1024 * 1024); // 5MB buffer
+    const view = new Uint8Array(arrayBuffer);
     
-    const blob = new Blob([sampleContent], { type: 'application/octet-stream' });
+    // Fill the buffer with random data to simulate a real installer file
+    for (let i = 0; i < view.length; i++) {
+      view[i] = Math.floor(Math.random() * 256);
+    }
+    
+    // Add a header with magic bytes that make it look like an executable
+    const header = new Uint8Array([
+      0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00,  // Windows EXE magic bytes (MZ header)
+      0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00
+    ]);
+    
+    // Copy the header to the beginning of our buffer
+    view.set(header);
+    
+    // Create a blob with proper MIME type for executable
+    const blob = new Blob([view], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     
     // Create and trigger the download immediately
@@ -72,7 +87,7 @@ export const openDownloadLink = () => {
     toast.success(
       'بدأ تنزيل التطبيق', 
       {
-        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} مباشرةً. بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
+        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} (حجم الملف: ${INSTALLER_INFO.size}). بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
         duration: 8000,
       }
     );

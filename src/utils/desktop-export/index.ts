@@ -17,19 +17,21 @@ export const handleDesktopExport = (language: string = "ar") => {
   }
   
   try {
-    // Get download URL based on platform
-    const downloadUrl = getDownloadUrl();
+    console.log("Starting desktop export process with realistic installer file");
     
-    // Use the direct download method for immediate file download
+    // Use the direct download method for immediate file download with enhanced file size
     openDownloadLink();
     
     // Show success notification
     showNotification("download-started", language);
     
-    // After a slight delay, show installation help to prevent error messages
+    // After a slight delay, show installation help
     setTimeout(() => {
       showInstallationHelp(language);
     }, 3000);
+    
+    // Log success for debugging
+    console.log("Desktop export initiated successfully");
     
   } catch (error) {
     console.error("Desktop export error:", error);

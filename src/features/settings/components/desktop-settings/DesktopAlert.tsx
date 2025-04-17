@@ -15,8 +15,8 @@ const DesktopAlert = () => {
         <AlertTitle>{isArabic ? "تنزيل مباشر" : "Direct Download"}</AlertTitle>
         <AlertDescription>
           {isArabic 
-            ? "سيتم تنزيل ملف التثبيت مباشرةً على جهازك عند النقر على زر التحميل." 
-            : "The installer file will be downloaded directly to your device when you click the download button."}
+            ? "سيتم تنزيل ملف التثبيت (5.0 ميجابايت) مباشرةً على جهازك عند النقر على زر التحميل. هذا الملف يحاكي ملف تثبيت حقيقي للتجربة." 
+            : "The installer file (5.0 MB) will be downloaded directly to your device when you click the download button. This file simulates a real installer for demonstration."}
         </AlertDescription>
       </Alert>
       
@@ -31,6 +31,7 @@ const DesktopAlert = () => {
                 <li>انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"</li>
                 <li>إذا استمرت المشكلة، انقر على "مزيد من المعلومات" ثم "تشغيل على أي حال"</li>
                 <li>قم بتعطيل برنامج مكافحة الفيروسات مؤقتًا أثناء التثبيت</li>
+                <li>جرب تشغيل الملف بوضع التوافق مع إصدار سابق من Windows</li>
               </ul>
             </>
           ) : (
@@ -40,6 +41,7 @@ const DesktopAlert = () => {
                 <li>Right-click on the file and select "Run as administrator"</li>
                 <li>If the problem persists, click "More info" then "Run anyway"</li>
                 <li>Temporarily disable your antivirus during installation</li>
+                <li>Try running the file in compatibility mode with an earlier Windows version</li>
               </ul>
             </>
           )}

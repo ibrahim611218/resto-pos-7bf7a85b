@@ -14,6 +14,19 @@ const DownloadCard = () => {
   const isArabic = language === 'ar';
   const instructions = isArabic ? APP_INSTRUCTIONS.ar : APP_INSTRUCTIONS.en;
   
+  const handleDownload = () => {
+    // Show loading toast
+    toast.loading(
+      isArabic ? 'جاري إعداد الملف للتحميل...' : 'Preparing download...',
+      { duration: 2000 }
+    );
+    
+    // Trigger the download after a short delay
+    setTimeout(() => {
+      handleDesktopExport(language);
+    }, 1000);
+  };
+  
   const showTroubleshooting = () => {
     const troubleshooting = isArabic ? APP_INSTRUCTIONS.ar.troubleshooting : APP_INSTRUCTIONS.en.troubleshooting;
     
@@ -40,7 +53,7 @@ const DownloadCard = () => {
       </div>
       
       <Button 
-        onClick={() => handleDesktopExport(language)}
+        onClick={handleDownload}
         className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
       >
         <Download className="h-5 w-5" />

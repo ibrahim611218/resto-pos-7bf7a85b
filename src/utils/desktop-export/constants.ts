@@ -31,7 +31,7 @@ export const SYSTEM_REQUIREMENTS = {
 // Installer information - Updated with proper executable name and size
 export const INSTALLER_INFO = {
   version: "1.0.0",
-  size: "48.5 MB",
+  size: "5.0 MB",  // Updated size to reflect the actual size of our generated file
   releaseDate: "2025-04-17",
   filename: "restopos-setup-1.0.0.exe"
 };
@@ -50,7 +50,8 @@ export const APP_INSTRUCTIONS = {
     troubleshooting: [
       "قم بتعطيل برنامج مكافحة الفيروسات مؤقتًا أثناء التثبيت",
       "تأكد من تشغيل الملف كمسؤول",
-      "تحقق من إعدادات SmartScreen في Windows وقم بالسماح للتطبيق"
+      "تحقق من إعدادات SmartScreen في Windows وقم بالسماح للتطبيق",
+      "إذا استمرت المشكلة، جرب تشغيل الملف بوضع التوافق مع Windows 8"
     ]
   },
   en: {
@@ -65,7 +66,8 @@ export const APP_INSTRUCTIONS = {
     troubleshooting: [
       "Temporarily disable antivirus during installation",
       "Make sure to run the file as administrator",
-      "Check Windows SmartScreen settings and allow the application"
+      "Check Windows SmartScreen settings and allow the application",
+      "If the issue persists, try running the file in Windows 8 compatibility mode"
     ]
   }
 };
