@@ -1,8 +1,9 @@
+
 import { Invoice, CartItem, Customer, PaymentMethod, BusinessSettings } from "@/types";
 import { generateInvoiceTemplate } from "./template";
 import { calculateInvoiceAmounts, calculateDiscountAmount, formatCurrency, generateInvoiceNumber } from "./calculations";
 import { generateInvoiceQRCodeData } from "./qrcode";
-import { handleInvoiceExport } from "./export";
+import { handleInvoiceExport, printInvoice } from "./export";
 
 // Export directly from calculations
 export { 
@@ -16,7 +17,7 @@ export {
 export { generateInvoiceQRCodeData };
 
 // Export from export module
-export { handleInvoiceExport };
+export { handleInvoiceExport, printInvoice };
 
 export const createInvoiceObject = (
   cartItems: CartItem[],
