@@ -13,5 +13,5 @@ export interface UserFormProps {
   canManageAdmins: boolean;
 }
 
-// Export UserRole to be used in UserForm
-export { UserRole };
+// Use export type for UserRole
+export type { UserRole };
