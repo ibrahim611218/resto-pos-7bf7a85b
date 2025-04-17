@@ -2,16 +2,18 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { Download, RefreshCw } from 'lucide-react';
+import { Download, RefreshCw, FileDown, GitFork } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { SYSTEM_REQUIREMENTS, INSTALLER_INFO } from '@/utils/desktop-export/constants';
+import { SYSTEM_REQUIREMENTS, INSTALLER_INFO, APP_INSTRUCTIONS } from '@/utils/desktop-export/constants';
 import { openDownloadLink } from '@/utils/desktop-export/utils';
 import { toast } from 'sonner';
+import { Separator } from '@/components/ui/separator';
 
 const DesktopSettings = () => {
   const { language } = useLanguage();
   const isArabic = language === 'ar';
   const requirements = SYSTEM_REQUIREMENTS;
+  const instructions = isArabic ? APP_INSTRUCTIONS.ar : APP_INSTRUCTIONS.en;
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [lastChecked, setLastChecked] = useState<string | null>(
     localStorage.getItem('lastUpdateCheck')
@@ -80,6 +82,17 @@ const DesktopSettings = () => {
             <p>{isArabic ? `تاريخ الإصدار: ${INSTALLER_INFO.releaseDate}` : `Release date: ${INSTALLER_INFO.releaseDate}`}</p>
             <p>{isArabic ? `اسم الملف: ${INSTALLER_INFO.filename}` : `Filename: ${INSTALLER_INFO.filename}`}</p>
           </div>
+          
+          <Separator className="my-4" />
+          
+          <div className="mt-4">
+            <h4 className="font-medium mb-2">{instructions.title}</h4>
+            <ol className="list-decimal pl-5 space-y-1 text-sm">
+              {instructions.steps.map((step, index) => (
+                <li key={index}>{step}</li>
+              ))}
+            </ol>
+          </div>
         </Card>
 
         <Card className="p-6">
@@ -125,6 +138,30 @@ const DesktopSettings = () => {
           <p>{requirements.processor[language]}</p>
           <p>{requirements.memory[language]}</p>
           <p>{requirements.storage[language]}</p>
+        </div>
+      </Card>
+      
+      <Card className="p-6 bg-muted/50">
+        <div className="flex items-start gap-4">
+          <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+            <FileDown className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+          </div>
+          <div>
+            <h3 className="text-lg font-medium mb-1">
+              {isArabic ? "مشكلة في تشغيل التطبيق؟" : "Having trouble running the app?"}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              {isArabic 
+                ? "بعد التنزيل، تأكد من استخراج الملفات أولاً ثم البحث عن ملف restopos.exe وتشغيله."
+                : "After downloading, make sure to extract the files first, then look for restopos.exe and run it."}
+            </p>
+            <Button variant="secondary" className="text-sm" onClick={() => {
+              window.open('https://github.com/electron/electron', '_blank');
+            }}>
+              <GitFork className="h-4 w-4 mr-2" />
+              {isArabic ? "الحصول على المساعدة" : "Get Help"}
+            </Button>
+          </div>
         </div>
       </Card>
     </div>

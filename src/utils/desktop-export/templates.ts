@@ -1,5 +1,5 @@
 
-import { SYSTEM_REQUIREMENTS, INSTALLER_INFO } from './constants';
+import { SYSTEM_REQUIREMENTS, INSTALLER_INFO, APP_INSTRUCTIONS } from './constants';
 
 /**
  * Generates the HTML template for the download page
@@ -9,13 +9,14 @@ import { SYSTEM_REQUIREMENTS, INSTALLER_INFO } from './constants';
  */
 export const generateDownloadPageTemplate = (language: string, downloadUrl: string): string => {
   const isArabic = language === "ar";
+  const instructions = isArabic ? APP_INSTRUCTIONS.ar : APP_INSTRUCTIONS.en;
   
   return `<!DOCTYPE html>
 <html lang="${isArabic ? 'ar' : 'en'}" dir="${isArabic ? 'rtl' : 'ltr'}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${isArabic ? 'تحميل نسخة سطح المكتب' : 'Download Desktop Version'}</title>
+  <title>${isArabic ? 'تحميل نسخة سطح المكتب - Resto POS' : 'Download Desktop Version - Resto POS'}</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -84,6 +85,12 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       padding: 15px;
       margin-top: 30px;
     }
+    .instructions {
+      background: #e0f2fe;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 30px;
+    }
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #1a1a1a;
@@ -101,6 +108,9 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       .note {
         background: #3a3000;
         border-left-color: #f97316;
+      }
+      .instructions {
+        background: #0c4a6e;
       }
       h1 {
         color: #3b82f6;
@@ -123,6 +133,13 @@ export const generateDownloadPageTemplate = (language: string, downloadUrl: stri
       <div>${isArabic ? 'حجم الملف:' : 'File Size:'} ${INSTALLER_INFO.size}</div>
       <div>${isArabic ? 'تاريخ الإصدار:' : 'Release Date:'} ${INSTALLER_INFO.releaseDate}</div>
       <div>${isArabic ? 'اسم الملف:' : 'Filename:'} ${INSTALLER_INFO.filename}</div>
+    </div>
+    
+    <div class="instructions">
+      <h3>${instructions.title}</h3>
+      <ol>
+        ${instructions.steps.map(step => `<li>${step}</li>`).join('\n        ')}
+      </ol>
     </div>
     
     <div class="requirements">

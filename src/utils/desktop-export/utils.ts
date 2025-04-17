@@ -1,5 +1,6 @@
 
-import { DOWNLOAD_URLS } from './constants';
+import { DOWNLOAD_URLS, INSTALLER_INFO } from './constants';
+import { toast } from 'sonner';
 
 /**
  * Check if the application is running in Electron environment
@@ -57,20 +58,42 @@ export const openDownloadLink = () => {
       throw new Error("Invalid download URL");
     }
     
-    // Force download file instead of opening in browser
+    // Create a blob with custom HTML that will provide instructions
+    const blob = new Blob([
+      `<html>
+        <head>
+          <meta http-equiv="refresh" content="0;url=${downloadUrl}">
+          <title>تنزيل Resto POS</title>
+        </head>
+        <body>
+          <p>جاري التنزيل... إذا لم يبدأ التنزيل تلقائيًا، <a href="${downloadUrl}">انقر هنا</a></p>
+        </body>
+      </html>`
+    ], { type: 'text/html' });
+    
     const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = ''; // This triggers download rather than navigation
-    link.rel = 'noopener noreferrer';
+    link.href = window.URL.createObjectURL(blob);
+    link.target = '_blank';
     document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(link);
-    }, 100);
+    // Show a toast with instructions
+    toast.success('بدأ تنزيل التطبيق', {
+      description: 'بعد التنزيل، قم بفك الضغط عن الملف وابحث عن restopos.exe لتشغيل التطبيق',
+      duration: 6000,
+    });
   } catch (error) {
     console.error("Error opening download link:", error);
-    alert("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");
+    toast.error("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");
   }
+};
+
+/**
+ * Creates a desktop shortcut (for use in Electron environment)
+ */
+export const createDesktopShortcut = async () => {
+  // This function would be implemented when we have an actual Electron app running
+  console.log("Creating desktop shortcut (not implemented)");
+  return false;
 };
