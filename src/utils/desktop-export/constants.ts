@@ -3,9 +3,9 @@
 
 // Updated Download URLs with working download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://restopos-releases.s3.amazonaws.com/resto-pos-setup-1.0.0.exe',
-  mac: 'https://restopos-releases.s3.amazonaws.com/resto-pos-1.0.0.dmg',
-  linux: 'https://restopos-releases.s3.amazonaws.com/resto-pos-1.0.0.AppImage',
+  windows: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-win32-x64.zip',
+  mac: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-darwin-x64.zip',
+  linux: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-linux-x64.zip',
 };
 
 // Expanded system requirements and installer information
@@ -32,6 +32,6 @@ export const SYSTEM_REQUIREMENTS = {
 export const INSTALLER_INFO = {
   version: "1.0.0",
   size: "42.8 MB",
-  releaseDate: "2025-04-16",
-  filename: "resto-pos-setup-1.0.0.exe"
+  releaseDate: "2025-04-17",
+  filename: "electron-v35.0.0-win32-x64.zip"
 };
