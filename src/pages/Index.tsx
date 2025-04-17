@@ -1,115 +1,61 @@
 
-import { useLanguage } from "@/context/LanguageContext";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getSidebarLinks } from "@/components/layout/sidebar/sidebarLinks";
+import React from 'react';
+import { useLanguage } from '@/context/LanguageContext';
+import DownloadSection from '@/components/home/DownloadSection';
 
-interface IndexProps {
-  language?: string;
-}
-
-const Index: React.FC<IndexProps> = () => {
+const Index = () => {
   const { language } = useLanguage();
-  const isArabic = language === "ar";
-  const { user, hasPermission } = useAuth();
-  const sidebarLinks = getSidebarLinks();
-  
-  // Filter links based on user role, permissions, and required email
-  const filteredLinks = sidebarLinks.filter(link => {
-    // If link requires admin role, check if user has admin permissions
-    if (link.isAdminOnly && (!user || !hasPermission(['admin', 'owner']))) {
-      return false;
-    }
-    
-    // If link requires specific email, check user email
-    if (link.requiredEmail && (!user || user.email !== link.requiredEmail)) {
-      return false;
-    }
-    
-    // Check role-specific menu items
-    if (link.roles && (!user || !link.roles.includes(user.role))) {
-      return false;
-    }
-
-    // Handle role-specific submenu items
-    if (link.subMenuItems && link.subMenuItems.length > 0) {
-      // Filter submenu items based on roles
-      const filteredSubMenuItems = link.subMenuItems.filter(subItem => {
-        if (subItem.roles && (!user || !subItem.roles.includes(user.role))) {
-          return false;
-        }
-        return true;
-      });
-      
-      // If no submenu items left after filtering, hide the entire menu
-      if (filteredSubMenuItems.length === 0) {
-        return false;
-      }
-      
-      // Update the link's subMenuItems with filtered items
-      link.subMenuItems = [...filteredSubMenuItems];
-    }
-    
-    return true;
-  });
+  const isArabic = language === 'ar';
 
   return (
-    <div dir={isArabic ? "rtl" : "ltr"}>
-      <h1 className="text-3xl font-bold mb-6">
-        {isArabic ? "لوحة التحكم" : "Dashboard"}
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredLinks.map((link) => {
-          // Skip the home link since we're on the home page
-          if (link.path === "/") return null;
-          
-          // Handle links with sub-menu items
-          if (link.subMenuItems?.length) {
-            return link.subMenuItems.map((subItem) => (
-              <Card key={subItem.path} className="p-6 hover:shadow-md transition-shadow">
-                <h2 className="text-xl font-bold mb-2">
-                  {isArabic ? subItem.name : subItem.name_en}
-                </h2>
-                <p className="text-muted-foreground mb-4">
-                  {isArabic 
-                    ? `إدارة ${subItem.name}` 
-                    : `Manage ${subItem.name_en}`}
-                </p>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to={subItem.path}>
-                    {isArabic 
-                      ? `عرض ${subItem.name}` 
-                      : `View ${subItem.name_en}`}
-                  </Link>
-                </Button>
-              </Card>
-            ));
-          }
+    <div className="container mx-auto px-4 py-8">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4 text-primary">
+          {isArabic ? 'نظام نقاط البيع للمطاعم' : 'Restaurant POS System'}
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          {isArabic 
+            ? 'نظام متكامل لإدارة المطاعم والمقاهي مع دعم للعمل بدون انترنت.'
+            : 'A comprehensive management system for restaurants and cafes with offline support.'}
+        </p>
+      </header>
 
-          // Regular links without sub-menu items
-          return (
-            <Card key={link.path} className="p-6 hover:shadow-md transition-shadow">
-              <h2 className="text-xl font-bold mb-2">
-                {isArabic ? link.name : link.name_en}
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                {isArabic 
-                  ? `إدارة ${link.name}` 
-                  : `Manage ${link.name_en}`}
-              </p>
-              <Button asChild variant="outline" className="w-full">
-                <Link to={link.path}>
-                  {isArabic 
-                    ? `عرض ${link.name}` 
-                    : `View ${link.name_en}`}
-                </Link>
-              </Button>
-            </Card>
-          );
-        })}
-      </div>
+      <DownloadSection />
+      
+      <section className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-3 text-primary">
+            {isArabic ? 'إدارة المبيعات' : 'Sales Management'}
+          </h2>
+          <p className="text-muted-foreground">
+            {isArabic 
+              ? 'تتبع المبيعات وإصدار الفواتير بسهولة وسرعة.'
+              : 'Track sales and issue invoices quickly and easily.'}
+          </p>
+        </div>
+        
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-3 text-primary">
+            {isArabic ? 'إدارة المخزون' : 'Inventory Management'}
+          </h2>
+          <p className="text-muted-foreground">
+            {isArabic 
+              ? 'مراقبة المخزون وإدارة المنتجات بكفاءة.'
+              : 'Monitor inventory and manage products efficiently.'}
+          </p>
+        </div>
+        
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-3 text-primary">
+            {isArabic ? 'تقارير تفصيلية' : 'Detailed Reports'}
+          </h2>
+          <p className="text-muted-foreground">
+            {isArabic 
+              ? 'تحليل أداء المطعم من خلال تقارير متنوعة.'
+              : 'Analyze restaurant performance through various reports.'}
+          </p>
+        </div>
+      </section>
     </div>
   );
 };
