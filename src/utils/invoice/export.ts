@@ -102,12 +102,13 @@ export const exportInvoiceToPDF = (
         // Force QR code rendering before printing
         const qrElements = printWindow.document.querySelectorAll('.qr-code, .amount-barcode');
         qrElements.forEach(function(el) {
-          // Force redraw of QR code elements
-          el.style.display = 'block';
-          el.style.visibility = 'visible';
-          el.style.opacity = '0.99';
+          // Force redraw of QR code elements by casting to HTMLElement
+          const htmlEl = el as HTMLElement;
+          htmlEl.style.display = 'block';
+          htmlEl.style.visibility = 'visible';
+          htmlEl.style.opacity = '0.99';
           setTimeout(function() {
-            el.style.opacity = '1';
+            htmlEl.style.opacity = '1';
           }, 50);
         });
         
@@ -195,12 +196,13 @@ export const handleInvoiceExport = (
             // Force QR code rendering before printing
             const qrElements = printWindow.document.querySelectorAll('.qr-code, .amount-barcode');
             qrElements.forEach(function(el) {
-              // Force redraw of QR code elements
-              el.style.display = 'block';
-              el.style.visibility = 'visible';
-              el.style.opacity = '0.99';
+              // Force redraw of QR code elements by casting to HTMLElement
+              const htmlEl = el as HTMLElement;
+              htmlEl.style.display = 'block';
+              htmlEl.style.visibility = 'visible';
+              htmlEl.style.opacity = '0.99';
               setTimeout(function() {
-                el.style.opacity = '1';
+                htmlEl.style.opacity = '1';
               }, 50);
             });
             
