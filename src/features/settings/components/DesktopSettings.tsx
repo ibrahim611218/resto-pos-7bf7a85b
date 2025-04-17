@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -64,7 +63,7 @@ const DesktopSettings = () => {
 
   return (
     <div className="space-y-6">
-      <Alert variant="warning" className="mb-6">
+      <Alert className="mb-6">
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>{isArabic ? "ملف التثبيت غير متاح حاليًا" : "Installer File Not Available Yet"}</AlertTitle>
         <AlertDescription>
