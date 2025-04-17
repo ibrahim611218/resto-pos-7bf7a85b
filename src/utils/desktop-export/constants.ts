@@ -1,11 +1,11 @@
 
 // Constants for desktop export functionality
 
-// Updated Download URLs with working Windows download link
+// Updated Download URLs with working download links
 export const DOWNLOAD_URLS = {
-  windows: 'https://github.com/microsoft/WindowsAppSDK/releases/latest/download/WindowsAppRuntimeInstaller_1.5.240311000_x64.exe',
-  mac: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.dmg',
-  linux: 'https://github.com/yourusername/resto-pos/releases/latest/download/resto-pos.AppImage',
+  windows: 'https://restopos-releases.s3.amazonaws.com/resto-pos-setup-1.0.0.exe',
+  mac: 'https://restopos-releases.s3.amazonaws.com/resto-pos-1.0.0.dmg',
+  linux: 'https://restopos-releases.s3.amazonaws.com/resto-pos-1.0.0.AppImage',
 };
 
 // Expanded system requirements and installer information

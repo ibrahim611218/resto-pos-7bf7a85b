@@ -57,25 +57,20 @@ export const openDownloadLink = () => {
       throw new Error("Invalid download URL");
     }
     
-    // Open in new window
-    const newWindow = window.open(downloadUrl, '_blank');
+    // Force download file instead of opening in browser
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = ''; // This triggers download rather than navigation
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
     
-    // Handle popup blockers
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-      console.warn("Popup may have been blocked, trying alternative method");
-      // Alternative approach
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        document.body.removeChild(link);
-      }, 100);
-    }
+    // Clean up
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 100);
   } catch (error) {
     console.error("Error opening download link:", error);
-    alert("خطأ في فتح رابط التحميل. يرجى تمكين النوافذ المنبثقة أو المحاولة مرة أخرى.");
+    alert("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");
   }
 };
