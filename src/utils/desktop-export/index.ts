@@ -20,7 +20,7 @@ export const handleDesktopExport = (language: string = "ar") => {
     // Get download URL based on platform
     const downloadUrl = getDownloadUrl();
     
-    // Use the direct download method for simplicity
+    // Use the direct download method for immediate file download
     openDownloadLink();
     
     // Show success notification

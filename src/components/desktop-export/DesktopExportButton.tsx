@@ -16,10 +16,10 @@ export const DesktopExportButton = ({ variant = "default" }: { variant?: "defaul
     <Button 
       onClick={handleClick} 
       variant={variant}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
     >
-      <Download size={16} />
-      {language === 'ar' ? 'تحميل نسخة الويندوز' : 'Download Windows Version'}
+      <Download size={18} />
+      {language === 'ar' ? 'تنزيل مباشر' : 'Direct Download'}
     </Button>
   );
 };

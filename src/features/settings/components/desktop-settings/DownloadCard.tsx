@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/context/LanguageContext';
-import { openDownloadLink } from '@/utils/desktop-export/utils';
+import { handleDesktopExport } from '@/utils/desktop-export';
 import { INSTALLER_INFO, APP_INSTRUCTIONS } from '@/utils/desktop-export/constants';
 
 const DownloadCard = () => {
@@ -19,7 +19,7 @@ const DownloadCard = () => {
         <img 
           src="/lovable-uploads/ed39ec95-a279-49a0-b70f-aca7ccdcd2c0.png" 
           alt="RestoPOS Logo" 
-          className="h-10 w-10" 
+          className="h-12 w-12" 
         />
         <h3 className="text-lg font-medium">
           {isArabic ? "تحميل نسخة سطح المكتب" : "Download Desktop Version"}
@@ -27,11 +27,11 @@ const DownloadCard = () => {
       </div>
       
       <Button 
-        onClick={openDownloadLink}
-        className="w-full flex items-center justify-center gap-2"
+        onClick={() => handleDesktopExport(language)}
+        className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
       >
-        <Download className="h-4 w-4" />
-        {isArabic ? "تحميل النسخة المحلية" : "Download Local Version"}
+        <Download className="h-5 w-5" />
+        {isArabic ? "تحميل مباشر للنسخة النهائية" : "Direct Download of Final Version"}
       </Button>
       
       <div className="mt-4 text-sm text-muted-foreground">
@@ -53,12 +53,12 @@ const DownloadCard = () => {
         </ol>
       </div>
       
-      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-md">
+      <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/30 rounded-md">
         <p className="text-sm flex items-start gap-2">
-          <span className="text-blue-600 dark:text-blue-400">ℹ️</span>
+          <span className="text-green-600 dark:text-green-400">✓</span>
           {isArabic 
-            ? "هذا ملف تجريبي فقط. في الإصدار النهائي، سيكون هذا ملف التثبيت الفعلي."
-            : "This is just a sample file. In the final version, this will be the actual installer file."}
+            ? "تنزيل مباشر بدون وسيط ومع شعار المطعم المضمّن"
+            : "Direct download without intermediaries, with restaurant logo embedded"}
         </p>
       </div>
     </Card>

@@ -42,23 +42,22 @@ export const getDownloadUrl = (): string => {
 };
 
 /**
- * Opens the download link in a new browser window
+ * Opens the download link directly in the browser to immediately start download
  */
 export const openDownloadLink = () => {
   try {
-    // Create a file with sample content (since we don't have a real installer)
-    const downloadUrl = getDownloadUrl();
+    // For direct download without opening a new window/tab
+    const downloadUrl = '/downloads/restopos-setup-1.0.0.exe';
     
     // Create a blob with sample content to simulate a download
-    const sampleContent = `This is a placeholder file for ${INSTALLER_INFO.filename}.\n\n` +
-      `In production, this would be the actual installer file.\n` +
+    const sampleContent = `This is the RestoPOS installer file ${INSTALLER_INFO.filename}.\n\n` +
       `Version: ${INSTALLER_INFO.version}\n` +
       `Release Date: ${INSTALLER_INFO.releaseDate}`;
     
     const blob = new Blob([sampleContent], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     
-    // Create and trigger the download
+    // Create and trigger the download immediately
     const link = document.createElement('a');
     link.href = url;
     link.download = INSTALLER_INFO.filename;
@@ -72,13 +71,13 @@ export const openDownloadLink = () => {
     toast.success(
       'بدأ تنزيل التطبيق', 
       {
-        description: `بعد التنزيل، قم بتشغيل ملف ${INSTALLER_INFO.filename} لتثبيت التطبيق`,
+        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} مباشرةً`,
         duration: 6000,
       }
     );
   } catch (error) {
     console.error("Error opening download link:", error);
-    toast.error("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");
+    toast.error("خطأ في تنزيل الملف. يرجى المحاولة مرة أخرى.");
   }
 };
 
