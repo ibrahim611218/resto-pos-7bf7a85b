@@ -1,6 +1,6 @@
 
 import React from "react";
-import { UserWithPassword } from "../types";
+import { UserRole, UserWithPassword } from "../types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,7 +24,8 @@ const UserForm: React.FC<UserFormProps> = ({
   };
 
   const handleRoleChange = (value: string) => {
-    onUserChange({ ...user, role: value });
+    // Ensure value is always cast to UserRole type
+    onUserChange({ ...user, role: value as UserRole });
   };
   
   return (

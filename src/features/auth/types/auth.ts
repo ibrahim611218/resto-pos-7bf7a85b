@@ -6,6 +6,9 @@ export interface UserPermission {
   name: string;
   value: string;
   description: string;
+  adminOnly?: boolean;      // Added for admin-only permissions
+  cashierAllowed?: boolean; // Added for cashier-allowed permissions
+  kitchenAllowed?: boolean; // Added for kitchen-allowed permissions
 }
 
 export interface AuthContextType {

@@ -12,3 +12,6 @@ export interface UserFormProps {
   isArabic: boolean;
   canManageAdmins: boolean;
 }
+
+// Export UserRole to be used in UserForm
+export { UserRole };
