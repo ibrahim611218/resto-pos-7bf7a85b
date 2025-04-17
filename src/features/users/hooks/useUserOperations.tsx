@@ -4,9 +4,11 @@ import { mockUsers } from "@/features/auth/data/mockUsers";
 import { toast } from "@/hooks/use-toast";
 import { UserWithPassword } from "../types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { usePermissionsManagement } from "./usePermissionsManagement";
 
 export const useUserOperations = () => {
-  const { isOwner } = useAuth();
+  const { isOwner, updateUserPermissions } = useAuth();
+  const { getDefaultPermissionsForRole } = usePermissionsManagement();
   const [users, setUsers] = useState<UserWithPassword[]>(
     mockUsers.map(user => ({ ...user, password: "********" }))
   );
@@ -63,7 +65,12 @@ export const useUserOperations = () => {
     
     // Add new user
     const userId = Math.random().toString(36).substring(2, 9);
-    setUsers([...users, { ...newUser, id: userId }]);
+    const userToAdd = { ...newUser, id: userId };
+    setUsers([...users, userToAdd]);
+    
+    // Apply default permissions based on role
+    const defaultPermissions = getDefaultPermissionsForRole(newUser.role);
+    updateUserPermissions(userId, defaultPermissions);
     
     // Reset form
     setNewUser({
