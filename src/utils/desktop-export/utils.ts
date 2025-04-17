@@ -1,3 +1,4 @@
+
 import { DOWNLOAD_URLS, INSTALLER_INFO } from './constants';
 import { toast } from 'sonner';
 
@@ -22,22 +23,18 @@ export const isRunningInElectron = (): boolean => {
 export const getDownloadUrl = (): string => {
   try {
     const platform = navigator.platform.toLowerCase();
-    let url = '';
     
     // Determine the appropriate download URL based on platform
     if (platform.includes('win')) {
-      url = DOWNLOAD_URLS.windows;
+      return DOWNLOAD_URLS.windows;
     } else if (platform.includes('mac')) {
-      url = DOWNLOAD_URLS.mac;
+      return DOWNLOAD_URLS.mac;
     } else if (platform.includes('linux')) {
-      url = DOWNLOAD_URLS.linux;
+      return DOWNLOAD_URLS.linux;
     } else {
       // Default to Windows download
-      url = DOWNLOAD_URLS.windows;
+      return DOWNLOAD_URLS.windows;
     }
-    
-    console.log("Download URL determined:", url);
-    return url;
   } catch (error) {
     console.error("Error getting download URL:", error);
     return DOWNLOAD_URLS.windows; // Default fallback
@@ -49,27 +46,29 @@ export const getDownloadUrl = (): string => {
  */
 export const openDownloadLink = () => {
   try {
+    // For development and testing, show a toast with information
+    // since we don't have the actual exe file in the repo
+    toast.info('تنزيل الملف غير متاح حاليًا', {
+      description: 'مطلوب إعداد ملف التثبيت على الخادم أولًا',
+      duration: 5000,
+    });
+    
+    // In a production environment with actual files, this would work:
+    /*
     const downloadUrl = getDownloadUrl();
-    console.log("Opening download URL:", downloadUrl);
-    
-    // Check if URL is valid
-    if (!downloadUrl || typeof downloadUrl !== 'string') {
-      throw new Error("Invalid download URL");
-    }
-    
-    // Create a direct download link instead of an HTML page to ensure the file downloads properly
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', INSTALLER_INFO.filename);
+    link.download = INSTALLER_INFO.filename;
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     
-    // Show a toast with instructions
     toast.success('بدأ تنزيل التطبيق', {
-      description: 'بعد التنزيل، قم بتشغيل ملف restopos-setup-1.0.0.exe لتثبيت التطبيق',
+      description: `بعد التنزيل، قم بتشغيل ملف ${INSTALLER_INFO.filename} لتثبيت التطبيق`,
       duration: 6000,
     });
+    */
   } catch (error) {
     console.error("Error opening download link:", error);
     toast.error("خطأ في فتح رابط التحميل. يرجى المحاولة مرة أخرى.");

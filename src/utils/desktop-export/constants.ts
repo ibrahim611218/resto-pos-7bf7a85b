@@ -1,10 +1,10 @@
 // Constants for desktop export functionality
 
-// Updated Download URLs with actual installer links for our custom packaged app
+// Updated Download URLs - we'll use direct file downloads from our server
 export const DOWNLOAD_URLS = {
-  windows: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-win32-x64-setup.exe',
-  mac: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-darwin-x64.zip',
-  linux: 'https://github.com/electron/electron/releases/download/v35.0.0/electron-v35.0.0-linux-x64.zip',
+  windows: '/downloads/restopos-setup-1.0.0.exe',  // Local file path
+  mac: '/downloads/restopos-mac-1.0.0.zip',
+  linux: '/downloads/restopos-linux-1.0.0.zip',
 };
 
 // Expanded system requirements and installer information
@@ -27,7 +27,7 @@ export const SYSTEM_REQUIREMENTS = {
   }
 };
 
-// Installer information - Updated with proper executable name
+// Installer information - Updated with proper executable name and size
 export const INSTALLER_INFO = {
   version: "1.0.0",
   size: "48.5 MB",

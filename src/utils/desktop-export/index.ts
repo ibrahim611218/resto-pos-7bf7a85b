@@ -3,6 +3,7 @@ import { isRunningInElectron, getDownloadUrl } from './utils';
 import { showNotification } from './notifications';
 import { generateDownloadPageTemplate } from './templates';
 import { INSTALLER_INFO } from './constants';
+import { toast } from 'sonner';
 
 /**
  * Handles the desktop export process
@@ -16,10 +17,24 @@ export const handleDesktopExport = (language: string = "ar") => {
   }
   
   try {
+    // For development and testing purposes, show a toast notification
+    // instead of actually attempting a download that would result in a 404
+    const isArabic = language === 'ar';
+    
+    toast.info(
+      isArabic ? 'تنزيل الملف غير متاح حاليًا' : 'File download is not available yet',
+      {
+        description: isArabic 
+          ? 'مطلوب إعداد ملف التثبيت على الخادم أولًا' 
+          : 'The installer file needs to be configured on the server first',
+        duration: 5000,
+      }
+    );
+    
+    /* In production with actual files available, use this code:
+    
     // Get the download URL based on platform
     const downloadUrl = getDownloadUrl();
-    
-    console.log("Opening download URL:", downloadUrl);
     
     // Create a temporary HTML page with instructions and auto-download
     const downloadPage = generateDownloadPageTemplate(language, downloadUrl);
@@ -44,6 +59,7 @@ export const handleDesktopExport = (language: string = "ar") => {
     
     // Show success notification
     showNotification("download-started", language);
+    */
     
   } catch (error) {
     console.error("Desktop export error:", error);

@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { Download, RefreshCw, FileDown, GitFork } from 'lucide-react';
+import { Download, RefreshCw, FileDown, GitFork, AlertTriangle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { SYSTEM_REQUIREMENTS, INSTALLER_INFO, APP_INSTRUCTIONS } from '@/utils/desktop-export/constants';
 import { openDownloadLink } from '@/utils/desktop-export/utils';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const DesktopSettings = () => {
   const { language } = useLanguage();
@@ -34,7 +35,6 @@ const DesktopSettings = () => {
       setLastChecked(now);
       
       // For now, we'll just show a toast notification
-      // In a real implementation, this would check against a server version
       toast.success(
         isArabic 
           ? "أنت تستخدم أحدث إصدار من النظام" 
@@ -64,6 +64,16 @@ const DesktopSettings = () => {
 
   return (
     <div className="space-y-6">
+      <Alert variant="warning" className="mb-6">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>{isArabic ? "ملف التثبيت غير متاح حاليًا" : "Installer File Not Available Yet"}</AlertTitle>
+        <AlertDescription>
+          {isArabic 
+            ? "ملف التثبيت قيد التطوير وسيكون متاحًا قريبًا. استخدم الإصدار المتصل بالإنترنت في الوقت الحالي." 
+            : "The installer file is under development and will be available soon. Please use the online version for now."}
+        </AlertDescription>
+      </Alert>
+
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="p-6">
           <div className="flex items-center mb-4 gap-3">
@@ -171,8 +181,8 @@ const DesktopSettings = () => {
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {isArabic 
-                ? `تأكد من النقر مرتين على ملف ${INSTALLER_INFO.filename} بعد التنزيل لبدء عملية التثبيت.`
-                : `Make sure to double-click the ${INSTALLER_INFO.filename} file after downloading to start the installation process.`}
+                ? `النظام متاح حاليًا عبر الإنترنت فقط. سيتم توفير نسخة سطح المكتب قريبًا.`
+                : `The system is currently only available online. A desktop version will be available soon.`}
             </p>
             <Button variant="secondary" className="text-sm" onClick={() => {
               window.open('https://github.com/electron/electron', '_blank');
