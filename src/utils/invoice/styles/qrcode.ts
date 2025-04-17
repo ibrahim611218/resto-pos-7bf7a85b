@@ -34,41 +34,6 @@ export const getQRCodeStyles = (): string => `
     display: block !important;
   }
   
-  .amount-barcode {
-    text-align: center;
-    margin: 10px auto;
-    max-width: 90px;
-    border: 1px solid #ddd;
-    padding: 8px;
-    border-radius: 5px;
-    background-color: white;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-  
-  .amount-barcode canvas,
-  .amount-barcode img,
-  .amount-barcode svg {
-    max-width: 70px !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    display: block !important;
-  }
-  
-  .barcode-label {
-    font-size: 11px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .barcode-amount {
-    font-size: 11px;
-    margin-top: 5px;
-    text-align: center;
-  }
-  
-  /* Add more explicit print media styles */
   @media print {
     .qr-code-container {
       display: flex !important;
@@ -81,8 +46,7 @@ export const getQRCodeStyles = (): string => `
       visibility: visible !important;
     }
     
-    .qr-code,
-    .amount-barcode {
+    .qr-code {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
       background-color: white !important;
@@ -95,24 +59,6 @@ export const getQRCodeStyles = (): string => `
       visibility: visible !important;
       display: block !important;
     }
-    
-    .qr-code canvas,
-    .qr-code img,
-    .qr-code svg,
-    .amount-barcode canvas,
-    .amount-barcode img,
-    .amount-barcode svg {
-      max-height: 100px !important;
-      width: auto !important;
-      margin: 0 auto !important;
-      display: block !important;
-      visibility: visible !important;
-    }
-    
-    .barcode-label,
-    .barcode-amount {
-      visibility: visible !important;
-      display: block !important;
-    }
   }
 `;
+

@@ -15,7 +15,6 @@ export const generateInvoiceQRCode = (invoice: Invoice, isPdf: boolean = false):
     
     // Set size based on document type
     const qrCodeSize = isPdf ? 120 : 100;
-    const amountBarcodeSize = isPdf ? 80 : 70;
     
     return `
       <div class="qr-code-container" 
@@ -29,17 +28,6 @@ export const generateInvoiceQRCode = (invoice: Invoice, isPdf: boolean = false):
                style="width: ${qrCodeSize}px !important; height: ${qrCodeSize}px !important; display: block !important; margin: 0 auto !important; visibility: visible !important;" 
                class="qr-code-img" />
         </div>
-        
-        <!-- Amount Barcode with explicit styling for print -->
-        <div class="amount-barcode"
-             style="text-align: center !important; margin: 8px auto !important; border: 1px solid #ddd !important; padding: 5px !important; background-color: white !important; border-radius: 5px !important; min-height: ${amountBarcodeSize}px !important; min-width: ${amountBarcodeSize}px !important; display: block !important; visibility: visible !important;">
-          <div style="font-size: 9px !important; margin-bottom: 3px !important; font-weight: bold !important; text-align: center !important; display: block !important; visibility: visible !important;">رمز المبلغ</div>
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=${amountBarcodeSize}x${amountBarcodeSize}&data=${encodeURIComponent(parsedData.total.toString())}&margin=2" 
-               alt="Amount Barcode" 
-               style="width: ${amountBarcodeSize}px !important; height: ${amountBarcodeSize}px !important; display: block !important; margin: 0 auto !important; visibility: visible !important;" 
-               class="amount-code-img" />
-          <div style="font-size: 9px !important; margin-top: 3px !important; text-align: center !important; display: block !important; visibility: visible !important;">المبلغ: ${parsedData.total.toFixed(2)} ر.س</div>
-        </div>
       </div>
     `;
   } catch (error) {
@@ -47,3 +35,4 @@ export const generateInvoiceQRCode = (invoice: Invoice, isPdf: boolean = false):
     return `<div class="error-message">خطأ في إنشاء رمز الاستجابة السريعة</div>`;
   }
 };
+

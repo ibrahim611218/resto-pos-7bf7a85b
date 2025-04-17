@@ -45,30 +45,6 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
             className="print:block"
           />
         </div>
-        
-        {/* Amount Barcode */}
-        <div 
-          className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block amount-barcode`}
-          style={{minHeight: '70px', minWidth: '70px'}}
-        >
-          <div className="barcode-label">رمز المبلغ</div>
-          <img 
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=${encodeURIComponent(parsedData.total.toString())}&margin=2`}
-            alt="Amount Barcode" 
-            width={60}
-            height={60}
-            style={{
-              width: '60px',
-              height: '60px',
-              display: 'block',
-              margin: '0 auto'
-            }}
-            className="print:block"
-          />
-          <div className="barcode-amount">
-            المبلغ: {parsedData.total ? parsedData.total.toFixed(2) : "0.00"} ر.س
-          </div>
-        </div>
       </div>
       
       {notes && (
@@ -79,3 +55,4 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
     </>
   );
 };
+
