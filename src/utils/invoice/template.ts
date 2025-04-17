@@ -31,12 +31,19 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
     invoiceNotesAr: "شكراً لزيارتكم"
   };
   
-  // Generate main QR code with explicit size
+  // Generate QR code data with timestamp to prevent caching
   const qrCodeData = generateInvoiceQRCodeData(invoice);
+  
+  // Generate main QR code with inline SVG (more reliable for printing)
+  const qrCodeSize = isPdf ? 120 : 90;
   const qrCodeElement = React.createElement(QRCodeCanvas, { 
     value: qrCodeData, 
-    size: isPdf ? 120 : 90,
-    style: { width: isPdf ? '120px' : '90px', height: isPdf ? '120px' : '90px', display: 'inline-block' },
+    size: qrCodeSize,
+    style: { 
+      width: `${qrCodeSize}px`, 
+      height: `${qrCodeSize}px`, 
+      display: 'inline-block' 
+    },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "M",
@@ -44,12 +51,17 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   });
   const qrCodeString = renderToString(qrCodeElement);
   
-  // Generate amount barcode
+  // Generate amount barcode with inline SVG
   const parsedQRData = JSON.parse(qrCodeData);
+  const amountBarcodeSize = isPdf ? 80 : 60;
   const amountBarcodeElement = React.createElement(QRCodeCanvas, { 
     value: parsedQRData.total.toString(), 
-    size: isPdf ? 80 : 60,
-    style: { width: isPdf ? '80px' : '60px', height: isPdf ? '80px' : '60px', display: 'inline-block' },
+    size: amountBarcodeSize,
+    style: { 
+      width: `${amountBarcodeSize}px`, 
+      height: `${amountBarcodeSize}px`, 
+      display: 'inline-block' 
+    },
     bgColor: "#FFFFFF",
     fgColor: "#000000",
     level: "M",
@@ -57,23 +69,23 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
   });
   const amountBarcodeString = renderToString(amountBarcodeElement);
   
-  // إضافة العلامة المائية إذا كانت الفاتورة مسترجعة
+  // Add watermark for refunded invoices
   const refundedWatermark = invoice.status === "refunded" ? `
     <div class="watermark">
       مسترجعة
     </div>
   ` : '';
   
-  // Force inline styles for QR code to ensure it displays properly
+  // Create more reliable QR code container with inline styles for printing
   const explicitQRCode = `
-    <div class="qr-code-container">
-      <div class="qr-code">
+    <div class="qr-code-container" style="display: flex; flex-direction: column; align-items: center; margin: 10px auto; width: 100%; page-break-inside: avoid;">
+      <div class="qr-code" style="text-align: center; margin: 8px auto; border: 1px solid #ddd; padding: 5px; background-color: white; border-radius: 5px; min-height: ${qrCodeSize}px; min-width: ${qrCodeSize}px;">
         ${qrCodeString}
       </div>
-      <div class="amount-barcode">
-        <div class="barcode-label">رمز المبلغ</div>
+      <div class="amount-barcode" style="text-align: center; margin: 8px auto; border: 1px solid #ddd; padding: 5px; background-color: white; border-radius: 5px; min-height: ${amountBarcodeSize}px; min-width: ${amountBarcodeSize}px;">
+        <div style="font-size: 9px; margin-bottom: 3px; font-weight: bold; text-align: center;">رمز المبلغ</div>
         ${amountBarcodeString}
-        <div class="barcode-amount">المبلغ: ${parsedQRData.total.toFixed(2)} ر.س</div>
+        <div style="font-size: 9px; margin-top: 3px; text-align: center;">المبلغ: ${parsedQRData.total.toFixed(2)} ر.س</div>
       </div>
     </div>
   `;
@@ -89,6 +101,30 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
         ${getInvoiceStyles()}
+
+        /* Additional print-specific styles for QR codes */
+        @media print {
+          .qr-code-container {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            margin: 20px auto !important;
+          }
+          
+          .qr-code, .amount-barcode {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            background-color: white !important;
+            border: 1px solid #ddd !important;
+            padding: 5px !important;
+            margin: 10px auto !important;
+          }
+          
+          .qr-code canvas, .qr-code img, .qr-code svg,
+          .amount-barcode canvas, .amount-barcode img, .amount-barcode svg {
+            display: block !important;
+            margin: 0 auto !important;
+          }
+        }
       </style>
       <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     </head>
@@ -112,6 +148,17 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <script>
         window.onload = function() {
           console.log("Invoice print window loaded");
+          
+          // Force QR code rendering
+          var qrElements = document.querySelectorAll('.qr-code canvas, .amount-barcode canvas');
+          qrElements.forEach(function(el) {
+            // Force redraw of canvas elements
+            el.style.opacity = '0.99';
+            setTimeout(function() {
+              el.style.opacity = '1';
+            }, 100);
+          });
+          
           setTimeout(function() {
             window.focus();
             // Don't auto-print in PDF mode

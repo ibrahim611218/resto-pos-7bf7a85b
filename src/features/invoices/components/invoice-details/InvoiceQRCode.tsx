@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "@/context/ThemeContext";
 import { Barcode } from "lucide-react";
@@ -15,6 +15,8 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
 }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const qrCodeRef = useRef<HTMLDivElement>(null);
+  const amountCodeRef = useRef<HTMLDivElement>(null);
   
   const parsedData = React.useMemo(() => {
     try {
@@ -24,12 +26,31 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
       return { total: 0 };
     }
   }, [qrCodeData]);
+
+  // Force QR code re-render on mount to ensure print compatibility
+  useEffect(() => {
+    if (qrCodeRef.current && amountCodeRef.current) {
+      // Force layout recalculation
+      qrCodeRef.current.style.opacity = '0.99';
+      amountCodeRef.current.style.opacity = '0.99';
+      setTimeout(() => {
+        if (qrCodeRef.current && amountCodeRef.current) {
+          qrCodeRef.current.style.opacity = '1';
+          amountCodeRef.current.style.opacity = '1';
+        }
+      }, 100);
+    }
+  }, []);
   
   return (
     <>
-      <div className="flex flex-col items-center gap-3 print:block print:w-full qr-code-container">
+      <div className="flex flex-col items-center gap-3 print:block print:w-full qr-code-container" style={{pageBreakInside: 'avoid'}}>
         {/* Main QR Code */}
-        <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block qr-code`}>
+        <div 
+          ref={qrCodeRef}
+          className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block qr-code`}
+          style={{minHeight: '100px', minWidth: '100px'}}
+        >
           <QRCodeSVG 
             value={qrCodeData || ""}
             size={90}
@@ -47,7 +68,11 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
         </div>
         
         {/* Amount Barcode */}
-        <div className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block amount-barcode`}>
+        <div 
+          ref={amountCodeRef}
+          className={`p-1 rounded border ${isDark ? 'bg-white' : 'bg-white'} border-gray-200 print:bg-white print:mx-auto print:my-2 print:block amount-barcode`}
+          style={{minHeight: '70px', minWidth: '70px'}}
+        >
           <div className="barcode-label">رمز المبلغ</div>
           <QRCodeSVG 
             value={parsedData.total ? parsedData.total.toString() : "0"}

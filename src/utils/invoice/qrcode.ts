@@ -14,6 +14,8 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
       date: invoice.date,
       businessName: "مطعم الذواق",
       taxNumber: "300000000000003",
+      // Add more timestamp to prevent caching issues
+      timestamp: new Date().getTime()
     };
     return JSON.stringify(data);
   } catch (error) {
@@ -24,7 +26,7 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
       date: new Date().toISOString(),
       businessName: "مطعم الذواق",
       taxNumber: "300000000000003",
+      timestamp: new Date().getTime()
     });
   }
 };
-

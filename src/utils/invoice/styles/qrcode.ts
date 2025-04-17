@@ -7,20 +7,26 @@ export const getQRCodeStyles = (): string => `
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10px auto;
+    margin: 20px auto;
     width: 100%;
+    page-break-inside: avoid;
   }
   
   .qr-code {
     text-align: center;
-    margin: 8px auto;
-    max-width: 100px;
+    margin: 10px auto;
+    max-width: 120px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: white;
+    page-break-inside: avoid;
   }
   
   .qr-code canvas,
   .qr-code img,
   .qr-code svg {
-    max-width: 90px !important;
+    max-width: 100px !important;
     height: auto !important;
     margin: 0 auto;
     display: block !important;
@@ -28,44 +34,53 @@ export const getQRCodeStyles = (): string => `
   
   .amount-barcode {
     text-align: center;
-    margin: 8px auto;
-    max-width: 80px;
+    margin: 10px auto;
+    max-width: 90px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: white;
+    page-break-inside: avoid;
   }
   
   .amount-barcode canvas,
   .amount-barcode img,
   .amount-barcode svg {
-    max-width: 60px !important;
+    max-width: 70px !important;
     height: auto !important;
     margin: 0 auto;
     display: block !important;
   }
   
   .barcode-label {
-    font-size: 9px;
-    margin-bottom: 3px;
+    font-size: 11px;
+    margin-bottom: 5px;
     font-weight: bold;
     text-align: center;
   }
   
   .barcode-amount {
-    font-size: 9px;
-    margin-top: 3px;
+    font-size: 11px;
+    margin-top: 5px;
     text-align: center;
   }
   
   @media print {
     .qr-code-container {
-      break-inside: avoid;
-      page-break-inside: avoid;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin: 20px auto !important;
     }
     
     .qr-code,
     .amount-barcode {
-      break-inside: avoid;
-      page-break-inside: avoid;
-      margin-left: auto;
-      margin-right: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      background-color: white !important;
+      border: 1px solid #ddd !important;
+      padding: 8px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
     }
     
     .qr-code canvas,
@@ -75,7 +90,7 @@ export const getQRCodeStyles = (): string => `
     .amount-barcode img,
     .amount-barcode svg {
       display: block !important;
-      margin: 0 auto;
+      margin: 0 auto !important;
     }
   }
 `;
