@@ -1,15 +1,18 @@
-
 import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useUsers } from "./hooks/useUsers";
+import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 import UsersContent from "./components/UsersContent";
 import UserDialogs from "./components/UserDialogs";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { allPermissions } = useAuth();
+  const { isConnected, testDatabaseConnection } = useDatabaseConnection();
   const {
     users,
     selectedUser,
@@ -38,7 +41,27 @@ const UserManagement: React.FC = () => {
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false);
   
   return (
-    <div className="container p-4">
+    <div className="container p-4 space-y-4">
+      {!isConnected && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>
+            {isArabic ? "خطأ في الاتصال" : "Connection Error"}
+          </AlertTitle>
+          <AlertDescription>
+            {isArabic 
+              ? "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات." 
+              : "Failed to connect to the database. Please check your settings."}
+          </AlertDescription>
+          <button 
+            onClick={testDatabaseConnection} 
+            className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            {isArabic ? "إعادة الاتصال" : "Reconnect"}
+          </button>
+        </Alert>
+      )}
+
       <UsersContent 
         users={users}
         setIsAddDialogOpen={setIsAddDialogOpen}
