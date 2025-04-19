@@ -1,3 +1,4 @@
+
 import { Product, ProductType, ProductVariant, Size } from "@/types";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -105,22 +106,22 @@ class ProductService {
   }
 
   // Fix the issue with "regular" not being assignable to Size
-const getBaseProduct = (product: Product): ProductBase => {
-  return {
-    id: product.id,
-    name: product.name,
-    nameAr: product.nameAr || "",
-    description: product.description || "",
-    descriptionAr: product.descriptionAr || "", 
-    categoryId: product.categoryId,
-    image: product.image || "",
-    type: product.type,
-    taxable: product.taxable,
-    price: product.type === "single" ? product.price || 0 : undefined,
-    variants: product.type === "sized" ? product.variants : [],
-    size: "medium" as Size, // Use a valid Size value instead of "regular"
-  };
-};
+  getBaseProduct(product: Product): ProductBase {
+    return {
+      id: product.id,
+      name: product.name,
+      nameAr: product.nameAr || "",
+      description: product.description || "",
+      descriptionAr: product.descriptionAr || "", 
+      categoryId: product.categoryId,
+      image: product.image || "",
+      type: product.type,
+      taxable: product.taxable,
+      price: product.type === "single" ? product.price || 0 : undefined,
+      variants: product.type === "sized" ? product.variants : [],
+      size: "medium" as Size, // Use a valid Size value instead of "regular"
+    };
+  }
 }
 
 const productService = new ProductService();
