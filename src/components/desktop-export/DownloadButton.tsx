@@ -9,9 +9,14 @@ export const DownloadButton = () => {
   const { language } = useLanguage();
   const isArabic = language === 'ar';
   
+  // Create a wrapper function that handles the MouseEvent
+  const handleClick = () => {
+    openDownloadLink(false); // Default to EXE file (not ISO)
+  };
+  
   return (
     <Button 
-      onClick={openDownloadLink}
+      onClick={handleClick}
       className="flex items-center gap-2"
       variant="default"
     >
