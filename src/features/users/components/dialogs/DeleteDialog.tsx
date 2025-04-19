@@ -22,13 +22,15 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   if (!selectedUser) return null;
 
   const handleDelete = () => {
-    onDeleteUser();
-    onOpenChange(false);
+    const success = onDeleteUser();
+    if (success !== false) {
+      onOpenChange(false);
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="dark:border-orange-500/40">
+      <DialogContent className="dark:border-orange-500/40" dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
           <DialogTitle>
             {isArabic ? "تأكيد الحذف" : "Confirm Deletion"}

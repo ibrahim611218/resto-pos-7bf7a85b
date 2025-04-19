@@ -53,11 +53,12 @@ export const useUsers = () => {
     try {
       const fetchedUsers = await userService.getUsers();
       if (fetchedUsers && fetchedUsers.length > 0) {
+        console.log("Fetched users:", fetchedUsers);
         setUsers(fetchedUsers);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      // Suppress toast to avoid double toasts with connection error
+      // Don't show toast here to avoid duplicate error messages
     } finally {
       setIsLoading(false);
     }
@@ -66,18 +67,22 @@ export const useUsers = () => {
   useEffect(() => {
     let isMounted = true;
     
-    if (isConnected && isMounted) {
-      fetchUsers();
-    }
+    const loadUsers = async () => {
+      if (isConnected && isMounted) {
+        await fetchUsers();
+      }
+    };
+    
+    loadUsers();
     
     return () => {
       isMounted = false;
     };
   }, [isConnected, fetchUsers]);
 
-  const handleSavePermissionsWrapper = () => {
+  const handleSavePermissionsWrapper = async () => {
     if (!selectedUser) return false;
-    return handleSavePermissions(selectedUser.id);
+    return await handleSavePermissions(selectedUser.id);
   };
 
   return {

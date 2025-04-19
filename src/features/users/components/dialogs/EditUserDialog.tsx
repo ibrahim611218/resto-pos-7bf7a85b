@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserWithPassword } from "../../types";
 import UserForm from "../UserForm";
@@ -28,11 +28,16 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
           <DialogTitle>
             {isArabic ? "تعديل المستخدم" : "Edit User"}
           </DialogTitle>
+          <DialogDescription>
+            {isArabic 
+              ? `تعديل بيانات المستخدم: ${selectedUser.name}` 
+              : `Edit user information for: ${selectedUser.name}`}
+          </DialogDescription>
         </DialogHeader>
         <UserForm
           user={selectedUser}
