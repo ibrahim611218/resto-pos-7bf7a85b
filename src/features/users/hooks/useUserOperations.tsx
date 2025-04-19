@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
@@ -25,7 +24,6 @@ export const useUserOperations = () => {
   const { isConnected } = useDatabaseConnection();
   const canManageAdmins = isOwner();
 
-  // Fetch users from database on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       if (isConnected) {
@@ -44,7 +42,6 @@ export const useUserOperations = () => {
   }, [isConnected]);
 
   const handleAddUser = async () => {
-    // Basic validation
     if (!newUser.name || !newUser.email || !newUser.password) {
       toast({
         title: "خطأ",
@@ -63,7 +60,6 @@ export const useUserOperations = () => {
       return false;
     }
     
-    // Check if email already exists
     if (users.some(user => user.email === newUser.email)) {
       toast({
         title: "خطأ",
@@ -73,7 +69,6 @@ export const useUserOperations = () => {
       return false;
     }
     
-    // Check if trying to create admin/owner without permission
     if ((newUser.role === 'admin' || newUser.role === 'owner') && !canManageAdmins) {
       toast({
         title: "خطأ",
@@ -84,23 +79,18 @@ export const useUserOperations = () => {
     }
     
     try {
-      // Generate new user ID
       const userId = uuidv4();
       const userToAdd = { ...newUser, id: userId, isActive: true };
       
-      // Save to database
       if (isConnected) {
         await userService.saveUser(userToAdd);
         console.log("User saved successfully:", userToAdd);
         
-        // Apply default permissions based on role
         const defaultPermissions = getDefaultPermissionsForRole(newUser.role);
         await userService.updateUserPermissions(userId, defaultPermissions);
         
-        // Update UI
         setUsers([...users, userToAdd]);
         
-        // Reset form
         setNewUser({
           id: "",
           name: "",
@@ -138,7 +128,6 @@ export const useUserOperations = () => {
   const handleEditUser = async () => {
     if (!selectedUser) return false;
     
-    // Basic validation
     if (!selectedUser.name || !selectedUser.email) {
       toast({
         title: "خطأ",
@@ -148,7 +137,6 @@ export const useUserOperations = () => {
       return false;
     }
     
-    // Check if trying to edit to admin/owner without permission
     if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
         title: "خطأ",
@@ -159,11 +147,9 @@ export const useUserOperations = () => {
     }
     
     try {
-      // Update in database
       if (isConnected) {
         await userService.updateUser(selectedUser);
         
-        // Update UI
         setUsers(users.map(user => 
           user.id === selectedUser.id ? { ...selectedUser } : user
         ));
@@ -196,7 +182,6 @@ export const useUserOperations = () => {
   const handleDeleteUser = async () => {
     if (!selectedUser) return false;
     
-    // Check if trying to delete admin/owner without permission
     if ((selectedUser.role === 'admin' || selectedUser.role === 'owner') && !canManageAdmins) {
       toast({
         title: "خطأ",
@@ -207,11 +192,9 @@ export const useUserOperations = () => {
     }
     
     try {
-      // Delete from database
       if (isConnected) {
         await userService.deleteUser(selectedUser.id);
         
-        // Update UI
         setUsers(users.filter(user => user.id !== selectedUser.id));
         
         toast({

@@ -22,10 +22,8 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   if (!selectedUser) return null;
 
   const handleDelete = () => {
-    const success = onDeleteUser();
-    if (success !== false) {
-      onOpenChange(false);
-    }
+    onDeleteUser();
+    onOpenChange(false);
   };
 
   return (
