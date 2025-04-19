@@ -33,12 +33,14 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     const loadData = async () => {
       try {
         setLoading(true);
+        console.log('Loading products and categories data');
         
         if (window.db) {
           const [categoriesResult, productsResult] = await Promise.all([
             window.db.getCategories(),
             window.db.getProducts()
           ]);
+          console.log('Loaded products from db:', productsResult.length);
           setCategories(categoriesResult);
           setProducts(productsResult);
         } else {
@@ -47,6 +49,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
             categoryService.getCategories(),
             productService.getProducts()
           ]);
+          console.log('Loaded products from localStorage:', productsResult.length);
           setCategories(categoriesResult);
           setProducts(productsResult);
         }
@@ -59,6 +62,27 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     };
     
     loadData();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Page is now visible, refreshing products');
+        loadData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const handleProductUpdate = () => {
+      console.log('Product update event detected, refreshing products');
+      loadData();
+    };
+
+    window.addEventListener('product-updated', handleProductUpdate);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('product-updated', handleProductUpdate);
+    };
   }, [isArabic]);
 
   useEffect(() => {
@@ -99,6 +123,8 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       </div>
     );
   }
+
+  console.log('Rendering products grid with', filteredProducts.length, 'products');
   
   return (
     <div className="space-y-4 h-full">

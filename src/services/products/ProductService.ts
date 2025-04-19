@@ -1,4 +1,3 @@
-
 import { Product, ProductType, ProductVariant, Size } from "@/types";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,6 +20,7 @@ class ProductService {
   async getProducts(): Promise<Product[]> {
     const productsString = localStorage.getItem('products');
     const products: Product[] = productsString ? JSON.parse(productsString) : [];
+    console.log(`Retrieved ${products.length} products from localStorage`);
     return products;
   }
 
@@ -31,19 +31,27 @@ class ProductService {
   }
 
   async saveProduct(product: Product): Promise<void> {
+    console.log('Saving product:', product.name);
     const products = await this.getProducts();
     const existingProductIndex = products.findIndex((p) => p.id === product.id);
 
     if (existingProductIndex !== -1) {
+      console.log('Updating existing product');
       products[existingProductIndex] = product;
     } else {
+      console.log('Adding new product');
       products.push(product);
     }
 
     localStorage.setItem('products', JSON.stringify(products));
+    
+    // Dispatch an event to notify that products have been updated
+    console.log('Dispatching product-updated event');
+    window.dispatchEvent(new CustomEvent('product-updated'));
   }
 
   async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
+    console.log('Creating new product:', productData.name);
     const newProduct = {
       id: uuidv4(),
       ...productData,
@@ -53,29 +61,41 @@ class ProductService {
   }
 
   async updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
+    console.log('Updating product:', id);
     const products = await this.getProducts();
     const productIndex = products.findIndex((product) => product.id === id);
 
     if (productIndex === -1) {
+      console.log('Product not found for update');
       return null;
     }
 
     const updatedProduct = { ...products[productIndex], ...updates };
     products[productIndex] = updatedProduct;
     localStorage.setItem('products', JSON.stringify(products));
+    
+    // Dispatch an event to notify that products have been updated
+    window.dispatchEvent(new CustomEvent('product-updated'));
+    
     return updatedProduct;
   }
 
   async deleteProduct(id: string): Promise<boolean> {
+    console.log('Deleting product:', id);
     const products = await this.getProducts();
     const productIndex = products.findIndex((product) => product.id === id);
 
     if (productIndex === -1) {
+      console.log('Product not found for deletion');
       return false;
     }
 
     products.splice(productIndex, 1);
     localStorage.setItem('products', JSON.stringify(products));
+    
+    // Dispatch an event to notify that products have been updated
+    window.dispatchEvent(new CustomEvent('product-updated'));
+    
     return true;
   }
 
@@ -105,7 +125,6 @@ class ProductService {
     localStorage.setItem('products', JSON.stringify(mockProducts));
   }
 
-  // Fix the issue with "regular" not being assignable to Size
   getBaseProduct(product: Product): ProductBase {
     return {
       id: product.id,
