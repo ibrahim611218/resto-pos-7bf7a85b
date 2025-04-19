@@ -42,7 +42,12 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
 };
 
 // Function to handle invoice export (print, pdf, email)
-export const handleInvoiceExport = (type: "print" | "pdf" | "email", invoice: Invoice, settings: BusinessSettings | undefined) => {
+export const handleInvoiceExport = (
+  type: "print" | "pdf" | "email", 
+  invoice: Invoice, 
+  settings: BusinessSettings | undefined,
+  email?: string
+) => {
   if (type === "print") {
     printInvoice(invoice, settings);
   } else if (type === "pdf") {
@@ -50,7 +55,7 @@ export const handleInvoiceExport = (type: "print" | "pdf" | "email", invoice: In
     console.log("Exporting PDF...");
   } else if (type === "email") {
     // Handle email
-    console.log("Sending email...");
+    console.log("Sending email to:", email);
   }
 };
 
@@ -105,10 +110,10 @@ export const printInvoice = (invoice: Invoice, businessSettings: BusinessSetting
 };
 
 // Fix the Customer object to include the required phone property
-export const createCustomerObject = (name: string, taxNumber?: string): Customer => {
+export const createCustomerObject = (name: string, phone: string = "", taxNumber?: string): Customer => {
   return {
     name,
-    phone: "", // Add the required phone property with an empty string as default
+    phone, // Add the required phone property
     taxNumber
   };
 };

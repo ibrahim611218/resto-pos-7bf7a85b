@@ -23,8 +23,8 @@ const TopProductsTable: React.FC<TopProductsTableProps> = ({
       </TableHeader>
       <TableBody>
         {topSellingProducts.map((product) => (
-          <TableRow key={product.productId}>
-            <TableCell>{product.productName}</TableCell>
+          <TableRow key={product.id || product.productId}>
+            <TableCell>{product.name || product.productName}</TableCell>
             <TableCell className="text-right">{product.quantity}</TableCell>
             <TableCell className="text-right">{product.revenue.toFixed(2)} {isArabic ? "ريال" : "SAR"}</TableCell>
           </TableRow>

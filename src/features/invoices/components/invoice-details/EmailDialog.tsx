@@ -23,6 +23,14 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
 }) => {
   if (!show) return null;
   
+  const handleSendEmail = () => {
+    if (email) {
+      // Update to use the correct argument count
+      handleInvoiceExport("email", invoice, settings, email);
+      onClose();
+    }
+  };
+  
   return (
     <div className="border-t pt-3 mt-2">
       <label className="block text-sm font-medium mb-1">البريد الإلكتروني</label>
@@ -35,10 +43,7 @@ export const EmailDialog: React.FC<EmailDialogProps> = ({
           placeholder="أدخل البريد الإلكتروني"
         />
         <Button 
-          onClick={() => {
-            handleInvoiceExport("email", invoice, settings, email);
-            onClose();
-          }}
+          onClick={handleSendEmail}
           disabled={!email}
         >
           إرسال

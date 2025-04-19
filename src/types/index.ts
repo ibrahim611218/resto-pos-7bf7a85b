@@ -179,12 +179,16 @@ export interface SalesByPaymentMethod {
   method: PaymentMethod;
   amount: number;
   count: number;
+  percentage?: number;
+  paymentMethod?: string;  // Added missing property for compatibility
 }
 
 export interface SalesByOrderType {
   type: "takeaway" | "dineIn";
   amount: number;
   count: number;
+  percentage?: number;
+  orderType?: string;  // Added missing property for compatibility
 }
 
 export interface TopSellingProduct {
@@ -193,27 +197,31 @@ export interface TopSellingProduct {
   nameAr?: string;
   quantity: number;
   revenue: number;
+  productId?: string;  // Added missing property for compatibility
+  productName?: string; // Added missing property for compatibility
 }
 
 // VAT Report Types
 export interface VatReportItem {
-  id: string;
-  period: string;
-  startDate: string;
-  endDate: string;
-  totalSales: number;
-  totalVatCollected: number;
-  totalPurchases: number;
-  totalVatPaid: number;
-  netVatDue: number;
-  createdAt: string;
-  status: "draft" | "submitted" | "approved";
+  id?: string;
+  period: {
+    startDate: Date;
+    endDate: Date;
+    type: string;
+  };
+  totalSalesBeforeTax: number;
+  salesTax: number;
+  totalPurchasesBeforeTax: number;
+  purchasesTax: number;
+  netTaxDue: number;
+  createdAt?: string;
+  status?: "draft" | "submitted" | "approved";
 }
 
 export interface VatReportPeriod {
-  label: string;
   startDate: Date;
   endDate: Date;
+  type?: string;
 }
 
 // Purchase Types

@@ -16,13 +16,14 @@ export const useTopProducts = ({ filteredInvoices, isArabic }: TopProductsProps)
       const multiplier = invoice.status === "refunded" ? -1 : 1;
       
       invoice.items.forEach((item) => {
-        const currentProduct = productsMap.get(item.productId) || { 
+        const itemId = item.productId || item.id;
+        const currentProduct = productsMap.get(itemId) || { 
           name: item.name, 
           quantity: 0, 
           revenue: 0 
         };
         
-        productsMap.set(item.productId, {
+        productsMap.set(itemId, {
           name: item.nameAr && isArabic ? item.nameAr : item.name,
           quantity: currentProduct.quantity + (item.quantity * multiplier),
           revenue: currentProduct.revenue + (item.price * item.quantity * multiplier)
@@ -34,10 +35,12 @@ export const useTopProducts = ({ filteredInvoices, isArabic }: TopProductsProps)
     productsMap.forEach((product, productId) => {
       if (product.quantity > 0) { // Only add products with positive quantities
         productsArray.push({
-          productId,
-          productName: product.name,
+          id: productId,
+          name: product.name,
           quantity: product.quantity,
-          revenue: product.revenue
+          revenue: product.revenue,
+          productId: productId,
+          productName: product.name
         });
       }
     });

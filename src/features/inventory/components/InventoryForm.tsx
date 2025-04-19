@@ -1,198 +1,178 @@
-
 import React, { useState, useEffect } from "react";
-import { InventoryItem, Language } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { useNavigate } from "react-router-dom";
+import { InventoryItem } from "@/types";
 import productService from "@/services/products/ProductService";
 import categoryService from "@/services/categories/CategoryService";
 
-interface InventoryFormProps {
-  existingItem: InventoryItem | null;
-  onSubmit: (item: InventoryItem) => void;
-  onCancel: () => void;
-  language: Language;
-}
-
-const InventoryForm: React.FC<InventoryFormProps> = ({
-  existingItem,
-  onSubmit,
-  onCancel,
-  language,
-}) => {
+const InventoryForm = () => {
+  const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [formData, setFormData] = useState<Partial<InventoryItem>>(
-    existingItem || {
-      quantity: 0,
-      lowStockThreshold: 5,
-      unit: "piece",
-      minLevel: 5,
-      maxLevel: 50
-    }
-  );
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
 
-  // Load products and categories
+  const [inventoryItem, setInventoryItem] = useState<InventoryItem>({
+    id: "",
+    productId: "",
+    productName: "",
+    productNameAr: "",
+    quantity: 0,
+    unit: "",
+    minLevel: 0,
+    maxLevel: 0,
+    lowStockThreshold: 0,
+    lastUpdated: new Date().toISOString(),
+    categoryId: "",
+  });
+
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+
   useEffect(() => {
-    const loadData = async () => {
+    const fetchProducts = async () => {
       try {
-        if (window.db) {
-          const [productsData, categoriesData] = await Promise.all([
-            window.db.getProducts(),
-            window.db.getCategories()
-          ]);
-          setProducts(productsData);
-          setCategories(categoriesData);
-        } else {
-          const productsData = productService.getProducts();
-          const categoriesData = categoryService.getCategories();
-          setProducts(productsData);
-          setCategories(categoriesData);
-        }
+        const products = await productService.getProducts();
+        setAllProducts(products);
       } catch (error) {
-        console.error('Error loading products/categories:', error);
+        console.error("Error fetching products:", error);
       }
     };
     
-    loadData();
+    fetchProducts();
   }, []);
 
   useEffect(() => {
-    if (existingItem) {
-      setFormData(existingItem);
-    }
-  }, [existingItem]);
+    const fetchCategories = async () => {
+      try {
+        const categories = await categoryService.getCategories();
+        setAllCategories(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
 
-  const handleProductChange = (productId: string) => {
-    const product = products.find((p) => p.id === productId);
-    if (product) {
-      setFormData({
-        ...formData,
-        productId,
-        productName: product.name,
-        productNameAr: product.nameAr,
-        categoryId: product.categoryId,
-      });
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setInventoryItem(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === "quantity" || name === "lowStockThreshold" || name === "minLevel" || name === "maxLevel" ? parseInt(value) || 0 : value,
-    });
+  const handleSelectChange = (name: string, value: string) => {
+    setInventoryItem(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (name === "productId") {
+      const selectedProduct = allProducts.find(product => product.id === value);
+      if (selectedProduct) {
+        setInventoryItem(prev => ({
+          ...prev,
+          productName: selectedProduct.name,
+          productNameAr: selectedProduct.nameAr || "",
+          categoryId: selectedProduct.categoryId
+        }));
+      }
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.productId || formData.quantity === undefined || formData.lowStockThreshold === undefined) {
-      return;
-    }
-
-    const newItem: InventoryItem = {
-      id: existingItem?.id || `inv-${Date.now()}`,
-      productId: formData.productId!,
-      productName: formData.productName!,
-      productNameAr: formData.productNameAr,
-      quantity: formData.quantity,
-      lowStockThreshold: formData.lowStockThreshold,
-      lastUpdated: new Date().toISOString(),
-      categoryId: formData.categoryId!,
-      unit: formData.unit || "piece",
-      minLevel: formData.minLevel || 5,
-      maxLevel: formData.maxLevel || 50
-    };
-
-    onSubmit(newItem);
+    console.log("Inventory item to save:", inventoryItem);
+    toast.success(isArabic ? "تم حفظ المخزون بنجاح" : "Inventory saved successfully");
+    navigate("/inventory");
   };
 
-  // Group products by category
-  const productsByCategory: Record<string, typeof products> = {};
-  products.forEach(product => {
-    if (!productsByCategory[product.categoryId]) {
-      productsByCategory[product.categoryId] = [];
-    }
-    productsByCategory[product.categoryId].push(product);
-  });
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {!existingItem && (
-        <div className="space-y-2">
-          <Label htmlFor="productId">{isArabic ? "المنتج" : "Product"}</Label>
-          <Select
-            value={formData.productId}
-            onValueChange={handleProductChange}
-            required
-          >
-            <SelectTrigger id="productId">
-              <SelectValue placeholder={isArabic ? "اختر المنتج" : "Select product"} />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map(category => (
-                <React.Fragment key={category.id}>
-                  <SelectItem value={category.id} disabled className="font-bold bg-muted">
-                    {isArabic ? category.nameAr || category.name : category.name}
-                  </SelectItem>
-                  
-                  {productsByCategory[category.id]?.map(product => (
-                    <SelectItem key={product.id} value={product.id} className="pl-6">
-                      {isArabic ? product.nameAr || product.name : product.name}
-                    </SelectItem>
-                  ))}
-                </React.Fragment>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      <div className="space-y-2">
-        <Label htmlFor="quantity">{isArabic ? "الكمية" : "Quantity"}</Label>
-        <Input
-          id="quantity"
-          name="quantity"
-          type="number"
-          min="0"
-          required
-          value={formData.quantity}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="lowStockThreshold">
-          {isArabic ? "حد التنبيه بانخفاض المخزون" : "Low Stock Threshold"}
-        </Label>
-        <Input
-          id="lowStockThreshold"
-          name="lowStockThreshold"
-          type="number"
-          min="1"
-          required
-          value={formData.lowStockThreshold}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="flex justify-between pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          {isArabic ? "إلغاء" : "Cancel"}
-        </Button>
-        <Button type="submit">
-          {existingItem
-            ? isArabic
-              ? "تحديث"
-              : "Update"
-            : isArabic
-            ? "إضافة"
-            : "Add"}
-        </Button>
-      </div>
-    </form>
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>{isArabic ? "إضافة منتج للمخزون" : "Add Product to Inventory"}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="productId">{isArabic ? "المنتج" : "Product"}</Label>
+                <Select onValueChange={(value) => handleSelectChange("productId", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={isArabic ? "اختر منتج" : "Select a product"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allProducts.map(product => (
+                      <SelectItem key={product.id} value={product.id}>
+                        {isArabic ? product.nameAr || product.name : product.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="quantity">{isArabic ? "الكمية" : "Quantity"}</Label>
+                <Input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={inventoryItem.quantity}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="unit">{isArabic ? "الوحدة" : "Unit"}</Label>
+                <Input
+                  type="text"
+                  id="unit"
+                  name="unit"
+                  value={inventoryItem.unit}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="minLevel">{isArabic ? "الحد الأدنى" : "Min. Level"}</Label>
+                <Input
+                  type="number"
+                  id="minLevel"
+                  name="minLevel"
+                  value={inventoryItem.minLevel}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="maxLevel">{isArabic ? "الحد الأقصى" : "Max. Level"}</Label>
+                <Input
+                  type="number"
+                  id="maxLevel"
+                  name="maxLevel"
+                  value={inventoryItem.maxLevel}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="lowStockThreshold">{isArabic ? "تنبيه المخزون المنخفض" : "Low Stock Threshold"}</Label>
+                <Input
+                  type="number"
+                  id="lowStockThreshold"
+                  name="lowStockThreshold"
+                  value={inventoryItem.lowStockThreshold}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <Button type="submit">{isArabic ? "حفظ" : "Save"}</Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

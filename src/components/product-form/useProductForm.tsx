@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, ProductVariant, ProductType } from "@/types";
@@ -29,17 +30,27 @@ export const useProductForm = () => {
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   
   useEffect(() => {
-    if (isEditing) {
-      const products = productService.getProducts();
-      const existingProduct = products.find(p => p.id === id);
+    if (isEditing && id) {
+      // Fetch products and find the one with matching ID
+      const fetchProduct = async () => {
+        try {
+          const products = await productService.getProducts();
+          const existingProduct = products.find(p => p.id === id);
+          
+          if (existingProduct) {
+            setProduct(existingProduct);
+            setVariants([...existingProduct.variants]);
+          } else {
+            toast.error(isArabic ? "المنتج غير موجود" : "Product not found");
+            navigate("/products");
+          }
+        } catch (error) {
+          console.error("Error fetching product:", error);
+          toast.error(isArabic ? "حدث خطأ أثناء جلب المنتج" : "Error fetching product");
+        }
+      };
       
-      if (existingProduct) {
-        setProduct(existingProduct);
-        setVariants([...existingProduct.variants]);
-      } else {
-        toast.error(isArabic ? "المنتج غير موجود" : "Product not found");
-        navigate("/products");
-      }
+      fetchProduct();
     }
   }, [id, isEditing, navigate, isArabic]);
 

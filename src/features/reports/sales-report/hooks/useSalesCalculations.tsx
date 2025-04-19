@@ -36,9 +36,11 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
       const methodLabel = formatPaymentMethod(method, isArabic);
       
       result.push({
-        paymentMethod: methodLabel,
-        amount: Math.abs(amount), // Use absolute value for the chart
-        percentage: totalSales > 0 ? (Math.abs(amount) / Math.abs(totalSales)) * 100 : 0
+        method: method as PaymentMethod,
+        amount: Math.abs(amount),
+        count: 0, // Default count
+        percentage: totalSales > 0 ? (Math.abs(amount) / Math.abs(totalSales)) * 100 : 0,
+        paymentMethod: methodLabel // Add the correctly typed property
       });
     });
     
@@ -68,9 +70,11 @@ export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalcul
       const typeLabel = formatOrderType(type, isArabic);
       
       result.push({
-        orderType: typeLabel,
+        type: type as "takeaway" | "dineIn",
+        amount: 0, // Default amount
         count: Math.abs(count),
-        percentage: filteredInvoices.length > 0 ? (Math.abs(count) / filteredInvoices.length) * 100 : 0
+        percentage: filteredInvoices.length > 0 ? (Math.abs(count) / filteredInvoices.length) * 100 : 0,
+        orderType: typeLabel // Add the correctly typed property
       });
     });
     

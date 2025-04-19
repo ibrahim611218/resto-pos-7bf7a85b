@@ -44,10 +44,10 @@ class ProductService {
   }
 
   async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
-    const newProduct: Product = {
+    const newProduct = {
       id: uuidv4(),
       ...productData,
-    };
+    } as Product;
     await this.saveProduct(newProduct);
     return newProduct;
   }
@@ -119,7 +119,7 @@ class ProductService {
       taxable: product.taxable,
       price: product.type === "single" ? product.price || 0 : undefined,
       variants: product.type === "sized" ? product.variants : [],
-      size: "medium" as Size, // Use a valid Size value instead of "regular"
+      size: "medium" // Now a valid Size value
     };
   }
 }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { VatReportPeriod } from '@/types';
@@ -64,7 +63,7 @@ const VatReportGenerator: React.FC<VatReportGeneratorProps> = ({ onGenerateRepor
     const period: VatReportPeriod = {
       startDate,
       endDate,
-      type: reportType
+      type: reportType // Now matches the updated interface
     };
     
     onGenerateReport(period);
