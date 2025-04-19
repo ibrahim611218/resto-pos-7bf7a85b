@@ -1,4 +1,3 @@
-
 import { KitchenOrder, KitchenOrderStatus, Invoice } from "@/types";
 import { BaseService } from "../base/BaseService";
 
@@ -11,6 +10,7 @@ export interface IKitchenOrderService {
 
 class BrowserKitchenOrderService extends BaseService implements IKitchenOrderService {
   private completedOrdersKey = 'completed-kitchen-orders';
+  private lastCleanupKey = 'last-kitchen-cleanup';
   
   async createKitchenOrder(invoice: Invoice): Promise<KitchenOrder> {
     const kitchenOrder: KitchenOrder = {
@@ -71,11 +71,9 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
       const updatedOrder = orders.find(order => order.id === orderId);
       
       if (updatedOrder) {
-        // تحديث حالة الطلب
         updatedOrder.status = status;
         updatedOrder.updatedAt = new Date().toISOString();
         
-        // إذا كان الطلب مكتملاً، قم بتخزينه في الطلبات المكتملة
         if (status === 'completed') {
           const completedOrders = await this.getCompletedOrders();
           completedOrders.unshift({
@@ -86,7 +84,6 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
         }
       }
 
-      // إزالة الطلبات المكتملة / الملغية من القائمة النشطة
       const activeOrders = status === 'completed' || status === 'cancelled' 
         ? orders.filter(order => order.id !== orderId)
         : orders;
@@ -94,6 +91,78 @@ class BrowserKitchenOrderService extends BaseService implements IKitchenOrderSer
       localStorage.setItem('kitchenOrders', JSON.stringify(activeOrders));
     } catch (error) {
       console.error('Error updating kitchen order status:', error);
+      throw error;
+    }
+  }
+
+  async cleanupOldOrders(): Promise<void> {
+    try {
+      const lastCleanup = localStorage.getItem(this.lastCleanupKey);
+      const today = new Date().toDateString();
+      
+      if (lastCleanup === today) {
+        return;
+      }
+      
+      const completedOrders = await this.getCompletedOrders();
+      if (completedOrders.length > 0) {
+        const ordersToKeep = completedOrders.slice(0, 100);
+        localStorage.setItem(this.completedOrdersKey, JSON.stringify(ordersToKeep));
+      }
+      
+      localStorage.setItem('kitchenOrders', JSON.stringify([]));
+      
+      localStorage.setItem(this.lastCleanupKey, today);
+    } catch (error) {
+      console.error('Error cleaning up old orders:', error);
+      throw error;
+    }
+  }
+
+  async getDailyStats(): Promise<{
+    totalOrders: number;
+    completedOrders: number;
+    completionRate: number;
+    averageCompletionTime: number;
+  }> {
+    try {
+      const [activeOrders, completedOrders] = await Promise.all([
+        this.getKitchenOrders(),
+        this.getCompletedOrders()
+      ]);
+      
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      
+      const todayOrders = [...activeOrders, ...completedOrders].filter(order => {
+        const orderDate = new Date(order.createdAt);
+        return orderDate >= todayStart;
+      });
+      
+      const completed = todayOrders.filter(order => order.status === 'completed');
+      
+      const completionTimes = completed
+        .filter(order => order.completedAt)
+        .map(order => {
+          const start = new Date(order.createdAt).getTime();
+          const end = new Date(order.completedAt!).getTime();
+          return (end - start) / (1000 * 60);
+        });
+      
+      const averageTime = completionTimes.length > 0
+        ? completionTimes.reduce((sum, time) => sum + time, 0) / completionTimes.length
+        : 0;
+      
+      return {
+        totalOrders: todayOrders.length,
+        completedOrders: completed.length,
+        completionRate: todayOrders.length > 0 
+          ? (completed.length / todayOrders.length) * 100 
+          : 0,
+        averageCompletionTime: averageTime
+      };
+    } catch (error) {
+      console.error('Error getting daily stats:', error);
       throw error;
     }
   }

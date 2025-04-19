@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Language } from "@/types";
 import KitchenOrdersList from "./components/KitchenOrdersList";
 import ChefCompletionStats from "./components/ChefCompletionStats";
+import DailyKitchenReport from "./components/DailyKitchenReport";
 
 interface KitchenOrdersProps {
   language: Language;
@@ -27,6 +28,11 @@ const KitchenOrders: React.FC<KitchenOrdersProps> = ({ language }) => {
         >
           {isArabic ? "إحصائيات الشيفات" : "Chef Stats"}
         </button>
+      </div>
+      
+      {/* Add Daily Report Section */}
+      <div className="mb-6">
+        <DailyKitchenReport />
       </div>
       
       {showStats ? (
