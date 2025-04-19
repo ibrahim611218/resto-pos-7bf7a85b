@@ -4,26 +4,6 @@ export class BaseService {
   // Base methods that all services inherit
 }
 
-// Check if we're running in an Electron environment (always false in our case)
+// Always return false to ensure we use localStorage
 export const isElectron = () => false;
 
-// Define a type for the Capacitor window object
-interface CapacitorWindow extends Window {
-  Capacitor?: {
-    isNativePlatform?: () => boolean;
-  };
-}
-
-// Check if we're running in a Capacitor/mobile environment
-export const isCapacitor = () => {
-  return typeof window !== 'undefined' && 
-         'Capacitor' in window && 
-         (window as CapacitorWindow).Capacitor !== undefined &&
-         (window as CapacitorWindow).Capacitor?.isNativePlatform !== undefined && 
-         (window as CapacitorWindow).Capacitor.isNativePlatform();
-};
-
-// This is a platform-agnostic way to determine if we have network connectivity
-export const isOnline = () => {
-  return typeof navigator !== 'undefined' && navigator.onLine;
-};

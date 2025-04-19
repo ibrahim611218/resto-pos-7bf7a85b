@@ -1,6 +1,6 @@
 
 import { Invoice } from "@/types";
-import { BaseService, isElectron, isCapacitor } from "../base/BaseService";
+import { BaseService, isElectron } from "../base/BaseService";
 
 export interface IInvoiceService {
   getInvoices: () => Promise<Invoice[]>;
@@ -10,11 +10,9 @@ export interface IInvoiceService {
 
 // Browser implementation for invoice operations
 class BrowserInvoiceService extends BaseService implements IInvoiceService {
-  private readonly STORAGE_KEY = 'invoices';
-  
   async getInvoices(): Promise<Invoice[]> {
     try {
-      const storedInvoices = localStorage.getItem(this.STORAGE_KEY);
+      const storedInvoices = localStorage.getItem('invoices');
       if (storedInvoices) {
         return JSON.parse(storedInvoices);
       }
@@ -27,15 +25,10 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
 
   async saveInvoice(invoice: Invoice): Promise<{ success: boolean; id?: string; error?: string }> {
     try {
-      const storedInvoices = localStorage.getItem(this.STORAGE_KEY);
+      const storedInvoices = localStorage.getItem('invoices');
       let invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
       invoices = [invoice, ...invoices];
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(invoices));
-      
-      // Dispatch update event for real-time updates
-      window.dispatchEvent(new CustomEvent('invoice-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
-      
+      localStorage.setItem('invoices', JSON.stringify(invoices));
       return { success: true, id: invoice.id };
     } catch (error) {
       console.error('Error saving invoice to localStorage:', error);
@@ -45,7 +38,7 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
 
   async updateInvoice(invoice: Invoice): Promise<{ success: boolean; error?: string }> {
     try {
-      const storedInvoices = localStorage.getItem(this.STORAGE_KEY);
+      const storedInvoices = localStorage.getItem('invoices');
       if (!storedInvoices) {
         return { success: false, error: 'No invoices found' };
       }
@@ -58,12 +51,7 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
       }
       
       invoices[index] = invoice;
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(invoices));
-      
-      // Dispatch update event for real-time updates
-      window.dispatchEvent(new CustomEvent('invoice-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
-      
+      localStorage.setItem('invoices', JSON.stringify(invoices));
       return { success: true };
     } catch (error) {
       console.error('Error updating invoice in localStorage:', error);
@@ -72,15 +60,50 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
   }
 }
 
-// Mobile Native implementation (same as browser in this case, but could be extended)
-class MobileInvoiceService extends BrowserInvoiceService {
-  // For now we'll use the browser implementation with localStorage
-  // This could be extended to use native storage APIs if needed
+// Electron implementation for invoice operations
+class ElectronInvoiceService extends BaseService implements IInvoiceService {
+  async getInvoices(): Promise<Invoice[]> {
+    try {
+      if (isElectron()) {
+        // @ts-ignore - window.db is defined in Electron's preload script
+        return await window.db.getInvoices();
+      }
+      return [];
+    } catch (error) {
+      console.error('Error getting invoices from Electron:', error);
+      return [];
+    }
+  }
+
+  async saveInvoice(invoice: Invoice): Promise<{ success: boolean; id?: string; error?: string }> {
+    try {
+      if (isElectron()) {
+        // @ts-ignore - window.db is defined in Electron's preload script
+        return await window.db.saveInvoice(invoice);
+      }
+      return { success: false, error: 'Electron not available' };
+    } catch (error) {
+      console.error('Error saving invoice in Electron:', error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
+
+  async updateInvoice(invoice: Invoice): Promise<{ success: boolean; error?: string }> {
+    try {
+      if (isElectron()) {
+        // @ts-ignore - window.db is defined in Electron's preload script
+        return await window.db.updateInvoice(invoice);
+      }
+      return { success: false, error: 'Electron not available' };
+    } catch (error) {
+      console.error('Error updating invoice in Electron:', error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
 }
 
 // Create and export the appropriate service based on environment
-const invoiceService = isCapacitor() 
-  ? new MobileInvoiceService() 
-  : new BrowserInvoiceService();
+// Since we're removing desktop functionality, always use BrowserInvoiceService
+const invoiceService = new BrowserInvoiceService();
 
 export default invoiceService;

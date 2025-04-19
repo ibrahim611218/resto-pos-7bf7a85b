@@ -135,7 +135,7 @@ export const useProductForm = () => {
     setVariants(prev => prev.filter(variant => variant.id !== id));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!product.name || !product.categoryId) {
@@ -153,23 +153,22 @@ export const useProductForm = () => {
       return;
     }
 
-    try {
-      const updatedProduct: Product = {
-        ...product,
-        id: isEditing ? product.id : `prod-${Date.now()}`,
-        variants: product.type === "sized" ? variants : [],
-      };
+    const updatedProduct: Product = {
+      ...product,
+      id: isEditing ? product.id : `prod-${Date.now()}`,
+      variants: product.type === "sized" ? variants : [],
+    };
 
-      await productService.saveProduct(updatedProduct);
-      
+    const success = productService.saveProduct(updatedProduct);
+    
+    if (success) {
       const successMessage = isEditing 
         ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
         : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
       
       toast.success(successMessage);
       navigate("/products");
-    } catch (error) {
-      console.error("Error saving product:", error);
+    } else {
       toast.error(isArabic ? "حدث خطأ أثناء حفظ المنتج" : "Error saving product");
     }
   };
