@@ -28,6 +28,7 @@ import Kitchen from "./pages/Kitchen";
 import UserManagementPage from "./pages/UserManagement";
 import Inventory from "./pages/Inventory";
 import Purchases from "./pages/Purchases";
+import LicenseGenerator from "./pages/LicenseGenerator";
 
 // Import Report pages
 import SalesReport from "./pages/SalesReport";
@@ -75,6 +76,7 @@ function App() {
                 <Route path="business-settings" element={<BusinessSettings />} />
                 <Route path="users" element={<UserManagementPage />} />
                 <Route path="user-management" element={<UserManagementPage />} />
+                <Route path="license-generator" element={<LicenseGenerator />} />
 
                 {/* Reports */}
                 <Route path="reports">
