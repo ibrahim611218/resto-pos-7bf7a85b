@@ -7,3 +7,12 @@ export const formatDate = (date: Date, locale = 'en-US'): string => {
     hour12: locale.startsWith('ar'),
   }).format(date);
 };
+
+export const formatCurrency = (amount: number, locale = 'en-US', currency = 'SAR'): string => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
