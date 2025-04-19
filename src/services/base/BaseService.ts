@@ -10,7 +10,9 @@ export const isElectron = () => false;
 // Check if we're running in a Capacitor/mobile environment
 export const isCapacitor = () => {
   return typeof window !== 'undefined' && 
-         window.hasOwnProperty('Capacitor') && 
+         'Capacitor' in window && 
+         window.Capacitor &&
+         window.Capacitor.isNativePlatform && 
          window.Capacitor.isNativePlatform();
 };
 

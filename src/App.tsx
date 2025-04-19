@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/Login";
@@ -10,8 +10,8 @@ import { Toaster } from "./components/ui/toaster";
 import { Toaster as SonnerToaster } from "sonner";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
-import { AuthProvider } from "./features/auth/context/AuthContext";
-import { OfflineProvider } from "./context/OfflineContext"; // Import our new provider
+import { AuthProvider } from "./features/auth/hooks/useAuth"; // Corrected import path
+import { OfflineProvider } from "./context/OfflineContext";
 
 // Import your pages
 import Home from "./pages/Index";
@@ -39,49 +39,51 @@ import "@/styles/index";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light">
-      <LanguageProvider defaultLanguage="ar">
+    <ThemeProvider>
+      <LanguageProvider>
         <AuthProvider>
-          <OfflineProvider> {/* Add the OfflineProvider here */}
-            <BrowserRouter>
-              <Routes>
-                <Route path="/login" element={<Login />} />
+          <OfflineProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
 
-                <Route path="/" element={<ProtectedRoute element={<MainLayout />} />}>
-                  <Route index element={<Home />} />
-                  <Route path="pos" element={<Pos />} />
-                  <Route path="products">
-                    <Route index element={<Products />} />
-                    <Route path="add" element={<ProductForm />} />
-                    <Route path="edit/:id" element={<ProductForm />} />
-                  </Route>
-                  <Route path="categories">
-                    <Route index element={<Categories />} />
-                    <Route path="add" element={<CategoryForm />} />
-                    <Route path="edit/:id" element={<CategoryForm />} />
-                  </Route>
-                  <Route path="customers" element={<Customers />} />
-                  <Route path="invoices" element={<Invoices />} />
-                  <Route path="retrieve-invoice" element={<RetrieveInvoicePage />} />
-                  <Route path="kitchen" element={<Kitchen />} />
-                  <Route path="settings" element={<BusinessSettings />} />
-                  <Route path="users" element={<UserManagementPage />} />
-
-                  {/* Reports */}
-                  <Route path="reports">
-                    <Route path="sales" element={<SalesReport />} />
-                    <Route path="customers" element={<CustomersReport />} />
-                    <Route path="vat" element={<VatReport />} />
-                    <Route path="inventory" element={<InventoryReport />} />
-                  </Route>
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Home />} />
+                <Route path="pos" element={<Pos />} />
+                <Route path="products">
+                  <Route index element={<Products />} />
+                  <Route path="add" element={<ProductForm />} />
+                  <Route path="edit/:id" element={<ProductForm />} />
                 </Route>
+                <Route path="categories">
+                  <Route index element={<Categories />} />
+                  <Route path="add" element={<CategoryForm />} />
+                  <Route path="edit/:id" element={<CategoryForm />} />
+                </Route>
+                <Route path="customers" element={<Customers />} />
+                <Route path="invoices" element={<Invoices />} />
+                <Route path="retrieve-invoice" element={<RetrieveInvoicePage />} />
+                <Route path="kitchen" element={<Kitchen />} />
+                <Route path="settings" element={<BusinessSettings />} />
+                <Route path="users" element={<UserManagementPage />} />
 
-                <Route path="/unauthorized" element={<Unauthorized />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <SonnerToaster position="top-right" />
-              <Toaster />
-            </BrowserRouter>
+                {/* Reports */}
+                <Route path="reports">
+                  <Route path="sales" element={<SalesReport />} />
+                  <Route path="customers" element={<CustomersReport />} />
+                  <Route path="vat" element={<VatReport />} />
+                  <Route path="inventory" element={<InventoryReport />} />
+                </Route>
+              </Route>
+
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <SonnerToaster position="top-right" />
+            <Toaster />
           </OfflineProvider>
         </AuthProvider>
       </LanguageProvider>
