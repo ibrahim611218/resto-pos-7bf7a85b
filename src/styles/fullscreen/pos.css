@@ -1,81 +1,31 @@
 
-/* Fix POS layout in both fullscreen and normal modes */
-.pos-screen {
-  height: 100dvh !important;
-  max-height: 100dvh !important;
-  width: 100% !important;
-  overflow: hidden !important;
-  contain: layout !important;
+.invoice-dialog-content {
+  height: 95vh;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-/* Cart panel layout */
-.cart-panel {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  border-left: 1px solid var(--border) !important;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1) !important;
-  width: 100% !important;
-  max-width: 400px !important;
-  margin-right: 0 !important;
-  background-color: var(--background) !important;
+.invoice-content-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 1rem;
 }
 
-/* Cart content scroll fix */
-.cart-content {
-  flex: 1 !important;
-  overflow: auto !important;
-  display: flex !important;
-  flex-direction: column !important;
+.invoice-header-fixed {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
 }
 
-/* Header and footer fixes */
-.cart-header,
-.cart-footer {
-  flex-shrink: 0 !important;
-  background-color: var(--background) !important;
-  position: relative !important;
-  z-index: 10 !important;
-}
-
-/* Products section layout */
-.products-section {
-  flex: 1 !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-right: 0.5rem !important;
-  height: 100% !important;
-}
-
-/* Scroll area fixes */
-.pos-scroll-area {
-  height: 100% !important;
-  overflow: hidden !important;
-}
-
-/* Responsive grid adjustments */
-@media (max-width: 1024px) {
-  .cart-panel {
-    position: fixed !important;
-    right: 0 !important;
-    top: 0 !important;
-    height: 100dvh !important;
-    z-index: 50 !important;
-  }
-}
-
-/* Product grid container */
-.product-grid-container {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-  gap: 0.5rem !important;
-  padding: 0.5rem !important;
-}
-
-/* Product card size constraints */
-.product-card {
-  max-width: 200px !important;
-  margin: 0 auto !important;
-  width: 100% !important;
+.invoice-footer-fixed {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 10;
+  padding-top: 1rem;
+  margin-top: auto;
+  border-top: 1px solid #e5e7eb;
 }

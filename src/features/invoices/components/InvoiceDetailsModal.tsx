@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Invoice, Size } from "@/types";
+import { Invoice } from "@/types";
 import { generateInvoiceQRCodeData } from "@/utils/invoice";
 import { handleInvoiceExport } from "@/utils/invoice/export";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
@@ -42,16 +42,13 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
   const qrCodeData = generateInvoiceQRCodeData(invoice);
 
-  // Calculate discount amount
   const discountAmount = invoice.discount && invoice.discountType === "percentage" 
     ? (invoice.subtotal + invoice.taxAmount) * (invoice.discount / 100)
     : invoice.discount || 0;
 
-  // Handle print using handleInvoiceExport with complete data
   const handlePrint = () => {
     console.log("Printing invoice:", invoice.id, invoice.number);
     if (invoice && settings) {
-      // Pass the complete invoice object and settings
       handleInvoiceExport("print", invoice, settings);
     } else {
       console.error("Missing invoice or settings for printing", {
@@ -63,60 +60,59 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="flex-shrink-0">
+      <DialogContent className="max-w-3xl max-h-[95vh] flex flex-col overflow-hidden p-4">
+        <div className="flex-1 flex flex-col min-h-0">
           <InvoiceHeader 
             invoice={invoice} 
             settings={settings}
             formatInvoiceDate={formatInvoiceDate}
           />
-        </div>
 
-        <ScrollArea className="flex-1 my-4">
-          <div className="space-y-4 relative" id="invoice-printable-content">
-            {invoice.status === "refunded" && (
-              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                <div className="transform rotate-45 text-red-500/20 text-6xl font-bold">
-                  مسترجعة
+          <ScrollArea className="flex-1 my-4 pr-4">
+            <div className="space-y-4" id="invoice-printable-content">
+              {invoice.status === "refunded" && (
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                  <div className="transform rotate-45 text-red-500/20 text-6xl font-bold">
+                    مسترجعة
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <InvoiceSummary 
-              invoice={invoice} 
+              <InvoiceSummary 
+                invoice={invoice} 
+                settings={settings}
+                discountAmount={discountAmount}
+              />
+
+              <Separator />
+
+              <InvoiceItems items={invoice.items.map(item => ({
+                ...item,
+                productId: item.productId || "",
+                variantId: item.variantId || "",
+                categoryId: "",
+                size: item.size || "regular",
+                taxable: !!item.taxable
+              }))} />
+
+              <Separator />
+
+              <InvoiceQRCode 
+                qrCodeData={qrCodeData}
+                notes={settings?.invoiceNotesAr}
+              />
+            </div>
+          </ScrollArea>
+
+          <div className="pt-4 mt-auto border-t">
+            <InvoiceActions 
+              invoice={invoice}
               settings={settings}
-              discountAmount={discountAmount}
-            />
-
-            <Separator />
-
-            {/* Convert InvoiceItem[] to be compatible with CartItem[] interface requirements */}
-            <InvoiceItems items={invoice.items.map(item => ({
-              ...item,
-              productId: item.productId || "",
-              variantId: item.variantId || "",
-              categoryId: "",
-              size: (item.size as Size) || "regular",
-              taxable: !!item.taxable
-            }))} />
-
-            <Separator />
-
-            <InvoiceQRCode 
-              qrCodeData={qrCodeData}
-              notes={settings?.invoiceNotesAr}
+              onPrint={handlePrint}
+              onShowEmailDialog={() => setShowEmailDialog(true)}
+              onRefund={onRefund ? () => onRefund(invoice) : undefined}
             />
           </div>
-        </ScrollArea>
-
-        <div className="flex-shrink-0 pt-4 border-t">
-          <InvoiceActions 
-            invoice={invoice}
-            settings={settings}
-            onPrint={handlePrint}
-            onShowEmailDialog={() => setShowEmailDialog(true)}
-            onRefund={onRefund ? () => onRefund(invoice) : undefined}
-          />
         </div>
         
         <EmailDialog 
