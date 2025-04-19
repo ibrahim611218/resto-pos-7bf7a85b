@@ -6,16 +6,16 @@ export const getTableStyles = (): string => `
   .invoice-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 15px 0;
+    margin: 8px 0;
     table-layout: fixed;
   }
   
   .invoice-table th,
   .invoice-table td {
-    padding: 8px 5px;
+    padding: 5px 3px;
     border: 1px solid #e0e0e0;
     text-align: right;
-    font-size: 12px;
+    font-size: 11px;
     overflow-wrap: break-word;
     word-wrap: break-word;
     max-width: 100%;
@@ -46,16 +46,17 @@ export const getTableStyles = (): string => `
   
   .invoice-empty-items {
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     border: 1px dashed #ccc;
     border-radius: 5px;
     color: #999;
-    margin: 15px 0;
+    margin: 12px 0;
   }
   
   @media print {
     .invoice-table {
       page-break-inside: auto;
+      font-size: 10px;
     }
     
     .invoice-table tr {
@@ -69,6 +70,12 @@ export const getTableStyles = (): string => `
     
     .invoice-table tfoot {
       display: table-footer-group;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+      padding: 4px 2px;
+      font-size: 10px;
     }
   }
 `;

@@ -5,12 +5,12 @@
 export const getHeaderStyles = (): string => `
   .invoice-header { 
     text-align: center; 
-    margin-bottom: 20px; 
+    margin-bottom: 10px; 
   }
   
   .logo { 
-    max-width: 150px; 
-    max-height: 80px; 
+    max-width: 120px; 
+    max-height: 60px; 
     margin: 0 auto;
     display: block;
   }
@@ -20,14 +20,14 @@ export const getHeaderStyles = (): string => `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
   
   .brand-name {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     display: inline-block;
-    margin-top: 5px;
+    margin-top: 3px;
   }
   
   .brand-name-primary {

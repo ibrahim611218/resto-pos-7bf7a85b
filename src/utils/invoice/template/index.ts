@@ -50,11 +50,34 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
         ${getInvoiceStyles()}
+        /* Ensure invoice fits on one page */
+        @page {
+          size: ${isPdf ? 'A4' : '80mm auto'};
+          margin: ${isPdf ? '5mm' : '0'};
+        }
+        * {
+          box-sizing: border-box;
+        }
+        body, html {
+          margin: 0;
+          padding: 0;
+        }
+        .invoice-container {
+          page-break-inside: avoid;
+          page-break-after: always;
+        }
+        .compact-invoice {
+          font-size: 95%;
+          line-height: 1.2;
+        }
+        .compact-invoice p {
+          margin: 3px 0;
+        }
       </style>
       <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     </head>
     <body>
-      <div class="${containerClass} delayed-content">
+      <div class="${containerClass} delayed-content compact-invoice">
         ${refundedWatermark}
         
         ${generateInvoiceHeader(settings)}

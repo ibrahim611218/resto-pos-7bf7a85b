@@ -24,7 +24,7 @@ export const getBaseStyles = (): string => `
     width: 100%;
     max-width: 80mm; /* Standard thermal receipt width */
     margin: 0 auto;
-    padding: 6mm;
+    padding: 5mm;
     box-sizing: border-box;
   }
 
@@ -32,22 +32,22 @@ export const getBaseStyles = (): string => `
   .pdf-mode {
     max-width: 100%;
     width: 210mm; /* A4 width */
-    padding: 10mm;
+    padding: 8mm;
     margin: 0 auto;
     box-sizing: border-box;
   }
   
   .pdf-mode .invoice-header {
-    margin-bottom: 20px;
-  }
-  
-  .pdf-mode .invoice-title {
-    font-size: 20px;
     margin-bottom: 10px;
   }
   
+  .pdf-mode .invoice-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
   .pdf-mode .business-details {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   
   /* Print media settings */
@@ -62,7 +62,7 @@ export const getBaseStyles = (): string => `
     .pdf-mode {
       @page {
         size: A4;
-        margin: 10mm;
+        margin: 5mm;
       }
     }
     
@@ -80,7 +80,7 @@ export const getBaseStyles = (): string => `
       width: 80mm;
       max-width: none;
       margin: 0;
-      padding: 3mm;
+      padding: 2mm;
       box-sizing: border-box;
       page-break-after: avoid;
     }
@@ -101,18 +101,19 @@ export const getBaseStyles = (): string => `
   p, h1, h2, h3, h4, span, div, td, th {
     overflow-wrap: break-word;
     word-wrap: break-word;
+    font-size: 95%;
   }
   
   /* Table styles for A4 PDF */
   .pdf-mode .invoice-table {
     width: 100%;
-    margin: 15px 0;
+    margin: 10px 0;
     border-collapse: collapse;
   }
   
   .pdf-mode .invoice-table th {
-    padding: 8px;
-    font-size: 14px;
+    padding: 6px;
+    font-size: 13px;
     font-weight: bold;
     background-color: #f7f7f7;
     border-bottom: 2px solid #ddd;
@@ -120,22 +121,22 @@ export const getBaseStyles = (): string => `
   }
   
   .pdf-mode .invoice-table td {
-    padding: 8px;
-    font-size: 14px;
+    padding: 6px;
+    font-size: 13px;
     border-bottom: 1px solid #eee;
   }
   
   .pdf-mode .invoice-summary {
-    margin-top: 20px;
-    font-size: 14px;
+    margin-top: 15px;
+    font-size: 13px;
   }
   
   .pdf-mode .invoice-footer {
-    margin-top: 20px;
-    font-size: 12px;
+    margin-top: 15px;
+    font-size: 11px;
   }
   
   .pdf-mode .qr-code-container {
-    margin: 20px auto;
+    margin: 15px auto;
   }
 `;
