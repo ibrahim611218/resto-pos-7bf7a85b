@@ -1,7 +1,14 @@
 
 /**
- * Opens a new window with the content to be printed
+ * Sets up print window with options
  */
+export interface PrintWindowOptions {
+  title?: string;
+  printAutomatically?: boolean;
+  delay?: number;
+  isPdf?: boolean;
+}
+
 export const openPrintWindow = (content: string): Window | null => {
   try {
     const printWindow = window.open('', '_blank');
@@ -20,16 +27,6 @@ export const openPrintWindow = (content: string): Window | null => {
     return null;
   }
 };
-
-/**
- * Sets up print window with options
- */
-export interface PrintWindowOptions {
-  title?: string;
-  printAutomatically?: boolean;
-  delay?: number;
-  isPdf?: boolean;
-}
 
 export const setupPrintWindow = (
   printWindow: Window,
@@ -73,3 +70,4 @@ export const setupPrintWindow = (
     }, delay);
   }
 };
+

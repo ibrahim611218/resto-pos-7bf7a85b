@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { printInvoice } from "./print";
 import { exportInvoiceToPDF } from "./pdf";
 import { emailInvoice } from "./email";
+import type { PrintWindowOptions } from "./print-helpers";  // Explicitly import type
 
 /**
  * Handles different types of invoice exports
@@ -41,6 +42,6 @@ export const handleInvoiceExport = (
 export * from "./print";
 export * from "./pdf";
 export * from "./email";
-export * from "./types";
+export type { PrintWindowOptions } from "./print-helpers";  // Explicitly export type
 export * from "./qr-helpers";
-export * from "./print-helpers";
+
