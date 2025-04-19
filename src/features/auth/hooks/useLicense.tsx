@@ -13,6 +13,35 @@ export const useLicense = () => {
   const navigate = useNavigate();
   const initialCheckComplete = useRef(false);
   const checkInProgress = useRef(false);
+  const isOffline = useRef(false);
+
+  // Listen for online/offline events
+  useEffect(() => {
+    const handleOnline = () => {
+      console.log("Browser is online, checking license");
+      isOffline.current = false;
+      if (initialCheckComplete.current) {
+        // Only recheck if we've already done the initial check
+        checkLicense();
+      }
+    };
+    
+    const handleOffline = () => {
+      console.log("Browser is offline, using cached license");
+      isOffline.current = true;
+    };
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Set initial offline state
+    isOffline.current = !navigator.onLine;
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Optimized check if license is active with timeout protection
   const checkLicense = async () => {
@@ -20,6 +49,12 @@ export const useLicense = () => {
       // Prevent multiple simultaneous checks
       if (checkInProgress.current) {
         console.log("License check already in progress, skipping duplicate request");
+        return licenseStatus.isActive;
+      }
+      
+      // If we're offline, use cached license status
+      if (isOffline.current) {
+        console.log("Currently offline, using cached license status");
         return licenseStatus.isActive;
       }
       
@@ -32,7 +67,7 @@ export const useLicense = () => {
         setTimeout(() => {
           console.log("License check timeout, using cached or default license");
           resolve(license || createDefaultLicense());
-        }, 2500); // 2.5 second timeout
+        }, 1500); // Reduced to 1.5 second timeout (down from 2.5s)
       });
       
       // Race between actual check and timeout
@@ -49,7 +84,7 @@ export const useLicense = () => {
         setTimeout(() => {
           console.log("License status check timeout, using default active status");
           resolve({ isActive: true });
-        }, 1500); // 1.5 second timeout
+        }, 1000); // Reduced to 1 second timeout (down from 1.5s)
       });
       
       const status = await Promise.race([
@@ -119,6 +154,13 @@ export const useLicense = () => {
 
   // Activate a license with improved error handling
   const activateLicense = async (licenseKey: string): Promise<boolean> => {
+    // If we're offline, show an error
+    if (!navigator.onLine) {
+      console.error('Cannot activate license while offline');
+      toast.error('تعذر الاتصال بخادم التفعيل، يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى');
+      return false;
+    }
+    
     if (!licenseKey || licenseKey.trim() === '') {
       console.error('Invalid license key provided');
       return false;
@@ -128,8 +170,21 @@ export const useLicense = () => {
       console.log("بدء عملية التفعيل للرمز:", licenseKey);
       setIsLoading(true);
       
-      // تنفيذ عملية التفعيل
-      const result = await licenseService.activateLicense(licenseKey.trim());
+      // تنفيذ عملية التفعيل مع حماية الوقت المستغرق
+      const activationPromise = licenseService.activateLicense(licenseKey.trim());
+      
+      // إضافة مهلة زمنية لمنع الانتظار للأبد
+      const timeoutPromise = new Promise<{success: false, message: string}>((resolve) => {
+        setTimeout(() => {
+          resolve({
+            success: false, 
+            message: 'انتهت مهلة الاتصال بخادم التفعيل'
+          });
+        }, 5000); // 5 second timeout
+      });
+      
+      // سباق بين عملية التفعيل والمهلة الزمنية
+      const result = await Promise.race([activationPromise, timeoutPromise]);
       console.log("نتيجة التفعيل:", result);
       
       if (result && result.success) {
@@ -202,7 +257,7 @@ export const useLicense = () => {
         console.log("Initial license check timed out, using default active state");
         setLicenseStatus({ isActive: true });
         setIsLoading(false);
-      }, 3000); // 3 second timeout for initial check
+      }, 2000); // Reduced to 2 second timeout for initial check (from 3s)
       
       try {
         await checkLicense();

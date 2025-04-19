@@ -41,8 +41,8 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
 
   async getActivatedLicense(): Promise<License | null> {
     try {
-      // Minimal delay for browser environment (200ms)
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Shortened delay for browser environment (100ms)
+      await new Promise(resolve => setTimeout(resolve, 100));
       return this.getStoredLicense();
     } catch (error) {
       console.error('Error in getActivatedLicense:', error);
@@ -61,8 +61,17 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
     }
     
     try {
-      // Add a small delay to simulate network latency
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Reduced delay to simulate faster network response (200ms)
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Validate license key format (simple validation)
+      const keyPattern = /^[A-Z0-9]{4,16}$/;
+      if (!keyPattern.test(licenseKey.replace(/-/g, ''))) {
+        return {
+          success: false,
+          message: 'تنسيق رمز التفعيل غير صحيح'
+        };
+      }
       
       // Mock activation - in a real browser app, this would call an API
       const mockLicense: License = {
@@ -155,8 +164,8 @@ export class BrowserLicenseService extends BaseService implements ILicenseServic
 
   async getLicenseStatus(): Promise<LicenseStatus> {
     try {
-      // Minimal delay
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Minimal delay (50ms)
+      await new Promise(resolve => setTimeout(resolve, 50));
       const license = this.getStoredLicense();
       return calculateLicenseStatus(license);
     } catch (error) {

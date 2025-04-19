@@ -1,84 +1,114 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Key } from 'lucide-react';
+import { Key, WifiOff } from 'lucide-react';
 import { useLicense } from '../hooks/useLicense';
 import { useNavigate } from 'react-router-dom';
 import AnimatedTransition from '@/components/ui-custom/AnimatedTransition';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const LicenseActivation: React.FC = () => {
   const [licenseKey, setLicenseKey] = useState('');
   const [isActivating, setIsActivating] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
   const { activateLicense } = useLicense();
   const navigate = useNavigate();
   
+  // Check for an internet connection
+  useEffect(() => {
+    const checkConnection = () => {
+      setConnectionError(!navigator.onLine);
+    };
+    
+    // Check initially
+    checkConnection();
+    
+    // Listen for online/offline events
+    window.addEventListener('online', () => setConnectionError(false));
+    window.addEventListener('offline', () => setConnectionError(true));
+    
+    return () => {
+      window.removeEventListener('online', () => setConnectionError(false));
+      window.removeEventListener('offline', () => setConnectionError(true));
+    };
+  }, []);
+  
   const handleActivate = async () => {
-    // التحقق من إدخال رمز التفعيل
+    // Check for internet connection
+    if (!navigator.onLine) {
+      toast.error('يرجى التأكد من اتصال الإنترنت والمحاولة مرة أخرى');
+      setConnectionError(true);
+      return;
+    }
+    
+    // Validate license key input
     if (!licenseKey.trim()) {
       toast.error('الرجاء إدخال رمز التفعيل');
       return;
     }
     
-    // منع النقرات المتعددة
+    // Prevent multiple clicks
     if (isActivating) {
       return;
     }
     
-    // تعيين حالة التفعيل إلى قيد التنفيذ
+    // Set activation state to in progress
     setIsActivating(true);
+    setConnectionError(false);
     
-    // إظهار رسالة للمستخدم أن عملية التفعيل قيد التنفيذ
+    // Show a message to the user that activation is in progress
     const toastId = toast.loading('جاري التحقق من رمز التفعيل...', {
-      duration: 10000 // وقت أطول لضمان استمرار الرسالة
+      duration: 10000 // Longer duration to ensure message persists
     });
 
-    // أضف تأخير صغير لضمان تحديث واجهة المستخدم أولاً
+    // Add a small delay to ensure the UI updates first
     await new Promise(resolve => setTimeout(resolve, 10));
 
     try {
-      // استدعاء وظيفة التفعيل بشكل مباشر مع await
+      // Call the activation function directly with await
       const success = await activateLicense(licenseKey);
       
-      // إزالة رسالة التحميل
+      // Remove loading toast
       toast.dismiss(toastId);
       
       if (success) {
-        // إظهار رسالة النجاح
+        // Show success message
         toast.success('تم تفعيل الترخيص بنجاح');
         
-        // الانتقال إلى الصفحة الرئيسية بعد تأخير قصير
-        // للسماح بعرض رسالة النجاح
+        // Navigate to home page after a short delay
+        // to allow success message to be seen
         setTimeout(() => {
           navigate('/', { replace: true });
         }, 500);
       } else {
-        // إظهار رسالة الخطأ
+        // Show error message
         toast.error('فشل تفعيل الرمز، يرجى التأكد من صحة الرمز والمحاولة مرة أخرى');
       }
     } catch (error) {
-      // إزالة رسالة التحميل في حالة حدوث خطأ
+      // Remove loading toast in case of error
       toast.dismiss(toastId);
       console.error('خطأ في التفعيل:', error);
-      toast.error('حدث خطأ غير متوقع أثناء التفعيل، يرجى المحاولة مرة أخرى');
+      setConnectionError(true);
+      toast.error('حدث خطأ أثناء الاتصال بخادم التفعيل، يرجى التأكد من اتصال الإنترنت والمحاولة مرة أخرى');
     } finally {
-      // التأكد من إعادة تعيين حالة التفعيل في جميع الحالات
+      // Make sure to reset activation state in all cases
       setIsActivating(false);
     }
   };
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isActivating) {
-      e.preventDefault(); // منع السلوك الافتراضي
+      e.preventDefault(); // Prevent default behavior
       handleActivate();
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // تنسيق رمز التفعيل تلقائياً (إزالة المسافات الزائدة)
+    // Format activation code automatically (remove extra spaces)
     setLicenseKey(e.target.value.trim().toUpperCase());
   };
   
@@ -96,6 +126,16 @@ const LicenseActivation: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {connectionError && (
+              <Alert variant="destructive" className="mb-4 flex items-center justify-between">
+                <div className="flex items-center">
+                  <WifiOff className="h-4 w-4 mr-2" />
+                  <AlertDescription>
+                    تجاوز وقت التحقق من الترخيص، يرجى التأكد من اتصال الإنترنت
+                  </AlertDescription>
+                </div>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Label htmlFor="license-key">رمز التفعيل</Label>
               <Input
@@ -107,7 +147,7 @@ const LicenseActivation: React.FC = () => {
                 className="h-12 text-center tracking-widest"
                 disabled={isActivating}
                 autoComplete="off"
-                maxLength={19} // 16 أحرف + 3 شرطات
+                maxLength={19} // 16 characters + 3 dashes
               />
             </div>
           </CardContent>
@@ -115,7 +155,7 @@ const LicenseActivation: React.FC = () => {
             <Button
               className="w-full h-12"
               onClick={handleActivate}
-              disabled={isActivating}
+              disabled={isActivating || connectionError}
             >
               {isActivating ? 'جاري التفعيل...' : 'تفعيل البرنامج'}
             </Button>

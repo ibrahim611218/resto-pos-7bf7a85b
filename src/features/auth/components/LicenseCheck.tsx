@@ -1,12 +1,12 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useLicense } from '../hooks/useLicense';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, WifiOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import LicenseCheckLoading from './LicenseCheckLoading';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 const LicenseCheck: React.FC = () => {
   const { checkLicense, getLicenseInfo } = useLicense();
@@ -16,10 +16,25 @@ const LicenseCheck: React.FC = () => {
   const [expiryDays, setExpiryDays] = useState<number | null>(null);
   const [hasError, setHasError] = useState(false);
   const [skipCheck, setSkipCheck] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
   
   // Add a ref to prevent multiple check attempts
   const checkAttempted = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Listen for online/offline events
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
   
   // Optimize the check for admin user
   const isAdminUser = React.useMemo(() => {
@@ -39,10 +54,28 @@ const LicenseCheck: React.FC = () => {
         setIsChecking(false);
         toast.warning('تم تجاوز التحقق من الترخيص مؤقتًا، ستتم المحاولة لاحقًا');
       }
-    }, 5000); // Reduced timeout to 5 seconds
+    }, 4000); // Further reduced timeout to 4 seconds
     
     return () => clearTimeout(skipTimeout);
   }, [isChecking]);
+
+  // Retry license check when coming back online
+  useEffect(() => {
+    if (!isOffline && hasError) {
+      // If we were offline and now we're online again, retry
+      const retryCheck = async () => {
+        setIsChecking(true);
+        setHasError(false);
+        try {
+          await checkLicense();
+        } finally {
+          setIsChecking(false);
+        }
+      };
+      
+      retryCheck();
+    }
+  }, [isOffline, hasError, checkLicense]);
   
   useEffect(() => {
     let isMounted = true;
@@ -69,10 +102,15 @@ const LicenseCheck: React.FC = () => {
           console.log("License check timeout in LicenseCheck component");
           setIsChecking(false);
           setHasError(true);
-          toast.error('فشل التحقق من الترخيص، يرجى المحاولة مرة أخرى');
-          navigate('/activate', { replace: true });
+          
+          if (isOffline) {
+            toast.error('لا يمكن التحقق من الترخيص، تأكد من اتصالك بالإنترنت');
+          } else {
+            toast.error('فشل التحقق من الترخيص، يرجى المحاولة مرة أخرى');
+            navigate('/activate', { replace: true });
+          }
         }
-      }, 7000); // 7 second timeout
+      }, 5000); // 5 second timeout (reduced from 7s)
       
       try {
         if (!isMounted) return;
@@ -124,11 +162,62 @@ const LicenseCheck: React.FC = () => {
       isMounted = false;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [checkLicense, getLicenseInfo, navigate, isAdminUser, skipCheck]);
+  }, [checkLicense, getLicenseInfo, navigate, isAdminUser, skipCheck, isOffline]);
+  
+  // Manual retry function
+  const handleRetryCheck = async () => {
+    setIsChecking(true);
+    setHasError(false);
+    checkAttempted.current = false; // Reset so we can check again
+    
+    try {
+      // Directly navigate to activation if offline
+      if (!navigator.onLine) {
+        navigate('/activate');
+        return;
+      }
+      
+      // Otherwise try the check again
+      const success = await checkLicense();
+      if (!success) {
+        navigate('/activate');
+      }
+    } catch (error) {
+      console.error("Error during retry:", error);
+      setHasError(true);
+      toast.error('فشل التحقق من الترخيص مرة أخرى');
+    } finally {
+      setIsChecking(false);
+    }
+  };
   
   // Show loading only if needed and not skipped
   if (isChecking && !skipCheck) {
     return <LicenseCheckLoading />;
+  }
+  
+  // If there's a connection error but we're not skipping, show retry option
+  if (hasError && isOffline && !skipCheck) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-6">
+        <Alert variant="destructive" className="mb-8 max-w-md">
+          <WifiOff className="h-5 w-5" />
+          <AlertTitle>لا يوجد اتصال بالإنترنت</AlertTitle>
+          <AlertDescription>
+            تعذر التحقق من الترخيص بسبب عدم وجود اتصال بالإنترنت. يرجى التأكد من اتصالك ثم المحاولة مرة أخرى.
+          </AlertDescription>
+        </Alert>
+        
+        <div className="flex gap-4">
+          <Button onClick={handleRetryCheck} variant="outline">
+            إعادة المحاولة
+          </Button>
+          <Button onClick={() => navigate('/activate')}>
+            الانتقال إلى صفحة التفعيل
+          </Button>
+        </div>
+      </div>
+    );
   }
   
   // If there's an error, we'll let the navigate in the effect handle it

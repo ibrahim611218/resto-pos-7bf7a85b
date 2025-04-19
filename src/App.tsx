@@ -52,6 +52,21 @@ const LoadingFallback = () => {
 
 function App() {
   const { language } = useLanguage();
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  
+  // Monitor online status
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
   
   // Pre-load license information when app starts
   useEffect(() => {
@@ -71,6 +86,18 @@ function App() {
       console.log("Created default license for faster startup");
     }
   }, []);
+  
+  // Show offline warning if needed
+  useEffect(() => {
+    if (isOffline) {
+      toast.warning('لا يوجد اتصال بالإنترنت، بعض الميزات قد لا تعمل بشكل صحيح', {
+        duration: 5000,
+        id: 'offline-warning'
+      });
+    } else {
+      toast.dismiss('offline-warning');
+    }
+  }, [isOffline]);
   
   return (
     <>
