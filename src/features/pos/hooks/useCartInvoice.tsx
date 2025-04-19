@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
@@ -21,6 +22,7 @@ interface UseCartInvoiceProps {
   setPaidAmount: (amount: number) => void;
   clearCart: () => void;
   isArabic: boolean;
+  taxIncluded?: boolean;
 }
 
 export const useCartInvoice = ({
@@ -37,7 +39,8 @@ export const useCartInvoice = ({
   setPaymentMethod,
   setPaidAmount,
   clearCart,
-  isArabic
+  isArabic,
+  taxIncluded
 }: UseCartInvoiceProps) => {
   const [showPaymentMethodDialog, setShowPaymentMethodDialog] = useState(false);
   const [showPaidAmountDialog, setShowPaidAmountDialog] = useState(false);
@@ -133,6 +136,9 @@ export const useCartInvoice = ({
       invoice.customer = customer;
     }
     
+    // إضافة معلومات حول ما إذا كانت الضريبة مضمنة أم لا
+    invoice.taxIncluded = taxIncluded;
+    
     await saveInvoiceToStorage(invoice);
     
     if (invoice.items.length > 0) {
@@ -152,7 +158,7 @@ export const useCartInvoice = ({
       title: isArabic ? "تم إنشاء الفاتورة بنجاح" : "Invoice created successfully",
       description: isArabic ? `رقم الفاتورة: ${invoice.number}` : `Invoice Number: ${invoice.number}`,
     });
-  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, paymentMethod, paidAmount, transferReceiptNumber, customer]);
+  }, [cartItems, subtotal, taxAmount, discount, discountType, total, orderType, tableNumber, clearCart, isArabic, paymentMethod, paidAmount, transferReceiptNumber, customer, taxIncluded]);
   
   useEffect(() => {
     if (paymentMethod && paidAmount !== undefined) {

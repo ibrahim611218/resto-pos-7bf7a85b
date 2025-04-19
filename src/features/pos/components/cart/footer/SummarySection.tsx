@@ -14,6 +14,7 @@ interface SummarySectionProps {
   paymentMethod?: PaymentMethod;
   paidAmount?: number;
   onPaidAmountClick?: () => void;
+  taxIncluded?: boolean;
 }
 
 const SummarySection: React.FC<SummarySectionProps> = ({
@@ -26,7 +27,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   isArabic,
   paymentMethod,
   paidAmount,
-  onPaidAmountClick
+  onPaidAmountClick,
+  taxIncluded
 }) => {
   return (
     <CartSummary
@@ -40,6 +42,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       paymentMethod={paymentMethod}
       paidAmount={paidAmount}
       onPaidAmountClick={onPaidAmountClick}
+      taxIncluded={taxIncluded}
     />
   );
 };

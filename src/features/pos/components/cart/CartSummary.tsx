@@ -13,6 +13,7 @@ export interface CartSummaryProps {
   paymentMethod?: string;
   paidAmount?: number;
   onPaidAmountClick?: () => void;
+  taxIncluded?: boolean;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -25,14 +26,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   isArabic = false,
   paymentMethod,
   paidAmount,
-  onPaidAmountClick
+  onPaidAmountClick,
+  taxIncluded = false
 }) => {
-  // Calculate discount amount
+  // حساب مبلغ الخصم
   const discountAmount = discountType === "percentage" 
-    ? (subtotal + taxAmount) * (discount / 100)
+    ? total * (discount / 100)
     : discount;
 
-  // Round the total to eliminate decimal places
+  // تقريب المجموع الإجمالي
   const roundedTotal = Math.round(total);
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
@@ -40,7 +42,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const totalSizeClass = isMobile ? 'text-base' : 'text-lg';
   const showPaymentDetails = paymentMethod === "cash";
   
-  // Calculate change amount (for cash payments) using the rounded total
+  // حساب المبلغ المتبقي للعميل (للدفع النقدي)
   const changeAmount = showPaymentDetails && paidAmount 
     ? Math.max(0, paidAmount - roundedTotal)
     : 0;
@@ -49,20 +51,30 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     <div className={`${spacingClass} ${textSizeClass}`}>
       <div className="flex justify-between">
         <span className="text-muted-foreground">
-          {isArabic ? "المجموع الفرعي" : "Subtotal"}
+          {isArabic 
+            ? taxIncluded 
+              ? "المجموع (شامل الضريبة)" 
+              : "المجموع الفرعي" 
+            : taxIncluded 
+              ? "Total (Tax Included)" 
+              : "Subtotal"
+          }
         </span>
         <span>
-          {formatCurrency(subtotal, isArabic ? "ar-SA" : "en-US", "SAR")}
+          {formatCurrency(subtotal + (taxIncluded ? taxAmount : 0), isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">
-          {isArabic ? "ضريبة القيمة المضافة (15%)" : "VAT (15%)"}
-        </span>
-        <span>
-          {formatCurrency(taxAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
-        </span>
-      </div>
+      
+      {!taxIncluded && (
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">
+            {isArabic ? "ضريبة القيمة المضافة (15%)" : "VAT (15%)"}
+          </span>
+          <span>
+            {formatCurrency(taxAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
       
       {discount > 0 && (
         <div className="flex justify-between text-green-600">

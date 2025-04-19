@@ -62,32 +62,33 @@ export const calculateInvoiceAmounts = (
   taxAmount: number;
   total: number;
 } => {
-  // Calculate subtotal
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // حساب إجمالي السعر (سعر × كمية) لكل المنتجات
+  const rawTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   
-  // Calculate tax
-  let taxAmount = 0;
+  let subtotal: number;
+  let taxAmount: number;
+  
   if (taxIncluded) {
-    // If tax is included, extract it from subtotal
-    taxAmount = subtotal - subtotal / (1 + taxRate / 100);
+    // إذا كانت الضريبة مضمنة، نستخرج قيمة المبلغ قبل الضريبة
+    const taxDivisor = 1 + (taxRate / 100);
+    subtotal = rawTotal / taxDivisor;
+    taxAmount = rawTotal - subtotal;
   } else {
-    // If tax is not included, add it to subtotal
+    // إذا كانت الضريبة غير مضمنة، نحسب المجموع الفرعي ثم نضيف الضريبة
+    subtotal = rawTotal;
     taxAmount = subtotal * (taxRate / 100);
   }
   
-  // Calculate total before discount
-  const totalBeforeDiscount = taxIncluded ? subtotal : subtotal + taxAmount;
-  
-  // Calculate discount
+  // حساب الخصم
   let discountAmount = 0;
   if (discountType === "percentage") {
-    discountAmount = totalBeforeDiscount * (discount / 100);
+    discountAmount = rawTotal * (discount / 100);
   } else {
-    discountAmount = Math.min(discount, totalBeforeDiscount); // Cannot discount more than total
+    discountAmount = Math.min(discount, rawTotal); // لا يمكن أن يكون الخصم أكبر من المبلغ الإجمالي
   }
   
-  // Calculate final total
-  const total = totalBeforeDiscount - discountAmount;
+  // المجموع النهائي
+  const total = rawTotal - discountAmount;
   
   return {
     subtotal,
