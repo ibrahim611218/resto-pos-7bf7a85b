@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useUsers } from "./hooks/useUsers";
@@ -15,7 +14,7 @@ const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { allPermissions } = useAuth();
-  const { isConnected, errorDetails, testDatabaseConnection, isLoading: connectionLoading } = useDatabaseConnection();
+  const { isConnected, errorDetails, testDatabaseConnection, isLoading: connectionLoading, connectionAttempted } = useDatabaseConnection();
   const {
     users,
     selectedUser,
@@ -44,19 +43,39 @@ const UserManagement: React.FC = () => {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false);
+  const [showConnectionError, setShowConnectionError] = useState(false);
   
   const isLoading = usersLoading || connectionLoading;
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (!isConnected && connectionAttempted) {
+      timer = setTimeout(() => {
+        setShowConnectionError(true);
+      }, 2000);
+    } else {
+      setShowConnectionError(false);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isConnected, connectionAttempted]);
+
   const handleReconnect = async () => {
+    setShowConnectionError(false);
     const success = await testDatabaseConnection();
     if (success) {
-      fetchUsers();
+      await fetchUsers();
+    } else {
+      setShowConnectionError(true);
     }
   };
   
   return (
     <div className="container p-4 space-y-4">
-      {!isConnected && (
+      {!isConnected && showConnectionError && (
         <Alert variant="destructive" className="mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>

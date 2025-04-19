@@ -57,16 +57,22 @@ export const useUsers = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      toast.error(isArabic ? "حدث خطأ أثناء جلب المستخدمين" : "Error fetching users");
+      // Suppress toast to avoid double toasts with connection error
     } finally {
       setIsLoading(false);
     }
-  }, [isConnected, isArabic, setUsers]);
+  }, [isConnected, setUsers]);
 
   useEffect(() => {
-    if (isConnected) {
+    let isMounted = true;
+    
+    if (isConnected && isMounted) {
       fetchUsers();
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [isConnected, fetchUsers]);
 
   const handleSavePermissionsWrapper = () => {
@@ -94,6 +100,6 @@ export const useUsers = () => {
     handleDeleteUser,
     handleEditPermissions,
     handleSavePermissions: handleSavePermissionsWrapper,
-    fetchUsers // Export fetchUsers so it can be called manually after reconnection
+    fetchUsers
   };
 };
