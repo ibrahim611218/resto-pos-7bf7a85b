@@ -1,31 +1,27 @@
-
 export type Language = "en" | "ar";
 
-export type UserRole = "admin" | "manager" | "cashier" | "kitchen" | "owner" | "supervisor";
-
-export type Size = "small" | "medium" | "large" | "regular";
-
-export type ProductType = "food" | "drink" | "dessert" | "other" | "sized" | "single";
-
-export interface User {
+export interface Invoice {
   id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  avatarUrl?: string;
+  number: string;
+  date: string;
+  customerName: string;
+  customerPhone: string;
+  items: InvoiceItem[];
+  totalAmount: number;
+  discount: number;
+  paymentMethod: "cash" | "card" | "online";
+  cashierName: string;
+  notes?: string;
+  createdAt?: string;
 }
 
-export interface Category {
+export interface InvoiceItem {
   id: string;
   name: string;
   nameAr?: string;
-  image?: string;
-}
-
-export interface ProductVariant {
-  id: string;
-  size: Size;
+  quantity: number;
   price: number;
+  size: string;
 }
 
 export interface Product {
@@ -34,211 +30,43 @@ export interface Product {
   nameAr?: string;
   description?: string;
   descriptionAr?: string;
-  image?: string;
+  price: number;
   categoryId: string;
-  variants: ProductVariant[];
-  taxable: boolean;
-  type: ProductType;
-  price?: number; // For single products without variants
-  inStock?: number; // Quantity in stock
-  lowStockThreshold?: number; // Threshold for low stock warning
+  imageUrl?: string;
+  sizes: string[];
 }
 
-export interface CartItem {
+export interface Category {
   id: string;
-  productId: string;
   name: string;
   nameAr?: string;
-  variantId: string;
-  size: Size | "regular";
-  price: number;
-  quantity: number;
-  taxable: boolean;
-}
-
-export interface Customer {
-  id?: string;
-  name: string;
-  phone?: string;
-  email?: string;
-  taxNumber?: string;
-  commercialRegister?: string;
-  address?: string;
-}
-
-export interface Invoice {
-  id: string;
-  number: string;
-  date: Date;
-  items: CartItem[];
-  subtotal: number;
-  taxAmount: number;
-  total: number;
-  paidAmount: number;         // Added paidAmount property to the Invoice interface
-  paymentMethod: PaymentMethod;
-  customer?: Customer;
-  cashierId: string;
-  cashierName: string;
-  status: "completed" | "cancelled" | "refunded" | "pending";
-  discount?: number;             // مبلغ الخصم أو نسبة الخصم
-  discountType?: "percentage" | "fixed"; // نوع الخصم (نسبة مئوية أو مبلغ ثابت)
-  orderType?: "takeaway" | "dineIn"; // نوع الطلب (سفري أو محلي)
-  tableNumber?: string;          // رقم الطاولة (للطلبات المحلية)
-  transferReceiptNumber?: string; // رقم إيصال التحويل
+  description?: string;
+  descriptionAr?: string;
+  imageUrl?: string;
 }
 
 export interface BusinessSettings {
   name: string;
-  nameAr?: string;
+  nameAr: string;
   taxNumber: string;
   address: string;
-  addressAr?: string;
+  addressAr: string;
   phone: string;
   email: string;
+  taxRate: number;
+  taxIncluded: boolean;
+  invoiceNotesAr: string;
   logo?: string;
-  taxRate: number;
-  taxIncluded: boolean; // إضافة خيار جديد للتحكم في طريقة حساب الضريبة
-  commercialRegister?: string;
-  commercialRegisterAr?: string;
-  invoiceNotes?: string;
-  invoiceNotesAr?: string;
+  workStartTime?: string;  // New field
+  workEndTime?: string;    // New field
 }
 
-export interface ReportFilter {
-  startDate?: Date;
-  endDate?: Date;
-  cashierId?: string;
-  productId?: string;
-  categoryId?: string;
-}
-
-// Kitchen Order Status Types
-export type KitchenOrderStatus = "pending" | "preparing" | "ready" | "completed" | "cancelled";
-
-export type KitchenOrderItemStatus = KitchenOrderStatus;
-
-export interface KitchenOrderItem {
-  id: string;
-  name: string;
-  nameAr?: string;
-  quantity: number;
-  size: string;
-  status: KitchenOrderItemStatus;
-}
-
-export interface KitchenOrder {
-  id: string;
-  invoiceId: string;
-  status: KitchenOrderStatus;
-  items: KitchenOrderItem[];
-  createdAt: string;
-  updatedAt: string;
-  cashierName?: string;
-  completedAt?: string;
-}
-
-// Inventory types
-export interface InventoryItem {
-  id: string;
-  productId: string;
-  productName: string;
-  productNameAr?: string;
-  quantity: number;
-  lowStockThreshold: number;
-  lastUpdated: Date;
-  categoryId: string;
-}
-
-// Invoice Export Options
-export type InvoiceExportType = "print" | "pdf" | "email";
-
-// Add payment methods type
-export type PaymentMethod = "cash" | "card" | "transfer";
-
-// Customer management types
-export interface CustomerFilter {
-  searchTerm?: string;
-  sortBy?: "name" | "createdAt";
-  sortDirection?: "asc" | "desc";
-}
-
-// Types for sales report data visualization
-export interface SalesByPaymentMethod {
-  paymentMethod: string;
-  amount: number;
-  percentage: number;
-}
-
-export interface SalesByOrderType {
-  orderType: string;
-  count: number;
-  percentage: number;
-}
-
-export interface TopSellingProduct {
-  productId: string;
-  productName: string;
-  quantity: number;
-  revenue: number;
-}
-
-export interface SalesByTimeFrame {
-  timeFrame: string;
-  amount: number;
-}
-
-// نظام المشتريات - Purchase system
-export interface Supplier {
-  id: string;
-  name: string;
-  nameAr?: string;
-  phone?: string;
-  email?: string;
-  taxNumber?: string;
-  address?: string;
-  contactPerson?: string;
-}
-
-export interface PurchaseItem {
-  id: string;
-  productId: string;
-  productName: string;
-  productNameAr?: string;
-  quantity: number;
-  unitPrice: number;
-  taxRate: number;
-  taxAmount: number;
-  totalPrice: number;
-}
-
-export interface PurchaseInvoice {
-  id: string;
-  invoiceNumber: string;
-  supplier: Supplier;
-  date: Date;
-  items: PurchaseItem[];
-  subtotal: number;
-  taxAmount: number;
-  total: number;
-  notes?: string;
-  paymentStatus: "paid" | "pending" | "partial";
-  paymentMethod: PaymentMethod;
-  createdBy: string;
-  createdAt: Date;
-}
-
-// تقارير ضريبة القيمة المضافة - VAT Report types
-export interface VatReportPeriod {
-  startDate: Date;
-  endDate: Date;
-  type: "monthly" | "quarterly" | "annual";
-}
-
-export interface VatReportItem {
-  totalSalesBeforeTax: number;
-  salesTax: number;
-  totalPurchasesBeforeTax: number;
-  purchasesTax: number;
-  netTaxDue: number;
-  period: VatReportPeriod;
+export interface IDatabaseService {
+  getInvoices: () => Promise<Invoice[]>;
+  saveInvoice: (invoice: Invoice) => Promise<any>;
+  updateInvoice: (invoice: Invoice) => Promise<any>;
+  getSettings: () => Promise<BusinessSettings>;
+  saveSettings: (settings: BusinessSettings) => Promise<any>;
+  getProducts: () => Promise<Product[]>;
+  getCategories: () => Promise<Category[]>;
 }

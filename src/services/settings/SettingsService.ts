@@ -17,7 +17,9 @@ const DEFAULT_SETTINGS: BusinessSettings = {
   email: "info@example.com",
   taxRate: 15,
   taxIncluded: false,
-  invoiceNotesAr: "شكراً لزيارتكم"
+  invoiceNotesAr: "شكراً لزيارتكم",
+  workStartTime: "09:00",
+  workEndTime: "23:00"
 };
 
 // Browser implementation for settings operations
