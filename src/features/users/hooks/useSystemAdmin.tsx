@@ -27,7 +27,8 @@ export const useSystemAdmin = (
         name: "مدير النظام",
         email: "system_admin@example.com",
         role: "owner",
-        password: "********"
+        password: "********",
+        isActive: true
       };
       
       setUsers(prevUsers => [...prevUsers, systemAdmin]);
