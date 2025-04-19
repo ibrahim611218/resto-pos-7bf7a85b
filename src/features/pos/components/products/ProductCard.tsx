@@ -28,6 +28,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleAddToCart = () => {
+    // Ensure product has variants before proceeding
+    if (!product.variants || product.variants.length === 0) {
+      console.error("Product has no variants:", product);
+      return;
+    }
+    
     // If product has multiple sizes, show size selection dialog
     if (product.variants.length > 1) {
       setSelectedSize(product.variants[0].size);
@@ -74,6 +80,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setShowSizeDialog(false);
   };
 
+  // Ensure product has variants before rendering
+  if (!product.variants || product.variants.length === 0) {
+    return null; // Or render a fallback UI for products with no variants
+  }
+
   return (
     <>
       <Card 
@@ -111,11 +122,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </h3>
             {product.variants.length > 1 ? (
               <p className="text-sm text-muted-foreground">
-                {product.variants[0].price.toFixed(2)} - {product.variants[product.variants.length - 1].price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                {product.variants[0].price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             )}
           </div>

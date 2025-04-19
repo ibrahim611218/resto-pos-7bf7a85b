@@ -14,7 +14,7 @@ export interface Product {
   image?: string;
   type: ProductType;
   taxable: boolean;
-  variants: ProductVariant[];
+  variants: ProductVariant[];  // This should never be undefined
   sizes?: string[];
 }
 
