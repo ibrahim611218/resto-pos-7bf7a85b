@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
@@ -67,6 +68,7 @@ function App() {
                 <Route path="retrieve-invoice" element={<RetrieveInvoicePage />} />
                 <Route path="kitchen" element={<Kitchen />} />
                 <Route path="settings" element={<BusinessSettings />} />
+                <Route path="business-settings" element={<BusinessSettings />} />
                 <Route path="users" element={<UserManagementPage />} />
 
                 {/* Reports */}
