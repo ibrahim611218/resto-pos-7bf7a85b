@@ -8,7 +8,11 @@ import { ar, enUS } from 'date-fns/locale';
 
 export const printVatReport = (report: VatReportItem, isArabic: boolean) => {
   const locale = isArabic ? ar : enUS;
-  const formatDate = (date: Date) => format(new Date(date), 'PPP', { locale });
+  
+  const formatDate = (dateValue: string | Date) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+    return format(date, 'PPP', { locale });
+  };
   
   const getPeriodTypeText = (type: string) => {
     switch (type) {
@@ -150,7 +154,11 @@ export const printVatReport = (report: VatReportItem, isArabic: boolean) => {
 
 export const exportVatReportToExcel = (report: VatReportItem, isArabic: boolean) => {
   const locale = isArabic ? ar : enUS;
-  const formatDate = (date: Date) => format(new Date(date), 'PPP', { locale });
+  
+  const formatDate = (dateValue: string | Date) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+    return format(date, 'PPP', { locale });
+  };
   
   const getPeriodTypeText = (type: string) => {
     switch (type) {
@@ -191,7 +199,11 @@ export const exportVatReportToExcel = (report: VatReportItem, isArabic: boolean)
 
 export const exportVatReportToPdf = (report: VatReportItem, isArabic: boolean) => {
   const locale = isArabic ? ar : enUS;
-  const formatDate = (date: Date) => format(new Date(date), 'PPP', { locale });
+  
+  const formatDate = (dateValue: string | Date) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+    return format(date, 'PPP', { locale });
+  };
   
   const getPeriodTypeText = (type: string) => {
     switch (type) {

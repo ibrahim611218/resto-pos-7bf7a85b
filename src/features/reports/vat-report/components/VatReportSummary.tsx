@@ -19,7 +19,10 @@ const VatReportSummary: React.FC<VatReportSummaryProps> = ({ report }) => {
   const isArabic = language === 'ar';
   const locale = isArabic ? ar : enUS;
   
-  const formatDate = (date: Date) => format(new Date(date), 'PPP', { locale });
+  const formatDate = (dateValue: string | Date) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+    return format(date, 'PPP', { locale });
+  };
   
   const handlePrint = () => {
     printVatReport(report, isArabic);

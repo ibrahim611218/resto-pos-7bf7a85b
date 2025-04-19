@@ -26,7 +26,10 @@ const VatReportHistory: React.FC<VatReportHistoryProps> = ({ reports, onSelectRe
   const isArabic = language === 'ar';
   const locale = isArabic ? ar : enUS;
   
-  const formatDate = (date: Date) => format(new Date(date), 'PPP', { locale });
+  const formatDate = (dateValue: string | Date) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+    return format(date, 'PPP', { locale });
+  };
   
   const getPeriodTypeText = (type: string) => {
     switch (type) {
@@ -38,9 +41,11 @@ const VatReportHistory: React.FC<VatReportHistoryProps> = ({ reports, onSelectRe
   };
   
   // Sort reports by date (most recent first)
-  const sortedReports = [...reports].sort((a, b) => 
-    new Date(b.period.endDate).getTime() - new Date(a.period.endDate).getTime()
-  );
+  const sortedReports = [...reports].sort((a, b) => {
+    const endDateA = a.period.endDate instanceof Date ? a.period.endDate : new Date(a.period.endDate);
+    const endDateB = b.period.endDate instanceof Date ? b.period.endDate : new Date(b.period.endDate);
+    return endDateB.getTime() - endDateA.getTime();
+  });
   
   return (
     <div className="border rounded-md">
