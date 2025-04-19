@@ -1,10 +1,10 @@
 
 import React from "react";
 import { UserWithPassword } from "../types";
-import AddUserDialog from "./AddUserDialog";
-import EditUserDialog from "./EditUserDialog";
-import PasswordDialog from "./PasswordDialog";
-import DeleteDialog from "./DeleteDialog";
+import AddUserDialog from "./dialogs/AddUserDialog";
+import EditUserDialog from "./dialogs/EditUserDialog";
+import PasswordDialog from "./dialogs/PasswordDialog";
+import DeleteDialog from "./dialogs/DeleteDialog";
 import PermissionsDialog from "./PermissionsDialog";
 
 interface UserDialogsProps {
@@ -70,8 +70,7 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
 }) => {
   return (
     <>
-      {/* Add User Dialog */}
-      <AddUserDialog 
+      <AddUserDialog
         isOpen={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         newUser={newUser}
@@ -81,8 +80,7 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
         canManageAdmins={canManageAdmins}
       />
       
-      {/* Edit User Dialog */}
-      <EditUserDialog 
+      <EditUserDialog
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
         selectedUser={selectedUser}
@@ -92,8 +90,7 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
         canManageAdmins={canManageAdmins}
       />
       
-      {/* Change Password Dialog */}
-      <PasswordDialog 
+      <PasswordDialog
         isOpen={isPasswordDialogOpen}
         onOpenChange={setIsPasswordDialogOpen}
         selectedUser={selectedUser}
@@ -105,8 +102,7 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
         isArabic={isArabic}
       />
       
-      {/* Delete Confirmation Dialog */}
-      <DeleteDialog 
+      <DeleteDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         selectedUser={selectedUser}
@@ -114,7 +110,6 @@ const UserDialogs: React.FC<UserDialogsProps> = ({
         isArabic={isArabic}
       />
 
-      {/* Permissions Dialog */}
       <PermissionsDialog
         isOpen={isPermissionsDialogOpen}
         onOpenChange={setIsPermissionsDialogOpen}
