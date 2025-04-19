@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { Download, ShieldAlert, HelpCircle, Info } from 'lucide-react';
+import { Download, ShieldAlert, HelpCircle, Info, Disc } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/context/LanguageContext';
 import { handleDesktopExport } from '@/utils/desktop-export';
+import { downloadIsoFile } from '@/utils/desktop-export/utils';
 import { INSTALLER_INFO, APP_INSTRUCTIONS } from '@/utils/desktop-export/constants';
 import { toast } from 'sonner';
 
@@ -14,7 +15,7 @@ const DownloadCard = () => {
   const isArabic = language === 'ar';
   const instructions = isArabic ? APP_INSTRUCTIONS.ar : APP_INSTRUCTIONS.en;
   
-  const handleDownload = () => {
+  const handleExeDownload = () => {
     // Show loading toast
     toast.loading(
       isArabic ? 'جاري إعداد الملف للتحميل...' : 'Preparing download...',
@@ -25,6 +26,10 @@ const DownloadCard = () => {
     setTimeout(() => {
       handleDesktopExport(language);
     }, 1000);
+  };
+  
+  const handleIsoDownload = () => {
+    downloadIsoFile(language);
   };
   
   const showTroubleshooting = () => {
@@ -80,17 +85,28 @@ const DownloadCard = () => {
         </h3>
       </div>
       
-      <Button 
-        onClick={handleDownload}
-        className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 py-6 text-lg"
-        size="lg"
-      >
-        <Download className="h-5 w-5" />
-        {isArabic ? "تحميل النسخة المكتبية (حجم كامل)" : "Download Desktop Version (Full Size)"}
-      </Button>
+      <div className="flex flex-col gap-3 mb-4">
+        <Button 
+          onClick={handleExeDownload}
+          className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 py-5 text-lg"
+          size="lg"
+        >
+          <Download className="h-5 w-5" />
+          {isArabic ? "تحميل النسخة المكتبية (25MB)" : "Download Desktop Version (25MB)"}
+        </Button>
+        
+        <Button 
+          onClick={handleIsoDownload}
+          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 py-5 text-lg"
+          size="lg"
+        >
+          <Disc className="h-5 w-5" />
+          {isArabic ? "تحميل بصيغة ISO (700MB)" : "Download ISO Format (700MB)"}
+        </Button>
+      </div>
       
       <div className="mt-4 text-sm text-muted-foreground">
-        <p>{isArabic ? "معلومات المثبت:" : "Installer information:"}</p>
+        <p>{isArabic ? "معلومات الملف:" : "File information:"}</p>
         <p>{isArabic ? `الإصدار: ${INSTALLER_INFO.version}` : `Version: ${INSTALLER_INFO.version}`}</p>
         <p>{isArabic ? `الحجم: ${INSTALLER_INFO.size}` : `Size: ${INSTALLER_INFO.size}`}</p>
         <p>{isArabic ? `تاريخ الإصدار: ${INSTALLER_INFO.releaseDate}` : `Release date: ${INSTALLER_INFO.releaseDate}`}</p>
@@ -164,8 +180,8 @@ const DownloadCard = () => {
             <ul className="text-sm space-y-1 mt-1 list-disc pl-5">
               <li>
                 {isArabic 
-                  ? "تم زيادة حجم الملف إلى 25 ميجابايت لتفادي مشكلات التوافق"
-                  : "File size increased to 25MB to avoid compatibility issues"}
+                  ? "تم توفير نسخة ISO بحجم 700 ميجابايت تعمل على جميع أجهزة الكمبيوتر"
+                  : "ISO version of 700MB is now available and works on all computers"}
               </li>
               <li>
                 {isArabic 

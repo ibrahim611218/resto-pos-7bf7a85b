@@ -1,5 +1,5 @@
 
-import { isRunningInElectron, getDownloadUrl, openDownloadLink, showInstallationHelp } from './utils';
+import { isRunningInElectron, getDownloadUrl, openDownloadLink, showInstallationHelp, downloadIsoFile } from './utils';
 import { showNotification } from './notifications';
 import { generateDownloadPageTemplate } from './templates';
 import { INSTALLER_INFO } from './constants';
@@ -20,7 +20,7 @@ export const handleDesktopExport = (language: string = "ar") => {
     console.log("Starting desktop export process with realistic installer file");
     
     // Use the direct download method for immediate file download with enhanced file size
-    openDownloadLink();
+    openDownloadLink(false); // false for EXE file (default format)
     
     // Show success notification
     showNotification("download-started", language);
@@ -38,3 +38,6 @@ export const handleDesktopExport = (language: string = "ar") => {
     showNotification("export-error", language);
   }
 };
+
+// Export the downloadIsoFile function
+export { downloadIsoFile } from './utils';

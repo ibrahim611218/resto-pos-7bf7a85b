@@ -1,12 +1,33 @@
 
 import React from 'react';
-import DownloadNowButton from '../desktop-export/DownloadNowButton';
+import { Button } from '@/components/ui/button';
+import { Download, Disc } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { INSTALLER_INFO, SYSTEM_REQUIREMENTS } from '@/utils/desktop-export/constants';
+import { handleDesktopExport } from '@/utils/desktop-export';
+import { downloadIsoFile } from '@/utils/desktop-export/utils';
+import { toast } from 'sonner';
 
 export const DownloadSection = () => {
   const { language } = useLanguage();
   const isArabic = language === 'ar';
+  
+  const handleExeDownload = () => {
+    // Show loading toast
+    toast.loading(
+      isArabic ? 'جاري إعداد التنزيل...' : 'Preparing download...',
+      { duration: 2000 }
+    );
+    
+    // Start download after a short delay
+    setTimeout(() => {
+      handleDesktopExport(language);
+    }, 1000);
+  };
+  
+  const handleIsoDownload = () => {
+    downloadIsoFile(language);
+  };
   
   return (
     <section className="py-12 bg-gray-50 dark:bg-gray-800 rounded-lg my-8 shadow-md">
@@ -21,8 +42,24 @@ export const DownloadSection = () => {
             : 'Download the desktop version of Resto POS and enjoy all features without needing an internet connection.'}
         </p>
         
-        <div className="flex justify-center mb-10">
-          <DownloadNowButton />
+        <div className="flex flex-col md:flex-row gap-4 justify-center mb-10">
+          <Button 
+            onClick={handleExeDownload}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-6 text-lg rounded-lg shadow-lg"
+            size="lg"
+          >
+            <Download className="h-5 w-5" />
+            {isArabic ? 'تنزيل ملف التثبيت (25MB)' : 'Download Installer (25MB)'}
+          </Button>
+          
+          <Button 
+            onClick={handleIsoDownload}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 text-lg rounded-lg shadow-lg"
+            size="lg"
+          >
+            <Disc className="h-5 w-5" />
+            {isArabic ? 'تنزيل بصيغة ISO (700MB)' : 'Download ISO Format (700MB)'}
+          </Button>
         </div>
         
         <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto text-start">

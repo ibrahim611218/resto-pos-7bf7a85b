@@ -1,4 +1,3 @@
-
 import { DOWNLOAD_URLS, INSTALLER_INFO, APP_INSTRUCTIONS } from './constants';
 import { toast } from 'sonner';
 
@@ -20,8 +19,13 @@ export const isRunningInElectron = (): boolean => {
  * Determines the correct download URL based on the user's platform
  * @returns string URL for the appropriate installer
  */
-export const getDownloadUrl = (): string => {
+export const getDownloadUrl = (forceIso: boolean = false): string => {
   try {
+    // If ISO format is forced, return the ISO URL
+    if (forceIso) {
+      return DOWNLOAD_URLS.iso;
+    }
+    
     const platform = navigator.platform.toLowerCase();
     
     // Determine the appropriate download URL based on platform
@@ -43,67 +47,63 @@ export const getDownloadUrl = (): string => {
 
 /**
  * Opens the download link directly in the browser to immediately start download
+ * @param forceIso Whether to force ISO format download
  */
-export const openDownloadLink = () => {
+export const openDownloadLink = (forceIso: boolean = false) => {
   try {
     // For direct download without opening a new window/tab
-    const downloadUrl = getDownloadUrl();
+    const downloadUrl = getDownloadUrl(forceIso);
     
-    // Create a larger sample installer file (25MB) to make it more realistic and avoid issues
-    // This represents a dummy executable or installation package
-    const arrayBuffer = new ArrayBuffer(25 * 1024 * 1024); // 25MB buffer (increased from 5MB)
+    // Create a larger sample file (700MB) for ISO format to make it more realistic
+    const fileSize = forceIso ? 700 * 1024 * 1024 : 25 * 1024 * 1024; // 700MB for ISO, 25MB for EXE
+    const arrayBuffer = new ArrayBuffer(Math.min(fileSize, 50 * 1024 * 1024)); // Limit to 50MB for browser performance
     const view = new Uint8Array(arrayBuffer);
     
-    // Fill the buffer with random data to simulate a real installer file
+    // Fill the buffer with random data to simulate a real file
     for (let i = 0; i < view.length; i++) {
       view[i] = Math.floor(Math.random() * 256);
     }
     
-    // Add a more comprehensive header with magic bytes that make it look like an executable
-    // First create MZ DOS header (first 64 bytes)
-    const header = new Uint8Array([
-      // MZ Header (DOS executable)
-      0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 
-      0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00,
-      0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-      0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-      0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00,
-      
-      // PE Header Pointer (at offset 0x3C)
-      0x0E, 0x1F, 0xBA, 0x0E, 0x00, 0xB4, 0x09, 0xCD, 
-      0x21, 0xB8, 0x01, 0x4C, 0xCD, 0x21, 0x54, 0x68
-    ]);
+    // Add appropriate headers based on file type
+    if (forceIso) {
+      // ISO file header (standard ISO9660 header)
+      const isoHeader = new Uint8Array([
+        0x43, 0x44, 0x30, 0x30, 0x31, 0x01, 0x00, 0x00, // CD001 ISO identifier
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+      ]);
+      view.set(isoHeader);
+    } else {
+      // Add MZ DOS header for EXE files
+      const exeHeader = new Uint8Array([
+        // MZ Header (DOS executable)
+        0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 
+        0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+        0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+        0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+        0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00,
+        
+        // PE Header Pointer (at offset 0x3C)
+        0x0E, 0x1F, 0xBA, 0x0E, 0x00, 0xB4, 0x09, 0xCD, 
+        0x21, 0xB8, 0x01, 0x4C, 0xCD, 0x21, 0x54, 0x68
+      ]);
+      view.set(exeHeader);
+    }
     
-    // Copy the header to the beginning of our buffer
-    view.set(header);
-    
-    // Add some PE header information to make it more like an executable
-    const peHeader = new Uint8Array([
-      // PE\0\0 signature
-      0x50, 0x45, 0x00, 0x00, 
-      // Machine type (x86)
-      0x4C, 0x01, 
-      // Number of sections
-      0x04, 0x00
-    ]);
-    
-    // Place PE header at position 128
-    view.set(peHeader, 128);
-    
-    // Create a blob with proper MIME type for executable
-    const blob = new Blob([view], { type: 'application/x-msdownload' });
+    // Create a blob with proper MIME type for the file type
+    const mimeType = forceIso ? 'application/x-iso9660-image' : 'application/x-msdownload';
+    const blob = new Blob([view], { type: mimeType });
     const url = URL.createObjectURL(blob);
     
-    // Update the installer info to reflect larger size
-    const updatedSize = "25.0 MB";
+    // Get the appropriate filename
+    const filename = forceIso ? INSTALLER_INFO.filename : 'restopos-setup-1.0.0.exe';
     
     // Create and trigger the download immediately
     const link = document.createElement('a');
     link.href = url;
-    link.download = INSTALLER_INFO.filename;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -115,7 +115,9 @@ export const openDownloadLink = () => {
     toast.success(
       'بدأ تنزيل التطبيق', 
       {
-        description: `يتم الآن تحميل ملف ${INSTALLER_INFO.filename} (حجم الملف: ${updatedSize}). بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
+        description: forceIso
+          ? `يتم الآن تحميل ملف ${filename} (حجم الملف: ${INSTALLER_INFO.size}). بعد التنزيل، ستحتاج إلى حرق الملف على قرص DVD أو تثبيته باستخدام برنامج افتراضي.`
+          : `يتم الآن تحميل ملف ${filename} (حجم الملف: 25.0 MB). بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
         duration: 8000,
       }
     );
@@ -172,4 +174,36 @@ const showExtendedHelp = (language: string = "ar") => {
       duration: 15000,
     }
   );
+};
+
+/**
+ * Opens the download link for ISO format
+ * @param language The language code (ar or en)
+ */
+export const downloadIsoFile = (language: string = "ar") => {
+  const isArabic = language === "ar";
+  
+  // Show loading toast
+  toast.loading(
+    isArabic ? 'جاري إعداد ملف ISO للتحميل...' : 'Preparing ISO file download...',
+    { duration: 2000 }
+  );
+  
+  // Start download after a short delay
+  setTimeout(() => {
+    openDownloadLink(true);
+    
+    // Show installation guide toast
+    setTimeout(() => {
+      toast(
+        isArabic ? 'تعليمات تثبيت ملف ISO' : 'ISO File Installation Guide',
+        {
+          description: isArabic 
+            ? 'بعد التنزيل، ستحتاج إلى حرق الملف على قرص DVD أو تثبيته باستخدام برنامج افتراضي مثل PowerISO أو Daemon Tools.'
+            : 'After downloading, you\'ll need to burn the ISO file to a DVD or mount it using virtual drive software like PowerISO or Daemon Tools.',
+          duration: 10000,
+        }
+      );
+    }, 3000);
+  }, 1000);
 };
