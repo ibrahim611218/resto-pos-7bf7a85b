@@ -26,6 +26,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     existingItem || {
       quantity: 0,
       lowStockThreshold: 5,
+      unit: "piece",
+      minLevel: 5,
+      maxLevel: 50
     }
   );
   const [products, setProducts] = useState([]);
@@ -79,7 +82,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === "quantity" || name === "lowStockThreshold" ? parseInt(value) || 0 : value,
+      [name]: name === "quantity" || name === "lowStockThreshold" || name === "minLevel" || name === "maxLevel" ? parseInt(value) || 0 : value,
     });
   };
 
@@ -96,8 +99,11 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
       productNameAr: formData.productNameAr,
       quantity: formData.quantity,
       lowStockThreshold: formData.lowStockThreshold,
-      lastUpdated: new Date(),
+      lastUpdated: new Date().toISOString(),
       categoryId: formData.categoryId!,
+      unit: formData.unit || "piece",
+      minLevel: formData.minLevel || 5,
+      maxLevel: formData.maxLevel || 50
     };
 
     onSubmit(newItem);

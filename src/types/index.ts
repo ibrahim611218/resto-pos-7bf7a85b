@@ -3,6 +3,7 @@ export type Language = "en" | "ar";
 export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen";
 export type ProductType = "single" | "sized";
 export type Size = "small" | "medium" | "large";
+export type InvoiceExportType = "print" | "pdf" | "email";
 
 export interface User {
   id: string;
@@ -20,11 +21,16 @@ export interface Invoice {
   items: InvoiceItem[];
   totalAmount: number;
   discount: number;
+  discountType?: "percentage" | "fixed";
   paymentMethod: "cash" | "card" | "online";
   cashierName: string;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  customer?: Customer;
   notes?: string;
   createdAt?: string;
-  status?: "completed" | "cancelled" | "refunded";
+  status?: "completed" | "cancelled" | "refunded" | "pending";
 }
 
 export interface InvoiceItem {
@@ -84,10 +90,12 @@ export interface BusinessSettings {
 }
 
 export interface Customer {
-  id: string;
+  id?: string;
   name: string;
   phone: string;
   email?: string;
+  taxNumber?: string;
+  commercialRegister?: string;
   address?: string;
 }
 
@@ -95,11 +103,14 @@ export interface InventoryItem {
   id: string;
   productId: string;
   productName: string;
+  productNameAr?: string;
   quantity: number;
-  unit: string;
-  minLevel: number;
-  maxLevel: number;
+  unit?: string;
+  minLevel?: number;
+  maxLevel?: number;
+  lowStockThreshold: number;
   lastUpdated: string;
+  categoryId: string;
 }
 
 export interface IDatabaseService {

@@ -9,8 +9,11 @@ export const mockInventoryItems: InventoryItem[] = sampleProducts.slice(0, 8).ma
   productNameAr: product.nameAr,
   quantity: Math.floor(Math.random() * 50),
   lowStockThreshold: 10,
-  lastUpdated: new Date(),
-  categoryId: product.categoryId
+  lastUpdated: new Date().toISOString(),
+  categoryId: product.categoryId,
+  unit: "piece",
+  minLevel: 5,
+  maxLevel: 50
 }));
 
 // Add some low stock items for demo
