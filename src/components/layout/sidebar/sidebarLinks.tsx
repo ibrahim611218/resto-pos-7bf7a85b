@@ -1,5 +1,5 @@
 
-import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, ChefHat, KeySquare, ShoppingCart } from "lucide-react";
+import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, ChefHat, KeySquare, ShoppingCart, FileSpreadsheet, Receipt } from "lucide-react";
 import { SidebarLink } from "./types";
 import { UserRole } from "@/types";
 
@@ -40,6 +40,13 @@ export const getSidebarLinks = (): SidebarLink[] => {
       path: "/invoices",
       icon: ReceiptText,
       roles: ["cashier", "supervisor", "admin", "owner"]
+    },
+    {
+      name: "المشتريات",
+      name_en: "Purchases",
+      path: "/purchases",
+      icon: Receipt,
+      roles: ["supervisor", "admin", "owner"]
     },
     {
       name: "العملاء",
@@ -88,6 +95,13 @@ export const getSidebarLinks = (): SidebarLink[] => {
           name_en: "Customers Report",
           path: "/customers-report",
           icon: Users,
+          roles: ["supervisor", "admin", "owner"]
+        },
+        {
+          name: "تقرير ضريبة القيمة المضافة",
+          name_en: "VAT Report",
+          path: "/vat-report",
+          icon: FileSpreadsheet,
           roles: ["supervisor", "admin", "owner"]
         },
       ],

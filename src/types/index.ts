@@ -186,3 +186,59 @@ export interface SalesByTimeFrame {
   timeFrame: string;
   amount: number;
 }
+
+// نظام المشتريات - Purchase system
+export interface Supplier {
+  id: string;
+  name: string;
+  nameAr?: string;
+  phone?: string;
+  email?: string;
+  taxNumber?: string;
+  address?: string;
+  contactPerson?: string;
+}
+
+export interface PurchaseItem {
+  id: string;
+  productId: string;
+  productName: string;
+  productNameAr?: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  taxAmount: number;
+  totalPrice: number;
+}
+
+export interface PurchaseInvoice {
+  id: string;
+  invoiceNumber: string;
+  supplier: Supplier;
+  date: Date;
+  items: PurchaseItem[];
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  notes?: string;
+  paymentStatus: "paid" | "pending" | "partial";
+  paymentMethod: PaymentMethod;
+  createdBy: string;
+  createdAt: Date;
+}
+
+// تقارير ضريبة القيمة المضافة - VAT Report types
+export interface VatReportPeriod {
+  startDate: Date;
+  endDate: Date;
+  type: "monthly" | "quarterly" | "annual";
+}
+
+export interface VatReportItem {
+  totalSalesBeforeTax: number;
+  salesTax: number;
+  totalPurchasesBeforeTax: number;
+  purchasesTax: number;
+  netTaxDue: number;
+  period: VatReportPeriod;
+}
