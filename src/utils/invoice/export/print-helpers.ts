@@ -35,9 +35,9 @@ export const openPrintWindow = (
 /**
  * Adds a print button to the print window
  */
-export const addPrintButton = (printWindow: Window): void => {
+export const addPrintButton = (printWindow: Window, isPdf: boolean = false): void => {
   const printButton = printWindow.document.createElement('button');
-  printButton.innerHTML = 'طباعة الفاتورة';
+  printButton.innerHTML = isPdf ? 'تصدير PDF' : 'طباعة الفاتورة';
   printButton.className = 'print-button no-print';
   printButton.style.position = 'fixed';
   printButton.style.top = '10px';
@@ -79,14 +79,16 @@ export const setupPrintWindow = (
         @media print {
           .no-print { display: none !important; }
           body { margin: 0 !important; padding: 0 !important; }
-          @page { size: 80mm auto !important; margin: 0 !important; }
+          
+          /* Set page size based on document type */
+          ${options.isPdf ? '@page { size: A4 portrait !important; margin: 15mm !important; }' : '@page { size: 80mm auto !important; margin: 0 !important; }'}
           
           /* Critical QR code print fixes */
           .qr-code-container {
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            margin: 20px auto !important;
+            margin: ${options.isPdf ? '30px' : '20px'} auto !important;
             width: 100% !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
@@ -104,6 +106,35 @@ export const setupPrintWindow = (
             visibility: visible !important;
             margin: 0 auto !important;
           }
+          
+          /* PDF specific styles */
+          ${options.isPdf ? `
+            .pdf-mode {
+              width: 210mm !important;
+              min-height: 297mm !important;
+              padding: 15mm !important;
+              box-sizing: border-box !important;
+            }
+            
+            .pdf-mode .invoice-table {
+              width: 100% !important;
+              margin: 30px 0 !important;
+              border-collapse: collapse !important;
+            }
+            
+            .pdf-mode .invoice-table th {
+              padding: 12px !important;
+              font-size: 16px !important;
+              background-color: #f7f7f7 !important;
+              border-bottom: 2px solid #ddd !important;
+            }
+            
+            .pdf-mode .invoice-table td {
+              padding: 12px !important;
+              font-size: 15px !important;
+              border-bottom: 1px solid #eee !important;
+            }
+          ` : ''}
         }
       `;
       printWindow.document.head.appendChild(style);
@@ -115,7 +146,7 @@ export const setupPrintWindow = (
       }
       
       // Add print button
-      addPrintButton(printWindow);
+      addPrintButton(printWindow, options.isPdf);
       
       // Force QR code visibility before printing
       setTimeout(() => {
@@ -138,7 +169,7 @@ export const setupPrintWindow = (
             printWindow.print();
           }, options.delay || 1500);
         }
-      }, 500);
+      }, 800);
       
     } catch (error) {
       console.error("Error setting up print window:", error);

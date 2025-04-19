@@ -33,8 +33,22 @@ export const getBaseStyles = (): string => `
     max-width: 100%;
     width: 210mm; /* A4 width */
     min-height: 297mm; /* A4 height */
-    padding: 20mm;
+    padding: 15mm;
     margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  .pdf-mode .invoice-header {
+    margin-bottom: 30px;
+  }
+  
+  .pdf-mode .invoice-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .pdf-mode .business-details {
+    margin-bottom: 25px;
   }
   
   /* Print media settings */
@@ -49,7 +63,7 @@ export const getBaseStyles = (): string => `
     .pdf-mode {
       @page {
         size: A4;
-        margin: 20mm;
+        margin: 15mm;
       }
     }
     
@@ -93,12 +107,36 @@ export const getBaseStyles = (): string => `
   /* Table styles for A4 PDF */
   .pdf-mode .invoice-table {
     width: 100%;
-    margin: 20px 0;
+    margin: 30px 0;
+    border-collapse: collapse;
   }
   
-  .pdf-mode .invoice-table th,
+  .pdf-mode .invoice-table th {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f7f7f7;
+    border-bottom: 2px solid #ddd;
+    text-align: right;
+  }
+  
   .pdf-mode .invoice-table td {
     padding: 12px;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .pdf-mode .invoice-summary {
+    margin-top: 30px;
+    font-size: 16px;
+  }
+  
+  .pdf-mode .invoice-footer {
+    margin-top: 40px;
     font-size: 14px;
+  }
+  
+  .pdf-mode .qr-code-container {
+    margin: 30px auto;
   }
 `;

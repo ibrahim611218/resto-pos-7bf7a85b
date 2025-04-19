@@ -21,6 +21,11 @@ export const exportInvoiceToPDF = (
     
     if (!printWindow) {
       console.error("Could not open print window");
+      toast({
+        title: "خطأ في تصدير الفاتورة",
+        description: "تعذر فتح نافذة التصدير",
+        variant: "destructive",
+      });
       return;
     }
     
@@ -28,7 +33,7 @@ export const exportInvoiceToPDF = (
       title: `invoice-${invoice.number}.pdf`,
       printAutomatically: true,
       isPdf: true,
-      delay: 2000 // Increased delay to ensure proper rendering
+      delay: 2500 // Increased delay to ensure proper rendering
     });
     
     toast({
