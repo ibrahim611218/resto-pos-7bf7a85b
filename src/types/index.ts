@@ -1,4 +1,15 @@
+
 export type Language = "en" | "ar";
+export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen";
+export type ProductType = "single" | "sized";
+export type Size = "small" | "medium" | "large";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
 
 export interface Invoice {
   id: string;
@@ -13,6 +24,7 @@ export interface Invoice {
   cashierName: string;
   notes?: string;
   createdAt?: string;
+  status?: "completed" | "cancelled" | "refunded";
 }
 
 export interface InvoiceItem {
@@ -30,10 +42,19 @@ export interface Product {
   nameAr?: string;
   description?: string;
   descriptionAr?: string;
-  price: number;
+  price?: number;
   categoryId: string;
-  imageUrl?: string;
-  sizes: string[];
+  image?: string;
+  type: ProductType;
+  taxable: boolean;
+  variants: ProductVariant[];
+  sizes?: string[];
+}
+
+export interface ProductVariant {
+  id: string;
+  size: Size;
+  price: number;
 }
 
 export interface Category {
@@ -42,6 +63,7 @@ export interface Category {
   nameAr?: string;
   description?: string;
   descriptionAr?: string;
+  image?: string;
   imageUrl?: string;
 }
 
@@ -57,8 +79,27 @@ export interface BusinessSettings {
   taxIncluded: boolean;
   invoiceNotesAr: string;
   logo?: string;
-  workStartTime?: string;  // New field
-  workEndTime?: string;    // New field
+  workStartTime?: string;
+  workEndTime?: string;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  address?: string;
+}
+
+export interface InventoryItem {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unit: string;
+  minLevel: number;
+  maxLevel: number;
+  lastUpdated: string;
 }
 
 export interface IDatabaseService {

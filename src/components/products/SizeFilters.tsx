@@ -51,4 +51,3 @@ const SizeFilters: React.FC<SizeFiltersProps> = ({
 };
 
 export default SizeFilters;
-
