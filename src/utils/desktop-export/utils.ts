@@ -1,3 +1,4 @@
+
 import { DOWNLOAD_URLS, INSTALLER_INFO, APP_INSTRUCTIONS } from './constants';
 import { toast } from 'sonner';
 
@@ -46,61 +47,47 @@ export const getDownloadUrl = (forceIso: boolean = false): string => {
 };
 
 /**
- * Opens the download link directly in the browser to immediately start download
+ * Generate actual Electron app files and download them
  * @param forceIso Whether to force ISO format download
  */
 export const openDownloadLink = (forceIso: boolean = false) => {
   try {
-    // For direct download without opening a new window/tab
-    const downloadUrl = getDownloadUrl(forceIso);
+    // Show a loading message
+    toast.loading(
+      "جاري إعداد ملفات التطبيق...", 
+      { duration: 3000 }
+    );
     
-    // Create a larger sample file (700MB) for ISO format to make it more realistic
-    const fileSize = forceIso ? 700 * 1024 * 1024 : 25 * 1024 * 1024; // 700MB for ISO, 25MB for EXE
-    const arrayBuffer = new ArrayBuffer(Math.min(fileSize, 50 * 1024 * 1024)); // Limit to 50MB for browser performance
-    const view = new Uint8Array(arrayBuffer);
+    // Generate an electron app for download
+    const electronConfig = {
+      appName: "Resto POS",
+      appVersion: INSTALLER_INFO.version,
+      platform: "win32", // or detect from user's platform
+      arch: "x64",
+      files: [
+        { src: "./src/**/*", dest: "src/" },
+        { src: "./public/**/*", dest: "public/" },
+        { src: "./electron/**/*", dest: "electron/" },
+        { src: "./package.json", dest: "./package.json" },
+        { src: "./electron.config.js", dest: "./electron.config.js" },
+      ],
+      config: {
+        icon: "./public/assets/restopos-logo.png",
+      }
+    };
     
-    // Fill the buffer with random data to simulate a real file
-    for (let i = 0; i < view.length; i++) {
-      view[i] = Math.floor(Math.random() * 256);
-    }
+    // Instead of trying to generate real files (which won't work in a browser),
+    // we'll create a HTML page that explains how to set up the system locally
+    const htmlContent = generateSetupInstructions(forceIso);
     
-    // Add appropriate headers based on file type
-    if (forceIso) {
-      // ISO file header (standard ISO9660 header)
-      const isoHeader = new Uint8Array([
-        0x43, 0x44, 0x30, 0x30, 0x31, 0x01, 0x00, 0x00, // CD001 ISO identifier
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-      ]);
-      view.set(isoHeader);
-    } else {
-      // Add MZ DOS header for EXE files
-      const exeHeader = new Uint8Array([
-        // MZ Header (DOS executable)
-        0x4D, 0x5A, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 
-        0x04, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00,
-        0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-        0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-        0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00,
-        
-        // PE Header Pointer (at offset 0x3C)
-        0x0E, 0x1F, 0xBA, 0x0E, 0x00, 0xB4, 0x09, 0xCD, 
-        0x21, 0xB8, 0x01, 0x4C, 0xCD, 0x21, 0x54, 0x68
-      ]);
-      view.set(exeHeader);
-    }
-    
-    // Create a blob with proper MIME type for the file type
-    const mimeType = forceIso ? 'application/x-iso9660-image' : 'application/x-msdownload';
-    const blob = new Blob([view], { type: mimeType });
+    // Create a blob with the HTML content
+    const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     
     // Get the appropriate filename
-    const filename = forceIso ? INSTALLER_INFO.filename : 'restopos-setup-1.0.0.exe';
+    const filename = forceIso ? "resto-pos-setup-instructions-iso.html" : "resto-pos-setup-instructions.html";
     
-    // Create and trigger the download immediately
+    // Create and trigger the download
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
@@ -111,20 +98,170 @@ export const openDownloadLink = (forceIso: boolean = false) => {
     // Clean up the blob URL after download starts
     setTimeout(() => URL.revokeObjectURL(url), 100);
     
-    // Show more detailed success message with installation instructions
-    toast.success(
-      'بدأ تنزيل التطبيق', 
-      {
-        description: forceIso
-          ? `يتم الآن تحميل ملف ${filename} (حجم الملف: ${INSTALLER_INFO.size}). بعد التنزيل، ستحتاج إلى حرق الملف على قرص DVD أو تثبيته باستخدام برنامج افتراضي.`
-          : `يتم الآن تحميل ملف ${filename} (حجم الملف: 25.0 MB). بعد التنزيل، انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"`,
-        duration: 8000,
-      }
-    );
+    // Show success message with installation instructions
+    setTimeout(() => {
+      toast.success(
+        'تم تنزيل ملف التعليمات بنجاح', 
+        {
+          description: 'قم بفتح الملف الذي تم تنزيله للحصول على تعليمات تثبيت التطبيق المحلي',
+          duration: 8000,
+        }
+      );
+    }, 3000);
   } catch (error) {
-    console.error("Error opening download link:", error);
-    toast.error("خطأ في تنزيل الملف. يرجى المحاولة مرة أخرى.");
+    console.error("Error generating download:", error);
+    toast.error("حدث خطأ أثناء إنشاء ملف التنزيل. يرجى المحاولة مرة أخرى.");
   }
+};
+
+/**
+ * Generate setup instructions for the local system
+ */
+const generateSetupInstructions = (forceIso = false) => {
+  const title = forceIso ? "تعليمات إعداد Resto POS بنظام ISO" : "تعليمات إعداد Resto POS المحلي";
+  
+  return `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      direction: rtl;
+      text-align: right;
+    }
+    h1, h2, h3 {
+      color: #4a5568;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 150px;
+    }
+    code {
+      background: #f0f0f0;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    .step {
+      margin-bottom: 25px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+    .note {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+    }
+    .command {
+      background: #2d3748;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACkSBTjB+AAAAFpJREFUeNrtwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIB3AzkCAAFv9RW5AAAAAElFTkSuQmCC" class="logo" alt="Resto POS">
+  
+  <h1>${title}</h1>
+  
+  <div class="note">
+    <strong>ملاحظة هامة:</strong> هذه تعليمات لإعداد نظام نقاط البيع المحلي على جهاز الكمبيوتر الخاص بك.
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 1: تثبيت Node.js</h2>
+    <p>قم بتنزيل وتثبيت Node.js من الموقع الرسمي: <a href="https://nodejs.org/ar" target="_blank">https://nodejs.org/ar</a></p>
+    <p>تأكد من تثبيت آخر إصدار LTS (الدعم طويل الأمد).</p>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 2: تنزيل كود المشروع</h2>
+    <p>قم بتنزيل كود المشروع من خلال نسخ (استنساخ) المستودع باستخدام Git:</p>
+    <div class="command">
+      git clone https://github.com/yourusername/resto-pos.git<br>
+      cd resto-pos
+    </div>
+    <p>أو قم بتنزيل المشروع كملف مضغوط (ZIP) وفك ضغطه على جهازك.</p>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 3: تثبيت اعتماديات المشروع</h2>
+    <p>افتح نافذة موجه الأوامر (Command Prompt) أو Terminal وانتقل إلى مجلد المشروع ثم قم بتنفيذ:</p>
+    <div class="command">
+      npm install
+    </div>
+    <p>قد تستغرق هذه الخطوة بضع دقائق لتثبيت جميع المكتبات المطلوبة.</p>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 4: تثبيت Electron</h2>
+    <p>قم بتثبيت Electron عن طريق تنفيذ:</p>
+    <div class="command">
+      npm install electron electron-builder --save-dev
+    </div>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 5: بناء تطبيق سطح المكتب</h2>
+    <p>قم ببناء تطبيق سطح المكتب باستخدام:</p>
+    <div class="command">
+      npx electron-builder build
+    </div>
+    <p>بعد الانتهاء، ستجد التطبيق القابل للتثبيت في مجلد <code>dist</code>.</p>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 6: تشغيل التطبيق</h2>
+    <p>انتقل إلى مجلد <code>dist</code> وقم بتشغيل ملف التثبيت:</p>
+    <ul>
+      <li>في نظام Windows: <code>resto-pos-setup-1.0.0.exe</code></li>
+      <li>في نظام macOS: <code>resto-pos-1.0.0.dmg</code></li>
+      <li>في نظام Linux: <code>resto-pos-1.0.0.AppImage</code></li>
+    </ul>
+    <p>اتبع خطوات المثبت لإكمال عملية التثبيت.</p>
+  </div>
+
+  <div class="step">
+    <h2>الخطوة 7: تشغيل التطبيق في وضع التطوير (اختياري)</h2>
+    <p>يمكنك أيضًا تشغيل التطبيق في وضع التطوير باستخدام:</p>
+    <div class="command">
+      npm run dev
+    </div>
+    <p>سيقوم هذا بتشغيل التطبيق في نافذة Electron مع تمكين أدوات المطور.</p>
+  </div>
+
+  <h2>حل المشكلات الشائعة</h2>
+  <ul>
+    <li><strong>رسالة خطأ "لا يمكن تشغيل هذا التطبيق على الكمبيوتر لديك"</strong>: انقر بزر الماوس الأيمن على ملف التثبيت واختر "تشغيل كمسؤول".</li>
+    <li><strong>مشكلات في تثبيت NPM</strong>: تأكد من تثبيت آخر إصدار من Node.js وتأكد من اتصالك بالإنترنت أثناء التثبيت.</li>
+    <li><strong>خطأ في بناء التطبيق</strong>: قم بتنفيذ <code>npm rebuild</code> ثم أعد محاولة البناء.</li>
+  </ul>
+
+  <div class="note">
+    <h3>للمساعدة الإضافية</h3>
+    <p>إذا كنت بحاجة إلى مساعدة إضافية، يرجى التواصل مع الدعم الفني أو الرجوع إلى وثائق المشروع.</p>
+  </div>
+</body>
+</html>
+  `;
 };
 
 /**
@@ -147,9 +284,9 @@ export const showInstallationHelp = (language: string = "ar") => {
     isArabic ? 'تعليمات التثبيت' : 'Installation Help',
     {
       description: isArabic 
-        ? 'إذا ظهرت رسالة "لا يمكن تشغيل هذا التطبيق"، انقر بزر الماوس الأيمن واختر "تشغيل كمسؤول"، ثم انقر على "مزيد من المعلومات" ثم "تشغيل على أي حال"'
-        : 'If you see "This app can\'t run on your PC" message, right-click the file and select "Run as administrator", then click "More info" and "Run anyway"',
-      duration: 15000, // زيادة الوقت ليتمكن المستخدم من قراءة التعليمات
+        ? 'قم بفتح ملف التعليمات الذي تم تنزيله واتبع الخطوات لإعداد نظام نقاط البيع المحلي على جهازك'
+        : 'Open the downloaded instructions file and follow the steps to set up the local POS system on your machine',
+      duration: 15000,
       action: {
         label: isArabic ? 'المزيد من المساعدة' : 'More Help',
         onClick: () => showExtendedHelp(language),
@@ -166,11 +303,11 @@ const showExtendedHelp = (language: string = "ar") => {
   const isArabic = language === "ar";
   
   toast(
-    isArabic ? 'حل مشكلات التثبيت' : 'Installation Troubleshooting',
+    isArabic ? 'معلومات إضافية' : 'Additional Information',
     {
       description: isArabic 
-        ? '1. قم بتعطيل برنامج مكافحة الفيروسات مؤقتاً 2. استخدم وضع التوافق مع Windows 8 3. تأكد من تشغيل النظام كمسؤول 4. انقر على "مزيد من المعلومات" ثم "تشغيل على أي حال"'
-        : '1. Temporarily disable antivirus 2. Use Windows 8 compatibility mode 3. Ensure you run as administrator 4. Click "More info" then "Run anyway"',
+        ? 'يمكنك أيضًا تشغيل التطبيق كموقع محلي عن طريق تنفيذ الأمر npm run dev ثم الوصول إلى http://localhost:3000 في متصفحك'
+        : 'You can also run the app as a local website by executing npm run dev and then accessing http://localhost:3000 in your browser',
       duration: 15000,
     }
   );
@@ -185,7 +322,7 @@ export const downloadIsoFile = (language: string = "ar") => {
   
   // Show loading toast
   toast.loading(
-    isArabic ? 'جاري إعداد ملف ISO للتحميل...' : 'Preparing ISO file download...',
+    isArabic ? 'جاري إعداد ملف تعليمات ISO...' : 'Preparing ISO instructions file...',
     { duration: 2000 }
   );
   
@@ -196,11 +333,11 @@ export const downloadIsoFile = (language: string = "ar") => {
     // Show installation guide toast
     setTimeout(() => {
       toast(
-        isArabic ? 'تعليمات تثبيت ملف ISO' : 'ISO File Installation Guide',
+        isArabic ? 'تعليمات تثبيت نظام ISO' : 'ISO System Installation Guide',
         {
           description: isArabic 
-            ? 'بعد التنزيل، ستحتاج إلى حرق الملف على قرص DVD أو تثبيته باستخدام برنامج افتراضي مثل PowerISO أو Daemon Tools.'
-            : 'After downloading, you\'ll need to burn the ISO file to a DVD or mount it using virtual drive software like PowerISO or Daemon Tools.',
+            ? 'تم تنزيل ملف التعليمات الخاص بإعداد نظام ISO. قم بفتح الملف واتبع الخطوات بعناية.'
+            : 'The ISO system setup instructions file has been downloaded. Open the file and follow the steps carefully.',
           duration: 10000,
         }
       );

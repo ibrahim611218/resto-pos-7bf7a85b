@@ -17,9 +17,9 @@ export const handleDesktopExport = (language: string = "ar") => {
   }
   
   try {
-    console.log("Starting desktop export process with realistic installer file");
+    console.log("Starting desktop export process with setup instructions file");
     
-    // Use the direct download method for immediate file download with enhanced file size
+    // Use the direct download method for immediate file download with setup instructions
     openDownloadLink(false); // false for EXE file (default format)
     
     // Show success notification
