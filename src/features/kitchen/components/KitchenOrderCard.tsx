@@ -58,6 +58,8 @@ const KitchenOrderCard: React.FC<KitchenOrderCardProps> = ({
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "preparing":
         return "bg-blue-100 text-blue-800 border-blue-200";
+      case "in-progress":
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "ready":
         return "bg-green-100 text-green-800 border-green-200";
       case "completed":
@@ -75,6 +77,8 @@ const KitchenOrderCard: React.FC<KitchenOrderCardProps> = ({
         case "pending":
           return "قيد الانتظار";
         case "preparing":
+          return "جاري التحضير";
+        case "in-progress":
           return "جاري التحضير";
         case "ready":
           return "جاهز";
@@ -208,7 +212,7 @@ const KitchenOrderCard: React.FC<KitchenOrderCardProps> = ({
             </Button>
           )}
           
-          {status === "preparing" && (
+          {(status === "preparing" || status === "in-progress") && (
             <Button 
               variant="outline" 
               className="flex-1 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"

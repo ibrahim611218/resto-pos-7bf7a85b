@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -24,7 +25,7 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   const { language } = useLanguage();
   const { user } = useAuth();
   const isArabic = language === "ar";
-  const isAdminOrManager = user?.role === "admin" || user?.role === "manager";
+  const isAdminOrOwner = user?.role === "admin" || user?.role === "owner";
 
   return (
     <div className="flex justify-between items-center">
@@ -43,7 +44,7 @@ const InvoiceActions: React.FC<InvoiceActionsProps> = ({
           </Button>
         )}
 
-        {isAdminOrManager && onReturn && invoice.status !== "refunded" && (
+        {isAdminOrOwner && onReturn && invoice.status !== "refunded" && (
           <Button variant="outline" size="sm" onClick={() => onReturn(invoice)}>
             <RotateCcw className="mr-2" size={14} />
             {isArabic ? "إرجاع الطلب" : "Return Order"}

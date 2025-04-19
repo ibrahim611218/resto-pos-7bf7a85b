@@ -1,11 +1,12 @@
 
 export type Language = "en" | "ar";
-export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen";
+export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen" | "manager";
 export type ProductType = "single" | "sized";
 export type Size = "small" | "medium" | "large";
 export type InvoiceExportType = "print" | "pdf" | "email";
 export type PaymentMethod = "cash" | "card" | "online" | "transfer";
-export type KitchenOrderStatus = "pending" | "in-progress" | "completed" | "cancelled";
+export type KitchenOrderStatus = "pending" | "in-progress" | "preparing" | "ready" | "completed" | "cancelled";
+export type KitchenItemStatus = "pending" | "preparing" | "ready";
 
 export interface User {
   id: string;
@@ -155,17 +156,19 @@ export interface KitchenOrderItem {
   nameAr?: string;
   quantity: number;
   notes?: string;
-  status: KitchenOrderStatus;
+  status: KitchenItemStatus;
+  size: string;
 }
 
 export interface KitchenOrder {
   id: string;
-  invoiceNumber: string;
+  invoiceId: string;
   items: KitchenOrderItem[];
   status: KitchenOrderStatus;
-  orderType: "takeaway" | "dineIn";
+  orderType?: "takeaway" | "dineIn";
   tableNumber?: string;
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
+  cashierName?: string;
 }

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Dialog,
@@ -52,7 +53,6 @@ export const ReturnOrderDialog: React.FC<ReturnOrderDialogProps> = ({
       setIsProcessing(false);
       onConfirm(returnReason);
       setReturnReason("");
-      onClose();
     }, 1000);
   };
 

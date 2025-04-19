@@ -20,9 +20,9 @@ interface InvoiceDetailsModalProps {
   invoice: Invoice | null;
   open: boolean;
   onClose: () => void;
-  formatInvoiceDate: (date: Date) => string;
+  formatInvoiceDate: (date: string | Date) => string;
   onPrint: (invoice: Invoice) => void;
-  onRefund?: (invoice: Invoice) => boolean;  // Changed to accept an Invoice object
+  onRefund?: (invoice: Invoice) => boolean;
 }
 
 const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
@@ -90,7 +90,15 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
             <Separator />
 
-            <InvoiceItems items={invoice.items} />
+            {/* Convert InvoiceItem[] to be compatible with CartItem[] interface requirements */}
+            <InvoiceItems items={invoice.items.map(item => ({
+              ...item,
+              productId: item.productId || "",
+              variantId: item.variantId || "",
+              categoryId: "",
+              size: item.size || "regular",
+              taxable: !!item.taxable
+            }))} />
 
             <Separator />
 
@@ -107,7 +115,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
             settings={settings}
             onPrint={handlePrint}
             onShowEmailDialog={() => setShowEmailDialog(true)}
-            onRefund={onRefund ? () => onRefund(invoice) : undefined}  // Updated to pass the full invoice
+            onRefund={onRefund ? () => onRefund(invoice) : undefined}
           />
         </div>
         

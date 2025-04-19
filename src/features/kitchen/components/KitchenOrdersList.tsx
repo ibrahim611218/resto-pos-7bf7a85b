@@ -26,7 +26,7 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
         // 1. الحصول على الطلبات النشطة
         const fetchedActiveOrders = await kitchenOrderService.getKitchenOrders();
         setActiveOrders(fetchedActiveOrders.filter(order => 
-          ["pending", "preparing", "ready"].includes(order.status)
+          ["pending", "preparing", "in-progress", "ready"].includes(order.status)
         ));
         
         // 2. الحصول على الطلبات المكتملة

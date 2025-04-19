@@ -45,7 +45,8 @@ export const mockInvoices: Invoice[] = [
     cashierId: "1",
     cashierName: "Ahmed Hassan",
     status: "completed",
-    totalAmount: 115
+    totalAmount: 115,
+    discount: 0
   },
   {
     id: "2",
@@ -74,7 +75,8 @@ export const mockInvoices: Invoice[] = [
     cashierId: "1",
     cashierName: "Ahmed Hassan",
     status: "completed",
-    totalAmount: 51.75
+    totalAmount: 51.75,
+    discount: 0
   },
   {
     id: "3",
@@ -114,7 +116,8 @@ export const mockInvoices: Invoice[] = [
     cashierId: "2",
     cashierName: "Fatima Ali",
     status: "completed",
-    totalAmount: 109.25
+    totalAmount: 109.25,
+    discount: 0
   },
   {
     id: "4",
@@ -143,7 +146,8 @@ export const mockInvoices: Invoice[] = [
     cashierId: "2",
     cashierName: "Fatima Ali",
     status: "refunded",
-    totalAmount: 69
+    totalAmount: 69,
+    discount: 0
   },
   {
     id: "5",
@@ -189,6 +193,7 @@ export const mockInvoices: Invoice[] = [
     cashierId: "1",
     cashierName: "Ahmed Hassan",
     status: "completed",
-    totalAmount: 161
+    totalAmount: 161,
+    discount: 0
   }
 ];

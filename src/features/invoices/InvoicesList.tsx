@@ -4,7 +4,7 @@ import { useInvoices } from "./hooks/useInvoices";
 import InvoiceDetailsModal from "./components/InvoiceDetailsModal";
 import InvoiceListHeader from "./components/InvoiceListHeader";
 import InvoiceTabsContainer from "./components/InvoiceTabsContainer";
-import ReturnOrderDialog from "./components/ReturnOrderDialog";
+import { ReturnOrderDialog } from "./components/ReturnOrderDialog";
 import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { Invoice } from "@/types";
@@ -59,14 +59,16 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     setShowReturnDialog(true);
   };
 
-  const handleReturnConfirm = (invoice: Invoice, reason: string) => {
-    refundInvoice(invoice);
-    toast.success(isArabic 
-      ? `تم استرداد الفاتورة رقم ${invoice.number} بنجاح` 
-      : `Invoice #${invoice.number} has been refunded successfully`
-    );
-    setShowReturnDialog(false);
-    setSelectedInvoiceForReturn(null);
+  const handleReturnConfirm = (reason: string) => {
+    if (selectedInvoiceForReturn) {
+      refundInvoice(selectedInvoiceForReturn);
+      toast.success(isArabic 
+        ? `تم استرداد الفاتورة رقم ${selectedInvoiceForReturn.number} بنجاح` 
+        : `Invoice #${selectedInvoiceForReturn.number} has been refunded successfully`
+      );
+      setShowReturnDialog(false);
+      setSelectedInvoiceForReturn(null);
+    }
   };
 
   return (
@@ -95,19 +97,21 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
           onClose={closeInvoiceDetails}
           formatInvoiceDate={formatInvoiceDate}
           onPrint={handlePrintInvoice}
-          onRefund={(invoice) => {  // Changed to accept an Invoice object, not string
+          onRefund={(invoice) => {
             handleRefundClick(invoice);
             return true;
           }}
         />
       )}
 
-      <ReturnOrderDialog
-        open={showReturnDialog}
-        onClose={() => setShowReturnDialog(false)}
-        invoice={selectedInvoiceForReturn}
-        onReturn={handleReturnConfirm}
-      />
+      {showReturnDialog && selectedInvoiceForReturn && (
+        <ReturnOrderDialog
+          isOpen={showReturnDialog}
+          onClose={() => setShowReturnDialog(false)}
+          onConfirm={handleReturnConfirm}
+          invoice={selectedInvoiceForReturn}
+        />
+      )}
     </div>
   );
 };
