@@ -81,14 +81,14 @@ export const setupPrintWindow = (
           body { margin: 0 !important; padding: 0 !important; }
           
           /* Set page size based on document type */
-          ${options.isPdf ? '@page { size: A4 portrait !important; margin: 15mm !important; }' : '@page { size: 80mm auto !important; margin: 0 !important; }'}
+          ${options.isPdf ? '@page { size: A4 portrait !important; margin: 10mm !important; }' : '@page { size: 80mm auto !important; margin: 0 !important; }'}
           
           /* Critical QR code print fixes */
           .qr-code-container {
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            margin: ${options.isPdf ? '30px' : '20px'} auto !important;
+            margin: ${options.isPdf ? '15px' : '20px'} auto !important;
             width: 100% !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
@@ -107,32 +107,48 @@ export const setupPrintWindow = (
             margin: 0 auto !important;
           }
           
-          /* PDF specific styles */
+          /* PDF specific styles - more compact for single-page fit */
           ${options.isPdf ? `
             .pdf-mode {
               width: 210mm !important;
-              min-height: 297mm !important;
-              padding: 15mm !important;
+              padding: 10mm !important;
               box-sizing: border-box !important;
+            }
+            
+            .pdf-mode .invoice-header {
+              margin-bottom: 15px !important;
             }
             
             .pdf-mode .invoice-table {
               width: 100% !important;
-              margin: 30px 0 !important;
+              margin: 15px 0 !important;
               border-collapse: collapse !important;
             }
             
             .pdf-mode .invoice-table th {
-              padding: 12px !important;
-              font-size: 16px !important;
+              padding: 8px !important;
+              font-size: 14px !important;
               background-color: #f7f7f7 !important;
               border-bottom: 2px solid #ddd !important;
             }
             
             .pdf-mode .invoice-table td {
-              padding: 12px !important;
-              font-size: 15px !important;
+              padding: 8px !important;
+              font-size: 14px !important;
               border-bottom: 1px solid #eee !important;
+            }
+            
+            .pdf-mode .invoice-summary {
+              margin-top: 15px !important;
+            }
+            
+            .pdf-mode .invoice-footer {
+              margin-top: 15px !important;
+              font-size: 12px !important;
+            }
+            
+            .pdf-mode .qr-code-container {
+              margin: 10px auto !important;
             }
           ` : ''}
         }

@@ -33,7 +33,7 @@ export const exportInvoiceToPDF = (
       title: `invoice-${invoice.number}.pdf`,
       printAutomatically: true,
       isPdf: true,
-      delay: 2500 // Increased delay to ensure proper rendering
+      delay: 2000 // Adjusted delay for proper rendering
     });
     
     toast({
