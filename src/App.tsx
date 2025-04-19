@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
@@ -12,7 +11,6 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { AuthProvider } from "./features/auth/hooks/useAuth";
 import { OfflineProvider } from "./context/OfflineContext";
-import { useLanguage } from "./context/LanguageContext";
 
 // Import your pages
 import Home from "./pages/Index";
@@ -39,16 +37,13 @@ import "./index.css";
 import "@/styles/index";
 
 function App() {
-  // Get the language from context to pass to Login component
-  const { language } = useLanguage();
-
   return (
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
           <OfflineProvider>
             <Routes>
-              <Route path="/login" element={<Login language={language} />} />
+              <Route path="/login" element={<Login />} />
 
               <Route path="/" element={
                 <ProtectedRoute>
