@@ -32,7 +32,7 @@ interface UserDialogsProps {
   handleAddUser: () => void;
   handleEditUser: () => void;
   handleChangePassword: () => void;
-  handleDeleteUser: () => void;
+  handleDeleteUser: () => Promise<boolean> | boolean;
   handleSavePermissions: () => void;
   canManageAdmins: boolean;
   isArabic: boolean;
