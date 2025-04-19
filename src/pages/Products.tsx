@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
@@ -13,6 +13,23 @@ const Products = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Listen for product updates to trigger refresh
+  useEffect(() => {
+    const handleProductUpdate = () => {
+      console.log("Products page detected product update, refreshing...");
+      setRefreshTrigger(prev => prev + 1);
+    };
+
+    window.addEventListener('product-updated', handleProductUpdate);
+    window.addEventListener('data-updated', handleProductUpdate);
+
+    return () => {
+      window.removeEventListener('product-updated', handleProductUpdate);
+      window.removeEventListener('data-updated', handleProductUpdate);
+    };
+  }, []);
 
   return (
     <div className="container mx-auto p-4">
@@ -23,7 +40,11 @@ const Products = () => {
           {isArabic ? "إضافة منتج" : "Add Product"}
         </Button>
       </div>
-      <ProductsGrid viewMode={viewMode} onViewModeChange={setViewMode} />
+      <ProductsGrid 
+        viewMode={viewMode} 
+        onViewModeChange={setViewMode} 
+        key={`products-grid-${refreshTrigger}`}  
+      />
     </div>
   );
 };

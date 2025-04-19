@@ -30,38 +30,38 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        console.log('Loading products and categories data');
-        
-        if (window.db) {
-          const [categoriesResult, productsResult] = await Promise.all([
-            window.db.getCategories(),
-            window.db.getProducts()
-          ]);
-          console.log('Loaded products from db:', productsResult.length);
-          setCategories(categoriesResult);
-          setProducts(productsResult);
-        } else {
-          console.log('Loading data from local storage services for POS');
-          const [categoriesResult, productsResult] = await Promise.all([
-            categoryService.getCategories(),
-            productService.getProducts()
-          ]);
-          console.log('Loaded products from localStorage:', productsResult.length);
-          setCategories(categoriesResult);
-          setProducts(productsResult);
-        }
-      } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
-      } finally {
-        setLoading(false);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      console.log('Loading products and categories data');
+      
+      if (window.db) {
+        const [categoriesResult, productsResult] = await Promise.all([
+          window.db.getCategories(),
+          window.db.getProducts()
+        ]);
+        console.log('Loaded products from db:', productsResult.length);
+        setCategories(categoriesResult);
+        setProducts(productsResult);
+      } else {
+        console.log('Loading data from local storage services for POS');
+        const [categoriesResult, productsResult] = await Promise.all([
+          categoryService.getCategories(),
+          productService.getProducts()
+        ]);
+        console.log('Loaded products from localStorage:', productsResult.length);
+        setCategories(categoriesResult);
+        setProducts(productsResult);
       }
-    };
-    
+    } catch (error) {
+      console.error('Error loading data:', error);
+      toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadData();
 
     const handleVisibilityChange = () => {
