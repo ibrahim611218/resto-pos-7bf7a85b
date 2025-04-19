@@ -1,14 +1,18 @@
 
+export type KitchenOrderStatus = "pending" | "in-progress" | "preparing" | "ready" | "completed" | "cancelled";
+export type KitchenItemStatus = "pending" | "preparing" | "ready";
+
 export interface KitchenOrder {
   id: string;
   invoiceId: string;
   items: KitchenOrderItem[];
   status: KitchenOrderStatus;
+  orderType?: "takeaway" | "dineIn";
+  tableNumber?: string;
   createdAt: string;
   updatedAt: string;
-  notes?: string;
-  cashierName?: string;
   completedAt?: string;
+  cashierName?: string;
 }
 
 export interface KitchenOrderItem {
@@ -16,9 +20,7 @@ export interface KitchenOrderItem {
   name: string;
   nameAr?: string;
   quantity: number;
-  size: string;
+  notes?: string;
   status: KitchenItemStatus;
+  size: string;
 }
-
-export type KitchenOrderStatus = 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
-export type KitchenItemStatus = 'pending' | 'preparing' | 'ready';
