@@ -8,6 +8,7 @@ import { Tag, Plus, Pencil, Trash2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "sonner";
 import { Category } from "@/types";
+import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Categories = () => {
   const isArabic = language === "ar";
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
   
   useEffect(() => {
     const fetchCategories = async () => {
@@ -70,56 +72,74 @@ const Categories = () => {
     );
   }
 
+  const getGridClass = () => {
+    switch (viewMode) {
+      case "list":
+        return "flex flex-col gap-4";
+      case "grid-small":
+        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+      case "grid-large":
+        return "grid grid-cols-1 md:grid-cols-2 gap-6";
+      default:
+        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+    }
+  };
+
   return (
     <div className="container mx-auto p-4 scrollable-content">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{isArabic ? "التصنيفات" : "Categories"}</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold">{isArabic ? "التصنيفات" : "Categories"}</h1>
+          <ViewToggle value={viewMode} onValueChange={setViewMode} />
+        </div>
         <Button onClick={() => navigate("/categories/add")}>
           <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} /> 
           {isArabic ? "إضافة تصنيف" : "Add Category"}
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={getGridClass()}>
         {categories.map((category) => (
-          <Card key={category.id} className="overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <Tag className={isArabic ? "ml-2" : "mr-2"} size={18} />
-                {isArabic ? (category.nameAr || category.name) : category.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
+          <Card key={category.id} className={`overflow-hidden ${viewMode === "list" ? "flex" : ""}`}>
+            <div className={viewMode === "list" ? "w-40 h-full" : ""}>
               <img
                 src={category.image || "/placeholder.svg"}
                 alt={isArabic ? (category.nameAr || category.name) : category.name}
-                className="w-full h-40 object-cover"
+                className={`${viewMode === "list" ? "h-full w-full" : "w-full h-40"} object-cover`}
               />
-            </CardContent>
-            <CardFooter className="pt-4 flex justify-between">
-              <Button 
-                variant="outline"
-                onClick={() => navigate(`/products?category=${category.id}`)}
-              >
-                {isArabic ? "تصفح المنتجات" : "Browse Products"}
-              </Button>
-              <div className="flex gap-2">
+            </div>
+            <div className="flex-1">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center">
+                  <Tag className={isArabic ? "ml-2" : "mr-2"} size={18} />
+                  {isArabic ? (category.nameAr || category.name) : category.name}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="pt-4 flex justify-between">
                 <Button 
-                  variant="outline" 
-                  onClick={() => navigate(`/categories/edit/${category.id}`)}
+                  variant="outline"
+                  onClick={() => navigate(`/products?category=${category.id}`)}
                 >
-                  <Pencil size={16} className={isArabic ? "ml-2" : "mr-2"} />
-                  {isArabic ? "تعديل" : "Edit"}
+                  {isArabic ? "تصفح المنتجات" : "Browse Products"}
                 </Button>
-                <Button 
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDelete(category.id)}
-                >
-                  <Trash2 size={16} />
-                </Button>
-              </div>
-            </CardFooter>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate(`/categories/edit/${category.id}`)}
+                  >
+                    <Pencil size={16} className={isArabic ? "ml-2" : "mr-2"} />
+                    {isArabic ? "تعديل" : "Edit"}
+                  </Button>
+                  <Button 
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleDelete(category.id)}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              </CardFooter>
+            </div>
           </Card>
         ))}
       </div>

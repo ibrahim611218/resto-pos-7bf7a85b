@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
@@ -10,12 +9,17 @@ import { Search } from "lucide-react";
 import { toast } from "sonner";
 import productService from "@/services/products/ProductService";
 import categoryService from "@/services/categories/CategoryService";
+import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 
 interface ProductsGridProps {
-  viewMode: "grid" | "list";
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
 }
 
-const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
+const ProductsGrid: React.FC<ProductsGridProps> = ({ 
+  viewMode = "grid-small",
+  onViewModeChange
+}) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,6 +79,19 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
     setFilteredProducts(result);
   }, [searchTerm, selectedCategory, products]);
   
+  const getGridClass = () => {
+    switch (viewMode) {
+      case "list":
+        return "flex flex-col gap-2";
+      case "grid-small":
+        return "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2";
+      case "grid-large":
+        return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-4 gap-4";
+      default:
+        return "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2";
+    }
+  };
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -86,15 +103,20 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
   return (
     <div className="space-y-4 h-full">
       <div className="flex flex-col md:flex-row gap-4 sticky top-0 bg-background z-10 pb-4 px-1">
-        <div className="relative flex-1">
-          <Search className={`absolute ${isArabic ? 'left-3' : 'right-3'} top-3 h-4 w-4 text-muted-foreground`} />
-          <Input
-            placeholder={isArabic ? "بحث عن منتج..." : "Search products..."}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={`pl-10 ${isArabic ? 'text-right pr-4' : ''}`}
-            dir={isArabic ? "rtl" : "ltr"}
-          />
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1">
+            <Search className={`absolute ${isArabic ? 'left-3' : 'right-3'} top-3 h-4 w-4 text-muted-foreground`} />
+            <Input
+              placeholder={isArabic ? "بحث عن منتج..." : "Search products..."}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={`pl-10 ${isArabic ? 'text-right pr-4' : ''}`}
+              dir={isArabic ? "rtl" : "ltr"}
+            />
+          </div>
+          {onViewModeChange && (
+            <ViewToggle value={viewMode} onValueChange={onViewModeChange} />
+          )}
         </div>
       </div>
 
@@ -117,16 +139,14 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({ viewMode }) => {
         <div className="text-center py-10 text-muted-foreground">
           {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
         </div>
-      ) : viewMode === "grid" ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-2 px-1">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
       ) : (
-        <div className="space-y-2 px-1">
+        <div className={getGridClass()}>
           {filteredProducts.map((product) => (
-            <ProductListItem key={product.id} product={product} />
+            viewMode === "list" ? (
+              <ProductListItem key={product.id} product={product} />
+            ) : (
+              <ProductCard key={product.id} product={product} />
+            )
           ))}
         </div>
       )}
