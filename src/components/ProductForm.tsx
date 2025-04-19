@@ -10,7 +10,7 @@ import ProductTaxSwitch from "./product-form/ProductTaxSwitch";
 import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
-import { useProductForm } from "./product-form/useProductForm";
+import { useProductForm } from "./product-form/hooks/useProductForm";
 
 const ProductForm = () => {
   const {
