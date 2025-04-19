@@ -5,20 +5,21 @@ import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import CartPanel from "@/features/pos/components/cart/CartPanel";
 import { Separator } from "@/components/ui/separator";
-import { Grid, List } from "lucide-react";
+import { LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FullscreenToggle from "@/components/ui-custom/FullscreenToggle";
+import { ViewMode } from "@/components/ui-custom/ViewToggle";
 
 const Pos = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isMobile } = useWindowDimensions();
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
   const [cartExpanded, setCartExpanded] = useState(!isMobile);
   
   const toggleViewMode = () => {
-    setViewMode(prev => prev === "grid" ? "list" : "grid");
+    setViewMode(prev => prev === "grid-small" ? "list" : "grid-small");
   };
 
   return (
@@ -28,7 +29,7 @@ const Pos = () => {
         <div className="flex gap-2">
           <FullscreenToggle className="mr-2" />
           <Button variant="outline" size="sm" onClick={toggleViewMode}>
-            {viewMode === "grid" ? <List size={18} /> : <Grid size={18} />}
+            {viewMode === "grid-small" ? <List size={18} /> : <LayoutGrid size={18} />}
           </Button>
         </div>
       </div>
