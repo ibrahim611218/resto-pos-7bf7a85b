@@ -1,10 +1,20 @@
 
+import { useState, useEffect } from 'react';
 import { useUserOperations } from "./useUserOperations";
 import { usePasswordManagement } from "./usePasswordManagement";
 import { usePermissionsManagement } from "./usePermissionsManagement";
 import { useSystemAdmin } from "./useSystemAdmin";
+import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
+import { userService } from '@/services';
+import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const useUsers = () => {
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
+  const { isConnected } = useDatabaseConnection();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     users,
     setUsers,
@@ -36,6 +46,29 @@ export const useUsers = () => {
   // Initialize system admin
   useSystemAdmin(users, setUsers);
 
+  useEffect(() => {
+    if (isConnected) {
+      fetchUsers();
+    }
+  }, [isConnected]);
+
+  const fetchUsers = async () => {
+    if (!isConnected) return;
+    
+    setIsLoading(true);
+    try {
+      const fetchedUsers = await userService.getUsers();
+      if (fetchedUsers && fetchedUsers.length > 0) {
+        setUsers(fetchedUsers);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast.error(isArabic ? "حدث خطأ أثناء جلب المستخدمين" : "Error fetching users");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSavePermissionsWrapper = () => {
     if (!selectedUser) return false;
     return handleSavePermissions(selectedUser.id);
@@ -54,6 +87,7 @@ export const useUsers = () => {
     confirmPassword,
     setConfirmPassword,
     canManageAdmins,
+    isLoading,
     handleAddUser,
     handleEditUser,
     handleChangePassword,

@@ -5,6 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export function useDatabaseConnection() {
   const [isConnected, setIsConnected] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const { language } = useLanguage();
   const isArabic = language === 'ar';
 
@@ -15,6 +16,7 @@ export function useDatabaseConnection() {
         
         if (result.success) {
           setIsConnected(true);
+          setErrorDetails(null);
           toast.success(
             isArabic 
               ? `اتصال قاعدة البيانات ناجح (الإصدار: ${result.version})` 
@@ -22,6 +24,8 @@ export function useDatabaseConnection() {
           );
         } else {
           setIsConnected(false);
+          setErrorDetails(result.error || 
+            (isArabic ? 'خطأ غير معروف في قاعدة البيانات' : 'Unknown database error'));
           toast.error(
             isArabic 
               ? 'فشل الاتصال بقاعدة البيانات' 
@@ -35,6 +39,11 @@ export function useDatabaseConnection() {
     } catch (error) {
       console.error('Database connection test error:', error);
       setIsConnected(false);
+      
+      const errorMessage = error instanceof Error ? error.message : 
+        (isArabic ? 'خطأ غير معروف' : 'Unknown error');
+      setErrorDetails(errorMessage);
+      
       toast.error(
         isArabic 
           ? 'حدث خطأ أثناء اختبار اتصال قاعدة البيانات' 
@@ -50,6 +59,7 @@ export function useDatabaseConnection() {
 
   return {
     isConnected,
+    errorDetails,
     testDatabaseConnection
   };
 }

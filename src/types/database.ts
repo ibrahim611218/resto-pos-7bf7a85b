@@ -3,6 +3,7 @@ import { Invoice } from './invoices';
 import { BusinessSettings } from './settings';
 import { Product } from './products';
 import { Category } from './products';
+import { UserWithPassword } from '../features/users/types';
 
 export interface IDatabaseService {
   getInvoices: () => Promise<Invoice[]>;
@@ -12,4 +13,12 @@ export interface IDatabaseService {
   saveSettings: (settings: BusinessSettings) => Promise<any>;
   getProducts: () => Promise<Product[]>;
   getCategories: () => Promise<Category[]>;
+  
+  // User management operations
+  getUsers: () => Promise<UserWithPassword[]>;
+  saveUser: (user: UserWithPassword) => Promise<any>;
+  updateUser: (user: UserWithPassword) => Promise<any>;
+  deleteUser: (userId: string) => Promise<any>;
+  updateUserPermissions: (userId: string, permissions: string[]) => Promise<any>;
+  updateUserPassword: (userId: string, hashedPassword: string) => Promise<any>;
 }
