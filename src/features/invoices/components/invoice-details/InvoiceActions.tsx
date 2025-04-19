@@ -26,7 +26,7 @@ export const InvoiceActions: React.FC<InvoiceActionsProps> = ({
   const { hasPermission } = useAuth();
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const canRefund = hasPermission("admin") && invoice.status !== "refunded" && onRefund;
+  const canRefund = hasPermission(["admin", "owner"]) && invoice.status !== "refunded" && onRefund;
   
   const handleRefund = () => {
     if (onRefund) {

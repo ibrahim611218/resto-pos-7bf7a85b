@@ -6,7 +6,7 @@ import { Invoice, BusinessSettings } from "@/types";
 interface InvoiceHeaderProps {
   invoice: Invoice;
   settings: BusinessSettings;
-  formatInvoiceDate: (date: Date) => string;
+  formatInvoiceDate: (date: string | Date) => string;
 }
 
 export const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({

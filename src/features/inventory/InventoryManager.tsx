@@ -48,12 +48,15 @@ const InventoryManager: React.FC<InventoryManagerProps> = ({ language }) => {
           productNameAr: product.nameAr,
           quantity: 0,
           lowStockThreshold: 5,
-          lastUpdated: new Date(),
+          lastUpdated: new Date().toISOString(),
           categoryId: product.categoryId,
+          unit: "piece",
+          minLevel: 5,
+          maxLevel: 50
         }));
         
         // Combine existing and new items
-        const combinedItems = [...items, ...newItems];
+        const combinedItems: InventoryItem[] = [...items, ...newItems];
         
         // Save back to localStorage
         localStorage.setItem('inventory-items', JSON.stringify(combinedItems));

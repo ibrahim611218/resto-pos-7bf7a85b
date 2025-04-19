@@ -16,7 +16,7 @@ import {
 interface EnhancedInvoiceTableProps {
   invoices: Invoice[];
   isArabic: boolean;
-  formatInvoiceDate: (date: Date) => string;
+  formatInvoiceDate: (date: string | Date) => string;
   getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;

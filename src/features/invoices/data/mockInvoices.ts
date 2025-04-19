@@ -5,28 +5,30 @@ export const mockInvoices: Invoice[] = [
   {
     id: "1",
     number: "INV-20240601-001",
-    date: new Date("2024-06-01"),
+    date: new Date("2024-06-01").toISOString(),
+    customerName: "Walk-in Customer",
+    customerPhone: "",
     items: [
       {
         id: "item-1",
-        productId: "1",
         name: "Cappuccino",
         nameAr: "كابتشينو",
-        variantId: "1-m",
         size: "medium",
         price: 30,
         quantity: 2,
+        productId: "1",
+        variantId: "1-m",
         taxable: true,
       },
       {
         id: "item-2",
-        productId: "2",
         name: "Latte",
         nameAr: "لاتيه",
-        variantId: "2-s",
         size: "small",
         price: 40,
         quantity: 1,
+        productId: "2",
+        variantId: "2-s",
         taxable: true,
       }
     ],
@@ -34,7 +36,7 @@ export const mockInvoices: Invoice[] = [
     taxAmount: 15,
     total: 115,
     paidAmount: 115,
-    paymentMethod: "cash", // Changed from "Cash" to "cash"
+    paymentMethod: "cash",
     customer: {
       id: "cust-1",
       name: "Walk-in Customer",
@@ -42,22 +44,25 @@ export const mockInvoices: Invoice[] = [
     },
     cashierId: "1",
     cashierName: "Ahmed Hassan",
-    status: "completed"
+    status: "completed",
+    totalAmount: 115
   },
   {
     id: "2",
     number: "INV-20240601-002",
-    date: new Date("2024-06-01"),
+    date: new Date("2024-06-01").toISOString(),
+    customerName: "Walk-in Customer",
+    customerPhone: "",
     items: [
       {
         id: "item-3",
-        productId: "3",
         name: "Espresso",
         nameAr: "اسبريسو",
-        variantId: "3-s",
         size: "small",
         price: 15,
         quantity: 3,
+        productId: "3",
+        variantId: "3-s",
         taxable: true,
       }
     ],
@@ -65,36 +70,39 @@ export const mockInvoices: Invoice[] = [
     taxAmount: 6.75,
     total: 51.75,
     paidAmount: 51.75,
-    paymentMethod: "card", // Changed from "Card" to "card"
+    paymentMethod: "card",
     cashierId: "1",
     cashierName: "Ahmed Hassan",
-    status: "completed"
+    status: "completed",
+    totalAmount: 51.75
   },
   {
     id: "3",
     number: "INV-20240602-001",
-    date: new Date("2024-06-02"),
+    date: new Date("2024-06-02").toISOString(),
+    customerName: "Walk-in Customer",
+    customerPhone: "",
     items: [
       {
         id: "item-4",
-        productId: "1",
         name: "Cappuccino",
         nameAr: "كابتشينو",
-        variantId: "1-l",
         size: "large",
         price: 45,
         quantity: 1,
+        productId: "1",
+        variantId: "1-l",
         taxable: true,
       },
       {
         id: "item-5",
-        productId: "4",
         name: "Mocha",
         nameAr: "موكا",
-        variantId: "4-m",
         size: "medium",
         price: 25,
         quantity: 2,
+        productId: "4",
+        variantId: "4-m",
         taxable: true,
       }
     ],
@@ -102,25 +110,28 @@ export const mockInvoices: Invoice[] = [
     taxAmount: 14.25,
     total: 109.25,
     paidAmount: 109.25,
-    paymentMethod: "cash", // Changed from "Cash" to "cash"
+    paymentMethod: "cash",
     cashierId: "2",
     cashierName: "Fatima Ali",
-    status: "completed"
+    status: "completed",
+    totalAmount: 109.25
   },
   {
     id: "4",
     number: "INV-20240602-002",
-    date: new Date("2024-06-02"),
+    date: new Date("2024-06-02").toISOString(),
+    customerName: "Walk-in Customer",
+    customerPhone: "",
     items: [
       {
         id: "item-6",
-        productId: "5",
         name: "Tea",
         nameAr: "شاي",
-        variantId: "5-m",
         size: "medium",
         price: 15,
         quantity: 4,
+        productId: "5",
+        variantId: "5-m",
         taxable: true,
       }
     ],
@@ -128,36 +139,39 @@ export const mockInvoices: Invoice[] = [
     taxAmount: 9,
     total: 69,
     paidAmount: 69,
-    paymentMethod: "cash", // Changed from "Cash" to "cash"
+    paymentMethod: "cash",
     cashierId: "2",
     cashierName: "Fatima Ali",
-    status: "refunded"
+    status: "refunded",
+    totalAmount: 69
   },
   {
     id: "5",
     number: "INV-20240603-001",
-    date: new Date("2024-06-03"),
+    date: new Date("2024-06-03").toISOString(),
+    customerName: "Mohammad Khalid",
+    customerPhone: "+966 55 123 4567",
     items: [
       {
         id: "item-7",
-        productId: "2",
         name: "Latte",
         nameAr: "لاتيه",
-        variantId: "2-l",
         size: "large",
         price: 60,
         quantity: 2,
+        productId: "2",
+        variantId: "2-l",
         taxable: true,
       },
       {
         id: "item-8",
-        productId: "3",
         name: "Espresso",
         nameAr: "اسبريسو",
-        variantId: "3-m",
         size: "medium",
         price: 20,
         quantity: 1,
+        productId: "3",
+        variantId: "3-m",
         taxable: true,
       }
     ],
@@ -165,7 +179,7 @@ export const mockInvoices: Invoice[] = [
     taxAmount: 21,
     total: 161,
     paidAmount: 161,
-    paymentMethod: "card", // Changed from "Card" to "card"
+    paymentMethod: "card",
     customer: {
       id: "cust-2",
       name: "Mohammad Khalid",
@@ -174,6 +188,7 @@ export const mockInvoices: Invoice[] = [
     },
     cashierId: "1",
     cashierName: "Ahmed Hassan",
-    status: "completed"
+    status: "completed",
+    totalAmount: 161
   }
 ];

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { FileTextIcon, PrinterIcon, ReceiptText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { toast } from "sonner";
 interface InvoiceTableProps {
   invoices: Invoice[];
   isArabic: boolean;
-  formatInvoiceDate: (date: Date) => string;
+  formatInvoiceDate: (date: string | Date) => string;
   getStatusBadgeColor: (status: "completed" | "cancelled" | "refunded" | "pending") => string;
   viewInvoiceDetails: (id: string) => void;
   printInvoice: (invoice: Invoice) => void;

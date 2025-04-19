@@ -4,6 +4,8 @@ export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen";
 export type ProductType = "single" | "sized";
 export type Size = "small" | "medium" | "large";
 export type InvoiceExportType = "print" | "pdf" | "email";
+export type PaymentMethod = "cash" | "card" | "online" | "transfer";
+export type KitchenOrderStatus = "pending" | "in-progress" | "completed" | "cancelled";
 
 export interface User {
   id: string;
@@ -22,8 +24,9 @@ export interface Invoice {
   totalAmount: number;
   discount: number;
   discountType?: "percentage" | "fixed";
-  paymentMethod: "cash" | "card" | "online";
+  paymentMethod: PaymentMethod;
   cashierName: string;
+  cashierId?: string;
   subtotal: number;
   taxAmount: number;
   total: number;
@@ -31,6 +34,10 @@ export interface Invoice {
   notes?: string;
   createdAt?: string;
   status?: "completed" | "cancelled" | "refunded" | "pending";
+  orderType?: "takeaway" | "dineIn";
+  tableNumber?: string;
+  paidAmount: number;
+  transferReceiptNumber?: string;
 }
 
 export interface InvoiceItem {
@@ -40,6 +47,9 @@ export interface InvoiceItem {
   quantity: number;
   price: number;
   size: string;
+  productId?: string;
+  variantId?: string;
+  taxable?: boolean;
 }
 
 export interface Product {
@@ -84,6 +94,8 @@ export interface BusinessSettings {
   taxRate: number;
   taxIncluded: boolean;
   invoiceNotesAr: string;
+  invoiceNotes?: string;
+  commercialRegisterAr?: string;
   logo?: string;
   workStartTime?: string;
   workEndTime?: string;
@@ -121,4 +133,39 @@ export interface IDatabaseService {
   saveSettings: (settings: BusinessSettings) => Promise<any>;
   getProducts: () => Promise<Product[]>;
   getCategories: () => Promise<Category[]>;
+}
+
+export interface CartItem {
+  id: string;
+  productId: string;
+  name: string;
+  nameAr?: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  size: Size | "regular";
+  variantId: string;
+  categoryId: string;
+  taxable: boolean;
+}
+
+export interface KitchenOrderItem {
+  id: string;
+  name: string;
+  nameAr?: string;
+  quantity: number;
+  notes?: string;
+  status: KitchenOrderStatus;
+}
+
+export interface KitchenOrder {
+  id: string;
+  invoiceNumber: string;
+  items: KitchenOrderItem[];
+  status: KitchenOrderStatus;
+  orderType: "takeaway" | "dineIn";
+  tableNumber?: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
 }

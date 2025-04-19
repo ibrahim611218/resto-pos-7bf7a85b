@@ -14,7 +14,8 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
   const isArabic = language === "ar";
   
   // Calculate the remaining amount
-  const remainingAmount = invoice.total - invoice.paidAmount;
+  const paidAmount = invoice.paidAmount || 0;
+  const remainingAmount = invoice.total - paidAmount;
   
   return (
     <Card className="mb-4">
@@ -53,7 +54,7 @@ export const InvoicePaymentDetails: React.FC<InvoicePaymentDetailsProps> = ({ in
             {isArabic ? "المبلغ المدفوع" : "Paid Amount"}
           </div>
           <div className="font-medium text-right">
-            {invoice.paidAmount.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {paidAmount.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </div>
           
           <div className="text-muted-foreground">

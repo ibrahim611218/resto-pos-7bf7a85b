@@ -1,124 +1,90 @@
-
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Invoice } from "@/types";
-import { useLanguage } from "@/context/LanguageContext";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { toast } from "sonner";
+import { useLanguage } from "@/context/LanguageContext";
+import { toast } from "@/hooks/use-toast";
+import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { Invoice } from "@/types";
 
 interface ReturnOrderDialogProps {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
-  invoice: Invoice | null;
-  onReturn: (invoice: Invoice, reason: string) => void;
+  onConfirm: (reason: string) => void;
+  invoice: Invoice;
 }
 
-const ReturnOrderDialog: React.FC<ReturnOrderDialogProps> = ({ 
-  open, 
-  onClose, 
-  invoice, 
-  onReturn 
+export const ReturnOrderDialog: React.FC<ReturnOrderDialogProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  invoice
 }) => {
+  const { hasPermission } = useAuth();
   const { language } = useLanguage();
-  const { user } = useAuth();
   const isArabic = language === "ar";
-  const [reason, setReason] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  
-  const isAdmin = user?.role === "admin" || user?.role === "manager";
+  const { settings } = useBusinessSettings();
 
-  const handleSubmit = () => {
-    if (!isAdmin) {
-      // This is just for demo purposes. In a real app, you would verify the password against the admin user's actual password
-      if (password !== "admin123") {
-        setError(isArabic ? "كلمة المرور غير صحيحة" : "Invalid password");
-        return;
-      }
-    }
-    
-    if (!reason.trim()) {
-      setError(isArabic ? "الرجاء إدخال سبب الإرجاع" : "Please enter a return reason");
+  const [returnReason, setReturnReason] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const handleConfirm = () => {
+    if (!hasPermission(["admin", "owner"])) {
+      toast({
+        title: isArabic ? "غير مسموح" : "Permission Denied",
+        description: isArabic ? "لا يسمح لك بإرجاع هذه الفاتورة" : "You don't have permission to return this invoice",
+        variant: "destructive"
+      });
       return;
     }
-    
-    if (invoice) {
-      onReturn(invoice, reason);
-      resetForm();
+
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      onConfirm(returnReason);
+      setReturnReason("");
       onClose();
-    }
+    }, 1000);
   };
-  
-  const resetForm = () => {
-    setReason("");
-    setPassword("");
-    setError("");
-  };
-  
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
-  
+
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {isArabic ? "إرجاع الطلب" : "Return Order"}
-          </DialogTitle>
+          <DialogTitle>{isArabic ? "إرجاع الفاتورة" : "Return Invoice"}</DialogTitle>
           <DialogDescription>
-            {isArabic 
-              ? "سيتم إرجاع هذا الطلب وإلغاء الفاتورة. يتطلب هذا الإجراء صلاحيات المدير."
-              : "This will return the order and cancel the invoice. This action requires manager permissions."}
+            {isArabic
+              ? "أدخل سبب إرجاع الفاتورة."
+              : "Enter the reason for returning the invoice."}
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="space-y-4 py-4">
-          {!isAdmin && (
-            <div className="space-y-2">
-              <Label htmlFor="admin-password">
-                {isArabic ? "كلمة مرور المدير" : "Admin Password"}
-              </Label>
-              <Input
-                id="admin-password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={isArabic ? "أدخل كلمة مرور المدير" : "Enter admin password"}
-              />
-            </div>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="return-reason">
-              {isArabic ? "سبب الإرجاع" : "Return Reason"}
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reason" className="text-right">
+              {isArabic ? "السبب" : "Reason"}
             </Label>
-            <Textarea
-              id="return-reason"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder={isArabic ? "أدخل سبب إرجاع الطلب" : "Enter reason for returning the order"}
-              rows={3}
+            <Input
+              id="reason"
+              value={returnReason}
+              onChange={(e) => setReturnReason(e.target.value)}
+              className="col-span-3"
             />
           </div>
-          
-          {error && (
-            <div className="text-destructive text-sm">
-              {error}
-            </div>
-          )}
         </div>
-        
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isProcessing}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button variant="destructive" onClick={handleSubmit}>
+          <Button type="button" onClick={handleConfirm} disabled={isProcessing || !returnReason}>
             {isArabic ? "تأكيد الإرجاع" : "Confirm Return"}
           </Button>
         </DialogFooter>
@@ -126,5 +92,3 @@ const ReturnOrderDialog: React.FC<ReturnOrderDialogProps> = ({
     </Dialog>
   );
 };
-
-export default ReturnOrderDialog;
