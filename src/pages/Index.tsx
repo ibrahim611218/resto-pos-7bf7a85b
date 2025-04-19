@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import DownloadSection from '@/components/home/DownloadSection';
 
 const Index = () => {
   const { language } = useLanguage();
@@ -19,8 +18,6 @@ const Index = () => {
             : 'A comprehensive management system for restaurants and cafes with offline support.'}
         </p>
       </header>
-
-      <DownloadSection />
       
       <section className="grid md:grid-cols-3 gap-6 mb-12">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">

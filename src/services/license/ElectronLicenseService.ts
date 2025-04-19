@@ -1,11 +1,11 @@
 
-import { BaseService } from "../base/BaseService";
+import { BaseService, isElectron } from "../base/BaseService";
 import { ILicenseService, License, LicenseResponse, LicenseStatus } from "./types";
 import { calculateLicenseStatus } from "./utils";
 
 export class ElectronLicenseService extends BaseService implements ILicenseService {
   async getActivatedLicense(): Promise<License | null> {
-    if (this.isElectron()) {
+    if (isElectron()) {
       // @ts-ignore - window.electron is defined in Electron's preload script
       return await window.electron.invoke('license:getActivated');
     }
@@ -13,7 +13,7 @@ export class ElectronLicenseService extends BaseService implements ILicenseServi
   }
 
   async activateLicense(licenseKey: string): Promise<LicenseResponse> {
-    if (this.isElectron()) {
+    if (isElectron()) {
       // @ts-ignore - window.electron is defined in Electron's preload script
       return await window.electron.invoke('license:activate', licenseKey);
     }
@@ -21,7 +21,7 @@ export class ElectronLicenseService extends BaseService implements ILicenseServi
   }
 
   async generateLicense(type: 'trial' | 'full', durationDays: number): Promise<LicenseResponse> {
-    if (this.isElectron()) {
+    if (isElectron()) {
       // @ts-ignore - window.electron is defined in Electron's preload script
       return await window.electron.invoke('license:generate', type, durationDays);
     }
@@ -29,7 +29,7 @@ export class ElectronLicenseService extends BaseService implements ILicenseServi
   }
 
   async getAllLicenses(): Promise<License[]> {
-    if (this.isElectron()) {
+    if (isElectron()) {
       // @ts-ignore - window.electron is defined in Electron's preload script
       return await window.electron.invoke('license:getAll');
     }

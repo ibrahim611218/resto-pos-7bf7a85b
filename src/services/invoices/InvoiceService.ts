@@ -64,7 +64,7 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
 class ElectronInvoiceService extends BaseService implements IInvoiceService {
   async getInvoices(): Promise<Invoice[]> {
     try {
-      if (this.isElectron()) {
+      if (isElectron()) {
         // @ts-ignore - window.db is defined in Electron's preload script
         return await window.db.getInvoices();
       }
@@ -77,7 +77,7 @@ class ElectronInvoiceService extends BaseService implements IInvoiceService {
 
   async saveInvoice(invoice: Invoice): Promise<{ success: boolean; id?: string; error?: string }> {
     try {
-      if (this.isElectron()) {
+      if (isElectron()) {
         // @ts-ignore - window.db is defined in Electron's preload script
         return await window.db.saveInvoice(invoice);
       }
@@ -90,7 +90,7 @@ class ElectronInvoiceService extends BaseService implements IInvoiceService {
 
   async updateInvoice(invoice: Invoice): Promise<{ success: boolean; error?: string }> {
     try {
-      if (this.isElectron()) {
+      if (isElectron()) {
         // @ts-ignore - window.db is defined in Electron's preload script
         return await window.db.updateInvoice(invoice);
       }
@@ -103,12 +103,7 @@ class ElectronInvoiceService extends BaseService implements IInvoiceService {
 }
 
 // Create and export the appropriate service based on environment
-let invoiceService: IInvoiceService;
-
-if (isElectron()) {
-  invoiceService = new ElectronInvoiceService();
-} else {
-  invoiceService = new BrowserInvoiceService();
-}
+// Since we're removing desktop functionality, always use BrowserInvoiceService
+const invoiceService = new BrowserInvoiceService();
 
 export default invoiceService;

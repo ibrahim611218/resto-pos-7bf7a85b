@@ -1,4 +1,3 @@
-
 import { BusinessSettings } from "@/types";
 import { BaseService, isElectron } from "../base/BaseService";
 
@@ -53,7 +52,7 @@ class BrowserSettingsService extends BaseService implements ISettingsService {
 class ElectronSettingsService extends BaseService implements ISettingsService {
   async getSettings(): Promise<BusinessSettings> {
     try {
-      if (this.isElectron()) {
+      if (isElectron()) {
         // @ts-ignore - window.db is defined in Electron's preload script
         return await window.db.getSettings();
       }
@@ -68,7 +67,7 @@ class ElectronSettingsService extends BaseService implements ISettingsService {
 
   async saveSettings(settings: BusinessSettings): Promise<{ success: boolean; error?: string }> {
     try {
-      if (this.isElectron()) {
+      if (isElectron()) {
         // @ts-ignore - window.db is defined in Electron's preload script
         return await window.db.saveSettings(settings);
       }
@@ -81,12 +80,7 @@ class ElectronSettingsService extends BaseService implements ISettingsService {
 }
 
 // Create and export the appropriate service based on environment
-let settingsService: ISettingsService;
-
-if (isElectron()) {
-  settingsService = new ElectronSettingsService();
-} else {
-  settingsService = new BrowserSettingsService();
-}
+// Since we're removing desktop functionality, always use BrowserSettingsService
+const settingsService = new BrowserSettingsService();
 
 export default settingsService;

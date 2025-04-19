@@ -1,3 +1,4 @@
+
 import { IDatabaseService } from "./types";
 import invoiceService from "./invoices/InvoiceService";
 import settingsService from "./settings/SettingsService";
@@ -18,17 +19,11 @@ const databaseService: IDatabaseService = {
   
   // Product methods
   getProducts: async () => {
-    if (window.db) {
-      return await window.db.getProducts();
-    }
     return productService.getProducts();
   },
   
   // Category methods
   getCategories: async () => {
-    if (window.db) {
-      return await window.db.getCategories();
-    }
     return categoryService.getCategories();
   },
 };
