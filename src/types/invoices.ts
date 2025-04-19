@@ -26,6 +26,7 @@ export interface Invoice {
   tableNumber?: string;
   paidAmount: number;
   transferReceiptNumber?: string;
+  taxIncluded?: boolean;
 }
 
 export interface InvoiceItem {
