@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
@@ -106,7 +105,8 @@ export const useCartInvoice = ({
       size: item.size as Size,
       price: item.price,
       quantity: item.quantity,
-      taxable: item.taxable
+      taxable: item.taxable,
+      categoryId: item.categoryId
     }));
     
     const invoice = createInvoiceObject(

@@ -2,7 +2,7 @@
 export type Language = "en" | "ar";
 export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen" | "manager";
 export type ProductType = "single" | "sized";
-export type Size = "small" | "medium" | "large";
+export type Size = "small" | "medium" | "large" | "regular";
 export type InvoiceExportType = "print" | "pdf" | "email";
 export type PaymentMethod = "cash" | "card" | "online" | "transfer";
 export type KitchenOrderStatus = "pending" | "in-progress" | "preparing" | "ready" | "completed" | "cancelled";
@@ -97,6 +97,7 @@ export interface BusinessSettings {
   invoiceNotesAr: string;
   invoiceNotes?: string;
   commercialRegisterAr?: string;
+  commercialRegister?: string;
   logo?: string;
   workStartTime?: string;
   workEndTime?: string;
@@ -171,4 +172,86 @@ export interface KitchenOrder {
   updatedAt: string;
   completedAt?: string;
   cashierName?: string;
+}
+
+// Sales Report Types
+export interface SalesByPaymentMethod {
+  method: PaymentMethod;
+  amount: number;
+  count: number;
+}
+
+export interface SalesByOrderType {
+  type: "takeaway" | "dineIn";
+  amount: number;
+  count: number;
+}
+
+export interface TopSellingProduct {
+  id: string;
+  name: string;
+  nameAr?: string;
+  quantity: number;
+  revenue: number;
+}
+
+// VAT Report Types
+export interface VatReportItem {
+  id: string;
+  period: string;
+  startDate: string;
+  endDate: string;
+  totalSales: number;
+  totalVatCollected: number;
+  totalPurchases: number;
+  totalVatPaid: number;
+  netVatDue: number;
+  createdAt: string;
+  status: "draft" | "submitted" | "approved";
+}
+
+export interface VatReportPeriod {
+  label: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+// Purchase Types
+export interface PurchaseInvoice {
+  id: string;
+  invoiceNumber: string;
+  supplier: Supplier;
+  date: Date;
+  items: PurchaseItem[];
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+  notes?: string;
+  paymentStatus: "paid" | "pending" | "partial";
+  paymentMethod: "cash" | "card" | "transfer";
+  createdBy: string;
+  createdAt: Date;
+}
+
+export interface PurchaseItem {
+  id: string;
+  productId: string;
+  productName: string;
+  productNameAr?: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  taxAmount: number;
+  totalPrice: number;
+}
+
+export interface Supplier {
+  id: string;
+  name: string;
+  nameAr?: string;
+  phone?: string;
+  email?: string;
+  taxNumber?: string;
+  address?: string;
+  contactPerson?: string;
 }

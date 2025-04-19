@@ -1,126 +1,128 @@
+import { Product, ProductType, ProductVariant, Size } from "@/types";
+import { v4 as uuidv4 } from 'uuid';
 
-import { Product, ProductVariant } from "@/types";
-import { sampleProducts } from "@/data/sampleData";
+interface ProductBase {
+  id: string;
+  name: string;
+  nameAr: string;
+  description: string;
+  descriptionAr: string;
+  categoryId: string;
+  image: string;
+  type: ProductType;
+  taxable: boolean;
+  price?: number;
+  variants?: ProductVariant[];
+  size: Size;
+}
 
 class ProductService {
-  private storageKey = 'stored-products';
-  
-  // Get all products from localStorage or fallback to sample data
-  getProducts(): Product[] {
-    try {
-      const storedProducts = localStorage.getItem(this.storageKey);
-      if (storedProducts) {
-        const products = JSON.parse(storedProducts);
-        // Ensure all products have valid structure
-        return this.validateProducts(products);
-      }
-      
-      // Initialize with sample data if nothing is stored
-      this.saveProducts(sampleProducts);
-      return sampleProducts;
-    } catch (error) {
-      console.error('Error loading products:', error);
-      return sampleProducts;
-    }
+  async getProducts(): Promise<Product[]> {
+    const productsString = localStorage.getItem('products');
+    const products: Product[] = productsString ? JSON.parse(productsString) : [];
+    return products;
   }
-  
-  // Save a single product
-  saveProduct(product: Product): boolean {
-    try {
-      const products = this.getProducts();
-      const index = products.findIndex(p => p.id === product.id);
-      
-      // Ensure product has valid structure before saving
-      const validatedProduct = this.validateProduct(product);
-      
-      if (index !== -1) {
-        // Update existing product
-        products[index] = validatedProduct;
-      } else {
-        // Add new product
-        products.push(validatedProduct);
-      }
-      
-      this.saveProducts(products);
-      return true;
-    } catch (error) {
-      console.error('Error saving product:', error);
+
+  async getProductById(id: string): Promise<Product | null> {
+    const products = await this.getProducts();
+    const product = products.find((product) => product.id === id);
+    return product || null;
+  }
+
+  async saveProduct(product: Product): Promise<void> {
+    const products = await this.getProducts();
+    const existingProductIndex = products.findIndex((p) => p.id === product.id);
+
+    if (existingProductIndex !== -1) {
+      products[existingProductIndex] = product;
+    } else {
+      products.push(product);
+    }
+
+    localStorage.setItem('products', JSON.stringify(products));
+  }
+
+  async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
+    const newProduct: Product = {
+      id: uuidv4(),
+      ...productData,
+    };
+    await this.saveProduct(newProduct);
+    return newProduct;
+  }
+
+  async updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
+    const products = await this.getProducts();
+    const productIndex = products.findIndex((product) => product.id === id);
+
+    if (productIndex === -1) {
+      return null;
+    }
+
+    const updatedProduct = { ...products[productIndex], ...updates };
+    products[productIndex] = updatedProduct;
+    localStorage.setItem('products', JSON.stringify(products));
+    return updatedProduct;
+  }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    const products = await this.getProducts();
+    const productIndex = products.findIndex((product) => product.id === id);
+
+    if (productIndex === -1) {
       return false;
     }
+
+    products.splice(productIndex, 1);
+    localStorage.setItem('products', JSON.stringify(products));
+    return true;
   }
-  
-  // Delete a product
-  deleteProduct(productId: string): boolean {
-    try {
-      const products = this.getProducts();
-      const filteredProducts = products.filter(p => p.id !== productId);
-      
-      this.saveProducts(filteredProducts);
-      return true;
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      return false;
+
+  private generateMockProducts(count: number = 5): Product[] {
+    const mockProducts: Product[] = [];
+    for (let i = 1; i <= count; i++) {
+      const product: Product = {
+        id: uuidv4(),
+        name: `Product ${i}`,
+        nameAr: `منتج ${i}`,
+        description: `Description for Product ${i}`,
+        descriptionAr: `وصف للمنتج ${i}`,
+        price: 25 + i * 5,
+        categoryId: uuidv4(),
+        image: `https://placehold.co/600x400?text=Product${i}`,
+        type: "single",
+        taxable: true,
+        variants: [],
+      };
+      mockProducts.push(product);
     }
+    return mockProducts;
   }
-  
-  // Save all products
-  saveProducts(products: Product[]): void {
-    // Make sure all products are valid before saving
-    const validProducts = products.map(product => this.validateProduct(product));
-    localStorage.setItem(this.storageKey, JSON.stringify(validProducts));
+
+  async seedMockProducts(count: number = 5): Promise<void> {
+    const mockProducts = this.generateMockProducts(count);
+    localStorage.setItem('products', JSON.stringify(mockProducts));
   }
-  
-  // Validate a single product structure to prevent errors
-  private validateProduct(product: Product): Product {
-    const validatedProduct = { ...product };
-    
-    // Ensure product has variants array
-    if (!Array.isArray(validatedProduct.variants)) {
-      validatedProduct.variants = [];
-    }
-    
-    // For single products, ensure price exists
-    if (validatedProduct.type === 'single') {
-      if (typeof validatedProduct.price !== 'number' || isNaN(validatedProduct.price)) {
-        validatedProduct.price = 0;
-      }
-      
-      // Add a default variant if none exists
-      if (validatedProduct.variants.length === 0) {
-        validatedProduct.variants.push({
-          id: `var-${Date.now()}`,
-          size: 'regular',
-          price: validatedProduct.price || 0
-        });
-      }
-    }
-    
-    // For sized products, ensure they have at least one variant
-    if (validatedProduct.type === 'sized' && validatedProduct.variants.length === 0) {
-      validatedProduct.variants.push({
-        id: `var-${Date.now()}`,
-        size: 'medium',
-        price: 0
-      });
-    }
-    
-    // Validate each variant to ensure it has a price
-    validatedProduct.variants = validatedProduct.variants.map(variant => {
-      const validVariant: ProductVariant = { ...variant };
-      if (typeof validVariant.price !== 'number' || isNaN(validVariant.price)) {
-        validVariant.price = 0;
-      }
-      return validVariant;
-    });
-    
-    return validatedProduct;
-  }
-  
-  // Validate an array of products
-  private validateProducts(products: Product[]): Product[] {
-    return products.map(product => this.validateProduct(product));
-  }
+
+  // Fix the issue with "regular" not being assignable to Size
+const getBaseProduct = (product: Product): ProductBase => {
+  return {
+    id: product.id,
+    name: product.name,
+    nameAr: product.nameAr || "",
+    description: product.description || "",
+    descriptionAr: product.descriptionAr || "", 
+    categoryId: product.categoryId,
+    image: product.image || "",
+    type: product.type,
+    taxable: product.taxable,
+    price: product.type === "single" ? product.price || 0 : undefined,
+    variants: product.type === "sized" ? product.variants : [],
+    size: "medium" as Size, // Use a valid Size value instead of "regular"
+  };
+};
 }
 
 const productService = new ProductService();
+
 export default productService;

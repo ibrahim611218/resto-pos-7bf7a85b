@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Invoice } from "@/types";
+import { Invoice, Size } from "@/types";
 import { generateInvoiceQRCodeData, handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -96,7 +96,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
               productId: item.productId || "",
               variantId: item.variantId || "",
               categoryId: "",
-              size: item.size || "regular",
+              size: (item.size as Size) || "regular",
               taxable: !!item.taxable
             }))} />
 
