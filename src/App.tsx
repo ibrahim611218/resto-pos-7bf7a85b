@@ -30,6 +30,8 @@ import { CartProvider } from "./features/pos/hooks/useCart";
 import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
 import LicenseCheckLoading from "./features/auth/components/LicenseCheckLoading";
+import Purchases from "./pages/Purchases";
+import VatReportPage from "./pages/VatReport";
 
 // Fallback component for suspense with shorter timeout
 const LoadingFallback = () => {
@@ -98,6 +100,8 @@ function App() {
                   <Route path="/categories/add" element={<CategoryForm />} />
                   <Route path="/categories/edit/:id" element={<CategoryForm />} />
                   <Route path="/inventory" element={<Inventory />} />
+                  <Route path="/purchases" element={<Purchases />} />
+                  <Route path="/vat-report" element={<VatReportPage />} />
                   <Route path="/sales-report" element={<SalesReport />} />
                   <Route path="/inventory-report" element={<InventoryReport />} />
                   <Route path="/customers-report" element={<CustomersReport />} />
@@ -119,3 +123,4 @@ function App() {
 }
 
 export default App;
+
