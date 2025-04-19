@@ -30,6 +30,12 @@ class ProductService {
     return product || null;
   }
 
+  private dispatchUpdateEvent() {
+    console.log('Dispatching data update events');
+    window.dispatchEvent(new CustomEvent('product-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+  }
+
   async saveProduct(product: Product): Promise<void> {
     console.log('Saving product:', product.name);
     const products = await this.getProducts();
@@ -44,10 +50,7 @@ class ProductService {
     }
 
     localStorage.setItem('products', JSON.stringify(products));
-    
-    // Dispatch an event to notify that products have been updated
-    console.log('Dispatching product-updated event');
-    window.dispatchEvent(new CustomEvent('product-updated'));
+    this.dispatchUpdateEvent();
   }
 
   async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
@@ -73,9 +76,7 @@ class ProductService {
     const updatedProduct = { ...products[productIndex], ...updates };
     products[productIndex] = updatedProduct;
     localStorage.setItem('products', JSON.stringify(products));
-    
-    // Dispatch an event to notify that products have been updated
-    window.dispatchEvent(new CustomEvent('product-updated'));
+    this.dispatchUpdateEvent();
     
     return updatedProduct;
   }
@@ -92,9 +93,7 @@ class ProductService {
 
     products.splice(productIndex, 1);
     localStorage.setItem('products', JSON.stringify(products));
-    
-    // Dispatch an event to notify that products have been updated
-    window.dispatchEvent(new CustomEvent('product-updated'));
+    this.dispatchUpdateEvent();
     
     return true;
   }
@@ -144,5 +143,4 @@ class ProductService {
 }
 
 const productService = new ProductService();
-
 export default productService;

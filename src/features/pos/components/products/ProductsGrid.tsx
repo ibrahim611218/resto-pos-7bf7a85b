@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
@@ -70,18 +71,23 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    const handleProductUpdate = () => {
-      console.log('Product update event detected, refreshing products');
+    const handleDataUpdate = () => {
+      console.log('Data update event detected, refreshing products');
       loadData();
     };
 
-    window.addEventListener('product-updated', handleProductUpdate);
+    // Listen for general data updates
+    window.addEventListener('data-updated', handleDataUpdate);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // Listen for specific updates
+    window.addEventListener('product-updated', handleDataUpdate);
+    window.addEventListener('category-updated', handleDataUpdate);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('product-updated', handleProductUpdate);
+      window.removeEventListener('data-updated', handleDataUpdate);
+      window.removeEventListener('product-updated', handleDataUpdate);
+      window.removeEventListener('category-updated', handleDataUpdate);
     };
   }, [isArabic]);
 

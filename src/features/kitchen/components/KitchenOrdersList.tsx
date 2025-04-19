@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { KitchenOrder, Language, KitchenOrderStatus } from "@/types";
 import KitchenOrderCard from "./KitchenOrderCard";
@@ -18,20 +17,17 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const isArabic = language === "ar";
 
-  // Fetch kitchen orders
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        // 1. الحصول على الطلبات النشطة
         const fetchedActiveOrders = await kitchenOrderService.getKitchenOrders();
         setActiveOrders(fetchedActiveOrders.filter(order => 
           ["pending", "preparing", "in-progress", "ready"].includes(order.status)
         ));
         
-        // 2. الحصول على الطلبات المكتملة
         const fetchedCompletedOrders = await kitchenOrderService.getCompletedOrders();
-        setCompletedOrders(fetchedCompletedOrders.slice(0, 20)); // عرض آخر 20 طلب مكتمل فقط للأداء
+        setCompletedOrders(fetchedCompletedOrders.slice(0, 20));
       } catch (error) {
         console.error("Error fetching kitchen orders:", error);
       } finally {
@@ -41,16 +37,27 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
     
     fetchOrders();
     
-    // Poll for new orders every 30 seconds
     const interval = setInterval(fetchOrders, 30000);
-    return () => clearInterval(interval);
+    
+    const handleDataUpdate = () => {
+      console.log('Data update detected, refreshing kitchen orders');
+      fetchOrders();
+    };
+
+    window.addEventListener('data-updated', handleDataUpdate);
+    window.addEventListener('order-updated', handleDataUpdate);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('data-updated', handleDataUpdate);
+      window.removeEventListener('order-updated', handleDataUpdate);
+    };
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: KitchenOrderStatus) => {
     try {
       await kitchenOrderService.updateKitchenOrderStatus(orderId, newStatus);
       
-      // Update local state
       if (newStatus === "completed") {
         const completedOrder = activeOrders.find(order => order.id === orderId);
         if (completedOrder) {
@@ -70,7 +77,6 @@ const KitchenOrdersList: React.FC<KitchenOrdersListProps> = ({ language }) => {
         ));
       }
 
-      // Notify about status change
       const statusMessage = isArabic 
         ? getArabicStatusMessage(newStatus)
         : `Order status updated to ${newStatus}`;
