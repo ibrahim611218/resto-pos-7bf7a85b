@@ -26,6 +26,7 @@ import RetrieveInvoicePage from "./pages/RetrieveInvoice";
 import BusinessSettings from "./pages/BusinessSettings";
 import Kitchen from "./pages/Kitchen";
 import UserManagementPage from "./pages/UserManagement";
+import Inventory from "./pages/Inventory";
 
 // Import Report pages
 import SalesReport from "./pages/SalesReport";
@@ -66,6 +67,7 @@ function App() {
                 <Route path="customers" element={<Customers />} />
                 <Route path="invoices" element={<Invoices />} />
                 <Route path="retrieve-invoice" element={<RetrieveInvoicePage />} />
+                <Route path="inventory" element={<Inventory />} />
                 <Route path="kitchen" element={<Kitchen />} />
                 <Route path="settings" element={<BusinessSettings />} />
                 <Route path="business-settings" element={<BusinessSettings />} />
