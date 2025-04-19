@@ -7,6 +7,7 @@ import { generateInvoiceQRCodeData } from "@/utils/invoice";
 import { handleInvoiceExport } from "@/utils/invoice/export";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Size } from "@/types";
 
 import {
   InvoiceHeader,
@@ -91,7 +92,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
                 productId: item.productId || "",
                 variantId: item.variantId || "",
                 categoryId: "",
-                size: item.size || "regular",
+                size: (item.size || "regular") as Size,
                 taxable: !!item.taxable
               }))} />
 
