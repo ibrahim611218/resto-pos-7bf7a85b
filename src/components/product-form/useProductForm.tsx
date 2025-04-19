@@ -28,6 +28,7 @@ export const useProductForm = () => {
 
   const [product, setProduct] = useState<Product>(emptyProduct);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     if (isEditing && id) {
@@ -135,7 +136,7 @@ export const useProductForm = () => {
     setVariants(prev => prev.filter(variant => variant.id !== id));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!product.name || !product.categoryId) {
@@ -153,23 +154,36 @@ export const useProductForm = () => {
       return;
     }
 
-    const updatedProduct: Product = {
-      ...product,
-      id: isEditing ? product.id : `prod-${Date.now()}`,
-      variants: product.type === "sized" ? variants : [],
-    };
+    setIsSubmitting(true);
 
-    const success = productService.saveProduct(updatedProduct);
-    
-    if (success) {
+    try {
+      const updatedProduct: Product = {
+        ...product,
+        id: isEditing ? product.id : `prod-${Date.now()}`,
+        variants: product.type === "sized" ? variants : [],
+      };
+
+      console.log('Saving product:', updatedProduct);
+      await productService.saveProduct(updatedProduct);
+      
       const successMessage = isEditing 
         ? isArabic ? "تم تعديل المنتج بنجاح" : "Product updated successfully" 
         : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
       
       toast.success(successMessage);
-      navigate("/products");
-    } else {
+      // Trigger dispatchUpdateEvent by firing custom event here as well
+      window.dispatchEvent(new CustomEvent('product-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
+      
+      // Short delay before navigation to ensure events are processed
+      setTimeout(() => {
+        navigate("/products");
+      }, 300);
+    } catch (error) {
+      console.error("Error saving product:", error);
       toast.error(isArabic ? "حدث خطأ أثناء حفظ المنتج" : "Error saving product");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -178,6 +192,7 @@ export const useProductForm = () => {
     variants,
     isEditing,
     isArabic,
+    isSubmitting,
     handleInputChange,
     handleSwitchChange,
     handleTypeChange,

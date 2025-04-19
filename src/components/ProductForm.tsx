@@ -18,6 +18,7 @@ const ProductForm = () => {
     variants,
     isEditing,
     isArabic,
+    isSubmitting,
     handleInputChange,
     handleSwitchChange,
     handleTypeChange,
@@ -84,6 +85,7 @@ const ProductForm = () => {
           <ProductFormFooter 
             isEditing={isEditing}
             isArabic={isArabic}
+            isSubmitting={isSubmitting}
             onCancel={() => navigate("/products")}
           />
         </form>
