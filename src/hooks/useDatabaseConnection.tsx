@@ -1,15 +1,18 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function useDatabaseConnection() {
   const [isConnected, setIsConnected] = useState(false);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { language } = useLanguage();
   const isArabic = language === 'ar';
 
-  const testDatabaseConnection = async () => {
+  const testDatabaseConnection = useCallback(async () => {
+    setIsLoading(true);
+    
     try {
       if (typeof window !== 'undefined' && window.electron) {
         const result = await window.electron.invoke('db:testConnection');
@@ -50,16 +53,31 @@ export function useDatabaseConnection() {
           : 'An error occurred while testing database connection'
       );
       return false;
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [isArabic]);
 
   useEffect(() => {
+    // Attempt connection when component mounts
     testDatabaseConnection();
-  }, []);
+    
+    // Set up a periodic connection test
+    const connectionCheckInterval = setInterval(() => {
+      if (!isConnected) {
+        testDatabaseConnection();
+      }
+    }, 30000); // Try reconnecting every 30 seconds if not connected
+    
+    return () => {
+      clearInterval(connectionCheckInterval);
+    };
+  }, [testDatabaseConnection, isConnected]);
 
   return {
     isConnected,
     errorDetails,
-    testDatabaseConnection
+    testDatabaseConnection,
+    isLoading
   };
 }

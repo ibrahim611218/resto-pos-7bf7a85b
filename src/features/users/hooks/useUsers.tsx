@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUserOperations } from "./useUserOperations";
 import { usePasswordManagement } from "./usePasswordManagement";
 import { usePermissionsManagement } from "./usePermissionsManagement";
@@ -46,13 +46,7 @@ export const useUsers = () => {
   // Initialize system admin
   useSystemAdmin(users, setUsers);
 
-  useEffect(() => {
-    if (isConnected) {
-      fetchUsers();
-    }
-  }, [isConnected]);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     if (!isConnected) return;
     
     setIsLoading(true);
@@ -67,7 +61,13 @@ export const useUsers = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isConnected, isArabic, setUsers]);
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchUsers();
+    }
+  }, [isConnected, fetchUsers]);
 
   const handleSavePermissionsWrapper = () => {
     if (!selectedUser) return false;
@@ -93,6 +93,7 @@ export const useUsers = () => {
     handleChangePassword,
     handleDeleteUser,
     handleEditPermissions,
-    handleSavePermissions: handleSavePermissionsWrapper
+    handleSavePermissions: handleSavePermissionsWrapper,
+    fetchUsers // Export fetchUsers so it can be called manually after reconnection
   };
 };

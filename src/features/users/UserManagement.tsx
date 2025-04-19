@@ -9,12 +9,13 @@ import UserDialogs from "./components/UserDialogs";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { allPermissions } = useAuth();
-  const { isConnected, errorDetails, testDatabaseConnection } = useDatabaseConnection();
+  const { isConnected, errorDetails, testDatabaseConnection, isLoading: connectionLoading } = useDatabaseConnection();
   const {
     users,
     selectedUser,
@@ -28,13 +29,14 @@ const UserManagement: React.FC = () => {
     confirmPassword,
     setConfirmPassword,
     canManageAdmins,
-    isLoading,
+    isLoading: usersLoading,
     handleAddUser,
     handleEditUser,
     handleChangePassword,
     handleDeleteUser,
     handleEditPermissions,
-    handleSavePermissions
+    handleSavePermissions,
+    fetchUsers
   } = useUsers();
   
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -42,6 +44,15 @@ const UserManagement: React.FC = () => {
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPermissionsDialogOpen, setIsPermissionsDialogOpen] = useState(false);
+  
+  const isLoading = usersLoading || connectionLoading;
+
+  const handleReconnect = async () => {
+    const success = await testDatabaseConnection();
+    if (success) {
+      fetchUsers();
+    }
+  };
   
   return (
     <div className="container p-4 space-y-4">
@@ -51,23 +62,31 @@ const UserManagement: React.FC = () => {
           <AlertTitle>
             {isArabic ? "خطأ في الاتصال" : "Connection Error"}
           </AlertTitle>
-          <AlertDescription>
-            {isArabic 
-              ? "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات." 
-              : "Failed to connect to the database. Please check your settings."}
+          <AlertDescription className="space-y-2">
+            <p>
+              {isArabic 
+                ? "فشل الاتصال بقاعدة البيانات. يرجى التحقق من الإعدادات." 
+                : "Failed to connect to the database. Please check your settings."}
+            </p>
             {errorDetails && (
-              <div className="mt-2 text-xs opacity-70">
+              <div className="text-xs opacity-70">
                 {isArabic ? "تفاصيل الخطأ: " : "Error details: "} 
                 {errorDetails}
               </div>
             )}
+            <div className="mt-2">
+              <Button 
+                variant="destructive" 
+                onClick={handleReconnect} 
+                disabled={connectionLoading}
+                className="mt-2"
+              >
+                {connectionLoading 
+                  ? (isArabic ? "جاري الاتصال..." : "Connecting...") 
+                  : (isArabic ? "إعادة الاتصال" : "Reconnect")}
+              </Button>
+            </div>
           </AlertDescription>
-          <button 
-            onClick={testDatabaseConnection} 
-            className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            {isArabic ? "إعادة الاتصال" : "Reconnect"}
-          </button>
         </Alert>
       )}
 
