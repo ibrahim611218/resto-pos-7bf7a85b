@@ -38,9 +38,7 @@ export const useTopProducts = ({ filteredInvoices, isArabic }: TopProductsProps)
           id: productId,
           name: product.name,
           quantity: product.quantity,
-          revenue: product.revenue,
-          productId: productId,
-          productName: product.name
+          revenue: product.revenue
         });
       }
     });

@@ -1,7 +1,7 @@
 
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
@@ -150,4 +150,3 @@ function App() {
 }
 
 export default App;
-

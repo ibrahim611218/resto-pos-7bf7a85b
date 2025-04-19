@@ -61,7 +61,7 @@ class BrowserVatReportService extends BaseService implements IVatReportService {
         period: {
           startDate: period.startDate,
           endDate: period.endDate,
-          type: period.type || 'monthly' // Provide a default value if type is not provided
+          type: period.type || 'monthly' // Ensure type is set even if not provided
         }
       };
       
@@ -88,7 +88,8 @@ class BrowserVatReportService extends BaseService implements IVatReportService {
         period: {
           ...report.period,
           startDate: new Date(report.period.startDate),
-          endDate: new Date(report.period.endDate)
+          endDate: new Date(report.period.endDate),
+          type: report.period.type || 'monthly' // Ensure type is always set
         }
       }));
     } catch (error) {
@@ -103,8 +104,8 @@ class BrowserVatReportService extends BaseService implements IVatReportService {
       
       // Check if a report for the same period already exists
       const existingReportIndex = reports.findIndex(r => 
-        r.period.startDate.getTime() === report.period.startDate.getTime() &&
-        r.period.endDate.getTime() === report.period.endDate.getTime()
+        new Date(r.period.startDate).getTime() === new Date(report.period.startDate).getTime() &&
+        new Date(r.period.endDate).getTime() === new Date(report.period.endDate).getTime()
       );
       
       if (existingReportIndex >= 0) {

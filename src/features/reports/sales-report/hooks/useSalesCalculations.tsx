@@ -1,7 +1,6 @@
 
 import { useMemo } from "react";
-import { Invoice, SalesByPaymentMethod, SalesByOrderType, TopSellingProduct, PaymentMethod } from "@/types";
-import { formatPaymentMethod, formatOrderType } from "../utils/formatters";
+import { Invoice, SalesByPaymentMethod, SalesByOrderType, PaymentMethod } from "@/types";
 
 interface SalesCalculationsProps {
   filteredInvoices: Invoice[];
@@ -9,81 +8,65 @@ interface SalesCalculationsProps {
 }
 
 export const useSalesCalculations = ({ filteredInvoices, isArabic }: SalesCalculationsProps) => {
-  // Calculate total sales
   const totalSales = useMemo(() => {
     return filteredInvoices.reduce((sum, invoice) => {
-      // When calculating total sales, subtract refunded invoice values
+      // If refunded, negate the amount
       const multiplier = invoice.status === "refunded" ? -1 : 1;
       return sum + (invoice.total * multiplier);
     }, 0);
   }, [filteredInvoices]);
-  
-  // Calculate sales by payment method
+
   const salesByPaymentMethod = useMemo(() => {
-    const methodsMap: Map<string, number> = new Map();
-    
-    filteredInvoices.forEach((invoice) => {
-      const method = invoice.paymentMethod;
-      const currentAmount = methodsMap.get(method) || 0;
-      
-      // When calculating sales by payment method, subtract refunded invoice values
+    const paymentMethodTotals: Record<string, number> = {};
+
+    filteredInvoices.forEach(invoice => {
+      const paymentMethod = invoice.paymentMethod;
       const multiplier = invoice.status === "refunded" ? -1 : 1;
-      methodsMap.set(method, currentAmount + (invoice.total * multiplier));
+      const amount = invoice.total * multiplier;
+
+      if (!paymentMethodTotals[paymentMethod]) {
+        paymentMethodTotals[paymentMethod] = 0;
+      }
+      paymentMethodTotals[paymentMethod] += amount;
     });
-    
-    const result: SalesByPaymentMethod[] = [];
-    methodsMap.forEach((amount, method) => {
-      const methodLabel = formatPaymentMethod(method, isArabic);
-      
-      result.push({
-        method: method as PaymentMethod,
-        amount: Math.abs(amount),
-        count: 0, // Default count
-        percentage: totalSales > 0 ? (Math.abs(amount) / Math.abs(totalSales)) * 100 : 0,
-        paymentMethod: methodLabel // Add the correctly typed property
-      });
-    });
-    
+
+    const result: SalesByPaymentMethod[] = Object.entries(paymentMethodTotals)
+      .filter(([_, total]) => total > 0)
+      .map(([method, total]) => ({
+        method,
+        total
+      }));
+
     return result;
-  }, [filteredInvoices, totalSales, isArabic]);
-  
-  // Calculate sales by order type
+  }, [filteredInvoices]);
+
   const salesByOrderType = useMemo(() => {
-    const typesMap: Map<string, { count: number, total: number }> = new Map();
-    
-    filteredInvoices.forEach((invoice) => {
-      const type = invoice.orderType || "unknown";
-      const current = typesMap.get(type) || { count: 0, total: 0 };
-      
-      // When calculating order count by type, count refunded invoices as negative orders
-      const countMultiplier = invoice.status === "refunded" ? -1 : 1;
-      const totalMultiplier = invoice.status === "refunded" ? -1 : 1;
-      
-      typesMap.set(type, { 
-        count: current.count + countMultiplier,
-        total: current.total + (invoice.total * totalMultiplier)
-      });
+    const orderTypeTotals: Record<string, number> = {};
+
+    filteredInvoices.forEach(invoice => {
+      const orderType = invoice.orderType || 'unknown';
+      const multiplier = invoice.status === "refunded" ? -1 : 1;
+      const amount = invoice.total * multiplier;
+
+      if (!orderTypeTotals[orderType]) {
+        orderTypeTotals[orderType] = 0;
+      }
+      orderTypeTotals[orderType] += amount;
     });
-    
-    const result: SalesByOrderType[] = [];
-    typesMap.forEach(({ count }, type) => {
-      const typeLabel = formatOrderType(type, isArabic);
-      
-      result.push({
-        type: type as "takeaway" | "dineIn",
-        amount: 0, // Default amount
-        count: Math.abs(count),
-        percentage: filteredInvoices.length > 0 ? (Math.abs(count) / filteredInvoices.length) * 100 : 0,
-        orderType: typeLabel // Add the correctly typed property
-      });
-    });
-    
+
+    const result: SalesByOrderType[] = Object.entries(orderTypeTotals)
+      .filter(([_, total]) => total > 0)
+      .map(([type, total]) => ({
+        type,
+        total
+      }));
+
     return result;
-  }, [filteredInvoices, isArabic]);
-  
+  }, [filteredInvoices]);
+
   return {
     totalSales,
     salesByPaymentMethod,
-    salesByOrderType
+    salesByOrderType,
   };
 };
