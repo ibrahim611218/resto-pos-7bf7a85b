@@ -32,7 +32,7 @@ const DesktopAlert = () => {
                 <li>انقر بزر الماوس الأيمن على الملف واختر "تشغيل كمسؤول"</li>
                 <li>في نافذة حماية Windows، انقر على "مزيد من المعلومات" ثم "تشغيل على أي حال"</li>
                 <li>قم بتعطيل برنامج مكافحة الفيروسات مؤقتًا أثناء التثبيت</li>
-                <li>جرب تشغيل الملف بوضع التوافق مع Windows 8 (انقر بزر الماوس الأيمن > خصائص > توافق)</li>
+                <li>جرب تشغيل الملف بوضع التوافق مع Windows 8 (انقر بزر الماوس الأيمن &gt; خصائص &gt; توافق)</li>
               </ul>
             </>
           ) : (
@@ -42,7 +42,7 @@ const DesktopAlert = () => {
                 <li>Right-click on the file and select "Run as administrator"</li>
                 <li>In the Windows protection window, click "More info" then "Run anyway"</li>
                 <li>Temporarily disable your antivirus during installation</li>
-                <li>Try running the file in Windows 8 compatibility mode (Right-click > Properties > Compatibility)</li>
+                <li>Try running the file in Windows 8 compatibility mode (Right-click &gt; Properties &gt; Compatibility)</li>
               </ul>
             </>
           )}
