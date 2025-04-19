@@ -79,28 +79,28 @@ export const getSidebarLinks = (): SidebarLink[] => {
         {
           name: "تقرير المبيعات",
           name_en: "Sales Report",
-          path: "/sales-report",
+          path: "/reports/sales",
           icon: BarChart3,
           roles: ["supervisor", "admin", "owner"]
         },
         {
           name: "تقرير المخزون",
           name_en: "Inventory Report",
-          path: "/inventory-report",
+          path: "/reports/inventory",
           icon: Box,
           roles: ["supervisor", "admin", "owner"]
         },
         {
           name: "تقرير العملاء",
           name_en: "Customers Report",
-          path: "/customers-report",
+          path: "/reports/customers",
           icon: Users,
           roles: ["supervisor", "admin", "owner"]
         },
         {
           name: "تقرير ضريبة القيمة المضافة",
           name_en: "VAT Report",
-          path: "/vat-report",
+          path: "/reports/vat",
           icon: FileSpreadsheet,
           roles: ["supervisor", "admin", "owner"]
         },
@@ -109,7 +109,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
     {
       name: "المستخدمون",
       name_en: "User Management",
-      path: "/user-management",
+      path: "/users",
       icon: Users,
       roles: ["admin", "owner"]
     },
