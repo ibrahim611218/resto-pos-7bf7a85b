@@ -1,6 +1,5 @@
 
 import { toast } from "@/hooks/use-toast";
-import { fixQRCodeRendering, addQRRenderingScript } from "./qr-helpers";
 import { PrintWindowOptions } from "./types";
 
 /**
@@ -11,6 +10,7 @@ export const openPrintWindow = (
   options: PrintWindowOptions = {}
 ): Window | null => {
   try {
+    console.log("Opening print window");
     const printWindow = window.open('', '_blank');
     
     if (!printWindow) {
@@ -63,6 +63,7 @@ export const setupPrintWindow = (
   printWindow: Window,
   options: PrintWindowOptions = {}
 ): void => {
+  console.log("Setting up print window with options:", options);
   printWindow.onload = function() {
     try {
       console.log("Print window loaded");
@@ -132,6 +133,7 @@ export const setupPrintWindow = (
         if (options.printAutomatically !== false) {
           console.log("Auto printing in", options.delay || 1500, "ms");
           setTimeout(() => {
+            console.log("Triggering print");
             printWindow.focus();
             printWindow.print();
           }, options.delay || 1500);

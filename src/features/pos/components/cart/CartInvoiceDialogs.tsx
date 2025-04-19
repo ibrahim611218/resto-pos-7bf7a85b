@@ -7,6 +7,7 @@ import InvoiceDetailsModal from "@/features/invoices/components/InvoiceDetailsMo
 import { Invoice, PaymentMethod, Customer } from "@/types";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
+import { handleInvoiceExport } from "@/utils/invoice/export";
 
 interface CartInvoiceDialogsProps {
   showPaymentMethodDialog: boolean;
@@ -38,10 +39,8 @@ const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
   
   const handlePrintInvoice = (invoice: Invoice) => {
     if (invoice && settings) {
-      // Import handleInvoiceExport dynamically to avoid circular dependency
-      import("@/utils/invoice").then(({ handleInvoiceExport }) => {
-        handleInvoiceExport("print", invoice, settings);
-      });
+      console.log("Printing invoice from CartInvoiceDialogs");
+      handleInvoiceExport("print", invoice, settings);
     }
   };
   

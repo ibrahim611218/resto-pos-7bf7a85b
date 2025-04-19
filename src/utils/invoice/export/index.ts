@@ -37,8 +37,10 @@ export const handleInvoiceExport = (
   }
 };
 
-// Re-export everything for backward compatibility
-export { printInvoice } from "./print";
-export { exportInvoiceToPDF } from "./pdf";
-export { emailInvoice } from "./email";
+// Re-export functions for direct usage
+export * from "./print";
+export * from "./pdf";
+export * from "./email";
 export * from "./types";
+export * from "./qr-helpers";
+export * from "./print-helpers";

@@ -12,16 +12,13 @@ export const printInvoice = (
   businessSettings: BusinessSettings
 ): void => {
   try {
-    console.log("Printing invoice:", invoice.id);
+    console.log("Printing invoice:", invoice.id, invoice.number);
     
     // For printing, use thermal receipt size
     const printContent = generateInvoiceTemplate(invoice, businessSettings, false);
     
-    const printWindow = openPrintWindow(printContent, {
-      title: `فاتورة ${invoice.number}`,
-      printAutomatically: true,
-      delay: 2000, // Increased delay for better rendering
-    });
+    // Open a new window with the invoice content
+    const printWindow = openPrintWindow(printContent);
     
     if (!printWindow) {
       console.error("Could not open print window");
@@ -31,6 +28,7 @@ export const printInvoice = (
     // Setup print window with extended delay for QR code rendering
     setupPrintWindow(printWindow, {
       title: `فاتورة ${invoice.number}`,
+      printAutomatically: true,
       delay: 2000,
     });
     

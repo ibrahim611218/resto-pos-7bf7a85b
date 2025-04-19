@@ -12,6 +12,8 @@ export const exportInvoiceToPDF = (
   businessSettings: BusinessSettings
 ): void => {
   try {
+    console.log("Exporting invoice to PDF:", invoice.id, invoice.number);
+    
     // For PDF export, we'll use A4 size
     const printContent = generateInvoiceTemplate(invoice, businessSettings, true);
     
@@ -24,6 +26,7 @@ export const exportInvoiceToPDF = (
     setupPrintWindow(printWindow, {
       title: `invoice-${invoice.number}.pdf`,
       printAutomatically: true,
+      isPdf: true,
       delay: 1500
     });
     

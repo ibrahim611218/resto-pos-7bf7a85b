@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Invoice, Size } from "@/types";
-import { generateInvoiceQRCodeData, handleInvoiceExport } from "@/utils/invoice";
+import { generateInvoiceQRCodeData } from "@/utils/invoice";
+import { handleInvoiceExport } from "@/utils/invoice/export";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -48,8 +49,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
 
   // Handle print using handleInvoiceExport with complete data
   const handlePrint = () => {
-    // Make sure we have all the data we need
-    console.log("Printing invoice with settings:", settings);
+    console.log("Printing invoice:", invoice.id, invoice.number);
     if (invoice && settings) {
       // Pass the complete invoice object and settings
       handleInvoiceExport("print", invoice, settings);
