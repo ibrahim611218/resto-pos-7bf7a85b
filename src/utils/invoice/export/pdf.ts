@@ -14,12 +14,13 @@ export const exportInvoiceToPDF = (
   try {
     console.log("Exporting invoice to PDF:", invoice.id, invoice.number);
     
-    // For PDF export, we'll use A4 size
+    // For PDF export, always use A4 size and pass isPdf flag
     const printContent = generateInvoiceTemplate(invoice, businessSettings, true);
     
     const printWindow = openPrintWindow(printContent);
     
     if (!printWindow) {
+      console.error("Could not open print window");
       return;
     }
     
@@ -27,7 +28,7 @@ export const exportInvoiceToPDF = (
       title: `invoice-${invoice.number}.pdf`,
       printAutomatically: true,
       isPdf: true,
-      delay: 1500
+      delay: 2000 // Increased delay to ensure proper rendering
     });
     
     toast({

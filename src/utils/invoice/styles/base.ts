@@ -30,19 +30,32 @@ export const getBaseStyles = (): string => `
 
   /* Specific styles for PDF download (A4) */
   .pdf-mode {
-    max-width: 210mm;
+    max-width: 100%;
+    width: 210mm; /* A4 width */
+    min-height: 297mm; /* A4 height */
+    padding: 20mm;
     margin: 0 auto;
   }
   
-  /* Print media settings for thermal receipt printer */
+  /* Print media settings */
   @media print {
+    /* For thermal receipt */
     @page {
-      size: 80mm auto; /* Fixed width, auto height */
+      size: 80mm auto;
       margin: 0;
     }
     
+    /* For PDF (A4) */
+    .pdf-mode {
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+    }
+    
     html, body {
-      width: 80mm;
+      width: 100%;
+      height: 100%;
       background-color: white !important;
       padding: 0 !important;
       margin: 0 !important;
@@ -50,7 +63,7 @@ export const getBaseStyles = (): string => `
       print-color-adjust: exact;
     }
     
-    .invoice-container {
+    .invoice-container:not(.pdf-mode) {
       width: 80mm;
       max-width: none;
       margin: 0;
@@ -77,10 +90,15 @@ export const getBaseStyles = (): string => `
     word-wrap: break-word;
   }
   
-  /* Ensure all table cells are visible */
-  td, th {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  /* Table styles for A4 PDF */
+  .pdf-mode .invoice-table {
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .pdf-mode .invoice-table th,
+  .pdf-mode .invoice-table td {
+    padding: 12px;
+    font-size: 14px;
   }
 `;
