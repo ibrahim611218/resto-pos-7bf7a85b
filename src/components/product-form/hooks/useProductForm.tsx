@@ -58,7 +58,8 @@ export const useProductForm = () => {
           
           if (existingProduct) {
             setProduct(existingProduct);
-            setVariants([...existingProduct.variants]);
+            // Ensure variants exist, even if empty array
+            setVariants(existingProduct.variants || []);
           } else {
             toast.error(isArabic ? "المنتج غير موجود" : "Product not found");
             navigate("/products");
@@ -85,13 +86,22 @@ export const useProductForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Create default variants for single products if none exist
+      const finalVariants = product.type === "sized" 
+        ? variants 
+        : [{
+            id: `var-${Date.now()}`,
+            size: "medium", // Default size
+            price: product.price || 0
+          }];
+
       const updatedProduct: Product = {
         ...product,
         id: isEditing ? product.id : `prod-${Date.now()}`,
-        variants: product.type === "sized" ? variants : [],
+        variants: finalVariants,
       };
 
-      console.log('Saving product:', updatedProduct);
+      console.log('Saving product with variants:', updatedProduct);
       await productService.saveProduct(updatedProduct);
       
       const successMessage = isEditing 
@@ -99,6 +109,8 @@ export const useProductForm = () => {
         : isArabic ? "تم إضافة المنتج بنجاح" : "Product added successfully";
       
       toast.success(successMessage);
+      
+      // Explicitly dispatch events to ensure UI updates
       window.dispatchEvent(new CustomEvent('product-updated'));
       window.dispatchEvent(new CustomEvent('data-updated'));
       

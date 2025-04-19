@@ -29,6 +29,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0); // Add a refresh key to force re-render
 
   const loadData = async () => {
     try {
@@ -74,6 +75,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     const handleDataUpdate = () => {
       console.log('Data update event detected, refreshing products');
       loadData();
+      setRefreshKey(prev => prev + 1); // Force re-render on data update
     };
 
     // Listen for general data updates
@@ -106,8 +108,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       result = result.filter(product => product.categoryId === selectedCategory);
     }
 
+    console.log(`Filtering products: ${result.length} results from ${products.length} products`);
     setFilteredProducts(result);
-  }, [searchTerm, selectedCategory, products]);
+  }, [searchTerm, selectedCategory, products, refreshKey]); // Add refreshKey to dependencies
   
   const getGridClass = () => {
     switch (viewMode) {
@@ -175,9 +178,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
         <div className={getGridClass()}>
           {filteredProducts.map((product) => (
             viewMode === "list" ? (
-              <ProductListItem key={product.id} product={product} />
+              <ProductListItem key={`${product.id}-${refreshKey}`} product={product} />
             ) : (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={`${product.id}-${refreshKey}`} product={product} />
             )
           ))}
         </div>

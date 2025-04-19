@@ -21,8 +21,15 @@ class ProductService {
   async getProducts(): Promise<Product[]> {
     const productsString = localStorage.getItem('products');
     const products: Product[] = productsString ? JSON.parse(productsString) : [];
-    console.log(`Retrieved ${products.length} products from localStorage`);
-    return products;
+    
+    // Ensure all products have variants array
+    const normalizedProducts = products.map(product => ({
+      ...product,
+      variants: product.variants || []
+    }));
+    
+    console.log(`Retrieved ${normalizedProducts.length} products from localStorage`);
+    return normalizedProducts;
   }
 
   async getProductById(id: string): Promise<Product | null> {
@@ -33,21 +40,29 @@ class ProductService {
 
   private dispatchUpdateEvent() {
     console.log('Dispatching data update events');
+    // Dispatch both events for maximum compatibility
     window.dispatchEvent(new CustomEvent('product-updated'));
     window.dispatchEvent(new CustomEvent('data-updated'));
   }
 
   async saveProduct(product: Product): Promise<void> {
     console.log('Saving product:', product.name);
+    
+    // Ensure product has variants array
+    const productToSave = {
+      ...product,
+      variants: product.variants || []
+    };
+    
     const products = await this.getProducts();
     const existingProductIndex = products.findIndex((p) => p.id === product.id);
 
     if (existingProductIndex !== -1) {
       console.log('Updating existing product');
-      products[existingProductIndex] = product;
+      products[existingProductIndex] = productToSave;
     } else {
       console.log('Adding new product');
-      products.push(product);
+      products.push(productToSave);
     }
 
     localStorage.setItem('products', JSON.stringify(products));
@@ -56,10 +71,23 @@ class ProductService {
 
   async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
     console.log('Creating new product:', productData.name);
+    
+    // Ensure we have variants
+    const variants = productData.variants || [];
+    if (productData.type === "single" && variants.length === 0) {
+      variants.push({
+        id: `var-${Date.now()}`,
+        size: "medium",
+        price: productData.price || 0
+      });
+    }
+    
     const newProduct = {
       id: uuidv4(),
       ...productData,
+      variants
     } as Product;
+    
     await this.saveProduct(newProduct);
     return newProduct;
   }
@@ -75,6 +103,12 @@ class ProductService {
     }
 
     const updatedProduct = { ...products[productIndex], ...updates };
+    
+    // Ensure variants array exists
+    if (!updatedProduct.variants) {
+      updatedProduct.variants = [];
+    }
+    
     products[productIndex] = updatedProduct;
     localStorage.setItem('products', JSON.stringify(products));
     this.dispatchUpdateEvent();
@@ -113,7 +147,11 @@ class ProductService {
         image: `https://placehold.co/600x400?text=Product${i}`,
         type: "single",
         taxable: true,
-        variants: [],
+        variants: [{
+          id: `var-${i}`,
+          size: "medium",
+          price: 25 + i * 5
+        }],
       };
       mockProducts.push(product);
     }
@@ -123,6 +161,7 @@ class ProductService {
   async seedMockProducts(count: number = 5): Promise<void> {
     const mockProducts = this.generateMockProducts(count);
     localStorage.setItem('products', JSON.stringify(mockProducts));
+    this.dispatchUpdateEvent();
   }
 
   getBaseProduct(product: Product): ProductBase {
@@ -137,7 +176,7 @@ class ProductService {
       type: product.type,
       taxable: product.taxable,
       price: product.type === "single" ? product.price || 0 : undefined,
-      variants: product.type === "sized" ? product.variants : [],
+      variants: product.variants || [],
       size: "medium" // Now a valid Size value
     };
   }
