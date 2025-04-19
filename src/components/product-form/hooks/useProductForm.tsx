@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Product } from "@/types";
+import { Product, Size } from "@/types";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import productService from "@/services/products/ProductService";
@@ -91,7 +91,7 @@ export const useProductForm = () => {
         ? variants 
         : [{
             id: `var-${Date.now()}`,
-            size: "medium", // Default size
+            size: "medium" as Size, // Cast to Size type
             price: product.price || 0
           }];
 
