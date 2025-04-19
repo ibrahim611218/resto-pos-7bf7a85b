@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
@@ -26,20 +27,18 @@ export const useUserOperations = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (isConnected) {
-        try {
-          const fetchedUsers = await userService.getUsers();
-          if (fetchedUsers && fetchedUsers.length > 0) {
-            setUsers(fetchedUsers);
-          }
-        } catch (error) {
-          console.error("Error fetching users:", error);
+      try {
+        const fetchedUsers = await userService.getUsers();
+        if (fetchedUsers && fetchedUsers.length > 0) {
+          setUsers(fetchedUsers);
         }
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
     };
 
     fetchUsers();
-  }, [isConnected]);
+  }, []);
 
   const handleAddUser = async () => {
     if (!newUser.name || !newUser.email || !newUser.password) {
@@ -82,38 +81,29 @@ export const useUserOperations = () => {
       const userId = uuidv4();
       const userToAdd = { ...newUser, id: userId, isActive: true };
       
-      if (isConnected) {
-        await userService.saveUser(userToAdd);
-        console.log("User saved successfully:", userToAdd);
-        
-        const defaultPermissions = getDefaultPermissionsForRole(newUser.role);
-        await userService.updateUserPermissions(userId, defaultPermissions);
-        
-        setUsers([...users, userToAdd]);
-        
-        setNewUser({
-          id: "",
-          name: "",
-          email: "",
-          role: "cashier",
-          password: "",
-          isActive: true
-        });
-        
-        toast({
-          title: "تم إضافة المستخدم",
-          description: "تمت إضافة المستخدم بنجاح"
-        });
-        
-        return true;
-      } else {
-        toast({
-          title: "خطأ",
-          description: "فشل الاتصال بقاعدة البيانات",
-          variant: "destructive"
-        });
-        return false;
-      }
+      await userService.saveUser(userToAdd);
+      console.log("User saved successfully:", userToAdd);
+      
+      const defaultPermissions = getDefaultPermissionsForRole(newUser.role);
+      await userService.updateUserPermissions(userId, defaultPermissions);
+      
+      setUsers([...users, userToAdd]);
+      
+      setNewUser({
+        id: "",
+        name: "",
+        email: "",
+        role: "cashier",
+        password: "",
+        isActive: true
+      });
+      
+      toast({
+        title: "تم إضافة المستخدم",
+        description: "تمت إضافة المستخدم بنجاح"
+      });
+      
+      return true;
     } catch (error) {
       console.error("Error adding user:", error);
       toast({
@@ -147,27 +137,18 @@ export const useUserOperations = () => {
     }
     
     try {
-      if (isConnected) {
-        await userService.updateUser(selectedUser);
-        
-        setUsers(users.map(user => 
-          user.id === selectedUser.id ? { ...selectedUser } : user
-        ));
-        
-        toast({
-          title: "تم تحديث المستخدم",
-          description: "تم تحديث بيانات المستخدم بنجاح"
-        });
-        
-        return true;
-      } else {
-        toast({
-          title: "خطأ",
-          description: "فشل الاتصال بقاعدة البيانات",
-          variant: "destructive"
-        });
-        return false;
-      }
+      await userService.updateUser(selectedUser);
+      
+      setUsers(users.map(user => 
+        user.id === selectedUser.id ? { ...selectedUser } : user
+      ));
+      
+      toast({
+        title: "تم تحديث المستخدم",
+        description: "تم تحديث بيانات المستخدم بنجاح"
+      });
+      
+      return true;
     } catch (error) {
       console.error("Error updating user:", error);
       toast({
@@ -192,25 +173,16 @@ export const useUserOperations = () => {
     }
     
     try {
-      if (isConnected) {
-        await userService.deleteUser(selectedUser.id);
-        
-        setUsers(users.filter(user => user.id !== selectedUser.id));
-        
-        toast({
-          title: "تم حذف المستخدم",
-          description: "تم حذف المستخدم بنجاح"
-        });
-        
-        return true;
-      } else {
-        toast({
-          title: "خطأ",
-          description: "فشل الاتصال بقاعدة البيانات",
-          variant: "destructive"
-        });
-        return false;
-      }
+      await userService.deleteUser(selectedUser.id);
+      
+      setUsers(users.filter(user => user.id !== selectedUser.id));
+      
+      toast({
+        title: "تم حذف المستخدم",
+        description: "تم حذف المستخدم بنجاح"
+      });
+      
+      return true;
     } catch (error) {
       console.error("Error deleting user:", error);
       toast({

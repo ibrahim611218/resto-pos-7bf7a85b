@@ -7,277 +7,79 @@ import { useNavigate } from 'react-router-dom';
 export const useLicense = () => {
   const [license, setLicense] = useState<License | null>(null);
   const [licenseStatus, setLicenseStatus] = useState<LicenseStatus>({
-    isActive: true // Default to true to prevent blocking UI
+    isActive: true // Always set to true to work offline
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const initialCheckComplete = useRef(false);
+  const initialCheckComplete = useRef(true); // Set to true to skip initial check
   const checkInProgress = useRef(false);
-  const isOffline = useRef(false);
+  const isOffline = useRef(true); // Always consider as offline
 
-  // Listen for online/offline events
-  useEffect(() => {
-    const handleOnline = () => {
-      console.log("Browser is online, checking license");
-      isOffline.current = false;
-      if (initialCheckComplete.current) {
-        // Only recheck if we've already done the initial check
-        checkLicense();
-      }
-    };
-    
-    const handleOffline = () => {
-      console.log("Browser is offline, using cached license");
-      isOffline.current = true;
-    };
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    // Set initial offline state
-    isOffline.current = !navigator.onLine;
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  // Optimized check if license is active with timeout protection
+  // Check if license is active - always returns true in offline mode
   const checkLicense = async () => {
-    try {
-      // Prevent multiple simultaneous checks
-      if (checkInProgress.current) {
-        console.log("License check already in progress, skipping duplicate request");
-        return licenseStatus.isActive;
-      }
-      
-      // If we're offline, use cached license status
-      if (isOffline.current) {
-        console.log("Currently offline, using cached license status");
-        return licenseStatus.isActive;
-      }
-      
-      checkInProgress.current = true;
-      console.log("Starting checkLicense function");
-      setIsLoading(true);
-      
-      // Add timeout protection
-      const timeoutPromise = new Promise<License | null>(resolve => {
-        setTimeout(() => {
-          console.log("License check timeout, using cached or default license");
-          resolve(license || createDefaultLicense());
-        }, 1500); // Reduced to 1.5 second timeout (down from 2.5s)
-      });
-      
-      // Race between actual check and timeout
-      const activeLicense = await Promise.race([
-        licenseService.getActivatedLicense(),
-        timeoutPromise
-      ]);
-      
-      console.log("Got active license:", activeLicense ? "Yes" : "No");
-      setLicense(activeLicense);
-      
-      // Use timeout for status check as well
-      const statusTimeoutPromise = new Promise<LicenseStatus>(resolve => {
-        setTimeout(() => {
-          console.log("License status check timeout, using default active status");
-          resolve({ isActive: true });
-        }, 1000); // Reduced to 1 second timeout (down from 1.5s)
-      });
-      
-      const status = await Promise.race([
-        licenseService.getLicenseStatus(),
-        statusTimeoutPromise
-      ]);
-      
-      console.log("License status:", status);
-      setLicenseStatus(status);
-      
-      // Show warning toast if license is about to expire and warning is needed
-      if (status.showWarning && status.daysLeft !== undefined) {
-        toast.warning(
-          `الترخيص سينتهي قريباً - ${status.daysLeft} يوم متبقي`,
-          {
-            duration: 7000,
-            position: 'top-center'
-          }
-        );
-      }
-      
-      checkInProgress.current = false;
-      return status.isActive;
-    } catch (error) {
-      console.error('Error checking license:', error);
-      checkInProgress.current = false;
-      // Return true on error to not block the UI
-      return true;
-    } finally {
-      setIsLoading(false);
-    }
+    // In offline mode, license is always considered active
+    return true;
   };
   
-  // Create default license object for fallbacks
+  // Create default license object for offline mode
   const createDefaultLicense = (): License => {
     const now = Date.now();
     return {
-      key: 'DEFAULT-FALLBACK-LICENSE',
-      type: 'trial',
+      key: 'OFFLINE-LICENSE',
+      type: 'full',
       issuedAt: now,
-      expiryDate: now + 30 * 24 * 60 * 60 * 1000,
-      durationDays: 30,
+      expiryDate: now + 365 * 24 * 60 * 60 * 1000, // 1 year
+      durationDays: 365,
       used: true,
       activatedAt: now
     };
   };
 
-  // Get license info with timeout protection
+  // Get license info - always returns a valid license in offline mode
   const getLicenseInfo = async () => {
-    try {
-      const timeoutPromise = new Promise<License | null>(resolve => {
-        setTimeout(() => {
-          console.log("getLicenseInfo timeout, returning cached or default license");
-          resolve(license || createDefaultLicense());
-        }, 2000);
-      });
-      
-      return await Promise.race([
-        licenseService.getActivatedLicense(),
-        timeoutPromise
-      ]);
-    } catch (error) {
-      console.error('Error getting license info:', error);
-      return license || createDefaultLicense();
-    }
+    return createDefaultLicense();
   };
 
-  // Activate a license with improved error handling
+  // Activate license - always successful in offline mode
   const activateLicense = async (licenseKey: string): Promise<boolean> => {
-    // If we're offline, show an error
-    if (!navigator.onLine) {
-      console.error('Cannot activate license while offline');
-      toast.error('تعذر الاتصال بخادم التفعيل، يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى');
-      return false;
-    }
-    
-    if (!licenseKey || licenseKey.trim() === '') {
-      console.error('Invalid license key provided');
-      return false;
-    }
-
-    try {
-      console.log("بدء عملية التفعيل للرمز:", licenseKey);
-      setIsLoading(true);
-      
-      // تنفيذ عملية التفعيل مع حماية الوقت المستغرق
-      const activationPromise = licenseService.activateLicense(licenseKey.trim());
-      
-      // إضافة مهلة زمنية لمنع الانتظار للأبد
-      const timeoutPromise = new Promise<{success: false, message: string}>((resolve) => {
-        setTimeout(() => {
-          resolve({
-            success: false, 
-            message: 'انتهت مهلة الاتصال بخادم التفعيل'
-          });
-        }, 5000); // 5 second timeout
-      });
-      
-      // سباق بين عملية التفعيل والمهلة الزمنية
-      const result = await Promise.race([activationPromise, timeoutPromise]);
-      console.log("نتيجة التفعيل:", result);
-      
-      if (result && result.success) {
-        setLicense(result.license || null);
-        await checkLicense();
-        console.log("تم التحقق من الرخصة");
-        return true;
-      } else {
-        console.error("فشل التفعيل:", result?.message || 'سبب غير معروف');
-        return false;
-      }
-    } catch (error) {
-      console.error('خطأ خلال عملية التفعيل:', error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Generate a license
-  const generateLicense = async (type: 'trial' | 'full', durationDays: number) => {
-    try {
-      setIsLoading(true);
-      const result = await licenseService.generateLicense(type, durationDays);
-      
-      if (result.success) {
-        toast.success('تم إنشاء مفتاح الترخيص بنجاح');
-        return result.license;
-      } else {
-        toast.error(result.message || 'فشل إنشاء مفتاح الترخيص');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error generating license:', error);
-      toast.error('حدث خطأ أثناء إنشاء مفتاح الترخيص');
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Get all licenses
-  const getAllLicenses = async () => {
-    try {
-      return await licenseService.getAllLicenses();
-    } catch (error) {
-      console.error('Error getting all licenses:', error);
-      return [];
-    }
-  };
-
-  // Redirect to activation page if license is not active
-  const requireLicense = () => {
-    if (!isLoading && !licenseStatus.isActive) {
-      navigate('/activate');
-      return false;
-    }
+    setLicense(createDefaultLicense());
     return true;
   };
 
-  // Check license on first load - only once and with timeout
-  useEffect(() => {
-    // Skip if we've already done the initial check
-    if (initialCheckComplete.current) return;
-    initialCheckComplete.current = true;
-    
-    const initialCheck = async () => {
-      // Set a timeout for the entire operation
-      const checkTimeout = setTimeout(() => {
-        console.log("Initial license check timed out, using default active state");
-        setLicenseStatus({ isActive: true });
-        setIsLoading(false);
-      }, 2000); // Reduced to 2 second timeout for initial check (from 3s)
-      
-      try {
-        await checkLicense();
-      } catch (error) {
-        console.error('Error during initial license check:', error);
-        // Set default active state on error
-        setLicenseStatus({ isActive: true });
-      } finally {
-        clearTimeout(checkTimeout);
-        setIsLoading(false);
-      }
+  // Generate a license - always successful in offline mode
+  const generateLicense = async (type: 'trial' | 'full', durationDays: number) => {
+    return {
+      success: true,
+      license: createDefaultLicense()
     };
+  };
+
+  // Get all licenses - returns a default license in offline mode
+  const getAllLicenses = async () => {
+    return [createDefaultLicense()];
+  };
+
+  // Always allow access in offline mode
+  const requireLicense = () => true;
+
+  useEffect(() => {
+    // In offline mode, immediately set a default license
+    const offlineLicense = createDefaultLicense();
+    setLicense(offlineLicense);
+    localStorage.setItem('active-license', JSON.stringify(offlineLicense));
     
-    initialCheck();
+    // Set license status to active
+    setLicenseStatus({
+      isActive: true,
+      daysLeft: 365,
+      type: 'full'
+    });
   }, []);
 
   return {
     license,
     licenseStatus,
-    isLoading,
+    isLoading: false,
     checkLicense,
     getLicenseInfo,
     activateLicense,

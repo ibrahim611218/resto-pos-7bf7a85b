@@ -4,5 +4,6 @@ export class BaseService {
   // Base methods that all services inherit
 }
 
-// Remove Electron detection logic
+// Always return false to ensure we use localStorage
 export const isElectron = () => false;
+

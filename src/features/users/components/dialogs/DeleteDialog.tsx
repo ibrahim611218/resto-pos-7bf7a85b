@@ -8,7 +8,7 @@ interface DeleteDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   selectedUser: UserWithPassword | null;
-  onDeleteUser: () => void;
+  onDeleteUser: () => Promise<boolean> | boolean;
   isArabic: boolean;
 }
 
@@ -21,9 +21,11 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 }) => {
   if (!selectedUser) return null;
 
-  const handleDelete = () => {
-    onDeleteUser();
-    onOpenChange(false);
+  const handleDelete = async () => {
+    const result = await onDeleteUser();
+    if (result) {
+      onOpenChange(false);
+    }
   };
 
   return (

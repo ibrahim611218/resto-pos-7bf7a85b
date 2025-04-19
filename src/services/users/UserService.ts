@@ -1,82 +1,148 @@
 
-import { UserWithPassword } from '../../features/users/types';
-import { isElectron } from '../base/BaseService';
+import { UserWithPassword } from "@/features/users/types";
+import { BaseService } from "../base/BaseService";
+import { v4 as uuidv4 } from 'uuid';
 
-class UserService {
+class UserService extends BaseService {
+  private storageKey = 'stored-users';
+  private permissionsKey = 'user-permissions';
+
   async getUsers(): Promise<UserWithPassword[]> {
     try {
-      if (isElectron()) {
-        const users = await window.electron.invoke('users:getAll');
-        return users;
+      const storedUsers = localStorage.getItem(this.storageKey);
+      if (!storedUsers) return [];
+      return JSON.parse(storedUsers);
+    } catch (error) {
+      console.error('Error getting users from localStorage:', error);
+      return [];
+    }
+  }
+
+  async getUserById(userId: string): Promise<UserWithPassword | null> {
+    try {
+      const users = await this.getUsers();
+      return users.find(user => user.id === userId) || null;
+    } catch (error) {
+      console.error('Error getting user by ID:', error);
+      return null;
+    }
+  }
+  
+  async saveUser(user: UserWithPassword): Promise<boolean> {
+    try {
+      // Ensure user has all required fields
+      if (!user.id) {
+        user.id = uuidv4();
       }
       
-      // Return empty array for web version
+      const users = await this.getUsers();
+      users.push(user);
+      
+      localStorage.setItem(this.storageKey, JSON.stringify(users));
+      return true;
+    } catch (error) {
+      console.error('Error saving user to localStorage:', error);
+      return false;
+    }
+  }
+  
+  async updateUser(user: UserWithPassword): Promise<boolean> {
+    try {
+      const users = await this.getUsers();
+      const index = users.findIndex(u => u.id === user.id);
+      
+      if (index === -1) {
+        return false;
+      }
+      
+      users[index] = user;
+      localStorage.setItem(this.storageKey, JSON.stringify(users));
+      return true;
+    } catch (error) {
+      console.error('Error updating user in localStorage:', error);
+      return false;
+    }
+  }
+  
+  async deleteUser(userId: string): Promise<boolean> {
+    try {
+      const users = await this.getUsers();
+      const filteredUsers = users.filter(user => user.id !== userId);
+      
+      localStorage.setItem(this.storageKey, JSON.stringify(filteredUsers));
+      
+      // Also delete user permissions
+      await this.deleteUserPermissions(userId);
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting user from localStorage:', error);
+      return false;
+    }
+  }
+  
+  async getUserPermissions(userId: string): Promise<string[]> {
+    try {
+      const storedPermissions = localStorage.getItem(this.permissionsKey);
+      if (!storedPermissions) return [];
+      
+      const allPermissions = JSON.parse(storedPermissions);
+      return allPermissions[userId] || [];
+    } catch (error) {
+      console.error('Error getting user permissions:', error);
       return [];
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      throw error;
     }
   }
-
-  async saveUser(user: UserWithPassword): Promise<any> {
+  
+  async updateUserPermissions(userId: string, permissions: string[]): Promise<boolean> {
     try {
-      if (isElectron()) {
-        return await window.electron.invoke('users:save', user);
-      }
-      return null;
-    } catch (error) {
-      console.error('Error saving user:', error);
-      throw error;
-    }
-  }
-
-  async updateUser(user: UserWithPassword): Promise<any> {
-    try {
-      if (isElectron()) {
-        return await window.electron.invoke('users:update', user);
-      }
-      return null;
-    } catch (error) {
-      console.error('Error updating user:', error);
-      throw error;
-    }
-  }
-
-  async deleteUser(userId: string): Promise<any> {
-    try {
-      if (isElectron()) {
-        return await window.electron.invoke('users:delete', userId);
-      }
-      return null;
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      throw error;
-    }
-  }
-
-  async updateUserPermissions(userId: string, permissions: string[]): Promise<any> {
-    try {
-      if (isElectron()) {
-        return await window.electron.invoke('users:updatePermissions', { userId, permissions });
-      }
-      return null;
+      const storedPermissions = localStorage.getItem(this.permissionsKey);
+      const allPermissions = storedPermissions ? JSON.parse(storedPermissions) : {};
+      
+      allPermissions[userId] = permissions;
+      
+      localStorage.setItem(this.permissionsKey, JSON.stringify(allPermissions));
+      return true;
     } catch (error) {
       console.error('Error updating user permissions:', error);
-      throw error;
+      return false;
     }
   }
-
-  async updateUserPassword(userId: string, hashedPassword: string): Promise<any> {
+  
+  async deleteUserPermissions(userId: string): Promise<boolean> {
     try {
-      if (isElectron()) {
-        return await window.electron.invoke('users:updatePassword', { userId, hashedPassword });
+      const storedPermissions = localStorage.getItem(this.permissionsKey);
+      if (!storedPermissions) return true;
+      
+      const allPermissions = JSON.parse(storedPermissions);
+      delete allPermissions[userId];
+      
+      localStorage.setItem(this.permissionsKey, JSON.stringify(allPermissions));
+      return true;
+    } catch (error) {
+      console.error('Error deleting user permissions:', error);
+      return false;
+    }
+  }
+  
+  async updateUserPassword(userId: string, hashedPassword: string): Promise<boolean> {
+    try {
+      const users = await this.getUsers();
+      const index = users.findIndex(u => u.id === userId);
+      
+      if (index === -1) {
+        return false;
       }
-      return null;
+      
+      users[index].password = hashedPassword;
+      localStorage.setItem(this.storageKey, JSON.stringify(users));
+      return true;
     } catch (error) {
       console.error('Error updating user password:', error);
-      throw error;
+      return false;
     }
   }
 }
 
-export default new UserService();
+const userService = new UserService();
+export default userService;

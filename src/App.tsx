@@ -1,7 +1,7 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
@@ -52,52 +52,25 @@ const LoadingFallback = () => {
 
 function App() {
   const { language } = useLanguage();
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  
-  // Monitor online status
-  useEffect(() => {
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
   
   // Pre-load license information when app starts
   useEffect(() => {
-    // Create a default license in localStorage if not exists for browser mode
+    // Create a default license in localStorage if not exists for offline mode
     if (!localStorage.getItem('active-license')) {
       const now = Date.now();
       const defaultLicense = {
-        key: 'DEFAULT-LICENSE',
-        type: 'trial',
+        key: 'OFFLINE-LICENSE',
+        type: 'full',
         issuedAt: now,
-        expiryDate: now + 30 * 24 * 60 * 60 * 1000, // 30 days
-        durationDays: 30,
+        expiryDate: now + 365 * 24 * 60 * 60 * 1000, // 1 year
+        durationDays: 365,
         used: true,
         activatedAt: now
       };
       localStorage.setItem('active-license', JSON.stringify(defaultLicense));
-      console.log("Created default license for faster startup");
+      console.log("Created default license for offline mode");
     }
   }, []);
-  
-  // Show offline warning if needed
-  useEffect(() => {
-    if (isOffline) {
-      toast.warning('لا يوجد اتصال بالإنترنت، بعض الميزات قد لا تعمل بشكل صحيح', {
-        duration: 5000,
-        id: 'offline-warning'
-      });
-    } else {
-      toast.dismiss('offline-warning');
-    }
-  }, [isOffline]);
   
   return (
     <>
