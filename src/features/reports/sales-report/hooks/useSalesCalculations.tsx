@@ -1,6 +1,6 @@
 
 import { useMemo } from "react";
-import { Invoice, SalesByPaymentMethod, SalesByOrderType, TopSellingProduct } from "@/types";
+import { Invoice, SalesByPaymentMethod, SalesByOrderType, TopSellingProduct, PaymentMethod } from "@/types";
 import { formatPaymentMethod, formatOrderType } from "../utils/formatters";
 
 interface SalesCalculationsProps {

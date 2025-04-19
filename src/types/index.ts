@@ -1,4 +1,3 @@
-
 export type Language = "en" | "ar";
 export type UserRole = "owner" | "admin" | "supervisor" | "cashier" | "kitchen" | "manager";
 export type ProductType = "single" | "sized";
@@ -221,7 +220,7 @@ export interface VatReportItem {
 export interface VatReportPeriod {
   startDate: Date;
   endDate: Date;
-  type?: string;
+  type: string;
 }
 
 // Purchase Types

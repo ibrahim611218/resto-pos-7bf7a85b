@@ -58,7 +58,11 @@ class BrowserVatReportService extends BaseService implements IVatReportService {
         totalPurchasesBeforeTax: purchasesBeforeTax,
         purchasesTax: purchasesTax,
         netTaxDue: netTaxDue,
-        period: period
+        period: {
+          startDate: period.startDate,
+          endDate: period.endDate,
+          type: period.type || 'monthly' // Provide a default value if type is not provided
+        }
       };
       
       // Save report to history
