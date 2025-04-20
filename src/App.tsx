@@ -21,6 +21,7 @@ import CustomersReport from './pages/CustomersReport';
 import VatReport from './pages/VatReport';
 import Purchases from './pages/Purchases';
 import CompanyManagement from './pages/CompanyManagement';
+import { CartProvider } from './features/pos/hooks/useCart';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
@@ -50,8 +51,20 @@ function App() {
           <AuthProvider>
             <MainLayout>
               <Routes>
-                <Route path="/" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner", "kitchen", "manager"]}><Pos /></ProtectedRoute>} />
-                <Route path="/pos" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Pos /></ProtectedRoute>} />
+                <Route path="/" element={
+                  <ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner", "kitchen", "manager"]}>
+                    <CartProvider>
+                      <Pos />
+                    </CartProvider>
+                  </ProtectedRoute>
+                } />
+                <Route path="/pos" element={
+                  <ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}>
+                    <CartProvider>
+                      <Pos />
+                    </CartProvider>
+                  </ProtectedRoute>
+                } />
                 <Route path="/products" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Products /></ProtectedRoute>} />
                 <Route path="/categories" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Categories /></ProtectedRoute>} />
                 <Route path="/invoices" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Invoices /></ProtectedRoute>} />
@@ -67,7 +80,6 @@ function App() {
                 <Route path="/inventory-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><InventoryReport /></ProtectedRoute>} />
                 <Route path="/customers-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><CustomersReport /></ProtectedRoute>} />
                 <Route path="/vat-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><VatReport /></ProtectedRoute>} />
-                
                 <Route
                   path="/company-management"
                   element={
