@@ -24,16 +24,26 @@ export const useCategoryForm = () => {
   const [category, setCategory] = useState<Category>(emptyCategory);
 
   useEffect(() => {
-    if (isEditing) {
-      const categories = categoryService.getCategories();
-      const existingCategory = categories.find(c => c.id === id);
+    if (isEditing && id) {
+      const fetchCategory = async () => {
+        try {
+          const categories = await categoryService.getCategories();
+          const existingCategory = categories.find(c => c.id === id);
+          
+          if (existingCategory) {
+            setCategory(existingCategory);
+          } else {
+            toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
+            navigate("/categories");
+          }
+        } catch (error) {
+          console.error('Error fetching category:', error);
+          toast.error(isArabic ? "حدث خطأ أثناء جلب التصنيف" : "Error fetching category");
+          navigate("/categories");
+        }
+      };
       
-      if (existingCategory) {
-        setCategory(existingCategory);
-      } else {
-        toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
-        navigate("/categories");
-      }
+      fetchCategory();
     }
   }, [id, isEditing, navigate, isArabic]);
 
@@ -52,7 +62,7 @@ export const useCategoryForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!category.name) {
@@ -62,26 +72,27 @@ export const useCategoryForm = () => {
 
     setIsSubmitting(true);
     
-    const updatedCategory: Category = {
-      ...category,
-      id: isEditing ? category.id : `cat-${Date.now()}`
-    };
+    try {
+      const updatedCategory: Category = {
+        ...category,
+        id: isEditing ? category.id : `cat-${Date.now()}`
+      };
 
-    // Save category using the service
-    const success = categoryService.saveCategory(updatedCategory);
-    
-    if (success) {
+      // Save category using the service
+      await categoryService.saveCategory(updatedCategory);
+      
       const successMessage = isEditing 
         ? isArabic ? "تم تعديل التصنيف بنجاح" : "Category updated successfully" 
         : isArabic ? "تم إضافة التصنيف بنجاح" : "Category added successfully";
       
       toast.success(successMessage);
       navigate("/categories");
-    } else {
+    } catch (error) {
+      console.error('Error saving category:', error);
       toast.error(isArabic ? "حدث خطأ أثناء حفظ التصنيف" : "Error saving category");
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   return {

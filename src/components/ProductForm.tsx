@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { sampleCategories } from "@/data/sampleData";
 import ProductFormHeader from "./product-form/ProductFormHeader";
 import ProductBasicInfo from "./product-form/ProductBasicInfo";
 import ProductCategorySelect from "./product-form/ProductCategorySelect";
@@ -11,7 +10,6 @@ import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
 import { useProductForm } from "./product-form/hooks/useProductForm";
-import { toast } from "sonner";
 
 const ProductForm = () => {
   const {
@@ -55,7 +53,6 @@ const ProductForm = () => {
             <ProductCategorySelect 
               categoryId={product.categoryId}
               handleCategoryChange={handleCategoryChange}
-              categories={sampleCategories}
               isArabic={isArabic}
             />
             
