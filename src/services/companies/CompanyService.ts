@@ -16,18 +16,21 @@ class CompanyService extends BaseService {
       }
       
       if (!companies || companies.length === 0) {
-        // Create default company if none exist
+        // إنشاء شركة افتراضية إذا لم توجد شركات
         const defaultCompany: Company = {
           id: uuidv4(),
           name: 'Default Company',
           isActive: true,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          subscriptionStart: new Date().toISOString(),
+          subscriptionEnd: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
         };
         
         companies = [defaultCompany];
         localStorage.setItem(this.storageKey, JSON.stringify(companies));
       }
       
+      console.log("Retrieved companies:", companies);
       return companies;
     } catch (error) {
       console.error('Error getting companies:', error);
@@ -55,9 +58,21 @@ class CompanyService extends BaseService {
         company.createdAt = new Date().toISOString();
       }
       
+      // تأكد من وجود تاريخ بداية ونهاية الاشتراك
+      if (!company.subscriptionStart) {
+        company.subscriptionStart = new Date().toISOString();
+      }
+      
+      if (!company.subscriptionEnd) {
+        const endDate = new Date();
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        company.subscriptionEnd = endDate.toISOString();
+      }
+      
       const companies = await this.getCompanies();
       companies.push(company);
       
+      console.log("Saving company:", company);
       localStorage.setItem(this.storageKey, JSON.stringify(companies));
       return true;
     } catch (error) {
@@ -76,6 +91,7 @@ class CompanyService extends BaseService {
       }
       
       companies[index] = company;
+      console.log("Updating company:", company);
       localStorage.setItem(this.storageKey, JSON.stringify(companies));
       return true;
     } catch (error) {

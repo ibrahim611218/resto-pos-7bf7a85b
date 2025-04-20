@@ -30,10 +30,19 @@ export const useCompanies = () => {
 
   const handleAddCompany = async (company: Company) => {
     try {
-      const success = await companyService.saveCompany(company);
+      // تأكد من أن تاريخ البداية والنهاية بتنسيق ISO string
+      const companyToSave = {
+        ...company,
+        subscriptionStart: company.subscriptionStart || new Date().toISOString(),
+        subscriptionEnd: company.subscriptionEnd || new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
+      };
+      
+      console.log("Saving company:", companyToSave);
+      const success = await companyService.saveCompany(companyToSave);
+      
       if (success) {
         toast.success(isArabic ? "تم إضافة الشركة بنجاح" : "Company added successfully");
-        fetchCompanies();
+        await fetchCompanies();
         return true;
       }
       return false;
@@ -46,10 +55,19 @@ export const useCompanies = () => {
 
   const handleUpdateCompany = async (company: Company) => {
     try {
-      const success = await companyService.updateCompany(company);
+      // تأكد من أن تواريخ الاشتراك بتنسيق صحيح
+      const companyToUpdate = {
+        ...company,
+        subscriptionStart: company.subscriptionStart || new Date().toISOString(),
+        subscriptionEnd: company.subscriptionEnd || new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
+      };
+      
+      console.log("Updating company:", companyToUpdate);
+      const success = await companyService.updateCompany(companyToUpdate);
+      
       if (success) {
         toast.success(isArabic ? "تم تحديث الشركة بنجاح" : "Company updated successfully");
-        fetchCompanies();
+        await fetchCompanies();
         return true;
       }
       return false;
@@ -65,7 +83,7 @@ export const useCompanies = () => {
       const success = await companyService.deleteCompany(companyId);
       if (success) {
         toast.success(isArabic ? "تم حذف الشركة بنجاح" : "Company deleted successfully");
-        fetchCompanies();
+        await fetchCompanies();
         return true;
       }
       return false;
@@ -88,10 +106,11 @@ export const useCompanies = () => {
     };
 
     try {
+      console.log("Renewing subscription for company:", updatedCompany);
       const success = await companyService.updateCompany(updatedCompany);
       if (success) {
         toast.success(isArabic ? "تم تجديد الاشتراك بنجاح" : "Subscription renewed successfully");
-        fetchCompanies();
+        await fetchCompanies();
         return true;
       }
       return false;
@@ -108,6 +127,7 @@ export const useCompanies = () => {
     handleAddCompany,
     handleUpdateCompany,
     handleDeleteCompany,
-    handleRenewSubscription
+    handleRenewSubscription,
+    fetchCompanies
   };
 };
