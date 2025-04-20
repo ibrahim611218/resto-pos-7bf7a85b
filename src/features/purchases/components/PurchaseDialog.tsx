@@ -53,27 +53,29 @@ const PurchaseDialog: React.FC<PurchaseDialogProps> = ({
   const [total, setTotal] = useState<number>(0);
   
   useEffect(() => {
-    loadSuppliers();
-    loadProducts();
-    
-    if (initialData) {
-      // Populate form with initial data
-      setSelectedSupplierId(initialData.supplier.id);
-      setPurchaseDate(new Date(initialData.date).toISOString().split('T')[0]);
-      setItems([...initialData.items]);
-      setNotes(initialData.notes || '');
-      setPaymentStatus(initialData.paymentStatus);
-      setPaymentMethod(initialData.paymentMethod);
-      setTaxRate(calculateEffectiveTaxRate(initialData.items, initialData.taxAmount, initialData.subtotal));
-    } else {
-      // Reset form
-      setSelectedSupplierId('');
-      setPurchaseDate(new Date().toISOString().split('T')[0]);
-      setItems([]);
-      setNotes('');
-      setPaymentStatus('paid');
-      setPaymentMethod('cash');
-      setTaxRate(15);
+    if (open) {
+      loadSuppliers();
+      loadProducts();
+      
+      if (initialData) {
+        // Populate form with initial data
+        setSelectedSupplierId(initialData.supplier.id);
+        setPurchaseDate(new Date(initialData.date).toISOString().split('T')[0]);
+        setItems([...initialData.items]);
+        setNotes(initialData.notes || '');
+        setPaymentStatus(initialData.paymentStatus);
+        setPaymentMethod(initialData.paymentMethod);
+        setTaxRate(calculateEffectiveTaxRate(initialData.items, initialData.taxAmount, initialData.subtotal));
+      } else {
+        // Reset form
+        setSelectedSupplierId('');
+        setPurchaseDate(new Date().toISOString().split('T')[0]);
+        setItems([]);
+        setNotes('');
+        setPaymentStatus('paid');
+        setPaymentMethod('cash');
+        setTaxRate(15);
+      }
     }
   }, [initialData, open]);
   
@@ -94,6 +96,7 @@ const PurchaseDialog: React.FC<PurchaseDialogProps> = ({
   const loadProducts = async () => {
     try {
       const productsList = await productService.getProducts();
+      console.log("Loaded products:", productsList);
       setProducts(productsList);
     } catch (error) {
       console.error('Error loading products:', error);
@@ -122,16 +125,25 @@ const PurchaseDialog: React.FC<PurchaseDialogProps> = ({
     }
     
     const firstProduct = products[0];
+    // Determine the default price based on product type
+    let defaultPrice = 0;
+    if (firstProduct.type === 'single') {
+      defaultPrice = firstProduct.price || 0;
+    } else if (firstProduct.variants && firstProduct.variants.length > 0) {
+      // For sized products, use the first variant's price
+      defaultPrice = firstProduct.variants[0].price;
+    }
+    
     const newItem: PurchaseItem = {
       id: uuidv4(),
       productId: firstProduct.id,
       productName: firstProduct.name,
       productNameAr: firstProduct.nameAr,
       quantity: 1,
-      unitPrice: firstProduct.price || 0,
+      unitPrice: defaultPrice,
       taxRate: taxRate,
-      taxAmount: ((firstProduct.price || 0) * taxRate) / 100,
-      totalPrice: (firstProduct.price || 0) + (((firstProduct.price || 0) * taxRate) / 100)
+      taxAmount: (defaultPrice * taxRate) / 100,
+      totalPrice: defaultPrice + ((defaultPrice * taxRate) / 100)
     };
     
     setItems([...items, newItem]);
@@ -196,6 +208,7 @@ const PurchaseDialog: React.FC<PurchaseDialogProps> = ({
     };
     
     await onSave(purchase);
+    onOpenChange(false); // Close dialog after saving
   };
   
   return (

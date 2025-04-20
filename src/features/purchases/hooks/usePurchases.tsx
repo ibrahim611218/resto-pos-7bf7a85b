@@ -46,9 +46,14 @@ export const usePurchases = () => {
 
   const handleSavePurchase = async (purchase: PurchaseInvoice) => {
     try {
-      await purchasesService.savePurchaseInvoice(purchase);
-      toast.success(isArabic ? 'تم حفظ فاتورة الشراء بنجاح' : 'Purchase invoice saved successfully');
-      loadPurchases();
+      console.log("Saving purchase invoice:", purchase);
+      const result = await purchasesService.savePurchaseInvoice(purchase);
+      if (result) {
+        toast.success(isArabic ? 'تم حفظ فاتورة الشراء بنجاح' : 'Purchase invoice saved successfully');
+        await loadPurchases(); // Reload purchases after saving
+      } else {
+        toast.error(isArabic ? 'فشل في حفظ فاتورة الشراء' : 'Failed to save purchase invoice');
+      }
     } catch (error) {
       console.error('Error saving purchase:', error);
       toast.error(isArabic ? 'حدث خطأ أثناء حفظ الفاتورة' : 'Error saving the invoice');

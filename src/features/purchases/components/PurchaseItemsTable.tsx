@@ -41,7 +41,15 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
     const product = products.find(p => p.id === productId);
     if (!product) return;
     
-    const unitPrice = product.price || 0;
+    // Get the default price based on product type
+    let unitPrice = 0;
+    if (product.type === 'single') {
+      unitPrice = product.price || 0;
+    } else if (product.variants && product.variants.length > 0) {
+      // For sized products, use the first variant's price as default
+      unitPrice = product.variants[0].price;
+    }
+    
     const taxRate = item.taxRate;
     const taxAmount = (unitPrice * item.quantity * taxRate) / 100;
     const totalPrice = (unitPrice * item.quantity) + taxAmount;
