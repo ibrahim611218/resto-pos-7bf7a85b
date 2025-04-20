@@ -42,6 +42,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
     }
     
     try {
+      console.log("Attempting login with:", email);
       const success = await login(email, password);
       
       if (success) {

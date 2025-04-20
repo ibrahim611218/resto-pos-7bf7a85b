@@ -1,4 +1,3 @@
-
 import { UserWithPassword } from "@/features/users/types";
 import { BaseService } from "../base/BaseService";
 import { v4 as uuidv4 } from 'uuid';
@@ -10,11 +9,29 @@ class UserService extends BaseService {
   async getUsers(): Promise<UserWithPassword[]> {
     try {
       const storedUsers = localStorage.getItem(this.storageKey);
-      if (!storedUsers) return [];
-      return JSON.parse(storedUsers);
+      let users: UserWithPassword[] = [];
+      
+      if (storedUsers) {
+        users = JSON.parse(storedUsers);
+      }
+      
+      if (!users || users.length === 0) {
+        const { mockUsers } = await import('../../features/auth/data/mockUsers');
+        localStorage.setItem(this.storageKey, JSON.stringify(mockUsers));
+        return mockUsers;
+      }
+      
+      return users;
     } catch (error) {
-      console.error('Error getting users from localStorage:', error);
-      return [];
+      console.error('Error getting users:', error);
+      
+      try {
+        const { mockUsers } = await import('../../features/auth/data/mockUsers');
+        return mockUsers;
+      } catch (fallbackError) {
+        console.error('Error getting fallback users:', fallbackError);
+        return [];
+      }
     }
   }
 
@@ -30,7 +47,6 @@ class UserService extends BaseService {
   
   async saveUser(user: UserWithPassword): Promise<boolean> {
     try {
-      // Ensure user has all required fields
       if (!user.id) {
         user.id = uuidv4();
       }
@@ -71,7 +87,6 @@ class UserService extends BaseService {
       
       localStorage.setItem(this.storageKey, JSON.stringify(filteredUsers));
       
-      // Also delete user permissions
       await this.deleteUserPermissions(userId);
       
       return true;

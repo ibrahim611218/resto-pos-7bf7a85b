@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { User, UserRole } from '@/types';
-import { mockUsers } from '../data/mockUsers';
-import { allPermissions } from '../data/permissions';
+import { userService } from '@/services';
 import { useUserPermissions } from './useUserPermissions';
 import AuthContext from '../context/AuthContext';
 import { AuthContextType } from '../types/auth';
@@ -42,8 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Trim the email to handle whitespace issues
       const trimmedEmail = email.trim();
       
-      // Find user by email (case insensitive)
-      const foundUser = mockUsers.find(
+      // Get all users from the service
+      const allUsers = await userService.getUsers();
+      
+      // Find user by email (case insensitive) and password
+      const foundUser = allUsers.find(
         u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
       );
 
@@ -61,6 +63,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return false;
         }
       }
+      return false;
+    } catch (error) {
+      console.error("Login error:", error);
       return false;
     } finally {
       // Add a small delay before setting processing to false
@@ -155,7 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasPermission,
       isOwner,
       isSupervisor,
-      allPermissions,
+      allPermissions: [], // We'll get these from the permissions hook
       getUserPermissions,
       updateUserPermissions
     }}>
