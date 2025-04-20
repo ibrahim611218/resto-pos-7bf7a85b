@@ -1,15 +1,14 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Language } from "@/types";
 import { userService } from "@/services";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
+import LoginFormInputs from './form/LoginFormInputs';
+import LoginFormActions from './form/LoginFormActions';
 
 interface LoginFormProps {
   language: Language;
@@ -81,59 +80,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  id="email"
-                  placeholder={isArabic ? "البريد الإلكتروني" : "Email"}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  id="password"
-                  placeholder={isArabic ? "كلمة المرور" : "Password"}
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => 
-                      setRememberMe(checked as boolean)
-                    }
-                    disabled={isProcessing}
-                  />
-                  <label
-                    htmlFor="remember"
-                    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isArabic ? "mr-2" : "ml-2"}`}
-                  >
-                    {isArabic ? "تذكرني" : "Remember me"}
-                  </label>
-                </div>
-                <Button variant="link" className="px-0" disabled={isProcessing}>
-                  {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
-                </Button>
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full h-12" 
-                disabled={isProcessing}
-              >
-                {isProcessing 
-                  ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
-                  : (isArabic ? "تسجيل الدخول" : "Sign in")
-                }
-              </Button>
+              <LoginFormInputs
+                email={email}
+                password={password}
+                setEmail={setEmail}
+                setPassword={setPassword}
+                isProcessing={isProcessing}
+                language={language}
+              />
+              <LoginFormActions
+                rememberMe={rememberMe}
+                setRememberMe={setRememberMe}
+                isProcessing={isProcessing}
+                language={language}
+                onSubmit={handleLogin}
+              />
             </form>
           </CardContent>
           <CardFooter>
@@ -150,3 +111,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
 };
 
 export default LoginForm;
+
