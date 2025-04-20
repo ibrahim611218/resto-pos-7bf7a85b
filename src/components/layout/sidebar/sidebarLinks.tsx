@@ -8,7 +8,6 @@ import {
   FileText, 
   BarChart3, 
   ChefHat, 
-  KeySquare, 
   ShoppingCart, 
   FileSpreadsheet, 
   Receipt,
@@ -140,14 +139,6 @@ export const getSidebarLinks = (): SidebarLink[] => {
       path: "/business-settings",
       icon: Settings,
       roles: ["admin", "owner"]
-    },
-    {
-      name: "مولد التراخيص",
-      name_en: "License Generator",
-      path: "/license-generator",
-      icon: KeySquare,
-      isAdminOnly: true,
-      requiredEmail: "eng.ibrahimabdalfatah@gmail.com",
     },
   ];
 };

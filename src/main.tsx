@@ -7,7 +7,6 @@ import { loadStyles } from './styles/index.ts'
 import { LanguageProvider } from './context/LanguageContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext.tsx'
-// Remove the duplicate AuthProvider import and usage
 
 // Load all styles
 loadStyles();
