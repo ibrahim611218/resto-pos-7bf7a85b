@@ -125,7 +125,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Company Management",
       path: "/company-management",
       icon: Building,
-      requiredEmail: "emg.ibrahimabdalfatah@gmail.com",
+      requiredEmail: "eng.ibrahimabdalfatah@gmail.com", // Changed from "emg" to "eng"
       roles: ["admin", "owner"]
     },
     {

@@ -54,7 +54,7 @@ const CompanyManagement: React.FC = () => {
   };
   
   // Check if user is authorized to access this page
-  const isAuthorizedEmail = user?.email === "emg.ibrahimabdalfatah@gmail.com";
+  const isAuthorizedEmail = user?.email === "eng.ibrahimabdalfatah@gmail.com"; // Changed from "emg" to "eng"
   const canManageCompanies = (isOwner() || user?.role === 'admin') && isAuthorizedEmail;
   
   if (!canManageCompanies) {
