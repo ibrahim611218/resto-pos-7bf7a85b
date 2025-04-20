@@ -31,7 +31,8 @@ export const useUserCreation = (
       return false;
     }
     
-    if (users.some(user => user.email === newUser.email)) {
+    const existingUser = users.find(user => user.email === newUser.email);
+    if (existingUser) {
       toast({
         title: "خطأ",
         description: "البريد الإلكتروني موجود بالفعل",
@@ -51,7 +52,12 @@ export const useUserCreation = (
     
     try {
       const userId = uuidv4();
-      const userToAdd = { ...newUser, id: userId, isActive: true };
+      const userToAdd = { 
+        ...newUser, 
+        id: userId, 
+        isActive: true,
+        companyId: localStorage.getItem('currentCompanyId') // Associate with current company
+      };
       
       await userService.saveUser(userToAdd);
       console.log("User saved successfully:", userToAdd);
@@ -67,7 +73,8 @@ export const useUserCreation = (
         email: "",
         role: "cashier",
         password: "",
-        isActive: true
+        isActive: true,
+        companyId: userToAdd.companyId
       });
       
       toast({

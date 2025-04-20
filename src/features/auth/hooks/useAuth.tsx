@@ -12,7 +12,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isProcessing, setIsProcessing] = useState(false);
   const { permissionsMap, getUserPermissions, updateUserPermissions: updatePermissions } = useUserPermissions();
 
-  // Check for stored user on init
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
@@ -20,6 +19,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
         setIsAuthenticated(true);
+        
+        if (parsedUser.companyId) {
+          localStorage.setItem('currentCompanyId', parsedUser.companyId);
+        }
       }
     } catch (error) {
       console.error("Error loading user from localStorage:", error);
@@ -35,22 +38,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setIsProcessing(true);
       
-      // Add small delay to allow UI state update
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Trim the email to handle whitespace issues
       const trimmedEmail = email.trim();
       
-      // Get all users from the service
       const allUsers = await userService.getUsers();
       
-      // Find user by email (case insensitive) and password
       const foundUser = allUsers.find(
         u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
       );
 
       if (foundUser) {
-        // Don't store the password in localStorage for security
         const { password: _, ...userWithoutPassword } = foundUser;
         
         try {
@@ -68,8 +66,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error("Login error:", error);
       return false;
     } finally {
-      // Add a small delay before setting processing to false
-      // to ensure UI updates properly
       setTimeout(() => {
         setIsProcessing(false);
       }, 300);
@@ -81,23 +77,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       setIsProcessing(true);
-      
-      // Add small delay to allow UI state update
       await new Promise(resolve => setTimeout(resolve, 100));
       
       try {
-        // We keep the permissions data in localStorage to persist
-        // user preferences even after logout
         localStorage.removeItem('user');
+        localStorage.removeItem('currentCompanyId');
       } catch (error) {
-        console.error("Error removing user from localStorage:", error);
+        console.error("Error removing user data from localStorage:", error);
       } finally {
         setUser(null);
         setIsAuthenticated(false);
       }
     } finally {
-      // Add a small delay before setting processing to false
-      // to ensure UI updates properly
       setTimeout(() => {
         setIsProcessing(false);
       }, 300);
@@ -107,10 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const hasPermission = (requiredRole: UserRole | UserRole[]): boolean => {
     if (!user) return false;
     
-    // Admin and owner have all permissions
     if (user.role === 'admin' || user.role === 'owner') return true;
     
-    // Supervisor has all permissions except those reserved for admin/owner
     if (user.role === 'supervisor') {
       if (Array.isArray(requiredRole)) {
         return requiredRole.some(role => 
@@ -119,7 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return requiredRole === 'supervisor' || requiredRole === 'cashier' || requiredRole === 'kitchen';
     }
     
-    // For other roles, check exact match
     if (Array.isArray(requiredRole)) {
       return requiredRole.includes(user.role);
     }
@@ -135,18 +123,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user?.role === 'supervisor' || user?.role === 'admin' || user?.role === 'owner';
   };
 
-  // Fix: Update the updateUserPermissions function to match the interface
   const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
     console.log("Auth Provider - Updating permissions for user:", userId);
     console.log("Auth Provider - Permissions to set:", permissions);
     
-    // We can handle the user check here and then call updatePermissions
     if (!user || (user.role !== 'admin' && user.role !== 'owner')) {
       console.log("Auth Provider - Permission update rejected - not admin/owner");
       return false;
     }
     
-    // Call the actual implementation from useUserPermissions
     try {
       updatePermissions(userId, permissions);
       console.log("Auth Provider - Permissions updated successfully");
@@ -157,7 +142,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Don't render children until we've checked localStorage
   if (!isInitialized) {
     return null;
   }

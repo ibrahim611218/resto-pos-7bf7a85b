@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   const { login, isProcessing, isAuthenticated } = useAuth();
   const isArabic = language === "ar";
   
-  // Check if already authenticated and redirect to home
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
@@ -46,6 +44,12 @@ const Login: React.FC<LoginProps> = ({ language }) => {
       const success = await login(email, password);
       
       if (success) {
+        const users = await userService.getUsers();
+        const loggedInUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (loggedInUser?.companyId) {
+          localStorage.setItem('currentCompanyId', loggedInUser.companyId);
+        }
+        
         toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
         navigate("/");
       } else {

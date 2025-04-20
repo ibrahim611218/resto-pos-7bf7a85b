@@ -21,17 +21,16 @@ class UserService extends BaseService {
         return mockUsers;
       }
       
+      // Filter users by company
+      const currentCompanyId = localStorage.getItem('currentCompanyId');
+      if (currentCompanyId) {
+        return users.filter(user => user.companyId === currentCompanyId);
+      }
+      
       return users;
     } catch (error) {
       console.error('Error getting users:', error);
-      
-      try {
-        const { mockUsers } = await import('../../features/auth/data/mockUsers');
-        return mockUsers;
-      } catch (fallbackError) {
-        console.error('Error getting fallback users:', fallbackError);
-        return [];
-      }
+      return [];
     }
   }
 
