@@ -25,6 +25,7 @@ export interface PurchaseItem {
   taxRate: number;
   taxAmount: number;
   totalPrice: number;
+  size?: string;
 }
 
 export interface Supplier {
