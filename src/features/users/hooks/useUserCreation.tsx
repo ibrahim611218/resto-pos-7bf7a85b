@@ -1,0 +1,91 @@
+
+import { toast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from "uuid";
+import { userService } from "@/services";
+import { UserWithPassword } from "../types";
+
+export const useUserCreation = (
+  users: UserWithPassword[],
+  setUsers: (users: UserWithPassword[]) => void,
+  newUser: UserWithPassword,
+  setNewUser: (user: UserWithPassword) => void,
+  canManageAdmins: boolean,
+  getDefaultPermissions: (role: string) => string[]
+) => {
+  const handleAddUser = async () => {
+    if (!newUser.name || !newUser.email || !newUser.password) {
+      toast({
+        title: "خطأ",
+        description: "يرجى ملء جميع الحقول المطلوبة",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    if (newUser.password.length < 6) {
+      toast({
+        title: "خطأ",
+        description: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    if (users.some(user => user.email === newUser.email)) {
+      toast({
+        title: "خطأ",
+        description: "البريد الإلكتروني موجود بالفعل",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    if ((newUser.role === 'admin' || newUser.role === 'owner') && !canManageAdmins) {
+      toast({
+        title: "خطأ",
+        description: "ليس لديك صلاحية لإنشاء مستخدم بهذا الدور",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    try {
+      const userId = uuidv4();
+      const userToAdd = { ...newUser, id: userId, isActive: true };
+      
+      await userService.saveUser(userToAdd);
+      console.log("User saved successfully:", userToAdd);
+      
+      const defaultPermissions = getDefaultPermissions(newUser.role);
+      await userService.updateUserPermissions(userId, defaultPermissions);
+      
+      setUsers([...users, userToAdd]);
+      
+      setNewUser({
+        id: "",
+        name: "",
+        email: "",
+        role: "cashier",
+        password: "",
+        isActive: true
+      });
+      
+      toast({
+        title: "تم إضافة المستخدم",
+        description: "تمت إضافة المستخدم بنجاح"
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Error adding user:", error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء إضافة المستخدم",
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
+  return { handleAddUser };
+};
