@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -61,7 +61,8 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
       productNameAr: product.nameAr,
       unitPrice,
       taxAmount,
-      totalPrice
+      totalPrice,
+      size: product.type === 'sized' ? product.variants[0].size : undefined
     });
   };
   
@@ -97,12 +98,53 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
     });
   };
   
+  const handleSizeChange = (itemId: string, size: string) => {
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const product = products.find(p => p.id === item.productId);
+    if (!product || product.type !== 'sized') return;
+    
+    // Find the variant with the selected size
+    const variant = product.variants.find(v => v.size === size);
+    if (!variant) return;
+    
+    // Update the price based on the selected size
+    const unitPrice = variant.price;
+    const taxAmount = (unitPrice * item.quantity * item.taxRate) / 100;
+    const totalPrice = (unitPrice * item.quantity) + taxAmount;
+    
+    onUpdateItem({
+      ...item,
+      size,
+      unitPrice,
+      taxAmount,
+      totalPrice
+    });
+  };
+  
+  // Get product variants for a specific product
+  const getProductVariants = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (!product || product.type !== 'sized' || !product.variants) {
+      return [];
+    }
+    return product.variants;
+  };
+  
+  // Check if a product is sized type
+  const isSizedProduct = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    return product?.type === 'sized';
+  };
+  
   return (
     <div className="border rounded-md overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>{isArabic ? 'المنتج' : 'Product'}</TableHead>
+            <TableHead>{isArabic ? 'الحجم' : 'Size'}</TableHead>
             <TableHead className="w-24">{isArabic ? 'الكمية' : 'Quantity'}</TableHead>
             <TableHead className="w-32">{isArabic ? 'سعر الوحدة' : 'Unit Price'}</TableHead>
             <TableHead className="w-32">{isArabic ? 'إجمالي السعر' : 'Total Price'}</TableHead>
@@ -112,7 +154,7 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
         <TableBody>
           {items.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-6">
+              <TableCell colSpan={6} className="text-center py-6">
                 {isArabic ? 'لا توجد منتجات. اضغط زر "إضافة منتج".' : 'No items. Click "Add Item" button.'}
               </TableCell>
             </TableRow>
@@ -135,6 +177,30 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
                       ))}
                     </SelectContent>
                   </Select>
+                </TableCell>
+                <TableCell>
+                  {isSizedProduct(item.productId) ? (
+                    <Select 
+                      value={item.size || ''} 
+                      onValueChange={(value) => handleSizeChange(item.id, value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getProductVariants(item.productId).map(variant => (
+                          <SelectItem key={variant.id} value={variant.size}>
+                            {isArabic 
+                              ? (variant.size === 'small' ? 'صغير' : variant.size === 'medium' ? 'وسط' : 'كبير')
+                              : variant.size
+                            }
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <span className="text-gray-500">-</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Input 
