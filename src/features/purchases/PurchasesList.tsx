@@ -93,7 +93,9 @@ const PurchasesList: React.FC<PurchasesListProps> = ({ language }) => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         initialData={selectedPurchase}
-        onSave={handleSavePurchase}
+        onSave={async (purchase) => {
+          await handleSavePurchase(purchase);
+        }}
         language={language}
       />
       

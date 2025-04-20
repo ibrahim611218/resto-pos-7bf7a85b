@@ -1,14 +1,14 @@
 
 import React from 'react';
-import { TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TableHead, TableHeader as UITableHeader, TableRow } from '@/components/ui/table';
 
-interface TableHeaderProps {
+interface PurchaseTableHeaderProps {
   isArabic: boolean;
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({ isArabic }) => {
+const PurchaseTableHeader: React.FC<PurchaseTableHeaderProps> = ({ isArabic }) => {
   return (
-    <TableHeader>
+    <UITableHeader>
       <TableRow>
         <TableHead>{isArabic ? 'المنتج' : 'Product'}</TableHead>
         <TableHead>{isArabic ? 'الحجم' : 'Size'}</TableHead>
@@ -17,8 +17,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({ isArabic }) => {
         <TableHead className="w-32">{isArabic ? 'إجمالي السعر' : 'Total Price'}</TableHead>
         <TableHead className="w-24">{isArabic ? 'إجراءات' : 'Actions'}</TableHead>
       </TableRow>
-    </TableHeader>
+    </UITableHeader>
   );
 };
 
-export default TableHeader;
+export default PurchaseTableHeader;

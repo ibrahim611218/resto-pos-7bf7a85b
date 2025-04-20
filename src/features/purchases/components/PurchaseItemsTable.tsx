@@ -2,7 +2,7 @@
 import React from 'react';
 import { Table, TableBody } from '@/components/ui/table';
 import { PurchaseItem, Product } from '@/types';
-import TableHeader from './purchase-items-table/TableHeader';
+import PurchaseTableHeader from './purchase-items-table/TableHeader';
 import TableRow from './purchase-items-table/TableRow';
 import EmptyState from './purchase-items-table/EmptyState';
 
@@ -26,7 +26,7 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
   return (
     <div className="border rounded-md overflow-x-auto">
       <Table>
-        <TableHeader isArabic={isArabic} />
+        <PurchaseTableHeader isArabic={isArabic} />
         <TableBody>
           {items.length === 0 ? (
             <EmptyState isArabic={isArabic} />
