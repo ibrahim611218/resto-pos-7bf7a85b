@@ -1,11 +1,16 @@
-import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import Products from './pages/Products'
-import Categories from './pages/Categories'
-import Orders from './pages/Orders'
-import Settings from './pages/Settings'
-import CategoryAdd from './pages/CategoryAdd'
-import CategoryEdit from './pages/CategoryEdit'
+
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './features/auth/hooks/useAuth';
+import Login from './pages/Login';
+import MainLayout from './components/layout/MainLayout';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Products from './pages/Products';
+import Categories from './pages/Categories';
+import Orders from './pages/Orders';
+import Settings from './pages/Settings';
+import CategoryAdd from './pages/CategoryAdd';
+import CategoryEdit from './pages/CategoryEdit';
 import ProductAdd from "./pages/ProductAdd";
 import Invoices from "./pages/Invoices";
 import Purchases from "./pages/Purchases";
@@ -17,37 +22,33 @@ import InventoryReport from "./pages/InventoryReport";
 import CustomersReport from "./pages/CustomersReport";
 import VatReport from "./pages/VatReport";
 import Kitchen from "./pages/Kitchen";
-import { Orders as OrdersContent } from './pages/Orders'
-import { Settings as SettingsContent } from './pages/Settings'
-import { ProductAddContent } from "./pages/ProductAdd";
-import MainLayout from './components/layout/MainLayout'
-import Login from './pages/Login'
-import { useAuth } from './features/auth/hooks/useAuth'
-import ProtectedRoute from './components/auth/ProtectedRoute'
-import Pos from './pages/Pos'
-import CompanyManagementPage from './pages/CompanyManagement'
-import UserManagementPage from './pages/UserManagement'
-import BusinessSettingsPage from './pages/BusinessSettings'
+import Pos from "./pages/Pos";
+import CompanyManagementPage from './pages/CompanyManagement';
+import UserManagementPage from './pages/UserManagement';
+import BusinessSettingsPage from './pages/BusinessSettings';
 
 function App() {
   const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" replace />} />
+      {/* Always start with login route */}
+      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
+      
+      {/* Default route always redirects to login if not authenticated */}
+      <Route path="/" element={isAuthenticated ? <Navigate to="/pos" replace /> : <Navigate to="/login" replace />} />
       
       <Route element={<ProtectedRoute>
         <MainLayout />
       </ProtectedRoute>}>
-        <Route path="/" element={<Products />} />
+        <Route path="/pos" element={<Pos />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/products/add" element={<ProductAddContent />} />
+        <Route path="/products/add" element={<ProductAdd />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/add" element={<CategoryAdd />} />
         <Route path="/categories/:id/edit" element={<CategoryEdit />} />
         <Route path="/orders" element={<OrdersContent />} />
         <Route path="/settings" element={<SettingsContent />} />
-        <Route path="/pos" element={<Pos />} />
         <Route path="/invoices" element={<Invoices />} />
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/customers" element={<Customers />} />
@@ -63,8 +64,12 @@ function App() {
         <Route path="/vat-report" element={<VatReport />} />
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
+
+      {/* Catch-all route redirects to login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
-  )
+  );
 }
 
 export default App;
+
