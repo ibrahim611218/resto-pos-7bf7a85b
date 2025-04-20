@@ -9,6 +9,7 @@ import CategoryAdd from './pages/CategoryAdd'
 import CategoryEdit from './pages/CategoryEdit'
 import ProductAdd from "./pages/ProductAdd";
 import Invoices from "./pages/Invoices";
+import Purchases from "./pages/Purchases";
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
@@ -38,6 +39,7 @@ function App() {
         <Route path="/settings" element={<SettingsContent />} />
         <Route path="/pos" element={<Pos />} />
         <Route path="/invoices" element={<Invoices />} />
+        <Route path="/purchases" element={<Purchases />} />
       </Route>
     </Routes>
   )
