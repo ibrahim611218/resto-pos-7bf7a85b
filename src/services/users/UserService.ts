@@ -1,10 +1,11 @@
+
 import { UserWithPassword } from "@/features/users/types";
 import { BaseService } from "../base/BaseService";
 import { v4 as uuidv4 } from 'uuid';
 
 class UserService extends BaseService {
   private storageKey = 'stored-users';
-  private permissionsKey = 'user-permissions';
+  private permissionsKey = 'user_permissions_data';
 
   async getUsers(): Promise<UserWithPassword[]> {
     try {
@@ -81,11 +82,22 @@ class UserService extends BaseService {
   
   async deleteUser(userId: string): Promise<boolean> {
     try {
+      console.log("UserService - Deleting user with ID:", userId);
       const users = await this.getUsers();
+      
+      // Check if user exists before proceeding
+      const userExists = users.some(user => user.id === userId);
+      if (!userExists) {
+        console.log("UserService - User not found with ID:", userId);
+        return false;
+      }
+      
       const filteredUsers = users.filter(user => user.id !== userId);
+      console.log("UserService - Users after filtering:", filteredUsers.length);
       
       localStorage.setItem(this.storageKey, JSON.stringify(filteredUsers));
       
+      // Delete user permissions
       await this.deleteUserPermissions(userId);
       
       return true;
@@ -125,6 +137,7 @@ class UserService extends BaseService {
   
   async deleteUserPermissions(userId: string): Promise<boolean> {
     try {
+      console.log("UserService - Deleting permissions for user:", userId);
       const storedPermissions = localStorage.getItem(this.permissionsKey);
       if (!storedPermissions) return true;
       

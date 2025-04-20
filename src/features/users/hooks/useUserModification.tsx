@@ -67,16 +67,27 @@ export const useUserModification = (
     }
     
     try {
-      await userService.deleteUser(selectedUser.id);
+      console.log("Deleting user:", selectedUser.id);
+      const result = await userService.deleteUser(selectedUser.id);
+      console.log("Delete result:", result);
       
-      setUsers(users.filter(user => user.id !== selectedUser.id));
-      
-      toast({
-        title: "تم حذف المستخدم",
-        description: "تم حذف المستخدم بنجاح"
-      });
-      
-      return true;
+      if (result) {
+        setUsers(users.filter(user => user.id !== selectedUser.id));
+        
+        toast({
+          title: "تم حذف المستخدم",
+          description: "تم حذف المستخدم بنجاح"
+        });
+        
+        return true;
+      } else {
+        toast({
+          title: "خطأ",
+          description: "فشلت عملية حذف المستخدم",
+          variant: "destructive"
+        });
+        return false;
+      }
     } catch (error) {
       console.error("Error deleting user:", error);
       toast({

@@ -1,7 +1,8 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { UserWithPassword } from "../../types";
 
 interface DeleteDialogProps {
@@ -19,12 +20,19 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   onDeleteUser,
   isArabic,
 }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (!selectedUser) return null;
 
   const handleDelete = async () => {
-    const result = await onDeleteUser();
-    if (result) {
-      onOpenChange(false);
+    try {
+      setIsDeleting(true);
+      const result = await onDeleteUser();
+      if (result) {
+        onOpenChange(false);
+      }
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -43,10 +51,11 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isDeleting}>
             {isArabic ? "إلغاء" : "Cancel"}
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
+          <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+            {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isArabic ? "حذف" : "Delete"}
           </Button>
         </DialogFooter>
