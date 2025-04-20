@@ -11,6 +11,12 @@ import ProductAdd from "./pages/ProductAdd";
 import Invoices from "./pages/Invoices";
 import Purchases from "./pages/Purchases";
 import Customers from "./pages/Customers";
+import Inventory from "./pages/Inventory";
+import Reports from "./pages/Reports";
+import SalesReport from "./pages/SalesReport";
+import InventoryReport from "./pages/InventoryReport";
+import CustomersReport from "./pages/CustomersReport";
+import VatReport from "./pages/VatReport";
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
@@ -42,6 +48,14 @@ function App() {
         <Route path="/invoices" element={<Invoices />} />
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/customers" element={<Customers />} />
+        <Route path="/inventory" element={<Inventory />} />
+        
+        {/* Report routes */}
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/sales-report" element={<SalesReport />} />
+        <Route path="/inventory-report" element={<InventoryReport />} />
+        <Route path="/customers-report" element={<CustomersReport />} />
+        <Route path="/vat-report" element={<VatReport />} />
       </Route>
     </Routes>
   )
