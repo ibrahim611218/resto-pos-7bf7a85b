@@ -1,4 +1,3 @@
-
 import { User, UserRole } from "@/types";
 
 // Extend User type to include password for the form
@@ -22,12 +21,14 @@ export interface Company {
   id: string;
   name: string;
   isActive: boolean;
+  createdAt: string;
+  email?: string;
+  password?: string;
   address?: string;
   phone?: string;
-  email?: string;
   taxNumber?: string;
-  createdAt: string;
-  ownerId?: string; // Reference to the owner user
+  subscriptionStart?: string;
+  subscriptionEnd?: string;
 }
 
 // Company form interface

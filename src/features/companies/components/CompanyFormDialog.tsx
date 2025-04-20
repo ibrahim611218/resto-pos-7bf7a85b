@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Calendar } from "lucide-react";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Company } from "@/features/users/types";
 
 interface CompanyFormDialogProps {
@@ -52,6 +54,15 @@ const CompanyFormDialog: React.FC<CompanyFormDialogProps> = ({
     });
   };
 
+  const handleDateChange = (field: 'subscriptionStart' | 'subscriptionEnd') => (date: Date | undefined) => {
+    if (date) {
+      onCompanyChange({
+        ...company,
+        [field]: date.toISOString(),
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]" dir={isArabic ? "rtl" : "ltr"}>
@@ -71,6 +82,53 @@ const CompanyFormDialog: React.FC<CompanyFormDialogProps> = ({
                 required
               />
             </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="email">{isArabic ? "البريد الإلكتروني" : "Email"}</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder={isArabic ? "أدخل البريد الإلكتروني" : "Enter email address"}
+                value={company.email || ""}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="password">{isArabic ? "كلمة المرور" : "Password"}</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder={isArabic ? "أدخل كلمة المرور" : "Enter password"}
+                value={company.password || ""}
+                onChange={handleInputChange}
+                required={!company.id} // Required only for new companies
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label>{isArabic ? "تاريخ بداية الاشتراك" : "Subscription Start Date"}</Label>
+              <DatePicker
+                selected={company.subscriptionStart ? new Date(company.subscriptionStart) : undefined}
+                onSelect={handleDateChange('subscriptionStart')}
+                placeholderText={isArabic ? "اختر تاريخ بداية الاشتراك" : "Select start date"}
+                className="w-full"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label>{isArabic ? "تاريخ نهاية الاشتراك" : "Subscription End Date"}</Label>
+              <DatePicker
+                selected={company.subscriptionEnd ? new Date(company.subscriptionEnd) : undefined}
+                onSelect={handleDateChange('subscriptionEnd')}
+                placeholderText={isArabic ? "اختر تاريخ نهاية الاشتراك" : "Select end date"}
+                className="w-full"
+              />
+            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="address">{isArabic ? "العنوان" : "Address"}</Label>
               <Input
@@ -81,6 +139,7 @@ const CompanyFormDialog: React.FC<CompanyFormDialogProps> = ({
                 onChange={handleInputChange}
               />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="phone">{isArabic ? "رقم الهاتف" : "Phone Number"}</Label>
               <Input
@@ -91,17 +150,7 @@ const CompanyFormDialog: React.FC<CompanyFormDialogProps> = ({
                 onChange={handleInputChange}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">{isArabic ? "البريد الإلكتروني" : "Email"}</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder={isArabic ? "أدخل البريد الإلكتروني" : "Enter email address"}
-                value={company.email || ""}
-                onChange={handleInputChange}
-              />
-            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="taxNumber">{isArabic ? "الرقم الضريبي" : "Tax Number"}</Label>
               <Input
@@ -112,6 +161,7 @@ const CompanyFormDialog: React.FC<CompanyFormDialogProps> = ({
                 onChange={handleInputChange}
               />
             </div>
+
             <div className="flex items-center gap-2">
               <Switch 
                 id="isActive" 

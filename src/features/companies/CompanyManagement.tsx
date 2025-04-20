@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Company } from "../users/types";
 import { companyService } from "@/services";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Users } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
@@ -28,7 +27,11 @@ const CompanyManagement: React.FC = () => {
     id: "",
     name: "",
     isActive: true,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    email: "",
+    password: "",
+    subscriptionStart: new Date().toISOString(),
+    subscriptionEnd: new Date().toISOString()
   };
   
   const [newCompany, setNewCompany] = useState<Company>(newCompanyTemplate);
@@ -105,6 +108,30 @@ const CompanyManagement: React.FC = () => {
     );
     window.location.href = "/user-management";
   };
+
+  const handleRenewSubscription = async (company: Company) => {
+    // Set new subscription dates
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setFullYear(endDate.getFullYear() + 1); // Add 1 year to current date
+
+    const updatedCompany = {
+      ...company,
+      subscriptionStart: startDate.toISOString(),
+      subscriptionEnd: endDate.toISOString(),
+    };
+
+    try {
+      const success = await companyService.updateCompany(updatedCompany);
+      if (success) {
+        toast.success(isArabic ? "تم تجديد الاشتراك بنجاح" : "Subscription renewed successfully");
+        fetchCompanies();
+      }
+    } catch (error) {
+      console.error("Error renewing subscription:", error);
+      toast.error(isArabic ? "خطأ في تجديد الاشتراك" : "Error renewing subscription");
+    }
+  };
   
   // Check if user is admin or owner
   const canManageCompanies = isOwner() || user?.role === 'admin';
@@ -120,6 +147,11 @@ const CompanyManagement: React.FC = () => {
       </div>
     );
   }
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "-";
+    return new Date(dateString).toLocaleDateString();
+  };
   
   return (
     <div className="container mx-auto p-4" dir={isArabic ? "rtl" : "ltr"}>
@@ -145,15 +177,17 @@ const CompanyManagement: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{isArabic ? "اسم الشركة" : "Company Name"}</TableHead>
+                    <TableHead>{isArabic ? "البريد الإلكتروني" : "Email"}</TableHead>
+                    <TableHead>{isArabic ? "تاريخ بداية الاشتراك" : "Sub. Start"}</TableHead>
+                    <TableHead>{isArabic ? "تاريخ نهاية الاشتراك" : "Sub. End"}</TableHead>
                     <TableHead>{isArabic ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isArabic ? "تاريخ الإنشاء" : "Creation Date"}</TableHead>
                     <TableHead className="text-right">{isArabic ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {companies.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-4">
+                      <TableCell colSpan={6} className="text-center py-4">
                         {isArabic ? "لا توجد شركات لعرضها" : "No companies to display"}
                       </TableCell>
                     </TableRow>
@@ -161,6 +195,9 @@ const CompanyManagement: React.FC = () => {
                     companies.map((company) => (
                       <TableRow key={company.id}>
                         <TableCell className="font-medium">{company.name}</TableCell>
+                        <TableCell>{company.email || "-"}</TableCell>
+                        <TableCell>{formatDate(company.subscriptionStart)}</TableCell>
+                        <TableCell>{formatDate(company.subscriptionEnd)}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             company.isActive 
@@ -172,11 +209,16 @@ const CompanyManagement: React.FC = () => {
                               : (isArabic ? "غير نشط" : "Inactive")}
                           </span>
                         </TableCell>
-                        <TableCell>
-                          {new Date(company.createdAt).toLocaleDateString()}
-                        </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleRenewSubscription(company)}
+                            >
+                              <Calendar className="h-4 w-4" />
+                              <span className="sr-only">{isArabic ? "تجديد الاشتراك" : "Renew Subscription"}</span>
+                            </Button>
                             <Button 
                               variant="outline" 
                               size="sm" 
