@@ -52,7 +52,10 @@ const PurchaseDialog: React.FC<PurchaseDialogProps> = ({
     isArabic
   } = usePurchaseDialog({
     initialData,
-    onSave,
+    onSave: async (purchase) => {
+      await onSave(purchase);
+      return;
+    },
     onOpenChange,
     language
   });

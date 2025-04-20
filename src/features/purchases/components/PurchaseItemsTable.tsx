@@ -1,27 +1,17 @@
 
-import React, { useEffect } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { PurchaseItem, Product, Language } from '@/types';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trash2 } from 'lucide-react';
-import { formatCurrency } from '@/utils/formatters';
-import { useLanguage } from '@/context/LanguageContext';
+import React from 'react';
+import { Table, TableBody } from '@/components/ui/table';
+import { PurchaseItem, Product } from '@/types';
+import TableHeader from './purchase-items-table/TableHeader';
+import TableRow from './purchase-items-table/TableRow';
+import EmptyState from './purchase-items-table/EmptyState';
 
 interface PurchaseItemsTableProps {
   items: PurchaseItem[];
   products: Product[];
   onUpdateItem: (item: PurchaseItem) => void;
   onRemoveItem: (itemId: string) => void;
-  language: Language;
+  language: "en" | "ar";
 }
 
 const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
@@ -31,208 +21,25 @@ const PurchaseItemsTable: React.FC<PurchaseItemsTableProps> = ({
   onRemoveItem,
   language
 }) => {
-  const { language: contextLanguage } = useLanguage();
-  const isArabic = (language || contextLanguage) === 'ar';
-  
-  const handleProductChange = (itemId: string, productId: string) => {
-    const item = items.find(i => i.id === itemId);
-    if (!item) return;
-    
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
-    // Get the default price based on product type
-    let unitPrice = 0;
-    if (product.type === 'single') {
-      unitPrice = product.price || 0;
-    } else if (product.variants && product.variants.length > 0) {
-      // For sized products, use the first variant's price as default
-      unitPrice = product.variants[0].price;
-    }
-    
-    const taxRate = item.taxRate;
-    const taxAmount = (unitPrice * item.quantity * taxRate) / 100;
-    const totalPrice = (unitPrice * item.quantity) + taxAmount;
-    
-    onUpdateItem({
-      ...item,
-      productId,
-      productName: product.name,
-      productNameAr: product.nameAr,
-      unitPrice,
-      taxAmount,
-      totalPrice,
-      size: product.type === 'sized' ? product.variants[0].size : undefined
-    });
-  };
-  
-  const handleQuantityChange = (itemId: string, quantityStr: string) => {
-    const item = items.find(i => i.id === itemId);
-    if (!item) return;
-    
-    const quantity = parseInt(quantityStr) || 1;
-    const taxAmount = (item.unitPrice * quantity * item.taxRate) / 100;
-    const totalPrice = (item.unitPrice * quantity) + taxAmount;
-    
-    onUpdateItem({
-      ...item,
-      quantity,
-      taxAmount,
-      totalPrice
-    });
-  };
-  
-  const handleUnitPriceChange = (itemId: string, priceStr: string) => {
-    const item = items.find(i => i.id === itemId);
-    if (!item) return;
-    
-    const unitPrice = parseFloat(priceStr) || 0;
-    const taxAmount = (unitPrice * item.quantity * item.taxRate) / 100;
-    const totalPrice = (unitPrice * item.quantity) + taxAmount;
-    
-    onUpdateItem({
-      ...item,
-      unitPrice,
-      taxAmount,
-      totalPrice
-    });
-  };
-  
-  const handleSizeChange = (itemId: string, size: string) => {
-    const item = items.find(i => i.id === itemId);
-    if (!item) return;
-    
-    const product = products.find(p => p.id === item.productId);
-    if (!product || product.type !== 'sized') return;
-    
-    // Find the variant with the selected size
-    const variant = product.variants.find(v => v.size === size);
-    if (!variant) return;
-    
-    // Update the price based on the selected size
-    const unitPrice = variant.price;
-    const taxAmount = (unitPrice * item.quantity * item.taxRate) / 100;
-    const totalPrice = (unitPrice * item.quantity) + taxAmount;
-    
-    onUpdateItem({
-      ...item,
-      size,
-      unitPrice,
-      taxAmount,
-      totalPrice
-    });
-  };
-  
-  // Get product variants for a specific product
-  const getProductVariants = (productId: string) => {
-    const product = products.find(p => p.id === productId);
-    if (!product || product.type !== 'sized' || !product.variants) {
-      return [];
-    }
-    return product.variants;
-  };
-  
-  // Check if a product is sized type
-  const isSizedProduct = (productId: string) => {
-    const product = products.find(p => p.id === productId);
-    return product?.type === 'sized';
-  };
-  
+  const isArabic = language === 'ar';
+
   return (
     <div className="border rounded-md overflow-x-auto">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{isArabic ? 'المنتج' : 'Product'}</TableHead>
-            <TableHead>{isArabic ? 'الحجم' : 'Size'}</TableHead>
-            <TableHead className="w-24">{isArabic ? 'الكمية' : 'Quantity'}</TableHead>
-            <TableHead className="w-32">{isArabic ? 'سعر الوحدة' : 'Unit Price'}</TableHead>
-            <TableHead className="w-32">{isArabic ? 'إجمالي السعر' : 'Total Price'}</TableHead>
-            <TableHead className="w-24">{isArabic ? 'إجراءات' : 'Actions'}</TableHead>
-          </TableRow>
-        </TableHeader>
+        <TableHeader isArabic={isArabic} />
         <TableBody>
           {items.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center py-6">
-                {isArabic ? 'لا توجد منتجات. اضغط زر "إضافة منتج".' : 'No items. Click "Add Item" button.'}
-              </TableCell>
-            </TableRow>
+            <EmptyState isArabic={isArabic} />
           ) : (
             items.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <Select 
-                    value={item.productId} 
-                    onValueChange={(value) => handleProductChange(item.id, value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products.map(product => (
-                        <SelectItem key={product.id} value={product.id}>
-                          {isArabic && product.nameAr ? product.nameAr : product.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell>
-                  {isSizedProduct(item.productId) ? (
-                    <Select 
-                      value={item.size || ''} 
-                      onValueChange={(value) => handleSizeChange(item.id, value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {getProductVariants(item.productId).map(variant => (
-                          <SelectItem key={variant.id} value={variant.size}>
-                            {isArabic 
-                              ? (variant.size === 'small' ? 'صغير' : variant.size === 'medium' ? 'وسط' : 'كبير')
-                              : variant.size
-                            }
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <span className="text-gray-500">-</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Input 
-                    type="number" 
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input 
-                    type="number" 
-                    min="0"
-                    step="0.01"
-                    value={item.unitPrice}
-                    onChange={(e) => handleUnitPriceChange(item.id, e.target.value)}
-                  />
-                </TableCell>
-                <TableCell>
-                  {formatCurrency(item.totalPrice)}
-                </TableCell>
-                <TableCell>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-destructive"
-                    onClick={() => onRemoveItem(item.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
+              <TableRow
+                key={item.id}
+                item={item}
+                products={products}
+                isArabic={isArabic}
+                onUpdateItem={onUpdateItem}
+                onRemoveItem={onRemoveItem}
+              />
             ))
           )}
         </TableBody>
