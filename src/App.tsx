@@ -10,7 +10,6 @@ import CategoryEdit from './pages/CategoryEdit'
 import ProductAdd from "./pages/ProductAdd";
 import Invoices from "./pages/Invoices";
 import Purchases from "./pages/Purchases";
-import Customers from "./pages/Customers";
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
@@ -41,7 +40,6 @@ function App() {
         <Route path="/pos" element={<Pos />} />
         <Route path="/invoices" element={<Invoices />} />
         <Route path="/purchases" element={<Purchases />} />
-        <Route path="/customers" element={<Customers />} />
       </Route>
     </Routes>
   )
