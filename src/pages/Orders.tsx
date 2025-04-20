@@ -1,6 +1,5 @@
 
 import React from "react";
-import MainLayout from "@/components/layout/MainLayout";
 
 const Orders: React.FC = () => {
   return (
@@ -16,9 +15,9 @@ const Orders: React.FC = () => {
 // Export the component for direct use
 export { Orders };
 
-// Export a default component for routing
+// Export a default component for backward compatibility
 const OrdersPage: React.FC = () => (
-  <MainLayout />
+  <Orders />
 );
 
 export default OrdersPage;

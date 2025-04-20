@@ -11,23 +11,20 @@ import ProductAdd from "./pages/ProductAdd";
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
+import MainLayout from './components/layout/MainLayout'
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Products />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/products/add" element={<ProductAdd />}>
-        <Route index element={<ProductAddContent />} />
-      </Route>
-      <Route path="/categories" element={<Categories />} />
-      <Route path="/categories/add" element={<CategoryAdd />} />
-      <Route path="/categories/:id/edit" element={<CategoryEdit />} />
-      <Route path="/orders" element={<Orders />}>
-        <Route index element={<OrdersContent />} />
-      </Route>
-      <Route path="/settings" element={<Settings />}>
-        <Route index element={<SettingsContent />} />
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Products />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/add" element={<ProductAddContent />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/add" element={<CategoryAdd />} />
+        <Route path="/categories/:id/edit" element={<CategoryEdit />} />
+        <Route path="/orders" element={<OrdersContent />} />
+        <Route path="/settings" element={<SettingsContent />} />
       </Route>
     </Routes>
   )

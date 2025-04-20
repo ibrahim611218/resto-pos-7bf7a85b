@@ -1,6 +1,5 @@
 
 import React from "react";
-import MainLayout from "@/components/layout/MainLayout";
 
 const Settings: React.FC = () => {
   return (
@@ -16,9 +15,9 @@ const Settings: React.FC = () => {
 // Export the component for direct use
 export { Settings };
 
-// Export a default component for routing
+// Export a default component for backward compatibility
 const SettingsPage: React.FC = () => (
-  <MainLayout />
+  <Settings />
 );
 
 export default SettingsPage;
