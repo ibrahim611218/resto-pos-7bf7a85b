@@ -2,7 +2,6 @@
 // Import styles from the root directory
 import '../index.css';
 import './themes.css';
-import './fullscreen/index.css';
 
 // Export a function to be used in main.tsx
 export const loadStyles = () => {
