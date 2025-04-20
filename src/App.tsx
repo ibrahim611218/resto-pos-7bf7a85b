@@ -27,6 +27,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import Pos from './pages/Pos'
 import CompanyManagementPage from './pages/CompanyManagement'
 import UserManagementPage from './pages/UserManagement'
+import BusinessSettingsPage from './pages/BusinessSettings'
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -60,6 +61,7 @@ function App() {
         <Route path="/inventory-report" element={<InventoryReport />} />
         <Route path="/customers-report" element={<CustomersReport />} />
         <Route path="/vat-report" element={<VatReport />} />
+        <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
     </Routes>
   )
