@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
@@ -12,19 +12,15 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
-interface MainLayoutProps {
-  children?: React.ReactNode;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+const MainLayout: React.FC = () => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
   const [sidebarHidden, setSidebarHidden] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { isFullscreen } = useFullscreen();
   const { theme } = useTheme();
-  const isDark = theme === "dark";
   
   // Handle sidebar state based on screen size and fullscreen state
   useEffect(() => {
@@ -32,10 +28,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       setSidebarCollapsed(true);
       setSidebarHidden(true);
     } else {
-      setSidebarCollapsed(false);
+      setSidebarCollapsed(!isHovering);
       setSidebarHidden(false);
     }
-  }, [isMobile, isTablet, width, isFullscreen]);
+  }, [isMobile, isTablet, width, isFullscreen, isHovering]);
 
   // Handle global toggle sidebar events
   useEffect(() => {
@@ -45,7 +41,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
 
     const handleToggleSidebar = (e: Event) => {
-      // Check if there is a detail with forceCollapse
       const customEvent = e as CustomEvent;
       if (customEvent.detail?.forceCollapse) {
         setSidebarCollapsed(true);
@@ -64,34 +59,47 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     };
   }, []);
 
-  // Toggle sidebar function - used by button and passed to child components
   const toggleSidebar = useCallback(() => {
-    setSidebarHidden(false); // Always show the sidebar when toggling
-    setSidebarCollapsed(prevState => !prevState);
-    // Ensure the toggle event is dispatched properly
+    setSidebarHidden(false);
+    setSidebarCollapsed(prev => !prev);
     window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
       detail: { collapsed: !sidebarCollapsed } 
     }));
   }, [sidebarCollapsed]);
 
-  // Function to completely hide the sidebar
   const hideSidebar = useCallback(() => {
     setSidebarHidden(true);
   }, []);
 
-  // Function to show the sidebar
   const showSidebar = useCallback(() => {
     setSidebarHidden(false);
   }, []);
 
+  const handleMouseEnter = () => {
+    if (!isMobile && !isTablet && !isFullscreen) {
+      setIsHovering(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile && !isTablet && !isFullscreen) {
+      setIsHovering(false);
+    }
+  };
+
   return (
-    <div className={`flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden ${isFullscreen ? 'fullscreen-active' : ''}`}>
+    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">
       {!sidebarHidden && (
-        <Sidebar 
-          collapsed={sidebarCollapsed} 
-          onToggle={toggleSidebar} 
-          onHide={hideSidebar}
-        />
+        <div 
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Sidebar 
+            collapsed={sidebarCollapsed} 
+            onToggle={toggleSidebar} 
+            onHide={hideSidebar}
+          />
+        </div>
       )}
       
       <AnimatedTransition animation="fade" delay={100}>
@@ -107,7 +115,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             position: "relative" 
           }}
         >
-          {/* Show floating toggle button when sidebar is hidden */}
           {sidebarHidden && (
             <Button 
               variant="ghost" 
@@ -122,7 +129,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           
           <ScrollArea className="h-full w-full scrollable-content">
             <div className="centered-content" dir={isArabic ? "rtl" : "ltr"}>
-              {children || <Outlet />}
+              <Outlet />
             </div>
           </ScrollArea>
         </div>
