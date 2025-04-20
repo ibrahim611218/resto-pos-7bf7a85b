@@ -16,7 +16,7 @@ const LoginInfo: React.FC<LoginInfoProps> = ({ language }) => {
       <div className="max-w-xl space-y-6">
         <div className="flex flex-col items-center justify-center mb-6">
           <Image 
-            src="/lovable-uploads/892f4496-a290-4f9e-9d34-35b23c1268de.png" 
+            src="/lovable-uploads/964401f3-c14b-4749-bafd-81c3ba741526.png" 
             alt="RestoPOS Logo" 
             width={200} 
             height={200} 
