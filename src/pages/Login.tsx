@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,20 +7,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { Language } from "@/types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useLanguage } from "@/context/LanguageContext";
 
-interface LoginProps {
-  language: Language;
-}
-
-const Login = ({ language }: LoginProps) => {
+const Login = () => {
   const navigate = useNavigate();
-  const { login, isProcessing } = useAuth();
+  const { login, isProcessing, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const isArabic = language === "ar";
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,20 +37,30 @@ const Login = ({ language }: LoginProps) => {
       return;
     }
     
-    const success = await login(email, password);
-    
-    if (success) {
-      toast.success(
-        isArabic 
-          ? "تم تسجيل الدخول بنجاح" 
-          : "Successfully logged in"
-      );
-      navigate("/");
-    } else {
+    try {
+      console.log("Attempting login with:", email);
+      const success = await login(email, password);
+      
+      if (success) {
+        toast.success(
+          isArabic 
+            ? "تم تسجيل الدخول بنجاح" 
+            : "Successfully logged in"
+        );
+        navigate("/");
+      } else {
+        toast.error(
+          isArabic
+            ? "بيانات الدخول غير صحيحة"
+            : "Invalid login credentials"
+        );
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       toast.error(
         isArabic
-          ? "البريد الإلكتروني أو كلمة المرور غير صحيحة"
-          : "Invalid email or password"
+          ? "حدث خطأ أثناء تسجيل الدخول"
+          : "An error occurred during login"
       );
     }
   };
@@ -111,18 +124,23 @@ const Login = ({ language }: LoginProps) => {
                   {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
                 </Button>
               </div>
-              <Button type="submit" className="w-full h-12" disabled={isProcessing}>
+              <Button 
+                type="submit" 
+                className="w-full h-12" 
+                disabled={isProcessing}
+              >
                 {isProcessing 
                   ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
-                  : (isArabic ? "تسجيل الدخول" : "Sign in")}
+                  : (isArabic ? "تسجيل الدخول" : "Sign in")
+                }
               </Button>
             </form>
           </CardContent>
           <CardFooter>
             <p className="text-xs text-center text-muted-foreground w-full">
               {isArabic
-                ? "© 2024 NectarPOS. جميع الحقوق محفوظة"
-                : "© 2024 NectarPOS. All rights reserved"}
+                ? "© 2024 نظام المطاعم. جميع الحقوق محفوظة"
+                : "© 2024 Restaurant System. All rights reserved"}
             </p>
           </CardFooter>
         </Card>

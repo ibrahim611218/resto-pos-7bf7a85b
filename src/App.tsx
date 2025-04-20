@@ -21,11 +21,10 @@ import CustomersReport from './pages/CustomersReport';
 import VatReport from './pages/VatReport';
 import Purchases from './pages/Purchases';
 import CompanyManagement from './pages/CompanyManagement';
-import { useLanguage } from '@/context/LanguageContext';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
-  const authData = localStorage.getItem('auth');
+  const authData = localStorage.getItem('user');
   const auth = authData ? JSON.parse(authData) : null;
 
   if (!auth) {
@@ -42,12 +41,9 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
 };
 
 function App() {
-  // Get language from context for Login component
-  const { language } = useLanguage();
-
   return (
     <Routes>
-      <Route path="/login" element={<Login language={language} />} />
+      <Route path="/login" element={<Login />} />
       <Route
         path="/*"
         element={

@@ -1,9 +1,24 @@
-import { useState, useEffect, useContext } from 'react';
+
+import { useState, useEffect, useContext, createContext } from 'react';
 import { User, UserRole } from '@/types';
 import { userService } from '@/services';
 import { useUserPermissions } from './useUserPermissions';
-import AuthContext from '../context/AuthContext';
-import { AuthContextType } from '../types/auth';
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isProcessing: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  hasPermission: (requiredRole: UserRole | UserRole[]) => boolean;
+  isOwner: () => boolean;
+  isSupervisor: () => boolean;
+  allPermissions: string[]; 
+  getUserPermissions: (userId: string) => Promise<string[]>;
+  updateUserPermissions: (userId: string, permissions: string[]) => boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -55,6 +70,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('user', JSON.stringify(userWithoutPassword));
           setUser(userWithoutPassword);
           setIsAuthenticated(true);
+          
+          // Save company ID if available
+          if (foundUser.companyId) {
+            localStorage.setItem('currentCompanyId', foundUser.companyId);
+          }
+          
           return true;
         } catch (error) {
           console.error("Failed to save user to localStorage:", error);
