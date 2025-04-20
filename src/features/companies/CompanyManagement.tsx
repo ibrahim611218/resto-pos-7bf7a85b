@@ -53,8 +53,9 @@ const CompanyManagement: React.FC = () => {
     window.location.href = "/user-management";
   };
   
-  // Check if user is admin or owner
-  const canManageCompanies = isOwner() || user?.role === 'admin';
+  // Check if user is authorized to access this page
+  const isAuthorizedEmail = user?.email === "emg.ibrahimabdalfatah@gmail.com";
+  const canManageCompanies = (isOwner() || user?.role === 'admin') && isAuthorizedEmail;
   
   if (!canManageCompanies) {
     return (
