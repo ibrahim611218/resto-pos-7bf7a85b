@@ -26,6 +26,7 @@ import { useAuth } from './features/auth/hooks/useAuth'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Pos from './pages/Pos'
 import CompanyManagementPage from './pages/CompanyManagement'
+import UserManagementPage from './pages/UserManagement'
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -52,6 +53,7 @@ function App() {
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/kitchen" element={<Kitchen />} />
         <Route path="/company-management" element={<CompanyManagementPage />} />
+        <Route path="/user-management" element={<UserManagementPage />} />
         
         <Route path="/reports" element={<Reports />} />
         <Route path="/sales-report" element={<SalesReport />} />
