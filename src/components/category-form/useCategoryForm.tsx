@@ -27,8 +27,7 @@ export const useCategoryForm = () => {
     if (isEditing && id) {
       const fetchCategory = async () => {
         try {
-          const categories = await categoryService.getCategories();
-          const existingCategory = categories.find(c => c.id === id);
+          const existingCategory = await categoryService.getCategoryById(id);
           
           if (existingCategory) {
             setCategory(existingCategory);

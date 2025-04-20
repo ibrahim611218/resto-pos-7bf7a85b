@@ -26,6 +26,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
     
     try {
       setIsLoggingOut(true);
+      // No need to clear localStorage data on logout
       await new Promise(resolve => setTimeout(resolve, 10));
       onLogout();
     } catch (error) {

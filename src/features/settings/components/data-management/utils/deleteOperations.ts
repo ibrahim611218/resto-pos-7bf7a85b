@@ -57,22 +57,25 @@ export const deleteAllUsers = () => {
   }
 };
 
+// Modified to not delete operational data
 export const deleteAllData = () => {
-  deleteAllProducts();
-  deleteAllCategories();
-  deleteAllInventory(); 
-  deleteAllInvoices();
-  deleteAllCustomers();
-  deleteKitchenData();
-  deleteVatReports();
-  deleteAllUsers();
-  
-  localStorage.removeItem('business-settings');
-  localStorage.removeItem('display-settings');
-  localStorage.removeItem('stored-settings');
-  
-  localStorage.removeItem('defaultProducts');
-  localStorage.removeItem('defaultCategories');
-  localStorage.removeItem('defaultInventory');
-  localStorage.removeItem('lastInvoiceNumber');
+  if (confirm('هل أنت متأكد من حذف جميع البيانات؟')) {
+    deleteAllProducts();
+    deleteAllCategories();
+    deleteAllInventory(); 
+    deleteAllInvoices();
+    deleteAllCustomers();
+    deleteKitchenData();
+    deleteVatReports();
+    deleteAllUsers();
+    
+    localStorage.removeItem('business-settings');
+    localStorage.removeItem('display-settings');
+    localStorage.removeItem('stored-settings');
+    
+    localStorage.removeItem('defaultProducts');
+    localStorage.removeItem('defaultCategories');
+    localStorage.removeItem('defaultInventory');
+    localStorage.removeItem('lastInvoiceNumber');
+  }
 };

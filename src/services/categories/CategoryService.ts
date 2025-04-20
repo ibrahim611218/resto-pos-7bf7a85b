@@ -4,17 +4,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { sampleCategories } from '@/data/sampleData';
 
 class CategoryService {
+  private readonly STORAGE_KEY = 'categories';
+
   async getCategories(): Promise<Category[]> {
     try {
       // Try to get categories from localStorage
-      const categoriesString = localStorage.getItem('categories');
+      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
       let categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
       
       // If no categories in localStorage, use sample data
       if (categories.length === 0) {
         categories = sampleCategories;
         // Save sample data to localStorage for future use
-        localStorage.setItem('categories', JSON.stringify(categories));
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
       }
       
       return categories;
@@ -41,7 +43,9 @@ class CategoryService {
         categories.push(newCategory);
       }
       
-      localStorage.setItem('categories', JSON.stringify(categories));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
+      
+      // Dispatch events to notify the application of data changes
       window.dispatchEvent(new CustomEvent('category-updated'));
       window.dispatchEvent(new CustomEvent('data-updated'));
     } catch (error) {
@@ -59,7 +63,9 @@ class CategoryService {
         return false; // Category not found
       }
       
-      localStorage.setItem('categories', JSON.stringify(filteredCategories));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filteredCategories));
+      
+      // Dispatch events to notify the application of data changes
       window.dispatchEvent(new CustomEvent('category-updated'));
       window.dispatchEvent(new CustomEvent('data-updated'));
       return true;
