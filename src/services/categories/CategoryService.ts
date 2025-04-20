@@ -1,66 +1,72 @@
 
-import { Category } from "@/types";
-import { sampleCategories } from "@/data/sampleData";
+import { Category } from '@/types';
+import { v4 as uuidv4 } from 'uuid';
+import { sampleCategories } from '@/data/sampleData';
 
 class CategoryService {
-  private storageKey = 'stored-categories';
-  
-  // Get all categories from localStorage or fallback to sample data
-  getCategories(): Category[] {
+  async getCategories(): Promise<Category[]> {
     try {
-      const storedCategories = localStorage.getItem(this.storageKey);
-      if (storedCategories) {
-        return JSON.parse(storedCategories);
+      // Try to get categories from localStorage
+      const categoriesString = localStorage.getItem('categories');
+      let categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
+      
+      // If no categories in localStorage, use sample data
+      if (categories.length === 0) {
+        categories = sampleCategories;
+        // Save sample data to localStorage for future use
+        localStorage.setItem('categories', JSON.stringify(categories));
       }
       
-      // Initialize with sample data if nothing is stored
-      this.saveCategories(sampleCategories);
-      return sampleCategories;
+      return categories;
     } catch (error) {
-      console.error('Error loading categories:', error);
+      console.error('Error fetching categories:', error);
       return sampleCategories;
     }
   }
-  
-  // Save a single category
-  saveCategory(category: Category): boolean {
+
+  async getCategoryById(id: string): Promise<Category | null> {
+    const categories = await this.getCategories();
+    return categories.find(category => category.id === id) || null;
+  }
+
+  async saveCategory(category: Category): Promise<void> {
     try {
-      const categories = this.getCategories();
-      const index = categories.findIndex(c => c.id === category.id);
+      const categories = await this.getCategories();
+      const existingIndex = categories.findIndex(c => c.id === category.id);
       
-      if (index !== -1) {
-        // Update existing category
-        categories[index] = category;
+      if (existingIndex >= 0) {
+        categories[existingIndex] = category;
       } else {
-        // Add new category
-        categories.push(category);
+        const newCategory = { ...category, id: category.id || `cat-${uuidv4()}` };
+        categories.push(newCategory);
       }
       
-      this.saveCategories(categories);
-      return true;
+      localStorage.setItem('categories', JSON.stringify(categories));
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
     } catch (error) {
       console.error('Error saving category:', error);
-      return false;
+      throw error;
     }
   }
-  
-  // Delete a category
-  deleteCategory(categoryId: string): boolean {
+
+  async deleteCategory(id: string): Promise<boolean> {
     try {
-      const categories = this.getCategories();
-      const filteredCategories = categories.filter(c => c.id !== categoryId);
+      const categories = await this.getCategories();
+      const filteredCategories = categories.filter(category => category.id !== id);
       
-      this.saveCategories(filteredCategories);
+      if (filteredCategories.length === categories.length) {
+        return false; // Category not found
+      }
+      
+      localStorage.setItem('categories', JSON.stringify(filteredCategories));
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
       return true;
     } catch (error) {
       console.error('Error deleting category:', error);
       return false;
     }
-  }
-  
-  // Save all categories
-  saveCategories(categories: Category[]): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(categories));
   }
 }
 

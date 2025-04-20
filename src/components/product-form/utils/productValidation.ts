@@ -2,13 +2,26 @@
 import { Product } from "@/types";
 
 export const validateProduct = (product: Product, isArabic: boolean) => {
-  if (!product.name || !product.categoryId) {
+  // Print product details for debugging
+  console.log("Validating product:", product);
+  
+  // Check if name is empty
+  if (!product.name && !product.nameAr) {
     return {
       isValid: false,
-      error: isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields"
+      error: isArabic ? "يرجى إدخال اسم المنتج" : "Please enter a product name"
+    };
+  }
+  
+  // Check if category is selected
+  if (!product.categoryId) {
+    return {
+      isValid: false,
+      error: isArabic ? "يرجى اختيار تصنيف للمنتج" : "Please select a category"
     };
   }
 
+  // For sized products, check if at least one variant exists
   if (product.type === "sized" && (!product.variants || product.variants.length === 0)) {
     return {
       isValid: false,
@@ -16,10 +29,11 @@ export const validateProduct = (product: Product, isArabic: boolean) => {
     };
   }
 
+  // For single products, check if price is valid
   if (product.type === "single" && (!product.price || product.price <= 0)) {
     return {
       isValid: false,
-      error: isArabic ? "يرجى إدخال سعر صحيح للمنتج" : "Please enter a valid price for the product"
+      error: isArabic ? "يرجى إدخال سعر صحيح للمنتج" : "Please enter a valid price"
     };
   }
 

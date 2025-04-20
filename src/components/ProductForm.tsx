@@ -11,6 +11,7 @@ import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
 import { useProductForm } from "./product-form/hooks/useProductForm";
+import { toast } from "sonner";
 
 const ProductForm = () => {
   const {
@@ -32,10 +33,15 @@ const ProductForm = () => {
     navigate
   } = useProductForm();
 
+  const onFormSubmit = (e: React.FormEvent) => {
+    console.log("Form submitting with product:", product);
+    handleSubmit(e);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <Card>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onFormSubmit}>
           <ProductFormHeader isEditing={isEditing} isArabic={isArabic} />
           
           <CardContent className="space-y-4">

@@ -31,11 +31,15 @@ const Products = () => {
     };
   }, []);
 
+  const handleAddProduct = () => {
+    navigate("/products/add");
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
-        <Button onClick={() => navigate("/products/add")}>
+        <Button onClick={handleAddProduct}>
           <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
           {isArabic ? "إضافة منتج" : "Add Product"}
         </Button>

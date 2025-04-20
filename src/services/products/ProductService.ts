@@ -5,31 +5,35 @@ import { v4 as uuidv4 } from 'uuid';
 interface ProductBase {
   id: string;
   name: string;
-  nameAr: string;
-  description: string;
-  descriptionAr: string;
+  nameAr?: string;
+  description?: string;
+  descriptionAr?: string;
   categoryId: string;
-  image: string;
+  image?: string;
   type: ProductType;
   taxable: boolean;
   price?: number;
   variants?: ProductVariant[];
-  size: Size;
 }
 
 class ProductService {
   async getProducts(): Promise<Product[]> {
-    const productsString = localStorage.getItem('products');
-    const products: Product[] = productsString ? JSON.parse(productsString) : [];
-    
-    // Ensure all products have variants array
-    const normalizedProducts = products.map(product => ({
-      ...product,
-      variants: product.variants || []
-    }));
-    
-    console.log(`Retrieved ${normalizedProducts.length} products from localStorage`);
-    return normalizedProducts;
+    try {
+      const productsString = localStorage.getItem('products');
+      const products: Product[] = productsString ? JSON.parse(productsString) : [];
+      
+      // Ensure all products have variants array
+      const normalizedProducts = products.map(product => ({
+        ...product,
+        variants: product.variants || []
+      }));
+      
+      console.log(`Retrieved ${normalizedProducts.length} products from localStorage`);
+      return normalizedProducts;
+    } catch (error) {
+      console.error("Error retrieving products:", error);
+      return [];
+    }
   }
 
   async getProductById(id: string): Promise<Product | null> {
@@ -46,7 +50,11 @@ class ProductService {
   }
 
   async saveProduct(product: Product): Promise<void> {
-    console.log('Saving product:', product.name);
+    console.log('Saving product:', product);
+    
+    if (!product.id) {
+      throw new Error('Product ID is required');
+    }
     
     // Ensure product has variants array
     const productToSave = {
@@ -54,36 +62,41 @@ class ProductService {
       variants: product.variants || []
     };
     
-    const products = await this.getProducts();
-    const existingProductIndex = products.findIndex((p) => p.id === product.id);
+    try {
+      const products = await this.getProducts();
+      const existingProductIndex = products.findIndex((p) => p.id === product.id);
 
-    if (existingProductIndex !== -1) {
-      console.log('Updating existing product');
-      products[existingProductIndex] = productToSave;
-    } else {
-      console.log('Adding new product');
-      products.push(productToSave);
+      if (existingProductIndex !== -1) {
+        console.log('Updating existing product');
+        products[existingProductIndex] = productToSave;
+      } else {
+        console.log('Adding new product');
+        products.push(productToSave);
+      }
+
+      localStorage.setItem('products', JSON.stringify(products));
+      this.dispatchUpdateEvent();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      throw error;
     }
-
-    localStorage.setItem('products', JSON.stringify(products));
-    this.dispatchUpdateEvent();
   }
 
   async createProduct(productData: Omit<ProductBase, 'id'>): Promise<Product> {
-    console.log('Creating new product:', productData.name);
+    console.log('Creating new product:', productData);
     
     // Ensure we have variants
     const variants = productData.variants || [];
     if (productData.type === "single" && variants.length === 0) {
       variants.push({
-        id: `var-${Date.now()}`,
+        id: `var-${uuidv4()}`,
         size: "medium",
         price: productData.price || 0
       });
     }
     
     const newProduct = {
-      id: uuidv4(),
+      id: `prod-${uuidv4()}`,
       ...productData,
       variants
     } as Product;
@@ -162,23 +175,6 @@ class ProductService {
     const mockProducts = this.generateMockProducts(count);
     localStorage.setItem('products', JSON.stringify(mockProducts));
     this.dispatchUpdateEvent();
-  }
-
-  getBaseProduct(product: Product): ProductBase {
-    return {
-      id: product.id,
-      name: product.name,
-      nameAr: product.nameAr || "",
-      description: product.description || "",
-      descriptionAr: product.descriptionAr || "", 
-      categoryId: product.categoryId,
-      image: product.image || "",
-      type: product.type,
-      taxable: product.taxable,
-      price: product.type === "single" ? product.price || 0 : undefined,
-      variants: product.variants || [],
-      size: "medium" // Now a valid Size value
-    };
   }
 }
 

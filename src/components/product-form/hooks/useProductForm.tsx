@@ -8,6 +8,7 @@ import productService from "@/services/products/ProductService";
 import { useProductVariants } from "./useProductVariants";
 import { useProductChanges } from "./useProductChanges";
 import { validateProduct } from "../utils/productValidation";
+import { v4 as uuidv4 } from "uuid";
 
 const emptyProduct: Product = {
   id: "",
@@ -76,6 +77,7 @@ export const useProductForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted", product);
     
     const validation = validateProduct(product, isArabic);
     if (!validation.isValid) {
@@ -90,14 +92,14 @@ export const useProductForm = () => {
       const finalVariants = product.type === "sized" 
         ? variants 
         : [{
-            id: `var-${Date.now()}`,
-            size: "medium" as Size, // Cast to Size type
+            id: `var-${uuidv4()}`,
+            size: "medium" as Size,
             price: product.price || 0
           }];
 
       const updatedProduct: Product = {
         ...product,
-        id: isEditing ? product.id : `prod-${Date.now()}`,
+        id: isEditing ? product.id : `prod-${uuidv4()}`,
         variants: finalVariants,
       };
 
