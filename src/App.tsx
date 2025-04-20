@@ -26,17 +26,18 @@ import Pos from "./pages/Pos";
 import CompanyManagementPage from './pages/CompanyManagement';
 import UserManagementPage from './pages/UserManagement';
 import BusinessSettingsPage from './pages/BusinessSettings';
+import Index from './pages/Index';
 
 function App() {
   const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      {/* Always start with login route */}
-      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
+      {/* Index page is now accessible at the root path */}
+      <Route path="/" element={<Index />} />
       
-      {/* Default route always redirects to login if not authenticated */}
-      <Route path="/" element={isAuthenticated ? <Navigate to="/pos" replace /> : <Navigate to="/login" replace />} />
+      {/* Login route */}
+      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
       
       <Route element={<ProtectedRoute>
         <MainLayout />
@@ -65,8 +66,8 @@ function App() {
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
 
-      {/* Catch-all route redirects to login */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Catch-all route redirects to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
