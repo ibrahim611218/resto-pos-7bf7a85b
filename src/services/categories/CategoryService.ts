@@ -27,8 +27,13 @@ class CategoryService {
   }
 
   async getCategoryById(id: string): Promise<Category | null> {
-    const categories = await this.getCategories();
-    return categories.find(category => category.id === id) || null;
+    try {
+      const categories = await this.getCategories();
+      return categories.find(category => category.id === id) || null;
+    } catch (error) {
+      console.error('Error fetching category by ID:', error);
+      return null;
+    }
   }
 
   async saveCategory(category: Category): Promise<void> {

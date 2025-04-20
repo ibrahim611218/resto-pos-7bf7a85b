@@ -1,23 +1,24 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "sonner";
 import ImageUploader from "@/components/ui-custom/ImageUploader";
-import { v4 as uuidv4 } from 'uuid';
 import categoryService from "@/services/categories/CategoryService";
 import { Loader2 } from "lucide-react";
 
-const CategoryForm = () => {
+const CategoryEdit = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [category, setCategory] = useState({
     id: "",
@@ -25,6 +26,32 @@ const CategoryForm = () => {
     nameAr: "",
     image: "/placeholder.svg"
   });
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      if (!id) {
+        setIsLoading(false);
+        return;
+      }
+      
+      try {
+        const categoryData = await categoryService.getCategoryById(id);
+        if (categoryData) {
+          setCategory(categoryData);
+        } else {
+          toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
+          navigate("/categories");
+        }
+      } catch (error) {
+        console.error("Error fetching category:", error);
+        toast.error(isArabic ? "حدث خطأ أثناء تحميل التصنيف" : "Error loading category");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategory();
+  }, [id, isArabic, navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,21 +79,24 @@ const CategoryForm = () => {
     setIsSubmitting(true);
     
     try {
-      const newCategory = {
-        ...category,
-        id: `cat-${uuidv4()}`
-      };
-      
-      await categoryService.saveCategory(newCategory);
-      toast.success(isArabic ? "تم إضافة التصنيف بنجاح" : "Category added successfully");
+      await categoryService.saveCategory(category);
+      toast.success(isArabic ? "تم تحديث التصنيف بنجاح" : "Category updated successfully");
       navigate("/categories");
     } catch (error) {
-      console.error('Error adding category:', error);
-      toast.error(isArabic ? "حدث خطأ أثناء إضافة التصنيف" : "Error adding category");
+      console.error('Error updating category:', error);
+      toast.error(isArabic ? "حدث خطأ أثناء تحديث التصنيف" : "Error updating category");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 flex justify-center items-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -74,7 +104,7 @@ const CategoryForm = () => {
         <form onSubmit={handleSubmit}>
           <CardHeader>
             <CardTitle>
-              {isArabic ? "إضافة تصنيف جديد" : "Add New Category"}
+              {isArabic ? "تعديل التصنيف" : "Edit Category"}
             </CardTitle>
           </CardHeader>
           
@@ -133,7 +163,7 @@ const CategoryForm = () => {
                   {isArabic ? "جاري الحفظ..." : "Saving..."}
                 </>
               ) : (
-                isArabic ? "إضافة التصنيف" : "Add Category"
+                isArabic ? "حفظ التغييرات" : "Save Changes"
               )}
             </Button>
           </CardFooter>
@@ -143,4 +173,4 @@ const CategoryForm = () => {
   );
 };
 
-export default CategoryForm;
+export default CategoryEdit;

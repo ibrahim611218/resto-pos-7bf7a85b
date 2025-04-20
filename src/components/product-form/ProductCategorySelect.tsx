@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Category } from "@/types";
 import categoryService from "@/services/categories/CategoryService";
+import { Loader2 } from "lucide-react";
 
 interface ProductCategorySelectProps {
   categoryId: string;
@@ -43,7 +44,14 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
         disabled={isLoading}
       >
         <SelectTrigger id="category" className="relative z-10">
-          <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
+          {isLoading ? (
+            <div className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {isArabic ? "جاري التحميل..." : "Loading..."}
+            </div>
+          ) : (
+            <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
+          )}
         </SelectTrigger>
         <SelectContent 
           position="popper" 
@@ -51,6 +59,11 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
           sideOffset={4}
           align="start"
         >
+          {categories.length === 0 && !isLoading && (
+            <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+              {isArabic ? "لا توجد تصنيفات متاحة" : "No categories available"}
+            </div>
+          )}
           {categories.map(category => (
             <SelectItem key={category.id} value={category.id}>
               {isArabic ? (category.nameAr || category.name) : category.name}
