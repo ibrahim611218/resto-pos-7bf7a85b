@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import ImageUploader from "@/components/ui-custom/ImageUploader";
 import categoryService from "@/services/categories/CategoryService";
 import { Loader2 } from "lucide-react";
+import { Category } from "@/types";
 
 const CategoryEdit = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const CategoryEdit = () => {
   const isArabic = language === "ar";
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [category, setCategory] = useState({
+  const [category, setCategory] = useState<Category>({
     id: "",
     name: "",
     nameAr: "",
@@ -37,7 +38,11 @@ const CategoryEdit = () => {
       try {
         const categoryData = await categoryService.getCategoryById(id);
         if (categoryData) {
-          setCategory(categoryData);
+          // Ensure nameAr is not undefined
+          setCategory({
+            ...categoryData,
+            nameAr: categoryData.nameAr || ""
+          });
         } else {
           toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
           navigate("/categories");
@@ -130,7 +135,7 @@ const CategoryEdit = () => {
                 <Input 
                   id="nameAr"
                   name="nameAr"
-                  value={category.nameAr}
+                  value={category.nameAr || ""}
                   onChange={handleInputChange}
                   placeholder={isArabic ? "أدخل اسم التصنيف بالعربية" : "Enter category name in Arabic"}
                   dir="rtl"

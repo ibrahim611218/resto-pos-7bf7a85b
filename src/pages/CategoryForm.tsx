@@ -13,13 +13,14 @@ import ImageUploader from "@/components/ui-custom/ImageUploader";
 import { v4 as uuidv4 } from 'uuid';
 import categoryService from "@/services/categories/CategoryService";
 import { Loader2 } from "lucide-react";
+import { Category } from "@/types";
 
 const CategoryForm = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [category, setCategory] = useState({
+  const [category, setCategory] = useState<Category>({
     id: "",
     name: "",
     nameAr: "",
@@ -52,7 +53,7 @@ const CategoryForm = () => {
     setIsSubmitting(true);
     
     try {
-      const newCategory = {
+      const newCategory: Category = {
         ...category,
         id: `cat-${uuidv4()}`
       };
@@ -100,7 +101,7 @@ const CategoryForm = () => {
                 <Input 
                   id="nameAr"
                   name="nameAr"
-                  value={category.nameAr}
+                  value={category.nameAr || ""}
                   onChange={handleInputChange}
                   placeholder={isArabic ? "أدخل اسم التصنيف بالعربية" : "Enter category name in Arabic"}
                   dir="rtl"

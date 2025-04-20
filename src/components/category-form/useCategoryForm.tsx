@@ -30,7 +30,11 @@ export const useCategoryForm = () => {
           const existingCategory = await categoryService.getCategoryById(id);
           
           if (existingCategory) {
-            setCategory(existingCategory);
+            // Ensure nameAr is not undefined
+            setCategory({
+              ...existingCategory,
+              nameAr: existingCategory.nameAr || ""
+            });
           } else {
             toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
             navigate("/categories");
