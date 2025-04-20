@@ -1,6 +1,4 @@
-
 import { 
-  Home, 
   ReceiptText, 
   Users, 
   Box, 
@@ -20,13 +18,6 @@ import { UserRole } from "@/types";
 // Function to get sidebar links with proper Arabic labels
 export const getSidebarLinks = (): SidebarLink[] => {
   return [
-    {
-      name: "الرئيسية",
-      name_en: "Home",
-      path: "/",
-      icon: Home,
-      // Home is accessible to all roles
-    },
     {
       name: "نقاط البيع",
       name_en: "POS",
@@ -125,7 +116,7 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Company Management",
       path: "/company-management",
       icon: Building,
-      requiredEmail: "eng.ibrahimabdalfatah@gmail.com", // Changed from "emg" to "eng"
+      requiredEmail: "eng.ibrahimabdalfatah@gmail.com",
       roles: ["admin", "owner"]
     },
     {
