@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Products from './pages/Products'
@@ -23,5 +24,4 @@ function App() {
   )
 }
 
-// Make sure App is exported as default
 export default App;
