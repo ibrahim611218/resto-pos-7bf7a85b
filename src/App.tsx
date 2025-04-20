@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Products from './pages/Products'
@@ -17,7 +16,7 @@ import SalesReport from "./pages/SalesReport";
 import InventoryReport from "./pages/InventoryReport";
 import CustomersReport from "./pages/CustomersReport";
 import VatReport from "./pages/VatReport";
-import Kitchen from "./pages/Kitchen"; // Import the Kitchen component
+import Kitchen from "./pages/Kitchen";
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
@@ -26,6 +25,7 @@ import Login from './pages/Login'
 import { useAuth } from './features/auth/hooks/useAuth'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Pos from './pages/Pos'
+import CompanyManagementPage from './pages/CompanyManagement'
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -50,9 +50,9 @@ function App() {
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/inventory" element={<Inventory />} />
-        <Route path="/kitchen" element={<Kitchen />} /> {/* Add the Kitchen route */}
+        <Route path="/kitchen" element={<Kitchen />} />
+        <Route path="/company-management" element={<CompanyManagementPage />} />
         
-        {/* Report routes */}
         <Route path="/reports" element={<Reports />} />
         <Route path="/sales-report" element={<SalesReport />} />
         <Route path="/inventory-report" element={<InventoryReport />} />
