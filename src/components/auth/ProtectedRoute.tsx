@@ -1,29 +1,30 @@
 
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { UserRole } from "@/types";
-import React from "react";
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface ProtectedRouteProps {
-  allowedRoles?: UserRole | UserRole[];
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
-  const { isAuthenticated, hasPermission } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated, isProcessing } = useAuth();
+  const location = useLocation();
 
-  // If the user is not logged in, redirect to login page
+  // Show loading state while authentication is being checked
+  if (isProcessing) {
+    return <div className="flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>;
+  }
+
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If specific roles are required and user doesn't have permission, redirect to unauthorized page
-  if (allowedRoles && !hasPermission(allowedRoles)) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  // Render children or outlet
-  return children ? <>{children}</> : <Outlet />;
+  // If authenticated, render the children
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

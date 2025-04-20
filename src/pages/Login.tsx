@@ -1,150 +1,91 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { toast } from "sonner";
-import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useLanguage } from "@/context/LanguageContext";
+import React, { useState } from 'react';
+import { useAuth } from '../features/auth/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const Login = () => {
-  const navigate = useNavigate();
-  const { login, isProcessing, isAuthenticated } = useAuth();
+const Login: React.FC = () => {
   const { language } = useLanguage();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const isArabic = language === "ar";
+  const isArabic = language === 'ar';
+  const { login, isProcessing } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError('');
+
     if (!email || !password) {
-      toast.error(
-        isArabic
-          ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-          : "Please enter email and password"
-      );
+      setError(isArabic ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter your email and password');
       return;
     }
-    
+
     try {
-      console.log("Attempting login with:", email);
       const success = await login(email, password);
-      
       if (success) {
-        toast.success(
-          isArabic 
-            ? "تم تسجيل الدخول بنجاح" 
-            : "Successfully logged in"
-        );
-        navigate("/");
+        navigate('/pos');
       } else {
-        toast.error(
-          isArabic
-            ? "بيانات الدخول غير صحيحة"
-            : "Invalid login credentials"
-        );
+        setError(isArabic ? 'بيانات الاعتماد غير صالحة' : 'Invalid credentials');
       }
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error(
-        isArabic
-          ? "حدث خطأ أثناء تسجيل الدخول"
-          : "An error occurred during login"
-      );
+      setError(isArabic ? 'حدث خطأ أثناء تسجيل الدخول' : 'An error occurred during login');
     }
   };
 
   return (
-    <div 
-      className={`min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-secondary ${
-        isArabic ? "font-[system-ui]" : ""
-      }`}
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      <AnimatedTransition animation="slide-up" className="w-full max-w-md">
-        <Card className="glass">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl">
-              {isArabic ? "تسجيل الدخول" : "Sign in"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  id="email"
-                  placeholder={isArabic ? "البريد الإلكتروني" : "Email"}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  id="password"
-                  placeholder={isArabic ? "كلمة المرور" : "Password"}
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => 
-                      setRememberMe(checked as boolean)
-                    }
-                    disabled={isProcessing}
-                  />
-                  <label
-                    htmlFor="remember"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {isArabic ? "تذكرني" : "Remember me"}
-                  </label>
-                </div>
-                <Button variant="link" className="px-0" disabled={isProcessing}>
-                  {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
-                </Button>
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full h-12" 
-                disabled={isProcessing}
-              >
-                {isProcessing 
-                  ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
-                  : (isArabic ? "تسجيل الدخول" : "Sign in")
-                }
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <p className="text-xs text-center text-muted-foreground w-full">
-              {isArabic
-                ? "© 2024 نظام المطاعم. جميع الحقوق محفوظة"
-                : "© 2024 Restaurant System. All rights reserved"}
-            </p>
-          </CardFooter>
-        </Card>
-      </AnimatedTransition>
+    <div className="flex items-center justify-center min-h-screen bg-background p-4" dir={isArabic ? 'rtl' : 'ltr'}>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-xl font-bold text-center">
+            {isArabic ? 'تسجيل الدخول' : 'Login'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && <p className="text-destructive text-sm">{error}</p>}
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="email">
+                {isArabic ? 'البريد الإلكتروني' : 'Email'}
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={isArabic ? 'أدخل البريد الإلكتروني' : 'Enter your email'}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="password">
+                {isArabic ? 'كلمة المرور' : 'Password'}
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={isArabic ? 'أدخل كلمة المرور' : 'Enter your password'}
+                className="w-full"
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isProcessing}>
+              {isProcessing
+                ? isArabic
+                  ? 'جاري التحقق...'
+                  : 'Authenticating...'
+                : isArabic
+                ? 'تسجيل الدخول'
+                : 'Login'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { LanguageProvider } from './context/LanguageContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext.tsx'
 import { AuthProvider } from './features/auth/hooks/useAuth.tsx'
+import { CartProvider } from './features/pos/hooks/useCart.tsx'
 
 // Load all styles
 loadStyles();
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <App />
+            <CartProvider>
+              <App />
+            </CartProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>

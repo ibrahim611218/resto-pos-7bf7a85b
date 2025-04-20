@@ -15,6 +15,7 @@ import MainLayout from './components/layout/MainLayout'
 import Login from './pages/Login'
 import { useAuth } from './features/auth/hooks/useAuth'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import Pos from './pages/Pos'
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -34,6 +35,7 @@ function App() {
         <Route path="/categories/:id/edit" element={<CategoryEdit />} />
         <Route path="/orders" element={<OrdersContent />} />
         <Route path="/settings" element={<SettingsContent />} />
+        <Route path="/pos" element={<Pos />} />
       </Route>
     </Routes>
   )
