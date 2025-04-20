@@ -8,20 +8,18 @@ interface DataTypeCardProps {
   title: string;
   icon: React.ReactNode;
   description: string;
-  deleteButtonText: string;
-  onDeleteAction: () => void;
-  onNavigate: () => void;
-  navigateTitle: string;
+  onManage: () => void;
+  onDelete: () => void;
+  isArabic: boolean;
 }
 
 const DataTypeCard: React.FC<DataTypeCardProps> = ({
   title,
   icon,
   description,
-  deleteButtonText,
-  onDeleteAction,
-  onNavigate,
-  navigateTitle
+  onManage,
+  onDelete,
+  isArabic
 }) => {
   return (
     <Card>
@@ -36,16 +34,16 @@ const DataTypeCard: React.FC<DataTypeCardProps> = ({
         <Button 
           variant="destructive" 
           className="w-full"
-          onClick={onDeleteAction}
+          onClick={onDelete}
         >
           <Trash2 className="mr-2" size={16} />
-          {deleteButtonText}
+          {isArabic ? "حذف البيانات" : "Delete Data"}
         </Button>
         <Button 
           variant="outline"
           size="icon"
-          onClick={onNavigate}
-          title={navigateTitle}
+          onClick={onManage}
+          title={isArabic ? "الإدارة" : "Manage"}
         >
           <ArrowRight size={16} />
         </Button>
