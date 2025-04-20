@@ -1,8 +1,24 @@
 
 import { useState, useEffect, useRef } from 'react';
-import licenseService, { License, LicenseStatus } from '@/services/license/LicenseService';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+
+// Define types internally since we removed the LicenseService
+export interface License {
+  key: string;
+  type: string;
+  issuedAt: number;
+  expiryDate: number;
+  durationDays: number;
+  used: boolean;
+  activatedAt?: number;
+}
+
+export interface LicenseStatus {
+  isActive: boolean;
+  daysLeft?: number;
+  type?: string;
+}
 
 export const useLicense = () => {
   const [license, setLicense] = useState<License | null>(null);

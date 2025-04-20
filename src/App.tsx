@@ -14,7 +14,6 @@ import Kitchen from './pages/Kitchen';
 import Reports from './pages/Reports';
 import UserManagement from './pages/UserManagement';
 import BusinessSettings from './pages/BusinessSettings';
-import LicenseGenerator from './pages/LicenseGenerator';
 import SalesReport from './pages/SalesReport';
 import InventoryReport from './pages/InventoryReport';
 import CustomersReport from './pages/CustomersReport';
@@ -75,7 +74,6 @@ function App() {
                 <Route path="/reports" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Reports /></ProtectedRoute>} />
                 <Route path="/user-management" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><UserManagement /></ProtectedRoute>} />
                 <Route path="/business-settings" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><BusinessSettings /></ProtectedRoute>} />
-                <Route path="/license-generator" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><LicenseGenerator /></ProtectedRoute>} />
                 <Route path="/sales-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><SalesReport /></ProtectedRoute>} />
                 <Route path="/inventory-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><InventoryReport /></ProtectedRoute>} />
                 <Route path="/customers-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><CustomersReport /></ProtectedRoute>} />
