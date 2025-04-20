@@ -22,8 +22,8 @@ export interface Company {
   name: string;
   isActive: boolean;
   createdAt: string;
-  email?: string;
-  password?: string;
+  email?: string;      // Add company email
+  password?: string;   // Add company password
   address?: string;
   phone?: string;
   taxNumber?: string;
