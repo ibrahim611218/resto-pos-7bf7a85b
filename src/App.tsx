@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './features/auth/hooks/useAuth';
 import Login from './pages/Login';
@@ -20,6 +21,7 @@ import CustomersReport from './pages/CustomersReport';
 import VatReport from './pages/VatReport';
 import Purchases from './pages/Purchases';
 import CompanyManagement from './pages/CompanyManagement';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
@@ -40,10 +42,13 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
 };
 
 function App() {
+  // Get language from context for Login component
+  const { language } = useLanguage();
+
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login language={language} />} />
         <Route
           path="/*"
           element={
