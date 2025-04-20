@@ -1,6 +1,5 @@
-
 import { useContext, createContext } from 'react';
-import { AuthContextType } from '../types/auth';
+import { AuthContextType } from '../types/authState';
 import { useAuthState } from './useAuthState';
 import { useAuthOperations } from './useAuthOperations';
 import { usePermissions } from './usePermissions';
