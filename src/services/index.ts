@@ -1,5 +1,5 @@
 
-import { IDatabaseService } from "./types";
+import { IDatabaseService } from "@/types/database";
 import invoiceService from "./invoices/InvoiceService";
 import settingsService from "./settings/SettingsService";
 import { isElectron } from "./base/BaseService";
@@ -7,6 +7,8 @@ import productService from './products/ProductService';
 import categoryService from './categories/CategoryService';
 import userService from './users/UserService';
 import companyService from './companies/CompanyService';
+import purchasesService from './purchases/PurchasesService';
+import kitchenOrderService from './kitchen/KitchenOrderService';
 
 // Create a combined service that implements all interfaces
 const databaseService: IDatabaseService = {
@@ -42,6 +44,14 @@ const databaseService: IDatabaseService = {
   saveCompany: companyService.saveCompany,
   updateCompany: companyService.updateCompany,
   deleteCompany: companyService.deleteCompany,
+
+  // Purchases methods
+  getPurchaseInvoices: purchasesService.getPurchaseInvoices,
+  savePurchaseInvoice: purchasesService.savePurchaseInvoice,
+
+  // Kitchen methods
+  createKitchenOrder: kitchenOrderService.createKitchenOrder,
+  getKitchenOrders: kitchenOrderService.getKitchenOrders
 };
 
 export default databaseService;
@@ -52,5 +62,7 @@ export {
   productService,
   categoryService,
   userService,
-  companyService
+  companyService,
+  purchasesService,
+  kitchenOrderService
 };

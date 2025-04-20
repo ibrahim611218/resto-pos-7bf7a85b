@@ -2,8 +2,9 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-// Simplified license check that always succeeds in offline mode
+// برنامج بسيط للتحقق من الترخيص الذي ينجح دائمًا في الوضع المتصل
 const LicenseCheck: React.FC = () => {
+  // نعيد مباشرة المحتوى بدون أي تحقق من الترخيص في الوضع المتصل
   return <Outlet />;
 };
 

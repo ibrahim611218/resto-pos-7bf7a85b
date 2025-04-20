@@ -23,7 +23,7 @@ export interface LicenseStatus {
 export const useLicense = () => {
   const [license, setLicense] = useState<License | null>(null);
   const [licenseStatus, setLicenseStatus] = useState<LicenseStatus>({
-    isActive: true // Always set to true to work offline
+    isActive: true // Always set to true to work online
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,17 +31,17 @@ export const useLicense = () => {
   const checkInProgress = useRef(false);
   const isOffline = useRef(true); // Always consider as offline
 
-  // Check if license is active - always returns true in offline mode
+  // Check if license is active - always returns true in online mode
   const checkLicense = async () => {
-    // In offline mode, license is always considered active
+    // In online mode, license is always considered active
     return true;
   };
   
-  // Create default license object for offline mode
+  // Create default license object for online mode
   const createDefaultLicense = (): License => {
     const now = Date.now();
     return {
-      key: 'OFFLINE-LICENSE',
+      key: 'ONLINE-LICENSE',
       type: 'full',
       issuedAt: now,
       expiryDate: now + 365 * 24 * 60 * 60 * 1000, // 1 year
@@ -51,18 +51,18 @@ export const useLicense = () => {
     };
   };
 
-  // Get license info - always returns a valid license in offline mode
+  // Get license info - always returns a valid license in online mode
   const getLicenseInfo = async () => {
     return createDefaultLicense();
   };
 
-  // Activate license - always successful in offline mode
+  // Activate license - always successful in online mode
   const activateLicense = async (licenseKey: string): Promise<boolean> => {
     setLicense(createDefaultLicense());
     return true;
   };
 
-  // Generate a license - always successful in offline mode
+  // Generate a license - always successful in online mode
   const generateLicense = async (type: 'trial' | 'full', durationDays: number) => {
     return {
       success: true,
@@ -70,19 +70,19 @@ export const useLicense = () => {
     };
   };
 
-  // Get all licenses - returns a default license in offline mode
+  // Get all licenses - returns a default license in online mode
   const getAllLicenses = async () => {
     return [createDefaultLicense()];
   };
 
-  // Always allow access in offline mode
+  // Always allow access in online mode
   const requireLicense = () => true;
 
   useEffect(() => {
-    // In offline mode, immediately set a default license
-    const offlineLicense = createDefaultLicense();
-    setLicense(offlineLicense);
-    localStorage.setItem('active-license', JSON.stringify(offlineLicense));
+    // In online mode, immediately set a default license
+    const onlineLicense = createDefaultLicense();
+    setLicense(onlineLicense);
+    localStorage.setItem('active-license', JSON.stringify(onlineLicense));
     
     // Set license status to active
     setLicenseStatus({
