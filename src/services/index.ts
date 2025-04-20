@@ -6,6 +6,7 @@ import { isElectron } from "./base/BaseService";
 import productService from './products/ProductService';
 import categoryService from './categories/CategoryService';
 import userService from './users/UserService';
+import companyService from './companies/CompanyService';
 
 // Create a combined service that implements all interfaces
 const databaseService: IDatabaseService = {
@@ -35,6 +36,12 @@ const databaseService: IDatabaseService = {
   deleteUser: userService.deleteUser,
   updateUserPermissions: userService.updateUserPermissions,
   updateUserPassword: userService.updateUserPassword,
+
+  // Company methods
+  getCompanies: companyService.getCompanies,
+  saveCompany: companyService.saveCompany,
+  updateCompany: companyService.updateCompany,
+  deleteCompany: companyService.deleteCompany,
 };
 
 export default databaseService;
@@ -44,5 +51,6 @@ export { default as settingsService } from "./settings/SettingsService";
 export {
   productService,
   categoryService,
-  userService
+  userService,
+  companyService
 };

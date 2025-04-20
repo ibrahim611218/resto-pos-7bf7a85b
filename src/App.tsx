@@ -16,6 +16,7 @@ import InventoryReport from "@/pages/InventoryReport";
 import CustomersReport from "@/pages/CustomersReport";
 import BusinessSettings from "@/pages/BusinessSettings";
 import UserManagement from "@/pages/UserManagement";
+import CompanyManagement from "@/pages/CompanyManagement";
 import Login from "@/features/auth/Login";
 import RetrieveInvoice from "@/pages/RetrieveInvoice";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -107,6 +108,7 @@ function App() {
                   <Route path="/customers-report" element={<CustomersReport />} />
                   <Route path="/business-settings" element={<BusinessSettings />} />
                   <Route path="/user-management" element={<UserManagement />} />
+                  <Route path="/company-management" element={<CompanyManagement />} />
                   <Route path="/license-generator" element={<LicenseGenerator />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>

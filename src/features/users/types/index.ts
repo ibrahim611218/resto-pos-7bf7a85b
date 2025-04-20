@@ -22,6 +22,17 @@ export interface Company {
   id: string;
   name: string;
   isActive: boolean;
+  address?: string;
+  phone?: string;
+  email?: string;
+  taxNumber?: string;
+  createdAt: string;
+  ownerId?: string; // Reference to the owner user
 }
 
-// Remove the duplicate UserWithPassword interface since it's already declared above
+// Company form interface
+export interface CompanyFormProps {
+  company: Company;
+  onCompanyChange: (company: Company) => void;
+  isArabic: boolean;
+}
