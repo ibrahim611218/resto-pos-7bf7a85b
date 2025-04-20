@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { UserWithPassword } from "../types";
-import { UserPermission } from "@/features/auth/types/auth";
+import { UserPermission } from "@/features/auth/types/authState";
 
 export const usePermissionsManagement = () => {
   const { getUserPermissions, updateUserPermissions, allPermissions } = useAuth();

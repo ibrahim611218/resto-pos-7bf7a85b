@@ -1,5 +1,6 @@
 
 import { User } from '@/types';
+import { UserRole } from '@/types/auth';
 
 export interface AuthState {
   user: User | null;
@@ -37,4 +38,3 @@ export interface AuthContextType {
   getUserPermissions: (userId: string) => Promise<string[]>;
   updateUserPermissions: (userId: string, permissions: string[]) => boolean;
 }
-

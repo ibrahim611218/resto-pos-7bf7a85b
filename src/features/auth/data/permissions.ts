@@ -1,5 +1,5 @@
 
-import { UserPermission } from '../types/auth';
+import { UserPermission } from '../types/authState';
 
 // Define all permissions
 export const allPermissions: UserPermission[] = [
