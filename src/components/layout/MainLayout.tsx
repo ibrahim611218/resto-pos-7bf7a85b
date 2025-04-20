@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
 const MainLayout: React.FC = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
@@ -19,7 +19,6 @@ const MainLayout: React.FC = () => {
   const isArabic = language === "ar";
   const { theme } = useTheme();
   
-  // Handle sidebar state based on screen size
   useEffect(() => {
     if (isMobile || (isTablet && width < 768)) {
       setSidebarCollapsed(true);
@@ -30,7 +29,6 @@ const MainLayout: React.FC = () => {
     }
   }, [isMobile, isTablet, width, isHovering]);
 
-  // Handle global toggle sidebar events
   useEffect(() => {
     const handleForceCollapse = () => {
       setSidebarCollapsed(true);
