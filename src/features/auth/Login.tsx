@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Language } from "@/types";
+import { userService } from "@/services";
 
 interface LoginProps {
   language: Language;
