@@ -1,87 +1,100 @@
 
 import React from "react";
 import DataTypeCard from "./DataTypeCard";
-import { 
-  Receipt, Package2, BarChart4, ShoppingBag, 
-  Users, Trash2, CalculatorIcon, ChefHat
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Users,
+  ShoppingCart,
+  Package2,
+  FolderTree,
+  FileText,
+  Receipt,
+  ChefHat,
+  Calculator
 } from "lucide-react";
 
 interface DataManagementGridProps {
   isArabic: boolean;
-  onDeleteAction: (type: string) => void;
+  onDeleteAction: (type: "products" | "categories" | "inventory" | "invoices" | "customers" | "all" | "kitchen" | "vat-reports" | "users") => void;
   navigate: (path: string) => void;
 }
 
-const DataManagementGrid: React.FC<DataManagementGridProps> = ({ 
-  isArabic, 
+const DataManagementGrid: React.FC<DataManagementGridProps> = ({
+  isArabic,
   onDeleteAction,
   navigate
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <DataTypeCard
-        icon={<ShoppingBag className="h-6 w-6" />}
-        title={isArabic ? "المنتجات" : "Products"}
-        description={isArabic ? "إدارة وحذف بيانات المنتجات" : "Manage and delete product data"}
-        onManage={() => navigate("/products")}
-        onDelete={() => onDeleteAction("products")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<Package2 className="h-6 w-6" />}
-        title={isArabic ? "التصنيفات" : "Categories"}
-        description={isArabic ? "إدارة وحذف بيانات التصنيفات" : "Manage and delete category data"}
-        onManage={() => navigate("/categories")}
-        onDelete={() => onDeleteAction("categories")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<BarChart4 className="h-6 w-6" />}
-        title={isArabic ? "المخزون" : "Inventory"}
-        description={isArabic ? "إدارة وحذف بيانات المخزون" : "Manage and delete inventory data"}
-        onManage={() => navigate("/inventory")}
-        onDelete={() => onDeleteAction("inventory")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<Receipt className="h-6 w-6" />}
-        title={isArabic ? "الفواتير" : "Invoices"}
-        description={isArabic ? "إدارة وحذف بيانات الفواتير" : "Manage and delete invoice data"}
-        onManage={() => navigate("/invoices")}
-        onDelete={() => onDeleteAction("invoices")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<Users className="h-6 w-6" />}
-        title={isArabic ? "العملاء" : "Customers"}
-        description={isArabic ? "إدارة وحذف بيانات العملاء" : "Manage and delete customer data"}
-        onManage={() => navigate("/customers")}
-        onDelete={() => onDeleteAction("customers")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<ChefHat className="h-6 w-6" />}
-        title={isArabic ? "المطبخ" : "Kitchen"}
-        description={isArabic ? "إدارة وحذف بيانات المطبخ" : "Manage and delete kitchen data"}
-        onManage={() => navigate("/kitchen")}
-        onDelete={() => onDeleteAction("kitchen")}
-        isArabic={isArabic}
-      />
-      
-      <DataTypeCard
-        icon={<CalculatorIcon className="h-6 w-6" />}
-        title={isArabic ? "تقارير الضريبة" : "VAT Reports"}
-        description={isArabic ? "إدارة وحذف تقارير ضريبة القيمة المضافة" : "Manage and delete VAT report data"}
-        onManage={() => navigate("/vat-report")}
-        onDelete={() => onDeleteAction("vat-reports")}
-        isArabic={isArabic}
-      />
-    </div>
+    <Card>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <DataTypeCard
+            title={isArabic ? "المنتجات" : "Products"}
+            description={isArabic ? "حذف جميع المنتجات" : "Delete all products"}
+            icon={<Package2 size={20} />}
+            onDelete={() => onDeleteAction("products")}
+            onManage={() => navigate("/products")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "التصنيفات" : "Categories"}
+            description={isArabic ? "حذف جميع التصنيفات" : "Delete all categories"}
+            icon={<FolderTree size={20} />}
+            onDelete={() => onDeleteAction("categories")}
+            onManage={() => navigate("/categories")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "المخزون" : "Inventory"}
+            description={isArabic ? "حذف جميع بيانات المخزون" : "Delete all inventory data"}
+            icon={<ShoppingCart size={20} />}
+            onDelete={() => onDeleteAction("inventory")}
+            onManage={() => navigate("/inventory")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "الفواتير" : "Invoices"}
+            description={isArabic ? "حذف جميع الفواتير" : "Delete all invoices"}
+            icon={<Receipt size={20} />}
+            onDelete={() => onDeleteAction("invoices")}
+            onManage={() => navigate("/invoices")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "العملاء" : "Customers"}
+            description={isArabic ? "حذف جميع العملاء" : "Delete all customers"}
+            icon={<Users size={20} />}
+            onDelete={() => onDeleteAction("customers")}
+            onManage={() => navigate("/customers")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "المستخدمين" : "Users"}
+            description={isArabic ? "حذف جميع المستخدمين" : "Delete all users"}
+            icon={<Users size={20} />}
+            onDelete={() => onDeleteAction("users")}
+            onManage={() => navigate("/user-management")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "المطبخ" : "Kitchen"}
+            description={isArabic ? "حذف جميع بيانات المطبخ" : "Delete all kitchen data"}
+            icon={<ChefHat size={20} />}
+            onDelete={() => onDeleteAction("kitchen")}
+            onManage={() => navigate("/kitchen")}
+            isArabic={isArabic}
+          />
+          <DataTypeCard
+            title={isArabic ? "تقارير ضريبة القيمة المضافة" : "VAT Reports"}
+            description={isArabic ? "حذف جميع تقارير الضريبة" : "Delete all VAT reports"}
+            icon={<Calculator size={20} />}
+            onDelete={() => onDeleteAction("vat-reports")}
+            onManage={() => navigate("/vat-report")}
+            isArabic={isArabic}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

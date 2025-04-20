@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from 'react';
 import { User, UserRole } from '@/types';
 import { userService } from '@/services';
@@ -138,12 +137,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Fix: Update the updateUserPermissions function to match the interface
   const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
+    console.log("Auth Provider - Updating permissions for user:", userId);
+    console.log("Auth Provider - Permissions to set:", permissions);
+    
     // We can handle the user check here and then call updatePermissions
     if (!user || (user.role !== 'admin' && user.role !== 'owner')) {
+      console.log("Auth Provider - Permission update rejected - not admin/owner");
       return false;
     }
     
-    return updatePermissions(userId, permissions);
+    // Call the actual implementation from useUserPermissions
+    try {
+      updatePermissions(userId, permissions);
+      console.log("Auth Provider - Permissions updated successfully");
+      return true;
+    } catch (error) {
+      console.error("Auth Provider - Error updating permissions:", error);
+      return false;
+    }
   };
 
   // Don't render children until we've checked localStorage

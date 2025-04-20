@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,7 @@ import { mockProducts } from "@/features/pos/data/mockData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { mockCustomers } from "@/features/customers/hooks/useCustomers";
 
-type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all" | "kitchen" | "vat-reports";
+type DataType = "products" | "categories" | "inventory" | "invoices" | "customers" | "all" | "kitchen" | "vat-reports" | "users";
 
 export const useDataManagement = () => {
   const { language } = useLanguage();
@@ -78,6 +77,23 @@ export const useDataManagement = () => {
     localStorage.removeItem('stored-vat-reports');
   };
 
+  const deleteAllUsers = () => {
+    // Delete users from localStorage except system admin
+    const systemAdminKey = 'system_admin_initialized';
+    const systemAdminInitialized = localStorage.getItem(systemAdminKey);
+    
+    // Remove users data
+    localStorage.removeItem('stored-users');
+    
+    // Remove user permissions
+    localStorage.removeItem('user_permissions_data');
+    
+    // Keep track of system admin initialization
+    if (systemAdminInitialized) {
+      localStorage.setItem(systemAdminKey, 'true');
+    }
+  };
+
   const deleteAllData = () => {
     // Delete all data
     deleteAllProducts();
@@ -87,6 +103,7 @@ export const useDataManagement = () => {
     deleteAllCustomers();
     deleteKitchenData();
     deleteVatReports();
+    deleteAllUsers(); // Added user deletion to all data clear
     
     // Delete settings
     localStorage.removeItem('business-settings');
@@ -140,6 +157,11 @@ export const useDataManagement = () => {
           toast.success(isArabic ? "تم حذف جميع تقارير ضريبة القيمة المضافة بنجاح" : "All VAT reports have been deleted successfully");
           navigate("/vat-report");
           break;
+        case "users":
+          deleteAllUsers();
+          toast.success(isArabic ? "تم حذف جميع المستخدمين بنجاح" : "All users have been deleted successfully");
+          navigate("/user-management");
+          break;
         case "all":
           deleteAllData();
           toast.success(isArabic ? "تم حذف جميع البيانات بنجاح" : "All data has been deleted successfully");
@@ -184,6 +206,10 @@ export const useDataManagement = () => {
         return isArabic 
           ? "هل أنت متأكد من حذف جميع تقارير ضريبة القيمة المضافة؟ لا يمكن التراجع عن هذه العملية."
           : "Are you sure you want to delete all VAT reports? This action cannot be undone.";
+      case "users":
+        return isArabic 
+          ? "هل أنت متأكد من حذف جميع المستخدمين؟ لا يمكن التراجع عن هذه العملية."
+          : "Are you sure you want to delete all users? This action cannot be undone.";
       case "all":
         return isArabic 
           ? "هل أنت متأكد من حذف جميع البيانات؟ لا يمكن التراجع عن هذه العملية."

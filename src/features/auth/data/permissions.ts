@@ -14,5 +14,8 @@ export const allPermissions: UserPermission[] = [
   { id: "p9", name: "إدارة المطبخ", value: "manage_kitchen", description: "إدارة طلبات المطبخ", adminOnly: false, cashierAllowed: false, kitchenAllowed: true },
 ];
 
+// Convert to string array for easier comparison
+export const allPermissionValues = allPermissions.map(p => p.value);
+
 // Default empty permissions map
 export const initialPermissionsMap: Record<string, string[]> = {};

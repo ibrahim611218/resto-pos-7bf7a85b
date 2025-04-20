@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '@/types';
 import { mockUsers } from '../data/mockUsers';
-import { allPermissions } from '../data/permissions';
+import { allPermissionValues } from '../data/permissions';
 
 const PERMISSIONS_STORAGE_KEY = 'user_permissions_data';
 
@@ -33,7 +33,7 @@ export function useUserPermissions() {
         switch (user.role) {
           case 'owner':
           case 'admin':
-            initialPermissions[user.id] = allPermissions.map(p => p.value);
+            initialPermissions[user.id] = allPermissionValues;
             break;
           case 'supervisor':
             initialPermissions[user.id] = [
@@ -67,6 +67,9 @@ export function useUserPermissions() {
   };
   
   const updateUserPermissions = (userId: string, permissions: string[]): boolean => {
+    console.log("UserPermissions Hook - Updating permissions for:", userId);
+    console.log("UserPermissions Hook - New permissions:", permissions);
+    
     const updatedPermissionsMap = {
       ...permissionsMap,
       [userId]: permissions
@@ -78,6 +81,7 @@ export function useUserPermissions() {
     // Save to localStorage
     try {
       localStorage.setItem(PERMISSIONS_STORAGE_KEY, JSON.stringify(updatedPermissionsMap));
+      console.log("UserPermissions Hook - Permissions saved to localStorage successfully");
       return true;
     } catch (error) {
       console.error("Error saving permissions to localStorage:", error);

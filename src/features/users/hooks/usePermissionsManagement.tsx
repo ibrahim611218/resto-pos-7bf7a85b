@@ -27,6 +27,9 @@ export const usePermissionsManagement = () => {
   const handleSavePermissions = (selectedUserId: string) => {
     if (!selectedUserId) return false;
     
+    console.log("Saving permissions for user:", selectedUserId);
+    console.log("Selected permissions:", selectedPermissions);
+    
     // Update permissions
     const success = updateUserPermissions(selectedUserId, selectedPermissions);
     
