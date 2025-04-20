@@ -4,6 +4,7 @@ import { BusinessSettings } from './settings';
 import { Product } from './products';
 import { Category } from './products';
 import { UserWithPassword } from '../features/users/types';
+import { Company } from '../features/users/types';
 
 export interface IDatabaseService {
   getInvoices: () => Promise<Invoice[]>;
@@ -21,4 +22,10 @@ export interface IDatabaseService {
   deleteUser: (userId: string) => Promise<any>;
   updateUserPermissions: (userId: string, permissions: string[]) => Promise<any>;
   updateUserPassword: (userId: string, hashedPassword: string) => Promise<any>;
+  
+  // Company management operations
+  getCompanies: () => Promise<Company[]>;
+  saveCompany: (company: Company) => Promise<any>;
+  updateCompany: (company: Company) => Promise<any>;
+  deleteCompany: (companyId: string) => Promise<any>;
 }
