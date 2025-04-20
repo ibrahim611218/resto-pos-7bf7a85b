@@ -1,126 +1,88 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider } from './features/auth/hooks/useAuth';
+import Login from './pages/Login';
+import MainLayout from './components/layout/MainLayout';
+import Pos from './pages/Pos';
+import Products from './pages/Products';
+import Categories from './pages/Categories';
+import Invoices from './pages/Invoices';
+import Customers from './pages/Customers';
+import Inventory from './pages/Inventory';
+import Kitchen from './pages/Kitchen';
+import Reports from './pages/Reports';
+import UserManagement from './pages/UserManagement';
+import BusinessSettings from './pages/BusinessSettings';
+import LicenseGenerator from './pages/LicenseGenerator';
+import SalesReport from './pages/SalesReport';
+import InventoryReport from './pages/InventoryReport';
+import CustomersReport from './pages/CustomersReport';
+import VatReport from './pages/VatReport';
+import Purchases from './pages/Purchases';
+import CompanyManagement from './pages/CompanyManagement';
 
-import React, { Suspense, useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "sonner";
-import MainLayout from "@/components/layout/MainLayout";
-import Index from "@/pages/Index";
-import NotFound from "@/pages/NotFound";
-import Kitchen from "@/pages/Kitchen";
-import Invoices from "@/pages/Invoices";
-import Customers from "@/pages/Customers";
-import Products from "@/pages/Products";
-import Categories from "@/pages/Categories";
-import Inventory from "@/pages/Inventory";
-import SalesReport from "@/pages/SalesReport";
-import InventoryReport from "@/pages/InventoryReport";
-import CustomersReport from "@/pages/CustomersReport";
-import BusinessSettings from "@/pages/BusinessSettings";
-import UserManagement from "@/pages/UserManagement";
-import CompanyManagement from "@/pages/CompanyManagement";
-import Login from "@/features/auth/Login";
-import RetrieveInvoice from "@/pages/RetrieveInvoice";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import Unauthorized from "./pages/Unauthorized";
-import LicenseActivation from "./pages/LicenseActivation";
-import LicenseGenerator from "./pages/LicenseGenerator";
-import FirstRunLicenseCheck from "./features/auth/components/FirstRunLicenseCheck";
-import LicenseCheck from "./features/auth/components/LicenseCheck";
-import { useLanguage } from "./context/LanguageContext";
-import Pos from "./pages/Pos";
-import { CartProvider } from "./features/pos/hooks/useCart";
-import ProductForm from "./components/ProductForm";
-import CategoryForm from "./components/CategoryForm";
-import LicenseCheckLoading from "./features/auth/components/LicenseCheckLoading";
-import Purchases from "./pages/Purchases";
-import VatReportPage from "./pages/VatReport";
+// ProtectedRoute component
+const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
+  const authData = localStorage.getItem('auth');
+  const auth = authData ? JSON.parse(authData) : null;
 
-// Fallback component for suspense with shorter timeout
-const LoadingFallback = () => {
-  const [showFallback, setShowFallback] = React.useState(false);
-  
-  useEffect(() => {
-    // Only show loading after a short delay to prevent flashes
-    const timer = setTimeout(() => {
-      setShowFallback(true);
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  if (!showFallback) return null;
-  return <LicenseCheckLoading />;
+  if (!auth) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(auth.role)) {
+    // Redirect to a "no access" page or home if the role is not allowed
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 function App() {
-  const { language } = useLanguage();
-  
-  // Pre-load license information when app starts
-  useEffect(() => {
-    // Create a default license in localStorage if not exists for offline mode
-    if (!localStorage.getItem('active-license')) {
-      const now = Date.now();
-      const defaultLicense = {
-        key: 'OFFLINE-LICENSE',
-        type: 'full',
-        issuedAt: now,
-        expiryDate: now + 365 * 24 * 60 * 60 * 1000, // 1 year
-        durationDays: 365,
-        used: true,
-        activatedAt: now
-      };
-      localStorage.setItem('active-license', JSON.stringify(defaultLicense));
-      console.log("Created default license for offline mode");
-    }
-  }, []);
-  
   return (
-    <>
-      <Toaster position="top-center" richColors dir={language === "ar" ? "rtl" : "ltr"} />
-      <CartProvider>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Public routes - no auth or license required */}
-            <Route path="/login" element={<Login language={language} />} />
-            <Route path="/activate" element={<LicenseActivation />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            
-            {/* Protected routes with license check */}
-            <Route element={<FirstRunLicenseCheck><LicenseCheck /></FirstRunLicenseCheck>}>
-              <Route element={<ProtectedRoute />}>
-                <Route element={<MainLayout />}>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/pos" element={<Pos />} />
-                  <Route path="/kitchen" element={<Kitchen />} />
-                  <Route path="/invoices" element={<Invoices />} />
-                  <Route path="/retrieve-invoice" element={<RetrieveInvoice />} />
-                  <Route path="/customers" element={<Customers />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/add" element={<ProductForm />} />
-                  <Route path="/products/edit/:id" element={<ProductForm />} />
-                  <Route path="/categories" element={<Categories />} />
-                  <Route path="/categories/add" element={<CategoryForm />} />
-                  <Route path="/categories/edit/:id" element={<CategoryForm />} />
-                  <Route path="/inventory" element={<Inventory />} />
-                  <Route path="/purchases" element={<Purchases />} />
-                  <Route path="/vat-report" element={<VatReportPage />} />
-                  <Route path="/sales-report" element={<SalesReport />} />
-                  <Route path="/inventory-report" element={<InventoryReport />} />
-                  <Route path="/customers-report" element={<CustomersReport />} />
-                  <Route path="/business-settings" element={<BusinessSettings />} />
-                  <Route path="/user-management" element={<UserManagement />} />
-                  <Route path="/company-management" element={<CompanyManagement />} />
-                  <Route path="/license-generator" element={<LicenseGenerator />} />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-              </Route>
-            </Route>
-            
-            {/* Fallback redirect */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </Suspense>
-      </CartProvider>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/*"
+          element={
+            <AuthProvider>
+              <MainLayout>
+                <Routes>
+                  <Route path="/" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner", "kitchen", "manager"]}><Pos /></ProtectedRoute>} />
+                  <Route path="/pos" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Pos /></ProtectedRoute>} />
+                  <Route path="/products" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Products /></ProtectedRoute>} />
+                  <Route path="/categories" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Categories /></ProtectedRoute>} />
+                  <Route path="/invoices" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Invoices /></ProtectedRoute>} />
+                  <Route path="/purchases" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Purchases /></ProtectedRoute>} />
+                  <Route path="/customers" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Customers /></ProtectedRoute>} />
+                  <Route path="/inventory" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Inventory /></ProtectedRoute>} />
+                  <Route path="/kitchen" element={<ProtectedRoute allowedRoles={["kitchen", "supervisor", "admin", "owner"]}><Kitchen /></ProtectedRoute>} />
+                  <Route path="/reports" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Reports /></ProtectedRoute>} />
+                  <Route path="/user-management" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><UserManagement /></ProtectedRoute>} />
+                  <Route path="/business-settings" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><BusinessSettings /></ProtectedRoute>} />
+                  <Route path="/license-generator" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><LicenseGenerator /></ProtectedRoute>} />
+                  <Route path="/sales-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><SalesReport /></ProtectedRoute>} />
+                  <Route path="/inventory-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><InventoryReport /></ProtectedRoute>} />
+                  <Route path="/customers-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><CustomersReport /></ProtectedRoute>} />
+                  <Route path="/vat-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><VatReport /></ProtectedRoute>} />
+                  
+                  <Route
+                    path="/company-management"
+                    element={
+                      <ProtectedRoute allowedRoles={["admin", "owner"]}>
+                        <CompanyManagement />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </MainLayout>
+            </AuthProvider>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

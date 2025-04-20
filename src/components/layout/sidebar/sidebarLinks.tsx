@@ -1,5 +1,19 @@
-
-import { Home, ReceiptText, Users, Box, ShoppingBag, Settings, FileText, BarChart3, ChefHat, KeySquare, ShoppingCart, FileSpreadsheet, Receipt } from "lucide-react";
+import { 
+  Home, 
+  ReceiptText, 
+  Users, 
+  Box, 
+  ShoppingBag, 
+  Settings, 
+  FileText, 
+  BarChart3, 
+  ChefHat, 
+  KeySquare, 
+  ShoppingCart, 
+  FileSpreadsheet, 
+  Receipt,
+  Building
+} from "lucide-react";
 import { SidebarLink } from "./types";
 import { UserRole } from "@/types";
 
@@ -107,7 +121,14 @@ export const getSidebarLinks = (): SidebarLink[] => {
       ],
     },
     {
-      name: "المستخدمون",
+      name: "إدارة الشركات",
+      name_en: "Company Management",
+      path: "/company-management",
+      icon: Building,
+      roles: ["admin", "owner"]
+    },
+    {
+      name: "المستخدمين",
       name_en: "User Management",
       path: "/user-management",
       icon: Users,
