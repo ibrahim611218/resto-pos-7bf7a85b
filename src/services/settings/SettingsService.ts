@@ -9,16 +9,16 @@ export interface ISettingsService {
 
 // Default settings to use when none are available
 const DEFAULT_SETTINGS: BusinessSettings = {
-  name: "مطعم الذواق",
-  nameAr: "مطعم الذواق",
-  taxNumber: "300000000000003",
-  address: "الرياض، المملكة العربية السعودية",
-  addressAr: "الرياض، المملكة العربية السعودية",
-  phone: "966500000000",
-  email: "info@example.com",
+  name: "",
+  nameAr: "",
+  taxNumber: "",
+  address: "",
+  addressAr: "",
+  phone: "",
+  email: "",
   taxRate: 15,
   taxIncluded: false,
-  invoiceNotesAr: "شكراً لزيارتكم",
+  invoiceNotesAr: "",
   workStartTime: "09:00",
   workEndTime: "23:00"
 };

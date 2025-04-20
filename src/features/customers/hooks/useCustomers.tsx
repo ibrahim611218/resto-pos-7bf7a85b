@@ -1,36 +1,10 @@
-
 import { useState, useCallback } from "react";
 import { Customer } from "@/types";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 
-// Mock customers data
-export const mockCustomers: Customer[] = [
-  {
-    id: "cust-1",
-    name: "محمد عبدالله",
-    phone: "0555123456",
-    email: "mohammed@example.com",
-    commercialRegister: "1234567890",
-    address: "الرياض، حي الملز"
-  },
-  {
-    id: "cust-2",
-    name: "أحمد محمد",
-    phone: "0555987654",
-    email: "ahmed@example.com",
-    taxNumber: "300123456700003",
-    commercialRegister: "9876543210",
-    address: "جدة، حي الروضة"
-  },
-  {
-    id: "cust-3",
-    name: "سارة خالد",
-    phone: "0555111222",
-    email: "sarah@example.com",
-    address: "الدمام، حي الشاطئ"
-  }
-];
+// Empty mock customers data
+export const mockCustomers: Customer[] = [];
 
 export const useCustomers = () => {
   const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
