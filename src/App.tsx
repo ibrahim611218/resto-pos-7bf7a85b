@@ -17,6 +17,7 @@ import SalesReport from "./pages/SalesReport";
 import InventoryReport from "./pages/InventoryReport";
 import CustomersReport from "./pages/CustomersReport";
 import VatReport from "./pages/VatReport";
+import Kitchen from "./pages/Kitchen"; // Import the Kitchen component
 import { Orders as OrdersContent } from './pages/Orders'
 import { Settings as SettingsContent } from './pages/Settings'
 import { ProductAddContent } from "./pages/ProductAdd";
@@ -49,6 +50,7 @@ function App() {
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/inventory" element={<Inventory />} />
+        <Route path="/kitchen" element={<Kitchen />} /> {/* Add the Kitchen route */}
         
         {/* Report routes */}
         <Route path="/reports" element={<Reports />} />
