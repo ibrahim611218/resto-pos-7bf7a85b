@@ -5,6 +5,8 @@ import { Product } from './products';
 import { Category } from './products';
 import { UserWithPassword } from '../features/users/types';
 import { Company } from '../features/users/types';
+import { PurchaseInvoice } from './purchases';
+import { KitchenOrder } from './kitchen';
 
 export interface IDatabaseService {
   getInvoices: () => Promise<Invoice[]>;
@@ -28,4 +30,12 @@ export interface IDatabaseService {
   saveCompany: (company: Company) => Promise<any>;
   updateCompany: (company: Company) => Promise<any>;
   deleteCompany: (companyId: string) => Promise<any>;
+  
+  // Purchases operations
+  getPurchaseInvoices: () => Promise<PurchaseInvoice[]>;
+  savePurchaseInvoice: (invoice: PurchaseInvoice) => Promise<any>;
+  
+  // Kitchen operations
+  createKitchenOrder: (order: KitchenOrder) => Promise<any>;
+  getKitchenOrders: () => Promise<KitchenOrder[]>;
 }

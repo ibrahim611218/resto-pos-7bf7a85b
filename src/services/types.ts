@@ -1,5 +1,5 @@
 
-import { Invoice, BusinessSettings, Product, Category } from "@/types";
+import { Invoice, BusinessSettings, Product, Category, PurchaseInvoice, KitchenOrder } from "@/types";
 import { IInvoiceService } from "./invoices/InvoiceService";
 import { ISettingsService } from "./settings/SettingsService";
 import { UserWithPassword, Company } from "@/features/users/types";
@@ -25,4 +25,12 @@ export interface IDatabaseService extends IInvoiceService, ISettingsService {
   saveCompany: (company: Company) => Promise<any>;
   updateCompany: (company: Company) => Promise<any>;
   deleteCompany: (companyId: string) => Promise<any>;
+  
+  // Purchases operations
+  getPurchaseInvoices: () => Promise<PurchaseInvoice[]>;
+  savePurchaseInvoice: (invoice: PurchaseInvoice) => Promise<any>;
+  
+  // Kitchen operations
+  createKitchenOrder: (order: KitchenOrder) => Promise<any>;
+  getKitchenOrders: () => Promise<KitchenOrder[]>;
 }
