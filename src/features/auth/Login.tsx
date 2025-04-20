@@ -23,14 +23,15 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   const { login, isProcessing, isAuthenticated } = useAuth();
   const isArabic = language === "ar";
   
+  // Check if user is already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
+  // Load companies data
   useEffect(() => {
-    // Prepare the login screen by checking available companies
     const checkCompanies = async () => {
       try {
         const companies = await userService.getCompanies();
@@ -60,14 +61,18 @@ const Login: React.FC<LoginProps> = ({ language }) => {
       const success = await login(email, password);
       
       if (success) {
-        const users = await userService.getUsers();
-        const loggedInUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (loggedInUser?.companyId) {
-          localStorage.setItem('currentCompanyId', loggedInUser.companyId);
+        try {
+          const users = await userService.getUsers();
+          const loggedInUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+          if (loggedInUser?.companyId) {
+            localStorage.setItem('currentCompanyId', loggedInUser.companyId);
+          }
+          
+          toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
+          navigate("/");
+        } catch (error) {
+          console.error("Error processing user data after login:", error);
         }
-        
-        toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
-        navigate("/");
       } else {
         console.error("Login failed for:", email);
         toast.error(
@@ -94,7 +99,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
       dir={isArabic ? "rtl" : "ltr"}
     >
       <AnimatedTransition animation="slide-up" className="w-full max-w-md">
-        <Card className="glass">
+        <Card className="shadow-lg border-opacity-50">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl">
               {isArabic ? "تسجيل الدخول" : "Sign in"}
@@ -136,7 +141,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
                   />
                   <label
                     htmlFor="remember"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isArabic ? "mr-2" : "ml-2"}`}
                   >
                     {isArabic ? "تذكرني" : "Remember me"}
                   </label>

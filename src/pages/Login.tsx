@@ -1,45 +1,54 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
 
 const Login: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === 'ar';
-  const { login, isProcessing } = useAuth();
+  const { login, isProcessing, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
 
     if (!email || !password) {
-      setError(isArabic ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter your email and password');
+      toast.error(isArabic ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter your email and password');
       return;
     }
 
     try {
+      console.log("Attempting login with:", email);
       const success = await login(email, password);
       if (success) {
+        toast.success(isArabic ? 'تم تسجيل الدخول بنجاح' : 'Successfully logged in');
         navigate('/pos');
       } else {
-        setError(isArabic ? 'بيانات الاعتماد غير صالحة' : 'Invalid credentials');
+        toast.error(isArabic ? 'بيانات الاعتماد غير صالحة' : 'Invalid credentials');
       }
     } catch (error) {
-      setError(isArabic ? 'حدث خطأ أثناء تسجيل الدخول' : 'An error occurred during login');
+      console.error("Login error:", error);
+      toast.error(isArabic ? 'حدث خطأ أثناء تسجيل الدخول' : 'An error occurred during login');
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4" dir={isArabic ? 'rtl' : 'ltr'}>
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-md">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-center">
             {isArabic ? 'تسجيل الدخول' : 'Login'}
@@ -47,7 +56,6 @@ const Login: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <p className="text-destructive text-sm">{error}</p>}
             <div>
               <label className="block text-sm font-medium mb-1" htmlFor="email">
                 {isArabic ? 'البريد الإلكتروني' : 'Email'}
@@ -59,6 +67,7 @@ const Login: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={isArabic ? 'أدخل البريد الإلكتروني' : 'Enter your email'}
                 className="w-full"
+                disabled={isProcessing}
               />
             </div>
             <div>
@@ -72,6 +81,7 @@ const Login: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={isArabic ? 'أدخل كلمة المرور' : 'Enter your password'}
                 className="w-full"
+                disabled={isProcessing}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isProcessing}>

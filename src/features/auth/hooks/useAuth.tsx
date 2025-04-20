@@ -27,38 +27,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isProcessing, setIsProcessing] = useState(false);
   const { permissionsMap, getUserPermissions, updateUserPermissions: updatePermissions } = useUserPermissions();
 
+  // Initialize authentication state from localStorage
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-        
-        if (parsedUser.companyId) {
-          localStorage.setItem('currentCompanyId', parsedUser.companyId);
+    const initAuth = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+          
+          if (parsedUser.companyId) {
+            localStorage.setItem('currentCompanyId', parsedUser.companyId);
+          }
         }
+      } catch (error) {
+        console.error("Error loading user from localStorage:", error);
+        localStorage.removeItem('user');
+      } finally {
+        setIsInitialized(true);
       }
-    } catch (error) {
-      console.error("Error loading user from localStorage:", error);
-      localStorage.removeItem('user');
-    } finally {
-      setIsInitialized(true);
-    }
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     if (isProcessing) return false;
     
+    setIsProcessing(true);
+    
     try {
-      setIsProcessing(true);
-      
+      console.log("Login starting for:", email);
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const trimmedEmail = email.trim();
       
       // First try to authenticate as a user
       const allUsers = await userService.getUsers();
+      console.log("Retrieved users:", allUsers.length);
       
       const foundUser = allUsers.find(
         u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
@@ -66,6 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // If user found, log them in
       if (foundUser) {
+        console.log("User found:", foundUser.email);
         const { password: _, ...userWithoutPassword } = foundUser;
         
         try {
@@ -87,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // If not found as user, try to authenticate as company
       const allCompanies = await userService.getCompanies();
-      console.log("Checking company login with:", trimmedEmail, password);
+      console.log("Checking company login with:", trimmedEmail);
       console.log("Available companies:", allCompanies);
       
       const foundCompany = allCompanies.find(
@@ -118,11 +126,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
       
+      console.log("No matching user or company found");
       return false;
     } catch (error) {
       console.error("Login error:", error);
       return false;
     } finally {
+      // Use a cleaner approach to set isProcessing to false
       setTimeout(() => {
         setIsProcessing(false);
       }, 300);
@@ -132,8 +142,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     if (isProcessing) return;
     
+    setIsProcessing(true);
+    
     try {
-      setIsProcessing(true);
       await new Promise(resolve => setTimeout(resolve, 100));
       
       try {
@@ -142,16 +153,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (error) {
         console.error("Error removing user data from localStorage:", error);
       } finally {
+        // Make sure we always update state even if localStorage operations fail
         setUser(null);
         setIsAuthenticated(false);
       }
     } finally {
+      // Use a cleaner approach to set isProcessing to false
       setTimeout(() => {
         setIsProcessing(false);
       }, 300);
     }
   };
 
+  // Check if user has required role
   const hasPermission = (requiredRole: UserRole | UserRole[]): boolean => {
     if (!user) return false;
     
@@ -199,6 +213,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Don't show anything until auth is initialized
   if (!isInitialized) {
     return null;
   }
