@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './features/auth/hooks/useAuth';
@@ -26,16 +25,15 @@ import Pos from "./pages/Pos";
 import CompanyManagementPage from './pages/CompanyManagement';
 import UserManagementPage from './pages/UserManagement';
 import BusinessSettingsPage from './pages/BusinessSettings';
+import CompanySettings from './pages/CompanySettings';
 
 function App() {
   const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      {/* Always start with login route */}
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
       
-      {/* Default route always redirects to login if not authenticated */}
       <Route path="/" element={isAuthenticated ? <Navigate to="/pos" replace /> : <Navigate to="/login" replace />} />
       
       <Route element={<ProtectedRoute>
@@ -63,9 +61,9 @@ function App() {
         <Route path="/customers-report" element={<CustomersReport />} />
         <Route path="/vat-report" element={<VatReport />} />
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
+        <Route path="/company-settings" element={<CompanySettings />} />
       </Route>
 
-      {/* Catch-all route redirects to login */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

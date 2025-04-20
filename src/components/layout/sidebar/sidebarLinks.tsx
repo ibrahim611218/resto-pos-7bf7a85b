@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   ReceiptText, 
@@ -125,7 +124,14 @@ export const getSidebarLinks = (): SidebarLink[] => {
       name_en: "Company Management",
       path: "/company-management",
       icon: Building,
-      requiredEmail: "eng.ibrahimabdalfatah@gmail.com", // Changed from "emg" to "eng"
+      requiredEmail: "eng.ibrahimabdalfatah@gmail.com",
+      roles: ["admin", "owner"]
+    },
+    {
+      name: "إعدادات الشركة",
+      name_en: "Company Settings",
+      path: "/company-settings",
+      icon: Settings,
       roles: ["admin", "owner"]
     },
     {
