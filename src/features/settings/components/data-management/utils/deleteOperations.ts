@@ -1,4 +1,3 @@
-
 import { mockProducts } from "@/features/pos/data/mockData";
 import { sampleCategories } from "@/data/sampleData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
@@ -57,7 +56,11 @@ export const deleteAllUsers = () => {
   }
 };
 
-// Modified to not delete operational data
+export const deleteAllPurchases = () => {
+  localStorage.removeItem('stored-purchases');
+  localStorage.removeItem('stored-suppliers');
+};
+
 export const deleteAllData = () => {
   if (confirm('هل أنت متأكد من حذف جميع البيانات؟')) {
     deleteAllProducts();
@@ -68,6 +71,7 @@ export const deleteAllData = () => {
     deleteKitchenData();
     deleteVatReports();
     deleteAllUsers();
+    deleteAllPurchases();
     
     localStorage.removeItem('business-settings');
     localStorage.removeItem('display-settings');
