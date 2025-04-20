@@ -46,7 +46,7 @@ const DataManagement: React.FC = () => {
       <AlertConfirmDialog
         isOpen={showConfirmDialog}
         onOpenChange={setShowConfirmDialog}
-        confirmationMessage={getConfirmationMessage()}
+        confirmationMessage={getConfirmationMessage(actionType)}
         title={isArabic ? "تأكيد الحذف" : "Confirm Deletion"}
         onConfirm={confirmDelete}
         isDeleting={isDeleting}
