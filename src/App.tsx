@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './features/auth/hooks/useAuth';
@@ -33,15 +32,13 @@ function App() {
 
   return (
     <Routes>
-      {/* Index page is now accessible at the root path */}
-      <Route path="/" element={<Index />} />
+      {/* Make login the default route */}
+      <Route path="/" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
       
-      {/* Login route */}
+      {/* Keep login route for explicit /login navigation */}
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
       
-      <Route element={<ProtectedRoute>
-        <MainLayout />
-      </ProtectedRoute>}>
+      <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
         <Route path="/pos" element={<Pos />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/add" element={<ProductAdd />} />
@@ -66,7 +63,7 @@ function App() {
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
 
-      {/* Catch-all route redirects to home */}
+      {/* Catch-all route redirects to login */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
