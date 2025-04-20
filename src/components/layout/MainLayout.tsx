@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -7,31 +6,29 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { useLanguage } from "@/context/LanguageContext";
-import { useFullscreen } from "@/hooks/useFullscreen";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
 const MainLayout: React.FC = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { isFullscreen } = useFullscreen();
   const { theme } = useTheme();
   
-  // Handle sidebar state based on screen size and fullscreen state
+  // Handle sidebar state based on screen size
   useEffect(() => {
-    if (isMobile || (isTablet && width < 768) || isFullscreen) {
+    if (isMobile || (isTablet && width < 768)) {
       setSidebarCollapsed(true);
       setSidebarHidden(true);
     } else {
       setSidebarCollapsed(!isHovering);
       setSidebarHidden(false);
     }
-  }, [isMobile, isTablet, width, isFullscreen, isHovering]);
+  }, [isMobile, isTablet, width, isHovering]);
 
   // Handle global toggle sidebar events
   useEffect(() => {
@@ -76,13 +73,13 @@ const MainLayout: React.FC = () => {
   }, []);
 
   const handleMouseEnter = () => {
-    if (!isMobile && !isTablet && !isFullscreen) {
+    if (!isMobile && !isTablet) {
       setIsHovering(true);
     }
   };
 
   const handleMouseLeave = () => {
-    if (!isMobile && !isTablet && !isFullscreen) {
+    if (!isMobile && !isTablet) {
       setIsHovering(false);
     }
   };

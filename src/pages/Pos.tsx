@@ -8,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 import { LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import FullscreenToggle from "@/components/ui-custom/FullscreenToggle";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 
 const Pos = () => {
@@ -27,7 +26,6 @@ const Pos = () => {
       <div className="p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 sticky top-0">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
-          <FullscreenToggle className="mr-2" />
           <Button variant="outline" size="sm" onClick={toggleViewMode}>
             {viewMode === "grid-small" ? <List size={18} /> : <LayoutGrid size={18} />}
           </Button>

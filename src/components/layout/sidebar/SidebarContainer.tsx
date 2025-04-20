@@ -3,7 +3,6 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { SidebarContextProvider } from "./SidebarContext";
-import { useFullscreen } from "@/hooks/useFullscreen";
 import { useLanguage } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -22,13 +21,12 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
   isInitialized,
   isMobile
 }) => {
-  const { isFullscreen } = useFullscreen();
   const { language } = useLanguage();
   const { theme } = useTheme();
   const isArabic = language === "ar";
   const isDark = theme === "dark";
   
-  // Determine sidebar position (left or right) based on RTL setting
+  // Determine sidebar position based on RTL setting
   const sidePosition = isArabic ? "right-0" : "left-0";
   
   // Set width transition
@@ -46,9 +44,8 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
-          isFullscreen ? "fullscreen-sidebar" : "",
           collapsed && isMobile ? "transform -translate-x-full rtl:translate-x-full" : "transform translate-x-0",
-          "bg-[#004d40] text-white restopos-sidebar" // Adding consistent background and text color
+          "bg-[#004d40] text-white restopos-sidebar"
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",

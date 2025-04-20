@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import ThemeToggle from "../../ui-custom/ThemeToggle";
 import { Language } from "@/types";
-import FullscreenToggle from "../../ui-custom/FullscreenToggle";
 import { toast } from "sonner";
 
 interface SidebarFooterProps {
@@ -27,7 +26,6 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
     
     try {
       setIsLoggingOut(true);
-      // Add small delay to allow UI state update to render
       await new Promise(resolve => setTimeout(resolve, 10));
       onLogout();
     } catch (error) {
@@ -41,13 +39,6 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
   return (
     <div className="border-t p-3 space-y-2">
       <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
-      
-      <FullscreenToggle 
-        className={cn(
-          "w-full justify-start text-white",
-          collapsed ? "justify-center" : ""
-        )} 
-      />
       
       <Button 
         variant="outline"
