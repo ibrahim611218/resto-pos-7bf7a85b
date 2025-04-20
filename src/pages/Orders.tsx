@@ -13,10 +13,12 @@ const Orders: React.FC = () => {
   );
 };
 
+// Export the component for direct use
+export { Orders };
+
+// Export a default component for routing
 const OrdersPage: React.FC = () => (
-  <MainLayout>
-    <Orders />
-  </MainLayout>
+  <MainLayout />
 );
 
 export default OrdersPage;

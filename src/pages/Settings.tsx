@@ -13,10 +13,12 @@ const Settings: React.FC = () => {
   );
 };
 
+// Export the component for direct use
+export { Settings };
+
+// Export a default component for routing
 const SettingsPage: React.FC = () => (
-  <MainLayout>
-    <Settings />
-  </MainLayout>
+  <MainLayout />
 );
 
 export default SettingsPage;
