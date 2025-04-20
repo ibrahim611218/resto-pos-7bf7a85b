@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Phone, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Language } from "@/types";
-import { userService } from "@/services";
 
 interface LoginProps {
   language: Language;
@@ -92,85 +92,111 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   };
 
   return (
-    <div 
-      className={`min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-secondary ${
-        isArabic ? "font-[system-ui]" : ""
-      }`}
-      dir={isArabic ? "rtl" : "ltr"}
-    >
-      <AnimatedTransition animation="slide-up" className="w-full max-w-md">
-        <Card className="shadow-lg border-opacity-50">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl">
-              {isArabic ? "تسجيل الدخول" : "Sign in"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  id="email"
-                  placeholder={isArabic ? "البريد الإلكتروني" : "Email"}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="space-y-2">
-                <Input
-                  id="password"
-                  placeholder={isArabic ? "كلمة المرور" : "Password"}
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
-                  disabled={isProcessing}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => 
-                      setRememberMe(checked as boolean)
-                    }
+    <div className="min-h-screen flex flex-col md:flex-row items-stretch bg-gradient-to-b from-background to-secondary">
+      {/* Info Section */}
+      <div className="w-full md:w-1/2 p-8 flex flex-col justify-center items-center text-center space-y-6">
+        <div className="max-w-xl space-y-6">
+          <h1 className={`text-4xl font-bold ${isArabic ? "font-[Tajawal]" : ""}`}>
+            {isArabic ? "نظام نقاط البيع للمطاعم" : "Restaurant POS System"}
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            {isArabic 
+              ? "نظام متكامل لإدارة المطاعم والمقاهي يشمل إدارة المبيعات، المخزون، التقارير، والمزيد"
+              : "Complete system for managing restaurants and cafes including sales, inventory, reports, and more"}
+          </p>
+          
+          {/* Contact Info */}
+          <div className="pt-8 space-y-4">
+            <div className="flex items-center justify-center gap-2">
+              <Phone className="w-5 h-5 text-primary" />
+              <span className="text-lg">0581283398</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <HelpCircle className="w-5 h-5 text-primary" />
+              <span className="text-muted-foreground">
+                {isArabic ? "للدعم الفني والاستفسارات" : "For technical support and inquiries"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Login Form Section */}
+      <div className="w-full md:w-1/2 p-8 flex items-center justify-center">
+        <AnimatedTransition animation="slide-up" className="w-full max-w-md">
+          <Card className="shadow-xl border-opacity-50 backdrop-blur-sm bg-background/95">
+            <CardHeader className="space-y-1 text-center">
+              <CardTitle className="text-2xl font-bold">
+                {isArabic ? "تسجيل الدخول" : "Sign in"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Input
+                    id="email"
+                    placeholder={isArabic ? "البريد الإلكتروني" : "Email"}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12"
                     disabled={isProcessing}
                   />
-                  <label
-                    htmlFor="remember"
-                    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isArabic ? "mr-2" : "ml-2"}`}
-                  >
-                    {isArabic ? "تذكرني" : "Remember me"}
-                  </label>
                 </div>
-                <Button variant="link" className="px-0" disabled={isProcessing}>
-                  {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
+                <div className="space-y-2">
+                  <Input
+                    id="password"
+                    placeholder={isArabic ? "كلمة المرور" : "Password"}
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12"
+                    disabled={isProcessing}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember"
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => 
+                        setRememberMe(checked as boolean)
+                      }
+                      disabled={isProcessing}
+                    />
+                    <label
+                      htmlFor="remember"
+                      className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isArabic ? "mr-2" : "ml-2"}`}
+                    >
+                      {isArabic ? "تذكرني" : "Remember me"}
+                    </label>
+                  </div>
+                  <Button variant="link" className="px-0" disabled={isProcessing}>
+                    {isArabic ? "نسيت كلمة المرور؟" : "Forgot password?"}
+                  </Button>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full h-12" 
+                  disabled={isProcessing}
+                >
+                  {isProcessing 
+                    ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
+                    : (isArabic ? "تسجيل الدخول" : "Sign in")
+                  }
                 </Button>
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full h-12" 
-                disabled={isProcessing}
-              >
-                {isProcessing 
-                  ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 
-                  : (isArabic ? "تسجيل الدخول" : "Sign in")
-                }
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <p className="text-xs text-center text-muted-foreground w-full">
-              {isArabic
-                ? "© 2024 نظام المطاعم. جميع الحقوق محفوظة"
-                : "© 2024 Restaurant System. All rights reserved"}
-            </p>
-          </CardFooter>
-        </Card>
-      </AnimatedTransition>
+              </form>
+            </CardContent>
+            <CardFooter>
+              <p className="text-xs text-center text-muted-foreground w-full">
+                {isArabic
+                  ? "© 2024 نظام المطاعم. جميع الحقوق محفوظة"
+                  : "© 2024 Restaurant System. All rights reserved"}
+              </p>
+            </CardFooter>
+          </Card>
+        </AnimatedTransition>
+      </div>
     </div>
   );
 };
