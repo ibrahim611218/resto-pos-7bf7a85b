@@ -18,7 +18,7 @@ const ThemeToggle = ({ className, collapsed = false }: ThemeToggleProps) => {
       variant="ghost"
       size={collapsed ? "icon" : "default"}
       onClick={toggleTheme}
-      className={className}
+      className={`${className} flex items-center justify-center`} // Added centering classes
       title={theme === "light" ? "التبديل للوضع الداكن" : "التبديل للوضع الفاتح"}
     >
       <AnimatedTransition animation="fade" show={theme === "light"}>
