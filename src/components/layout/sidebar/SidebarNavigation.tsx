@@ -100,7 +100,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         return (
           <SidebarItem
             key={link.name}
-            name={link.name}
+            name={isArabic ? link.name : link.name_en}
             path={link.path}
             icon={IconComponent}
             subMenuItems={link.subMenuItems}
