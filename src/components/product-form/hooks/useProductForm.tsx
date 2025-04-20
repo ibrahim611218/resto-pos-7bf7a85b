@@ -79,7 +79,19 @@ export const useProductForm = () => {
     e.preventDefault();
     console.log("Form submitted", product);
     
-    const validation = validateProduct(product, isArabic);
+    // For sized products, first check if we have variants before validation
+    if (product.type === "sized" && variants.length === 0) {
+      toast.error(isArabic ? "يرجى إضافة مقاس واحد على الأقل" : "Please add at least one size");
+      return;
+    }
+
+    // Prepare the product with variants for validation
+    const productWithVariants = {
+      ...product,
+      variants: product.type === "sized" ? variants : []
+    };
+    
+    const validation = validateProduct(productWithVariants, isArabic);
     if (!validation.isValid) {
       toast.error(validation.error);
       return;

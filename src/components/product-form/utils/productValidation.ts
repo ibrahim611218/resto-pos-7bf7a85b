@@ -29,6 +29,17 @@ export const validateProduct = (product: Product, isArabic: boolean) => {
     };
   }
 
+  // For sized products, check if prices are valid in all variants
+  if (product.type === "sized" && product.variants) {
+    const invalidPriceVariant = product.variants.find(variant => !variant.price || variant.price <= 0);
+    if (invalidPriceVariant) {
+      return {
+        isValid: false,
+        error: isArabic ? "يرجى إدخال أسعار صحيحة لجميع المقاسات" : "Please enter valid prices for all sizes"
+      };
+    }
+  }
+
   // For single products, check if price is valid
   if (product.type === "single" && (!product.price || product.price <= 0)) {
     return {

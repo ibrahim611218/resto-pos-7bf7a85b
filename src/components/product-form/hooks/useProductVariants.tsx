@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { ProductVariant } from "@/types";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 export const useProductVariants = (initialVariants: ProductVariant[] = []) => {
   const [variants, setVariants] = useState<ProductVariant[]>(initialVariants);
@@ -23,7 +24,7 @@ export const useProductVariants = (initialVariants: ProductVariant[] = []) => {
     }
 
     const newVariant: ProductVariant = {
-      id: `var-${Date.now()}`,
+      id: `var-${uuidv4()}`,
       size: availableSizes[0] as any,
       price: 0
     };
