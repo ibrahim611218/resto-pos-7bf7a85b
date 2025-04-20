@@ -1,6 +1,16 @@
 
 import { User, UserRole } from "@/types";
 
+export interface UserPermission {
+  id: string;
+  name: string;
+  value: string;
+  description: string;
+  adminOnly?: boolean;      // Added for admin-only permissions
+  cashierAllowed?: boolean; // Added for cashier-allowed permissions
+  kitchenAllowed?: boolean; // Added for kitchen-allowed permissions
+}
+
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;

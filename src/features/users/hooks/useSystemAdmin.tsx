@@ -34,8 +34,7 @@ export const useSystemAdmin = (
       setUsers(prevUsers => [...prevUsers, systemAdmin]);
       
       // Ensure system admin has all permissions
-      const allPermissionValues = allPermissions.map(p => p.value);
-      updateUserPermissions(systemAdmin.id, allPermissionValues);
+      updateUserPermissions(systemAdmin.id, allPermissions);
       
       // Mark as initialized in localStorage
       localStorage.setItem(SYSTEM_ADMIN_CREATED_KEY, 'true');

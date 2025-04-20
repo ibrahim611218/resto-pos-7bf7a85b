@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useContext } from 'react';
 import { User, UserRole } from '@/types';
 import { userService } from '@/services';
@@ -160,7 +161,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasPermission,
       isOwner,
       isSupervisor,
-      allPermissions: [], // We'll get these from the permissions hook
+      allPermissions: [], 
       getUserPermissions,
       updateUserPermissions
     }}>

@@ -62,7 +62,7 @@ export function useUserPermissions() {
     }
   }, [permissionsMap]);
 
-  const getUserPermissions = (userId: string): string[] => {
+  const getUserPermissions = async (userId: string): Promise<string[]> => {
     return permissionsMap[userId] || [];
   };
   

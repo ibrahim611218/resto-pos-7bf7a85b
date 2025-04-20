@@ -5,6 +5,7 @@ import { User, UserRole } from "@/types";
 // This is just for demonstration purposes
 interface MockUser extends User {
   password: string;
+  isActive: boolean;
 }
 
 export const mockUsers: MockUser[] = [
@@ -14,6 +15,7 @@ export const mockUsers: MockUser[] = [
     email: "admin@example.com",
     role: "admin",
     password: "admin123",
+    isActive: true
   },
   {
     id: "2",
@@ -21,6 +23,7 @@ export const mockUsers: MockUser[] = [
     email: "cashier@example.com",
     role: "cashier",
     password: "cashier123",
+    isActive: true
   },
   {
     id: "3",
@@ -28,6 +31,7 @@ export const mockUsers: MockUser[] = [
     email: "kitchen@example.com",
     role: "kitchen",
     password: "kitchen123",
+    isActive: true
   },
   {
     id: "4",
@@ -35,5 +39,6 @@ export const mockUsers: MockUser[] = [
     email: "eng.ibrahimabdalfatah@gmail.com",
     role: "admin",
     password: "Ibrahim@1995",
+    isActive: true
   },
 ];

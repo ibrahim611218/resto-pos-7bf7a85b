@@ -3,17 +3,23 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { UserWithPassword } from "../types";
+import { UserPermission } from "@/features/auth/types/auth";
 
 export const usePermissionsManagement = () => {
   const { getUserPermissions, updateUserPermissions, allPermissions } = useAuth();
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
 
-  const handleEditPermissions = (user: UserWithPassword) => {
+  const handleEditPermissions = async (user: UserWithPassword) => {
     if (user.id) {
       // Get current user permissions
-      const permissions = getUserPermissions(user.id);
-      setSelectedPermissions(permissions);
-      return true;
+      try {
+        const permissions = await getUserPermissions(user.id);
+        setSelectedPermissions(permissions);
+        return true;
+      } catch (error) {
+        console.error("Error fetching user permissions:", error);
+        return false;
+      }
     }
     return false;
   };
@@ -45,19 +51,13 @@ export const usePermissionsManagement = () => {
     switch(role) {
       case 'owner':
       case 'admin':
-        return allPermissions.map(p => p.value);
+        return allPermissions;
       case 'supervisor':
-        return allPermissions
-          .filter(p => !p.adminOnly)
-          .map(p => p.value);
+        return allPermissions.filter(p => !p.includes('manage_users'));
       case 'cashier':
-        return allPermissions
-          .filter(p => p.cashierAllowed)
-          .map(p => p.value);
+        return ['create_invoices', 'view_reports'];
       case 'kitchen':
-        return allPermissions
-          .filter(p => p.kitchenAllowed)
-          .map(p => p.value);
+        return ['manage_kitchen'];
       default:
         return [];
     }
