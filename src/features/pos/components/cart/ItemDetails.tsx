@@ -24,9 +24,11 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
     <div className="flex-1">
       <p className="font-medium">
         {isArabic ? nameAr || name : name}
-        <span className="text-xs ml-1 text-muted-foreground">
-          ({sizeLabel})
-        </span>
+        {size !== "regular" && (
+          <span className="text-xs ml-1 text-muted-foreground">
+            ({sizeLabel})
+          </span>
+        )}
       </p>
       <p className="text-sm text-muted-foreground">
         {price} {isArabic ? "ر.س" : "SAR"} x {quantity}
