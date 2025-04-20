@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './features/auth/hooks/useAuth';
 import Login from './pages/Login';
 import MainLayout from './components/layout/MainLayout';
@@ -46,48 +46,46 @@ function App() {
   const { language } = useLanguage();
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login language={language} />} />
-        <Route
-          path="/*"
-          element={
-            <AuthProvider>
-              <MainLayout>
-                <Routes>
-                  <Route path="/" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner", "kitchen", "manager"]}><Pos /></ProtectedRoute>} />
-                  <Route path="/pos" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Pos /></ProtectedRoute>} />
-                  <Route path="/products" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Products /></ProtectedRoute>} />
-                  <Route path="/categories" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Categories /></ProtectedRoute>} />
-                  <Route path="/invoices" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Invoices /></ProtectedRoute>} />
-                  <Route path="/purchases" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Purchases /></ProtectedRoute>} />
-                  <Route path="/customers" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Customers /></ProtectedRoute>} />
-                  <Route path="/inventory" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Inventory /></ProtectedRoute>} />
-                  <Route path="/kitchen" element={<ProtectedRoute allowedRoles={["kitchen", "supervisor", "admin", "owner"]}><Kitchen /></ProtectedRoute>} />
-                  <Route path="/reports" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Reports /></ProtectedRoute>} />
-                  <Route path="/user-management" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><UserManagement /></ProtectedRoute>} />
-                  <Route path="/business-settings" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><BusinessSettings /></ProtectedRoute>} />
-                  <Route path="/license-generator" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><LicenseGenerator /></ProtectedRoute>} />
-                  <Route path="/sales-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><SalesReport /></ProtectedRoute>} />
-                  <Route path="/inventory-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><InventoryReport /></ProtectedRoute>} />
-                  <Route path="/customers-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><CustomersReport /></ProtectedRoute>} />
-                  <Route path="/vat-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><VatReport /></ProtectedRoute>} />
-                  
-                  <Route
-                    path="/company-management"
-                    element={
-                      <ProtectedRoute allowedRoles={["admin", "owner"]}>
-                        <CompanyManagement />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-              </MainLayout>
-            </AuthProvider>
-          }
-        />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/login" element={<Login language={language} />} />
+      <Route
+        path="/*"
+        element={
+          <AuthProvider>
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner", "kitchen", "manager"]}><Pos /></ProtectedRoute>} />
+                <Route path="/pos" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Pos /></ProtectedRoute>} />
+                <Route path="/products" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Products /></ProtectedRoute>} />
+                <Route path="/categories" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Categories /></ProtectedRoute>} />
+                <Route path="/invoices" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Invoices /></ProtectedRoute>} />
+                <Route path="/purchases" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Purchases /></ProtectedRoute>} />
+                <Route path="/customers" element={<ProtectedRoute allowedRoles={["cashier", "supervisor", "admin", "owner"]}><Customers /></ProtectedRoute>} />
+                <Route path="/inventory" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Inventory /></ProtectedRoute>} />
+                <Route path="/kitchen" element={<ProtectedRoute allowedRoles={["kitchen", "supervisor", "admin", "owner"]}><Kitchen /></ProtectedRoute>} />
+                <Route path="/reports" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><Reports /></ProtectedRoute>} />
+                <Route path="/user-management" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><UserManagement /></ProtectedRoute>} />
+                <Route path="/business-settings" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><BusinessSettings /></ProtectedRoute>} />
+                <Route path="/license-generator" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><LicenseGenerator /></ProtectedRoute>} />
+                <Route path="/sales-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><SalesReport /></ProtectedRoute>} />
+                <Route path="/inventory-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><InventoryReport /></ProtectedRoute>} />
+                <Route path="/customers-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><CustomersReport /></ProtectedRoute>} />
+                <Route path="/vat-report" element={<ProtectedRoute allowedRoles={["supervisor", "admin", "owner"]}><VatReport /></ProtectedRoute>} />
+                
+                <Route
+                  path="/company-management"
+                  element={
+                    <ProtectedRoute allowedRoles={["admin", "owner"]}>
+                      <CompanyManagement />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </MainLayout>
+          </AuthProvider>
+        }
+      />
+    </Routes>
   );
 }
 
