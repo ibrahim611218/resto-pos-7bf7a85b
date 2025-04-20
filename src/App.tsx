@@ -47,8 +47,8 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/add" element={<CategoryAdd />} />
         <Route path="/categories/:id/edit" element={<CategoryEdit />} />
-        <Route path="/orders" element={<OrdersContent />} />
-        <Route path="/settings" element={<SettingsContent />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/invoices" element={<Invoices />} />
         <Route path="/purchases" element={<Purchases />} />
         <Route path="/customers" element={<Customers />} />
@@ -72,4 +72,3 @@ function App() {
 }
 
 export default App;
-
