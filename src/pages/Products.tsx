@@ -32,6 +32,7 @@ const Products = () => {
   }, []);
 
   const handleAddProduct = () => {
+    console.log("Navigating to /products/add");
     navigate("/products/add");
   };
 

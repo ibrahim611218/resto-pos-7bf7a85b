@@ -23,7 +23,9 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log("Fetching categories...");
         const result = await categoryService.getCategories();
+        console.log("Categories fetched:", result);
         setCategories(result);
       } catch (error) {
         console.error("Error fetching categories:", error);
