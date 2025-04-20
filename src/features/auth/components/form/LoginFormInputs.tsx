@@ -51,4 +51,3 @@ const LoginFormInputs: React.FC<LoginFormInputsProps> = ({
 };
 
 export default LoginFormInputs;
-

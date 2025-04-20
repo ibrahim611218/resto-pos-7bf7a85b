@@ -60,4 +60,3 @@ const LoginFormActions: React.FC<LoginFormActionsProps> = ({
 };
 
 export default LoginFormActions;
-

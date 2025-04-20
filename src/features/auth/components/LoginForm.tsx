@@ -111,4 +111,3 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
 };
 
 export default LoginForm;
-
