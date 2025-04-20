@@ -1,9 +1,11 @@
+
 import { User, UserRole } from "@/types";
 
 // Extend User type to include password for the form
 export interface UserWithPassword extends User {
-  password: string;
+  password?: string; // Make password optional with ? modifier
   isActive: boolean;
+  companyId?: string; // Company association
 }
 
 export interface UserFormProps {
@@ -22,12 +24,4 @@ export interface Company {
   isActive: boolean;
 }
 
-export interface UserWithPassword {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  password?: string;
-  isActive: boolean;
-  companyId?: string; // Add company association
-}
+// Remove the duplicate UserWithPassword interface since it's already declared above
