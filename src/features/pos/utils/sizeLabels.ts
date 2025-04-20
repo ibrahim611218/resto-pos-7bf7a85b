@@ -4,13 +4,17 @@ const sizeLabels = {
     en: "Small",
     ar: "صغير"
   },
-  regular: {
-    en: "Regular",
-    ar: "عادي"
+  medium: {
+    en: "Medium",
+    ar: "وسط"  // Updated to use Arabic translation
   },
   large: {
     en: "Large",
     ar: "كبير"
+  },
+  regular: {
+    en: "Regular",
+    ar: "عادي"
   }
 };
 
