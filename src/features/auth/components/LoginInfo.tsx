@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Phone, HelpCircle } from 'lucide-react';
 import { Language } from '@/types';
-import Image from '@/components/ui/image';  // Assuming we'll create this utility component
+import Image from '@/components/ui/image';
 
 interface LoginInfoProps {
   language: Language;
@@ -18,9 +17,9 @@ const LoginInfo: React.FC<LoginInfoProps> = ({ language }) => {
           <Image 
             src="/lovable-uploads/restopos-logo.png" 
             alt="RestoPOS Logo" 
-            width={150} 
-            height={150} 
-            className="mb-4"
+            width={200} 
+            height={200} 
+            className="mb-4 object-contain max-w-full h-auto"
           />
           <h1 className={`text-4xl font-bold ${isArabic ? "font-[Tajawal]" : ""}`}>
             {isArabic ? "نظام نقاط البيع للمطاعم" : "Restaurant POS System"}
