@@ -36,6 +36,6 @@ export interface IDatabaseService {
   savePurchaseInvoice: (invoice: PurchaseInvoice) => Promise<any>;
   
   // Kitchen operations
-  createKitchenOrder: (order: KitchenOrder) => Promise<any>;
+  createKitchenOrder: (invoice: Invoice) => Promise<KitchenOrder>;
   getKitchenOrders: () => Promise<KitchenOrder[]>;
 }
