@@ -4,7 +4,7 @@ import { Invoice } from "@/types";
 import { mockInvoices } from "../data/mockInvoices";
 import { formatDate } from "@/utils/formatters";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
-import { printInvoice } from "@/utils/invoice";
+import { handleInvoiceExport } from "@/utils/invoice";
 
 // Helper to save invoice to localStorage
 export const saveInvoiceToStorage = (invoice: Invoice) => {
@@ -90,6 +90,13 @@ export const useInvoices = () => {
     setSelectedInvoice(null);
   };
 
+  // Print invoice
+  const printInvoice = (invoice: Invoice) => {
+    if (settings) {
+      handleInvoiceExport("print", invoice, settings);
+    }
+  };
+  
   // Refund invoice
   const refundInvoice = (invoice: Invoice) => {
     const refundedInvoice = {
@@ -124,6 +131,27 @@ export const useInvoices = () => {
     }
   };
 
+  // Add invoice
+  const addInvoice = useCallback((invoice: Invoice) => {
+    setInvoices((prevInvoices) => [invoice, ...prevInvoices]);
+  }, []);
+
+  // Update invoice
+  const updateInvoice = useCallback((updatedInvoice: Invoice) => {
+    setInvoices((prevInvoices) =>
+      prevInvoices.map((invoice) =>
+        invoice.id === updatedInvoice.id ? updatedInvoice : invoice
+      )
+    );
+  }, []);
+
+  // Delete invoice
+  const deleteInvoice = useCallback((invoiceId: string) => {
+    setInvoices((prevInvoices) =>
+      prevInvoices.filter((invoice) => invoice.id !== invoiceId)
+    );
+  }, []);
+
   return {
     invoices,
     filteredInvoices,
@@ -137,6 +165,9 @@ export const useInvoices = () => {
     printInvoice,
     refundInvoice,
     loadInvoicesFromStorage,
+    addInvoice,
+    updateInvoice,
+    deleteInvoice,
     saveInvoiceToStorage
   };
 };
