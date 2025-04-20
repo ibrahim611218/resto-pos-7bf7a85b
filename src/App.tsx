@@ -38,7 +38,7 @@ const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode,
     return <Navigate to="/" />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 function App() {

@@ -12,7 +12,11 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "@/context/ThemeContext";
 
-const MainLayout = () => {
+interface MainLayoutProps {
+  children?: React.ReactNode;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
@@ -118,7 +122,7 @@ const MainLayout = () => {
           
           <ScrollArea className="h-full w-full scrollable-content">
             <div className="centered-content" dir={isArabic ? "rtl" : "ltr"}>
-              <Outlet />
+              {children || <Outlet />}
             </div>
           </ScrollArea>
         </div>
