@@ -38,7 +38,7 @@ const CompanyManagement: React.FC = () => {
     email: "",
     password: "",
     subscriptionStart: new Date().toISOString(),
-    subscriptionEnd: new Date().toISOString()
+    subscriptionEnd: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
   };
   
   const [newCompany, setNewCompany] = useState<Company>(newCompanyTemplate);
@@ -62,8 +62,8 @@ const CompanyManagement: React.FC = () => {
       <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
         <p className="text-yellow-800">
           {isArabic 
-            ? "لا تملك صلاحيات كافية للوصول إلى هذه الصفحة" 
-            : "You don't have sufficient permissions to access this page"}
+            ? `لا تملك صلاحيات كافية للوصول إلى هذه الصفحة. فقط المستخدم eng.ibrahimabdalfatah@gmail.com يمكنه الوصول.`
+            : `You don't have sufficient permissions to access this page. Only eng.ibrahimabdalfatah@gmail.com can access it.`}
         </p>
       </div>
     );

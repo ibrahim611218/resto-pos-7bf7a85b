@@ -57,12 +57,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const trimmedEmail = email.trim();
       
+      // First try to authenticate as a user
       const allUsers = await userService.getUsers();
       
       const foundUser = allUsers.find(
         u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
       );
 
+      // If user found, log them in
       if (foundUser) {
         const { password: _, ...userWithoutPassword } = foundUser;
         
@@ -82,6 +84,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return false;
         }
       }
+      
+      // If not found as user, try to authenticate as company
+      const allCompanies = await userService.getCompanies();
+      console.log("Checking company login with:", trimmedEmail, password);
+      console.log("Available companies:", allCompanies);
+      
+      const foundCompany = allCompanies.find(
+        c => c.email?.toLowerCase() === trimmedEmail.toLowerCase() && c.password === password
+      );
+      
+      if (foundCompany) {
+        console.log("Company found:", foundCompany);
+        
+        // Create a user object for the company admin
+        const companyAdminUser = {
+          id: `company-${foundCompany.id}`,
+          name: `Admin (${foundCompany.name})`,
+          email: foundCompany.email,
+          role: 'admin' as UserRole,
+          companyId: foundCompany.id
+        };
+        
+        try {
+          localStorage.setItem('user', JSON.stringify(companyAdminUser));
+          localStorage.setItem('currentCompanyId', foundCompany.id);
+          setUser(companyAdminUser);
+          setIsAuthenticated(true);
+          return true;
+        } catch (error) {
+          console.error("Failed to save company user to localStorage:", error);
+          return false;
+        }
+      }
+      
       return false;
     } catch (error) {
       console.error("Login error:", error);

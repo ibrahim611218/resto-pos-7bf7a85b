@@ -1,11 +1,12 @@
-
 import { UserWithPassword } from "@/features/users/types";
 import { BaseService } from "../base/BaseService";
 import { v4 as uuidv4 } from 'uuid';
+import { Company } from "@/features/users/types";
 
 class UserService extends BaseService {
   private storageKey = 'stored-users';
   private permissionsKey = 'user_permissions_data';
+  private companiesKey = 'stored-companies';
 
   async getUsers(): Promise<UserWithPassword[]> {
     try {
@@ -31,6 +32,19 @@ class UserService extends BaseService {
       return users;
     } catch (error) {
       console.error('Error getting users:', error);
+      return [];
+    }
+  }
+
+  async getCompanies(): Promise<Company[]> {
+    try {
+      const storedCompanies = localStorage.getItem(this.companiesKey);
+      if (storedCompanies) {
+        return JSON.parse(storedCompanies);
+      }
+      return [];
+    } catch (error) {
+      console.error('Error getting companies:', error);
       return [];
     }
   }

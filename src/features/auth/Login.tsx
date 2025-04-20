@@ -29,6 +29,20 @@ const Login: React.FC<LoginProps> = ({ language }) => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    // Prepare the login screen by checking available companies
+    const checkCompanies = async () => {
+      try {
+        const companies = await userService.getCompanies();
+        console.log("Available companies for login:", companies);
+      } catch (error) {
+        console.error("Error loading companies:", error);
+      }
+    };
+    
+    checkCompanies();
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -55,6 +69,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
         toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
         navigate("/");
       } else {
+        console.error("Login failed for:", email);
         toast.error(
           isArabic
             ? "بيانات الدخول غير صحيحة"
