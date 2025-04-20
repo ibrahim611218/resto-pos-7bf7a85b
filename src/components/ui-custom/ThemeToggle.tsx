@@ -37,3 +37,4 @@ const ThemeToggle = ({ className, collapsed = false }: ThemeToggleProps) => {
 };
 
 export default ThemeToggle;
+
