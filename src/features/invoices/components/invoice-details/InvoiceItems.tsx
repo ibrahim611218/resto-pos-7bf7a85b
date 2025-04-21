@@ -13,19 +13,31 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
     <div>
       <h3 className="font-semibold mb-2">الأصناف</h3>
       <div className="space-y-2">
-        {items.map((item) => (
-          <div key={item.id} className="flex justify-between items-center">
-            <div>
-              <span className="font-medium">{item.nameAr || item.name}</span>
-              <span className="text-sm text-muted-foreground mr-2">
-                ({getSizeLabel(item.size, true)}) x {item.quantity}
+        {items.map((item) => {
+          // Only show size if it's not regular AND not empty
+          const shouldShowSize = item.size !== "regular" && item.size !== "";
+          
+          return (
+            <div key={item.id} className="flex justify-between items-center">
+              <div>
+                <span className="font-medium">{item.nameAr || item.name}</span>
+                {shouldShowSize && (
+                  <span className="text-sm text-muted-foreground mr-2">
+                    ({getSizeLabel(item.size, true)}) x {item.quantity}
+                  </span>
+                )}
+                {!shouldShowSize && (
+                  <span className="text-sm text-muted-foreground mr-2">
+                    x {item.quantity}
+                  </span>
+                )}
+              </div>
+              <span>
+                {formatCurrency(item.price * item.quantity, "ar-SA", "SAR")}
               </span>
             </div>
-            <span>
-              {formatCurrency(item.price * item.quantity, "ar-SA", "SAR")}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

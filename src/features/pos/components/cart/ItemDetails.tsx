@@ -20,11 +20,14 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   isArabic,
   sizeLabel,
 }) => {
+  // Only show size label if it's not regular AND not empty
+  const shouldShowSizeLabel = size !== "regular" && size !== "";
+  
   return (
     <div className="flex-1">
       <p className="font-medium">
         {isArabic ? nameAr || name : name}
-        {size !== "regular" && (
+        {shouldShowSizeLabel && (
           <span className="text-xs ml-1 text-muted-foreground">
             ({sizeLabel})
           </span>
