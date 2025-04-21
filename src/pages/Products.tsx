@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const Products = () => {

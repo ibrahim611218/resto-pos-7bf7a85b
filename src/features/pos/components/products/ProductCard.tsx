@@ -6,6 +6,7 @@ import { Plus, Edit } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
+import { useNavigate } from "react-router-dom";
 import { 
   Dialog, 
   DialogContent, 
@@ -23,6 +24,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
@@ -85,6 +87,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
     e.stopPropagation(); // Prevent card click event
     if (onEdit) {
       onEdit(product.id);
+    } else {
+      navigate(`/products/edit/${product.id}`);
     }
   };
 
@@ -112,16 +116,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
                 No Image
               </div>
             )}
-            {onEdit && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
-                onClick={handleEditClick}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-            )}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
+              onClick={handleEditClick}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
             <Button 
               variant="ghost" 
               size="icon" 
