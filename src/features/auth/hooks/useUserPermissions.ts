@@ -92,6 +92,7 @@ export function useUserPermissions() {
   return {
     permissionsMap,
     getUserPermissions,
-    updateUserPermissions
+    updateUserPermissions,
+    allPermissions: allPermissionValues // Export this as part of the hook's return value
   };
 }
