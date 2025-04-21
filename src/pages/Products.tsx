@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Edit } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const Products = () => {
@@ -38,6 +38,11 @@ const Products = () => {
     navigate("/products/add");
   };
 
+  const handleEditProduct = (id: string) => {
+    console.log(`Navigating to edit product with ID: ${id}`);
+    navigate(`/products/edit/${id}`);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -50,6 +55,7 @@ const Products = () => {
       <ProductsGrid 
         viewMode={viewMode} 
         onViewModeChange={setViewMode} 
+        onEditProduct={handleEditProduct}
         key={`products-grid-${refreshTrigger}`}  
       />
     </div>

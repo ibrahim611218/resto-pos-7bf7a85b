@@ -15,11 +15,13 @@ import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 interface ProductsGridProps {
   viewMode?: ViewMode;
   onViewModeChange?: (mode: ViewMode) => void;
+  onEditProduct?: (id: string) => void; // Add this prop
 }
 
 const ProductsGrid: React.FC<ProductsGridProps> = ({ 
   viewMode = "grid-small",
-  onViewModeChange
+  onViewModeChange,
+  onEditProduct
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -195,9 +197,17 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
         <div className={getGridClass()}>
           {filteredProducts.map((product) => (
             viewMode === "list" ? (
-              <ProductListItem key={`${product.id}-${refreshKey}`} product={product} />
+              <ProductListItem 
+                key={`${product.id}-${refreshKey}`} 
+                product={product} 
+                onEdit={onEditProduct}
+              />
             ) : (
-              <ProductCard key={`${product.id}-${refreshKey}`} product={product} />
+              <ProductCard 
+                key={`${product.id}-${refreshKey}`} 
+                product={product} 
+                onEdit={onEditProduct}
+              />
             )
           ))}
         </div>

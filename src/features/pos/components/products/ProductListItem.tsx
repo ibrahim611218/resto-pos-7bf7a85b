@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Edit } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
@@ -18,9 +18,10 @@ import { getSizeLabel } from "../../utils/sizeLabels";
 
 interface ProductListItemProps {
   product: Product;
+  onEdit?: (id: string) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
@@ -80,6 +81,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
     setShowSizeDialog(false);
   };
 
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
+    if (onEdit) {
+      onEdit(product.id);
+    }
+  };
+
   // Ensure product has variants before rendering
   if (!product.variants || product.variants.length === 0) {
     return null; // Or render a fallback UI for products with no variants
@@ -120,17 +128,29 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                 </p>
               )}
             </div>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="ml-2 flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent card click event
-                handleAddToCart();
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+            <div className="flex ml-2 gap-2">
+              {onEdit && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="flex-shrink-0 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
+                  onClick={handleEditClick}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              )}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click event
+                  handleAddToCart();
+                }}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

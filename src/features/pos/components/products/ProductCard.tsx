@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Edit } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
@@ -18,9 +18,10 @@ import { getSizeLabel } from "../../utils/sizeLabels";
 
 interface ProductCardProps {
   product: Product;
+  onEdit?: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
@@ -80,6 +81,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setShowSizeDialog(false);
   };
 
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
+    if (onEdit) {
+      onEdit(product.id);
+    }
+  };
+
   // Ensure product has variants before rendering
   if (!product.variants || product.variants.length === 0) {
     return null; // Or render a fallback UI for products with no variants
@@ -103,6 +111,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 No Image
               </div>
+            )}
+            {onEdit && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
+                onClick={handleEditClick}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
             )}
             <Button 
               variant="ghost" 
