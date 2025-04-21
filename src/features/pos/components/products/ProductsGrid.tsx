@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Category } from "@/types";
@@ -7,7 +8,7 @@ import categoryService from "@/services/categories/CategoryService";
 import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
-import { Trash } from "lucide-react";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface ProductsGridProps {
   viewMode?: ViewMode;
@@ -24,6 +25,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const { user } = useAuth();
+  const companyId = user?.companyId || localStorage.getItem('currentCompanyId');
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -47,7 +51,16 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       console.log('Active (non-deleted) categories:', activeCategories.length);
 
       const validCategoryIds = new Set(activeCategories.map(c => c.id));
-      const activeProducts = productsResult.filter(product =>
+      
+      // Filter products by the current company ID if available
+      let companyProducts = productsResult;
+      if (companyId) {
+        companyProducts = productsResult.filter(product => 
+          !product.companyId || product.companyId === companyId
+        );
+      }
+      
+      const activeProducts = companyProducts.filter(product =>
         validCategoryIds.has(product.categoryId) || !product.categoryId
       );
 
@@ -59,7 +72,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [isArabic]);
+  }, [isArabic, companyId]);
 
   useEffect(() => {
     loadData();

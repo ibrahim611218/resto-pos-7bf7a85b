@@ -1,196 +1,118 @@
 
-import { Category } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-import { sampleCategories } from '@/data/sampleData';
+import { Category } from '@/types';
+import { BaseService } from '../base/BaseService';
 
-class CategoryService {
-  private readonly STORAGE_KEY = 'categories';
+class CategoryService extends BaseService {
+  private storageKey = 'stored-categories';
 
   async getCategories(): Promise<Category[]> {
     try {
-      console.log("CategoryService: Getting categories");
-      // Try to get categories from localStorage
-      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
-      let categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
+      // Get the current company ID
+      const currentCompanyId = localStorage.getItem('currentCompanyId');
       
-      // If no categories in localStorage, use sample data
-      if (categories.length === 0) {
-        categories = sampleCategories;
-        // Save sample data to localStorage for future use
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
-      }
+      const storedCategories = localStorage.getItem(this.storageKey);
+      let categories: Category[] = [];
       
-      // Explicitly filter out deleted categories
-      const activeCategories = categories.filter(category => category && !category.isDeleted);
-      console.log(`CategoryService: Found ${categories.length} total categories, ${activeCategories.length} active`);
-      
-      return activeCategories;
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      return [];
-    }
-  }
-
-  async getAllCategories(): Promise<Category[]> {
-    // This method gets ALL categories including deleted ones (for admin purposes)
-    try {
-      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
-      const categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
-      
-      if (categories.length === 0) {
-        return sampleCategories;
+      if (storedCategories) {
+        categories = JSON.parse(storedCategories);
+        
+        // If we have a company ID, filter categories by company
+        if (currentCompanyId) {
+          categories = categories.filter(cat => 
+            !cat.companyId || cat.companyId === currentCompanyId
+          );
+        }
+        
+        console.log(`CategoryService: Found ${categories.length} total categories, ${categories.filter(cat => !cat.isDeleted).length} active`);
       }
       
       return categories;
     } catch (error) {
-      console.error('Error fetching all categories:', error);
+      console.error("Error getting categories:", error);
       return [];
     }
   }
 
   async getCategoryById(id: string): Promise<Category | null> {
     try {
-      // Get all categories including deleted ones
-      const categories = await this.getAllCategories();
+      const categories = await this.getCategories();
       return categories.find(category => category.id === id) || null;
     } catch (error) {
-      console.error('Error fetching category by ID:', error);
+      console.error("Error getting category:", error);
       return null;
     }
   }
-
-  async saveCategory(category: Category): Promise<boolean> {
+  
+  async saveCategory(category: Category): Promise<{success: boolean, id?: string, error?: string}> {
     try {
-      // Get all categories including soft-deleted ones
-      const allCategories = await this.getAllCategories();
-      
-      const existingIndex = allCategories.findIndex(c => c.id === category.id);
-      
-      // Ensure the category has all required fields
-      const newCategory = {
-        ...category,
-        id: category.id || `cat-${uuidv4()}`,
-        isDeleted: false // Make sure it's marked as not deleted
-      };
-      
-      if (existingIndex >= 0) {
-        allCategories[existingIndex] = newCategory;
-      } else {
-        allCategories.push(newCategory);
+      // Ensure category has an ID
+      if (!category.id) {
+        category.id = uuidv4();
       }
       
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allCategories));
+      // Get the current company ID and associate it with the category
+      const currentCompanyId = localStorage.getItem('currentCompanyId');
+      if (currentCompanyId) {
+        category.companyId = currentCompanyId;
+      }
       
-      // Dispatch events to notify the application of data changes
+      // Get all categories (not filtered by company)
+      const storedCategories = localStorage.getItem(this.storageKey);
+      let categories: Category[] = storedCategories ? JSON.parse(storedCategories) : [];
+      
+      // Check if category already exists
+      const index = categories.findIndex(c => c.id === category.id);
+      
+      if (index !== -1) {
+        // Update existing category
+        categories[index] = category;
+      } else {
+        // Add new category
+        categories.push(category);
+      }
+      
+      // Save back to localStorage
+      localStorage.setItem(this.storageKey, JSON.stringify(categories));
+      
+      // Dispatch event to notify components
       window.dispatchEvent(new CustomEvent('category-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
       
-      return true;
+      return { success: true, id: category.id };
     } catch (error) {
-      console.error('Error saving category:', error);
-      return false;
+      console.error("Error saving category:", error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   }
-
+  
   async deleteCategory(id: string): Promise<boolean> {
     try {
-      console.log(`Deleting category with id: ${id}`);
-      const allCategories = await this.getAllCategories();
-      const categoryIndex = allCategories.findIndex(category => category.id === id);
+      // Get all categories
+      const storedCategories = localStorage.getItem(this.storageKey);
+      if (!storedCategories) return false;
       
-      if (categoryIndex === -1) {
-        console.log('Category not found');
-        return false; // Category not found
-      }
+      let categories: Category[] = JSON.parse(storedCategories);
       
-      // Soft delete: Mark the category as deleted rather than removing it
-      allCategories[categoryIndex] = {
-        ...allCategories[categoryIndex],
+      // Find the category
+      const index = categories.findIndex(c => c.id === id);
+      if (index === -1) return false;
+      
+      // Mark as deleted instead of removing
+      categories[index] = {
+        ...categories[index],
         isDeleted: true
       };
       
-      // Save the updated list to localStorage
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allCategories));
+      // Save back to localStorage
+      localStorage.setItem(this.storageKey, JSON.stringify(categories));
       
-      // Dispatch events to notify the application of data changes
+      // Notify components
       window.dispatchEvent(new CustomEvent('category-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
-      
-      // If using electron, try to delete from the database as well
-      if (window.db && window.db.deleteCategory) {
-        try {
-          await window.db.deleteCategory(id);
-          console.log(`Category ${id} deleted from database`);
-        } catch (dbError) {
-          console.error('Error deleting category from database:', dbError);
-        }
-      }
       
       return true;
     } catch (error) {
-      console.error('Error deleting category:', error);
+      console.error("Error deleting category:", error);
       return false;
-    }
-  }
-
-  async deleteAllCategories(): Promise<boolean> {
-    try {
-      console.log('Deleting all categories');
-      // Get current categories
-      const allCategories = await this.getAllCategories();
-      
-      // Mark all categories as deleted
-      const updatedCategories = allCategories.map(category => ({
-        ...category,
-        isDeleted: true
-      }));
-      
-      // Save the updated list to localStorage
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedCategories));
-      
-      // If using electron, try to delete from the database as well
-      if (window.db) {
-        try {
-          if (window.db.deleteAllCategories) {
-            await window.db.deleteAllCategories();
-          } else if (window.electron) {
-            await window.electron.invoke('db:deleteAllCategories');
-          }
-          console.log('All categories deleted from database');
-        } catch (dbError) {
-          console.error('Error deleting all categories from database:', dbError);
-        }
-      }
-      
-      // Dispatch events to notify the application of data changes
-      window.dispatchEvent(new CustomEvent('category-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
-      
-      return true;
-    } catch (error) {
-      console.error('Error deleting all categories:', error);
-      return false;
-    }
-  }
-
-  // Method to clear the cache and force refresh
-  async refreshCategories(): Promise<void> {
-    try {
-      // Force a fresh fetch
-      if (window.db && window.db.getCategories) {
-        const freshCategories = await window.db.getCategories();
-        
-        // Filter out deleted categories
-        const activeCategories = freshCategories.filter((cat: Category) => !cat.isDeleted);
-        
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(activeCategories));
-      }
-      
-      // Dispatch events to notify the application of data changes
-      window.dispatchEvent(new CustomEvent('category-updated'));
-      window.dispatchEvent(new CustomEvent('data-updated'));
-    } catch (error) {
-      console.error('Error refreshing categories:', error);
     }
   }
 }
