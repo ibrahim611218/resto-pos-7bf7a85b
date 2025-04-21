@@ -31,6 +31,13 @@ export const useCategoryForm = () => {
         try {
           const fetchedCategory = await categoryService.getCategoryById(id);
           if (fetchedCategory) {
+            // Ensure we're not editing a deleted category
+            if (fetchedCategory.isDeleted) {
+              toast.error(isArabic ? "هذا التصنيف محذوف" : "This category is deleted");
+              navigate("/categories");
+              return;
+            }
+            
             setCategory(fetchedCategory);
           } else {
             toast.error(isArabic ? "لم يتم العثور على الفئة" : "Category not found");
@@ -78,7 +85,7 @@ export const useCategoryForm = () => {
       const categoryToSave: Category = {
         ...category,
         id: category.id || `cat-${uuidv4()}`,
-        isDeleted: false
+        isDeleted: false  // Always ensure isDeleted is explicitly set to false
       };
       
       // Save the category

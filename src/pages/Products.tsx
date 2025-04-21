@@ -17,17 +17,19 @@ const Products = () => {
 
   // Listen for product updates to trigger refresh
   useEffect(() => {
-    const handleProductUpdate = () => {
-      console.log("Products page detected product update, refreshing...");
+    const handleUpdate = () => {
+      console.log("Products page detected update, refreshing...");
       setRefreshTrigger(prev => prev + 1);
     };
 
-    window.addEventListener('product-updated', handleProductUpdate);
-    window.addEventListener('data-updated', handleProductUpdate);
+    window.addEventListener('product-updated', handleUpdate);
+    window.addEventListener('category-updated', handleUpdate);
+    window.addEventListener('data-updated', handleUpdate);
 
     return () => {
-      window.removeEventListener('product-updated', handleProductUpdate);
-      window.removeEventListener('data-updated', handleProductUpdate);
+      window.removeEventListener('product-updated', handleUpdate);
+      window.removeEventListener('category-updated', handleUpdate);
+      window.removeEventListener('data-updated', handleUpdate);
     };
   }, []);
 

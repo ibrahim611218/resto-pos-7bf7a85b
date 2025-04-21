@@ -44,8 +44,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       console.log('Loaded categories:', categoriesResult.length);
       console.log('Loaded products:', productsResult.length);
       
-      // Filter out any categories that are marked as deleted
-      const activeCategories = categoriesResult.filter(cat => !cat.isDeleted);
+      // Ensure we're only using active categories (not deleted)
+      const activeCategories = categoriesResult.filter(cat => cat && !cat.isDeleted);
+      console.log('Active (non-deleted) categories:', activeCategories.length);
       
       // Filter out products with deleted categories
       const validCategoryIds = new Set(activeCategories.map(c => c.id));

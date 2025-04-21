@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { sampleCategories } from "@/data/sampleData";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tag, Plus, Pencil, Trash2 } from "lucide-react";
@@ -9,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "sonner";
 import { Category } from "@/types";
 import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
+import categoryService from "@/services/categories/CategoryService";
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -21,26 +21,45 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoading(true);
         // Check if running in electron environment
         if (typeof window !== "undefined" && window.db) {
           const result = await window.db.getCategories();
-          setCategories(result || []);
+          // Filter out deleted categories
+          const activeCategories = result.filter((cat: Category) => !cat.isDeleted);
+          setCategories(activeCategories || []);
         } else {
-          // In browser mode, use sample data
+          // In browser mode, use sample data but filter out deleted ones
           console.log("Running in browser mode - using sample data");
-          setCategories(sampleCategories);
+          const categoriesData = await categoryService.getCategories();
+          setCategories(categoriesData);
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
         toast.error(isArabic ? "حدث خطأ أثناء تحميل التصنيفات" : "Error loading categories");
+        
         // Fallback to sample data
-        setCategories(sampleCategories);
+        const categoriesData = await categoryService.getCategories();
+        setCategories(categoriesData);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCategories();
+
+    // Add event listener to handle category updates
+    const handleCategoryUpdated = () => {
+      fetchCategories();
+    };
+
+    window.addEventListener('category-updated', handleCategoryUpdated);
+    window.addEventListener('data-updated', handleCategoryUpdated);
+
+    return () => {
+      window.removeEventListener('category-updated', handleCategoryUpdated);
+      window.removeEventListener('data-updated', handleCategoryUpdated);
+    };
   }, [isArabic]);
 
   const handleDelete = async (categoryId: string) => {
@@ -55,6 +74,7 @@ const Categories = () => {
         }
       } else {
         // In browser mode, simulate success
+        await categoryService.deleteCategory(categoryId);
         setCategories(prevCategories => prevCategories.filter(cat => cat.id !== categoryId));
         toast.success(isArabic ? "تم حذف التصنيف بنجاح (وضع المحاكاة)" : "Category deleted successfully (simulation mode)");
       }
@@ -71,6 +91,9 @@ const Categories = () => {
       </div>
     );
   }
+
+  // Only show non-deleted categories
+  const visibleCategories = categories.filter(category => !category.isDeleted);
 
   const getGridClass = () => {
     switch (viewMode) {
@@ -99,7 +122,7 @@ const Categories = () => {
       </div>
 
       <div className={getGridClass()}>
-        {categories.map((category) => (
+        {visibleCategories.map((category) => (
           <Card key={category.id} className={`overflow-hidden ${viewMode === "list" ? "flex" : ""}`}>
             <div className={viewMode === "list" ? "w-40 h-full" : ""}>
               <img
@@ -144,7 +167,7 @@ const Categories = () => {
         ))}
       </div>
       
-      {categories.length === 0 && (
+      {visibleCategories.length === 0 && (
         <div className="text-center p-8">
           <p className="text-muted-foreground text-lg">
             {isArabic ? "لا توجد تصنيفات. أضف تصنيفًا جديدًا للبدء." : "No categories found. Add a new category to get started."}

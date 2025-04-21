@@ -24,9 +24,12 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
     const fetchCategories = async () => {
       try {
         console.log("Fetching categories...");
+        setIsLoading(true);
         const result = await categoryService.getCategories();
-        console.log("Categories fetched:", result);
-        setCategories(result);
+        // Ensure we filter out any deleted categories
+        const activeCategories = result.filter(cat => !cat.isDeleted);
+        console.log("Categories fetched:", activeCategories.length);
+        setCategories(activeCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {
@@ -35,6 +38,17 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
     };
     
     fetchCategories();
+    
+    // Add event listener for category updates
+    const handleCategoryUpdate = () => {
+      fetchCategories();
+    };
+    
+    window.addEventListener('category-updated', handleCategoryUpdate);
+    
+    return () => {
+      window.removeEventListener('category-updated', handleCategoryUpdate);
+    };
   }, []);
 
   return (

@@ -8,6 +8,7 @@ class CategoryService {
 
   async getCategories(): Promise<Category[]> {
     try {
+      console.log("CategoryService: Getting categories");
       // Try to get categories from localStorage
       const categoriesString = localStorage.getItem(this.STORAGE_KEY);
       let categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
@@ -19,17 +20,38 @@ class CategoryService {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
       }
       
-      // Filter out inactive categories and ensure each has required properties
-      return categories.filter(category => !category.isDeleted);
+      // Explicitly filter out deleted categories
+      const activeCategories = categories.filter(category => category && !category.isDeleted);
+      console.log(`CategoryService: Found ${categories.length} total categories, ${activeCategories.length} active`);
+      
+      return activeCategories;
     } catch (error) {
       console.error('Error fetching categories:', error);
       return [];
     }
   }
 
+  async getAllCategories(): Promise<Category[]> {
+    // This method gets ALL categories including deleted ones (for admin purposes)
+    try {
+      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
+      const categories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
+      
+      if (categories.length === 0) {
+        return sampleCategories;
+      }
+      
+      return categories;
+    } catch (error) {
+      console.error('Error fetching all categories:', error);
+      return [];
+    }
+  }
+
   async getCategoryById(id: string): Promise<Category | null> {
     try {
-      const categories = await this.getCategories();
+      // Get all categories including deleted ones
+      const categories = await this.getAllCategories();
       return categories.find(category => category.id === id) || null;
     } catch (error) {
       console.error('Error fetching category by ID:', error);
@@ -40,8 +62,7 @@ class CategoryService {
   async saveCategory(category: Category): Promise<boolean> {
     try {
       // Get all categories including soft-deleted ones
-      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
-      const allCategories: Category[] = categoriesString ? JSON.parse(categoriesString) : [];
+      const allCategories = await this.getAllCategories();
       
       const existingIndex = allCategories.findIndex(c => c.id === category.id);
       
@@ -73,24 +94,23 @@ class CategoryService {
 
   async deleteCategory(id: string): Promise<boolean> {
     try {
-      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
-      if (!categoriesString) return false;
-      
-      const categories: Category[] = JSON.parse(categoriesString);
-      const categoryIndex = categories.findIndex(category => category.id === id);
+      console.log(`Deleting category with id: ${id}`);
+      const allCategories = await this.getAllCategories();
+      const categoryIndex = allCategories.findIndex(category => category.id === id);
       
       if (categoryIndex === -1) {
+        console.log('Category not found');
         return false; // Category not found
       }
       
       // Soft delete: Mark the category as deleted rather than removing it
-      categories[categoryIndex] = {
-        ...categories[categoryIndex],
+      allCategories[categoryIndex] = {
+        ...allCategories[categoryIndex],
         isDeleted: true
       };
       
       // Save the updated list to localStorage
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allCategories));
       
       // Dispatch events to notify the application of data changes
       window.dispatchEvent(new CustomEvent('category-updated'));
@@ -115,23 +135,18 @@ class CategoryService {
 
   async deleteAllCategories(): Promise<boolean> {
     try {
+      console.log('Deleting all categories');
       // Get current categories
-      const categoriesString = localStorage.getItem(this.STORAGE_KEY);
-      if (categoriesString) {
-        const categories: Category[] = JSON.parse(categoriesString);
-        
-        // Mark all categories as deleted
-        const updatedCategories = categories.map(category => ({
-          ...category,
-          isDeleted: true
-        }));
-        
-        // Save the updated list to localStorage
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedCategories));
-      } else {
-        // If no categories exist, just create an empty array
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify([]));
-      }
+      const allCategories = await this.getAllCategories();
+      
+      // Mark all categories as deleted
+      const updatedCategories = allCategories.map(category => ({
+        ...category,
+        isDeleted: true
+      }));
+      
+      // Save the updated list to localStorage
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedCategories));
       
       // If using electron, try to delete from the database as well
       if (window.db) {
