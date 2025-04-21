@@ -7,6 +7,7 @@ export const useUserState = () => {
   const [selectedUser, setSelectedUser] = useState<UserWithPassword | null>(null);
   const [newUser, setNewUser] = useState<UserWithPassword>({
     id: "",
+    username: "",  // Added username field
     name: "",
     email: "",
     role: "cashier",

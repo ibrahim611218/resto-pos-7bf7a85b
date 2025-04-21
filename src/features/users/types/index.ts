@@ -1,9 +1,12 @@
 
-import { User, UserRole } from "@/types";
+import { User } from "@/types";
+
+// Define UserRole type
+export type UserRole = "admin" | "owner" | "supervisor" | "cashier" | "kitchen";
 
 // Extend User type to include password for the form
 export interface UserWithPassword extends User {
-  password?: string; // Make password optional with ? modifier
+  password?: string;
   isActive: boolean;
   companyId?: string; // Company association
 }
@@ -15,16 +18,13 @@ export interface UserFormProps {
   canManageAdmins: boolean;
 }
 
-// Use export type for UserRole
-export type { UserRole };
-
 export interface Company {
   id: string;
   name: string;
   isActive: boolean;
   createdAt: string;
-  email?: string;      // Add company email
-  password?: string;   // Add company password
+  email?: string;
+  password?: string;
   address?: string;
   phone?: string;
   taxNumber?: string;

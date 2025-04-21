@@ -1,6 +1,6 @@
 
-import { Invoice, InvoiceStatus } from "./invoices";
-import { User, UserRole } from "./auth";
+import { Invoice } from "./invoices";
+import { User } from "./auth";
 import { Product, Category } from "./products";
 import { Company } from "@/features/users/types";
 import { KitchenOrder } from "./kitchen";
@@ -23,8 +23,8 @@ export interface IDatabaseService {
 
   // Categories
   getCategories: () => Promise<Category[]>;
-  deleteCategory: (categoryId: string) => Promise<boolean>;
-  deleteAllCategories: () => Promise<boolean>;
+  deleteCategory: (categoryId: string) => Promise<{ success: boolean }>;
+  deleteAllCategories: () => Promise<{ success: boolean }>;
   
   // Users
   getUsers: () => Promise<User[]>;
@@ -36,9 +36,9 @@ export interface IDatabaseService {
 
   // Companies
   getCompanies: () => Promise<Company[]>;
-  saveCompany: (company: Company) => Promise<boolean>;
-  updateCompany: (company: Company) => Promise<boolean>;
-  deleteCompany: (companyId: string) => Promise<boolean>;
+  saveCompany: (company: Company) => Promise<{ success: boolean; id?: string }>;
+  updateCompany: (company: Company) => Promise<{ success: boolean }>;
+  deleteCompany: (companyId: string) => Promise<{ success: boolean }>;
 
   // Purchases
   getPurchaseInvoices: () => Promise<PurchaseInvoice[]>;

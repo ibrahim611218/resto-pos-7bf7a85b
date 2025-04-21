@@ -10,8 +10,10 @@ export interface User {
   role: UserRole;
   permissions?: string[];
   image?: string;
-  companyId?: string; // Add companyId property
+  companyId?: string;
 }
+
+export type { UserRole };  // Explicitly re-export UserRole
 
 export interface AuthState {
   user: User | null;

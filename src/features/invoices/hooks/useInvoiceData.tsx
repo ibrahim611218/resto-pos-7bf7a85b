@@ -45,7 +45,7 @@ export const useInvoiceData = () => {
         });
         return true;
       } else {
-        console.error("Failed to save invoice:", result.error);
+        console.error("Failed to save invoice:", result.error || "Unknown error");
         return false;
       }
     } catch (error) {

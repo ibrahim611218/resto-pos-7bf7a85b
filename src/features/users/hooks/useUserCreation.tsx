@@ -52,14 +52,19 @@ export const useUserCreation = (
     
     try {
       const userId = uuidv4();
-      const userToAdd = { 
+      const userToAdd: UserWithPassword = { 
         ...newUser, 
-        id: userId, 
+        id: userId,
+        username: newUser.email.split('@')[0], // Generate username from email
         isActive: true,
         companyId: localStorage.getItem('currentCompanyId') // Associate with current company
       };
       
-      await userService.saveUser(userToAdd);
+      const result = await userService.saveUser(userToAdd);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to save user");
+      }
+      
       console.log("User saved successfully:", userToAdd);
       
       const defaultPermissions = getDefaultPermissions(newUser.role);
@@ -69,6 +74,7 @@ export const useUserCreation = (
       
       setNewUser({
         id: "",
+        username: "",
         name: "",
         email: "",
         role: "cashier",

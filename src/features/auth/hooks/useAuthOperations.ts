@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { User, UserRole } from '@/types';
+import { User } from '@/types';
+import { UserRole } from '@/features/users/types';
 import { userService } from '@/services';
 
 export const useAuthOperations = (
@@ -50,8 +51,9 @@ export const useAuthOperations = (
       if (foundCompany) {
         console.log("Company found:", foundCompany);
         
-        const companyAdminUser = {
+        const companyAdminUser: User = {
           id: `company-${foundCompany.id}`,
+          username: `company-${foundCompany.id}`,  // Added username
           name: `Admin (${foundCompany.name})`,
           email: foundCompany.email || '',
           role: 'admin' as UserRole,

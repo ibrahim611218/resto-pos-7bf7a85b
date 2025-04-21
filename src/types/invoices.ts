@@ -1,6 +1,7 @@
-
 import { PaymentMethod } from './payment';
 import { Customer } from './customers';
+
+export type InvoiceStatus = "completed" | "pending" | "cancelled" | "refunded";
 
 export interface Invoice {
   id: string;
@@ -21,7 +22,7 @@ export interface Invoice {
   customer?: Customer;
   notes?: string;
   createdAt?: string;
-  status?: "completed" | "cancelled" | "refunded" | "pending";
+  status?: InvoiceStatus;
   orderType?: "takeaway" | "dineIn";
   tableNumber?: string;
   paidAmount: number;
@@ -39,7 +40,9 @@ export interface InvoiceItem {
   productId?: string;
   variantId?: string;
   taxable?: boolean;
-  type?: "sized" | "single"; // Add the type property as optional
+  type?: "sized" | "single";
 }
 
 export type InvoiceExportType = "print" | "pdf" | "email";
+
+export { InvoiceStatus };

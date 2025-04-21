@@ -1,5 +1,6 @@
 
-import { User, UserRole } from "@/types";
+import { User } from "@/types";
+import { UserRole } from "@/features/users/types";
 
 // Note: In a real app, we would never store passwords in code
 // This is just for demonstration purposes
@@ -11,6 +12,7 @@ interface MockUser extends User {
 export const mockUsers: MockUser[] = [
   {
     id: "4",
+    username: "ibrahim",  // Added username property
     name: "إبراهيم عبدالفتاح",
     email: "eng.ibrahimabdalfatah@gmail.com",
     role: "admin",

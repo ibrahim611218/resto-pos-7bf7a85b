@@ -31,32 +31,69 @@ const databaseService: IDatabaseService = {
     return categoryService.getCategories();
   },
   deleteCategory: async (categoryId: string) => {
-    return categoryService.deleteCategory(categoryId);
+    const result = await categoryService.deleteCategory(categoryId);
+    return { success: result };
   },
   deleteAllCategories: async () => {
-    return categoryService.deleteAllCategories();
+    const result = await categoryService.deleteAllCategories();
+    return { success: result };
   },
 
   // User methods
   getUsers: userService.getUsers,
-  saveUser: userService.saveUser,
-  updateUser: userService.updateUser,
-  deleteUser: userService.deleteUser,
-  updateUserPermissions: userService.updateUserPermissions,
-  updateUserPassword: userService.updateUserPassword,
+  saveUser: async (user) => {
+    const result = await userService.saveUser(user);
+    return { success: !!result, id: user.id };
+  },
+  updateUser: async (user) => {
+    const result = await userService.updateUser(user);
+    return { success: !!result };
+  },
+  deleteUser: async (userId) => {
+    const result = await userService.deleteUser(userId);
+    return { success: !!result };
+  },
+  updateUserPermissions: async (userId, permissions) => {
+    const result = await userService.updateUserPermissions(userId, permissions);
+    return { success: !!result };
+  },
+  updateUserPassword: async (userId, newPassword) => {
+    const result = await userService.updateUserPassword(userId, newPassword);
+    return { success: !!result };
+  },
 
   // Company methods
   getCompanies: companyService.getCompanies,
-  saveCompany: companyService.saveCompany,
-  updateCompany: companyService.updateCompany,
-  deleteCompany: companyService.deleteCompany,
+  saveCompany: async (company) => {
+    const result = await companyService.saveCompany(company);
+    return { success: !!result, id: company.id };
+  },
+  updateCompany: async (company) => {
+    const result = await companyService.updateCompany(company);
+    return { success: !!result };
+  },
+  deleteCompany: async (companyId) => {
+    const result = await companyService.deleteCompany(companyId);
+    return { success: !!result };
+  },
 
   // Purchases methods
   getPurchaseInvoices: purchasesService.getPurchaseInvoices,
-  savePurchaseInvoice: purchasesService.savePurchaseInvoice,
+  savePurchaseInvoice: async (invoice) => {
+    const result = await purchasesService.savePurchaseInvoice(invoice);
+    return { success: !!result, id: invoice.id };
+  },
 
   // Kitchen methods
-  createKitchenOrder: kitchenOrderService.createKitchenOrder,
+  createKitchenOrder: async (items) => {
+    try {
+      const result = await kitchenOrderService.createKitchenOrder(items);
+      return { success: true, id: result.id };
+    } catch (error) {
+      console.error("Error creating kitchen order:", error);
+      return { success: false };
+    }
+  },
   getKitchenOrders: kitchenOrderService.getKitchenOrders
 };
 
