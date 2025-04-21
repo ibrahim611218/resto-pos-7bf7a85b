@@ -32,4 +32,5 @@ export interface Category {
   descriptionAr?: string;
   image?: string;
   imageUrl?: string;
+  isDeleted?: boolean; // Flag to indicate if category is deleted
 }

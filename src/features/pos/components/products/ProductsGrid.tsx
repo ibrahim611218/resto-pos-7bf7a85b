@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
-import { Product } from "@/types";
+import { Product, Category } from "@/types";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -27,7 +27,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0); // Add a refresh key to force re-render
 
@@ -36,26 +36,25 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       setLoading(true);
       console.log('Loading products and categories data');
       
-      if (window.db) {
-        const [categoriesResult, productsResult] = await Promise.all([
-          window.db.getCategories(),
-          window.db.getProducts()
-        ]);
-        console.log('Loaded products from db:', productsResult.length);
-        console.log('Loaded categories from db:', categoriesResult.length);
-        setCategories(categoriesResult);
-        setProducts(productsResult);
-      } else {
-        console.log('Loading data from local storage services for POS');
-        const [categoriesResult, productsResult] = await Promise.all([
-          categoryService.getCategories(),
-          productService.getProducts()
-        ]);
-        console.log('Loaded products from localStorage:', productsResult.length);
-        console.log('Loaded categories from localStorage:', categoriesResult.length);
-        setCategories(categoriesResult);
-        setProducts(productsResult);
-      }
+      const [categoriesResult, productsResult] = await Promise.all([
+        categoryService.getCategories(),
+        productService.getProducts()
+      ]);
+      
+      console.log('Loaded categories:', categoriesResult.length);
+      console.log('Loaded products:', productsResult.length);
+      
+      // Filter out any categories that are marked as deleted
+      const activeCategories = categoriesResult.filter(cat => !cat.isDeleted);
+      
+      // Filter out products with deleted categories
+      const validCategoryIds = new Set(activeCategories.map(c => c.id));
+      const activeProducts = productsResult.filter(product => 
+        validCategoryIds.has(product.categoryId) || !product.categoryId
+      );
+      
+      setCategories(activeCategories);
+      setProducts(activeProducts);
     } catch (error) {
       console.error('Error loading data:', error);
       toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
@@ -93,7 +92,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       window.removeEventListener('product-updated', handleDataUpdate);
       window.removeEventListener('category-updated', handleDataUpdate);
     };
-  }, [isArabic, loadData]);
+  }, [loadData]);
 
   useEffect(() => {
     // Reset selected category to "all" if the current selection no longer exists
@@ -121,7 +120,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 
     console.log(`Filtering products: ${result.length} results from ${products.length} products`);
     setFilteredProducts(result);
-  }, [searchTerm, selectedCategory, products, categories, refreshKey]); // Add categories to dependencies
+  }, [searchTerm, selectedCategory, products, categories, refreshKey]);
   
   const getGridClass = () => {
     switch (viewMode) {
@@ -167,18 +166,24 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       </div>
 
       <div className="overflow-x-auto pb-2 px-1">
-        <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-          <TabsList className="h-10 p-1 w-full inline-flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            <TabsTrigger value="all" className="px-4 whitespace-nowrap flex-shrink-0">
-              {isArabic ? "جميع الأصناف" : "All Categories"}
-            </TabsTrigger>
-            {categories.map((category) => (
-              <TabsTrigger key={`cat-${category.id}-${refreshKey}`} value={category.id} className="px-4 whitespace-nowrap flex-shrink-0">
-                {isArabic ? category.nameAr || category.name : category.name}
+        {categories.length > 0 ? (
+          <Tabs defaultValue="all" value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+            <TabsList className="h-10 p-1 w-full inline-flex overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+              <TabsTrigger value="all" className="px-4 whitespace-nowrap flex-shrink-0">
+                {isArabic ? "جميع الأصناف" : "All Categories"}
               </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+              {categories.map((category) => (
+                <TabsTrigger key={`cat-${category.id}-${refreshKey}`} value={category.id} className="px-4 whitespace-nowrap flex-shrink-0">
+                  {isArabic ? category.nameAr || category.name : category.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        ) : (
+          <div className="text-center py-2 text-muted-foreground">
+            {isArabic ? "لا توجد تصنيفات متاحة" : "No categories available"}
+          </div>
+        )}
       </div>
 
       {filteredProducts.length === 0 ? (

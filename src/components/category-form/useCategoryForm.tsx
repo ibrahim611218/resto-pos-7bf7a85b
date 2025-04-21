@@ -5,6 +5,7 @@ import { Category } from "@/types";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import categoryService from "@/services/categories/CategoryService";
+import { v4 as uuidv4 } from "uuid";
 
 export const useCategoryForm = () => {
   const navigate = useNavigate();
@@ -14,38 +15,34 @@ export const useCategoryForm = () => {
   const isArabic = language === "ar";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const emptyCategory: Category = {
+  const emptyCategoryTemplate: Category = {
     id: "",
     name: "",
     nameAr: "",
-    image: "/placeholder.svg"
+    image: "/placeholder.svg",
+    isDeleted: false
   };
 
-  const [category, setCategory] = useState<Category>(emptyCategory);
+  const [category, setCategory] = useState<Category>(emptyCategoryTemplate);
 
   useEffect(() => {
     if (isEditing && id) {
       const fetchCategory = async () => {
         try {
-          const existingCategory = await categoryService.getCategoryById(id);
-          
-          if (existingCategory) {
-            // Ensure nameAr is not undefined
-            setCategory({
-              ...existingCategory,
-              nameAr: existingCategory.nameAr || ""
-            });
+          const fetchedCategory = await categoryService.getCategoryById(id);
+          if (fetchedCategory) {
+            setCategory(fetchedCategory);
           } else {
-            toast.error(isArabic ? "التصنيف غير موجود" : "Category not found");
+            toast.error(isArabic ? "لم يتم العثور على الفئة" : "Category not found");
             navigate("/categories");
           }
         } catch (error) {
-          console.error('Error fetching category:', error);
-          toast.error(isArabic ? "حدث خطأ أثناء جلب التصنيف" : "Error fetching category");
+          console.error("Error fetching category:", error);
+          toast.error(isArabic ? "خطأ في جلب بيانات الفئة" : "Error fetching category");
           navigate("/categories");
         }
       };
-      
+
       fetchCategory();
     }
   }, [id, isEditing, navigate, isArabic]);
@@ -67,66 +64,48 @@ export const useCategoryForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!category.name) {
-      toast.error(isArabic ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields");
-      return;
-    }
-
     setIsSubmitting(true);
     
     try {
-      const updatedCategory: Category = {
+      // Validation
+      if (!category.name.trim()) {
+        toast.error(isArabic ? "اسم الفئة مطلوب" : "Category name is required");
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Set ID if new category
+      const categoryToSave: Category = {
         ...category,
-        id: isEditing ? category.id : `cat-${Date.now()}`
+        id: category.id || `cat-${uuidv4()}`,
+        isDeleted: false
       };
-
-      // Save category using the service
-      await categoryService.saveCategory(updatedCategory);
       
-      // Force a refresh of categories in the app
-      await categoryService.refreshCategories();
+      // Save the category
+      const success = await categoryService.saveCategory(categoryToSave);
       
-      const successMessage = isEditing 
-        ? isArabic ? "تم تعديل التصنيف بنجاح" : "Category updated successfully" 
-        : isArabic ? "تم إضافة التصنيف بنجاح" : "Category added successfully";
-      
-      toast.success(successMessage);
-      navigate("/categories");
+      if (success) {
+        toast.success(
+          isEditing
+            ? (isArabic ? "تم تحديث الفئة بنجاح" : "Category updated successfully")
+            : (isArabic ? "تم إضافة الفئة بنجاح" : "Category added successfully")
+        );
+        
+        // Force a refresh of category data
+        window.dispatchEvent(new CustomEvent('category-updated'));
+        
+        // Navigate back to categories page
+        setTimeout(() => {
+          navigate("/categories");
+        }, 500);
+      } else {
+        throw new Error("Failed to save category");
+      }
     } catch (error) {
-      console.error('Error saving category:', error);
-      toast.error(isArabic ? "حدث خطأ أثناء حفظ التصنيف" : "Error saving category");
+      console.error("Error saving category:", error);
+      toast.error(isArabic ? "حدث خطأ أثناء حفظ الفئة" : "Error saving category");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const deleteCategory = async () => {
-    if (!category.id) return;
-
-    if (confirm(isArabic ? "هل أنت متأكد من حذف هذا التصنيف؟" : "Are you sure you want to delete this category?")) {
-      setIsSubmitting(true);
-      
-      try {
-        const deleted = await categoryService.deleteCategory(category.id);
-        
-        if (deleted) {
-          toast.success(isArabic ? "تم حذف التصنيف بنجاح" : "Category deleted successfully");
-          
-          // Force refresh of category data
-          window.dispatchEvent(new CustomEvent('category-updated'));
-          window.dispatchEvent(new CustomEvent('data-updated'));
-          
-          navigate("/categories");
-        } else {
-          toast.error(isArabic ? "فشل حذف التصنيف" : "Failed to delete category");
-        }
-      } catch (error) {
-        console.error('Error deleting category:', error);
-        toast.error(isArabic ? "حدث خطأ أثناء حذف التصنيف" : "Error deleting category");
-      } finally {
-        setIsSubmitting(false);
-      }
     }
   };
 
@@ -134,11 +113,10 @@ export const useCategoryForm = () => {
     category,
     isEditing,
     isArabic,
+    isSubmitting,
     handleInputChange,
     handleImageChange,
     handleSubmit,
-    deleteCategory,
-    navigate,
-    isSubmitting
+    navigate
   };
 };

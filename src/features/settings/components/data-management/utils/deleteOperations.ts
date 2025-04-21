@@ -12,28 +12,22 @@ export const deleteAllProducts = () => {
 };
 
 export const deleteAllCategories = async () => {
-  localStorage.removeItem('categories');
-  localStorage.removeItem('stored-categories');
-  sampleCategories.length = 0;
-  
-  // Dispatch events to ensure UI updates
-  window.dispatchEvent(new CustomEvent('category-updated'));
-  window.dispatchEvent(new CustomEvent('data-updated'));
-  
-  // If using Electron, also delete categories from the database
-  if (window.db) {
-    try {
-      // Check if the deleteAllCategories method exists, otherwise use the IPC invoke method directly
-      if (window.db.deleteAllCategories) {
-        await window.db.deleteAllCategories();
-      } else if (window.electron) {
-        // Fallback to using IPC invoke directly
-        await window.electron.invoke('db:deleteAllCategories');
-      }
-      console.log('All categories deleted from database');
-    } catch (error) {
-      console.error('Error deleting all categories from database:', error);
+  try {
+    console.log('Deleting all categories');
+    const success = await categoryService.deleteAllCategories();
+    
+    if (success) {
+      // Dispatch events to ensure UI updates
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
+      return true;
+    } else {
+      console.error('Failed to delete all categories');
+      return false;
     }
+  } catch (error) {
+    console.error('Error deleting all categories:', error);
+    return false;
   }
 };
 
