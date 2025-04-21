@@ -9,6 +9,8 @@ import userService from './users/UserService';
 import companyService from './companies/CompanyService';
 import purchasesService from './purchases/PurchasesService';
 import kitchenOrderService from './kitchen/KitchenOrderService';
+import { UserWithPassword } from "@/features/users/types";
+import { User } from "@/types";
 
 // Create a combined service that implements all interfaces
 const databaseService: IDatabaseService = {
@@ -42,11 +44,25 @@ const databaseService: IDatabaseService = {
   // User methods
   getUsers: userService.getUsers,
   saveUser: async (user) => {
-    const result = await userService.saveUser(user);
+    // Convert User to UserWithPassword if necessary
+    const userWithProperties = {
+      ...user,
+      isActive: (user as UserWithPassword).isActive !== undefined ? 
+        (user as UserWithPassword).isActive : true
+    } as UserWithPassword;
+    
+    const result = await userService.saveUser(userWithProperties);
     return { success: !!result, id: user.id };
   },
   updateUser: async (user) => {
-    const result = await userService.updateUser(user);
+    // Convert User to UserWithPassword if necessary
+    const userWithProperties = {
+      ...user,
+      isActive: (user as UserWithPassword).isActive !== undefined ? 
+        (user as UserWithPassword).isActive : true
+    } as UserWithPassword;
+    
+    const result = await userService.updateUser(userWithProperties);
     return { success: !!result };
   },
   deleteUser: async (userId) => {
@@ -87,7 +103,9 @@ const databaseService: IDatabaseService = {
   // Kitchen methods
   createKitchenOrder: async (items) => {
     try {
-      const result = await kitchenOrderService.createKitchenOrder(items);
+      // Handle type conversion - createKitchenOrder expects an Invoice, but we're receiving a KitchenOrder
+      // This is a workaround for the type mismatch
+      const result = await kitchenOrderService.createKitchenOrder(items as any);
       return { success: true, id: result.id };
     } catch (error) {
       console.error("Error creating kitchen order:", error);

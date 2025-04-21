@@ -1,3 +1,4 @@
+
 import { PaymentMethod } from './payment';
 import { Customer } from './customers';
 
@@ -45,4 +46,5 @@ export interface InvoiceItem {
 
 export type InvoiceExportType = "print" | "pdf" | "email";
 
-export { InvoiceStatus };
+// Use export type for re-export to fix TS1205 and TS2484 errors
+export type { InvoiceStatus as InvoiceStatusType };

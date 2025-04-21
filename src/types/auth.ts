@@ -11,9 +11,11 @@ export interface User {
   permissions?: string[];
   image?: string;
   companyId?: string;
+  isActive?: boolean;
 }
 
-export type { UserRole };  // Explicitly re-export UserRole
+// Re-export UserRole correctly
+export type { UserRole };
 
 export interface AuthState {
   user: User | null;

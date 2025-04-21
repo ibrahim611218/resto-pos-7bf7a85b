@@ -61,8 +61,8 @@ export const useUserCreation = (
       };
       
       const result = await userService.saveUser(userToAdd);
-      if (!result.success) {
-        throw new Error(result.error || "Failed to save user");
+      if (!result) {
+        throw new Error("Failed to save user");
       }
       
       console.log("User saved successfully:", userToAdd);

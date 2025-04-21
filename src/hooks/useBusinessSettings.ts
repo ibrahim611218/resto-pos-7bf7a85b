@@ -60,7 +60,7 @@ export const useBusinessSettings = () => {
         setSettings(newSettings);
         return true;
       } else {
-        console.error("Failed to save settings:", result.error || "Unknown error");
+        console.error("Failed to save settings:", "Unknown error");
         return false;
       }
     } catch (error) {

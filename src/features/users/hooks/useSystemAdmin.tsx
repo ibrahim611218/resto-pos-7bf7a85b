@@ -24,7 +24,7 @@ export const useSystemAdmin = (
     if (!systemAdminInitialized && !systemAdminExists) {
       const systemAdmin: UserWithPassword = {
         id: "sys-admin-1",
-        username: "sys-admin",  // Added username
+        username: "sys-admin",
         name: "مدير النظام",
         email: "system_admin@example.com",
         role: "owner",

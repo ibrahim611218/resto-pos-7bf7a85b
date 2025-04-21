@@ -59,7 +59,7 @@ export const useInvoiceRefund = (
       databaseService.updateInvoice(refundedInvoice)
         .then(result => {
           if (!result.success) {
-            console.error("Error saving refund status to database:", result.error);
+            console.error("Error saving refund status to database");
             // Revert changes if database update fails
             setInvoices(prevInvoices => [...prevInvoices]);
             if (selectedInvoice && selectedInvoice.id === invoiceId) {

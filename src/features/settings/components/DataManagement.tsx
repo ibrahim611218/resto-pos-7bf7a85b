@@ -20,7 +20,7 @@ const DataManagement: React.FC = () => {
     getConfirmationMessage
   } = useDataManagement();
   
-  const isAdmin = user?.role === "admin" || user?.role === "manager";
+  const isAdmin = user?.role === "admin" || user?.role === "owner";
   
   if (!isAdmin) {
     return (
