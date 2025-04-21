@@ -23,14 +23,14 @@ export const useSystemAdmin = (
 
     // تحقق إذا كان مدير النظام موجود ضمن قائمة المستخدمين
     const systemAdminExists = users.some(user =>
-      user.email === OWNER_EMAIL && user.role === "owner"
+      user.email === OWNER_EMAIL
     );
 
     console.log("Checking system admin:", { systemAdminExists, systemAdminInitialized });
     console.log("Current users:", users);
 
     // فقط أنشئ حساب مدير النظام إذا لم يكن قد تم إنشاؤه ولم يوجد في قائمة المستخدمين
-    if (!systemAdminInitialized && !systemAdminExists) {
+    if (!systemAdminExists) {
       console.log("Creating system admin account");
       
       const systemAdmin: UserWithPassword = {

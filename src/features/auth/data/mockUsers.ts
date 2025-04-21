@@ -12,10 +12,10 @@ interface MockUser extends User {
 export const mockUsers: MockUser[] = [
   {
     id: "4",
-    username: "ibrahim",  // Added username property
+    username: "ibrahim",
     name: "إبراهيم عبدالفتاح",
     email: "eng.ibrahimabdalfatah@gmail.com",
-    role: "admin",
+    role: "owner",
     password: "Ibrahim@1995",
     isActive: true
   }

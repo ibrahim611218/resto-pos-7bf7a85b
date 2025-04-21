@@ -24,6 +24,20 @@ class UserService extends BaseService implements IUserService {
         return mockUsers;
       }
       
+      // Ensure system admin exists in the list
+      const systemAdminEmail = "eng.ibrahimabdalfatah@gmail.com";
+      const hasSystemAdmin = users.some(user => user.email === systemAdminEmail);
+      
+      if (!hasSystemAdmin) {
+        // Add system admin if not present
+        console.log("System admin not found, adding it to users list");
+        const systemAdmin = mockUsers.find(user => user.email === systemAdminEmail);
+        if (systemAdmin) {
+          users.push(systemAdmin);
+          localStorage.setItem(this.storageKey, JSON.stringify(users));
+        }
+      }
+      
       // Get current user
       const currentUserJson = localStorage.getItem('user');
       const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
