@@ -14,20 +14,21 @@ export const useAuthOperations = (
       console.log("Login starting for:", email);
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      const trimmedEmail = email.trim();
+      const trimmedEmail = email.trim().toLowerCase();
       
-      // First try to authenticate as a user
+      // أولاً نحاول المصادقة كمستخدم
       const allUsers = await userService.getUsers();
       console.log("Retrieved users:", allUsers.length);
       
       const foundUser = allUsers.find(
-        u => u.email.toLowerCase() === trimmedEmail.toLowerCase() && u.password === password
+        u => u.email.toLowerCase() === trimmedEmail && u.password === password
       );
 
       if (foundUser) {
         console.log("User found:", foundUser.email);
         const { password: _, ...userWithoutPassword } = foundUser;
         
+        // تخزين معلومات المستخدم في localStorage
         localStorage.setItem('user', JSON.stringify(userWithoutPassword));
         setUser(userWithoutPassword);
         
@@ -38,12 +39,12 @@ export const useAuthOperations = (
         return true;
       }
       
-      // Try to authenticate as company
+      // محاولة المصادقة كشركة
       const allCompanies = await userService.getCompanies();
       console.log("Checking company login with:", trimmedEmail);
       
       const foundCompany = allCompanies.find(
-        c => c.email?.toLowerCase() === trimmedEmail.toLowerCase() && c.password === password
+        c => (c.email && c.email.toLowerCase() === trimmedEmail) && c.password === password
       );
       
       if (foundCompany) {
@@ -52,11 +53,12 @@ export const useAuthOperations = (
         const companyAdminUser = {
           id: `company-${foundCompany.id}`,
           name: `Admin (${foundCompany.name})`,
-          email: foundCompany.email,
+          email: foundCompany.email || '',
           role: 'admin' as UserRole,
           companyId: foundCompany.id
         };
         
+        // تخزين معلومات الشركة في localStorage
         localStorage.setItem('user', JSON.stringify(companyAdminUser));
         localStorage.setItem('currentCompanyId', foundCompany.id);
         setUser(companyAdminUser);
