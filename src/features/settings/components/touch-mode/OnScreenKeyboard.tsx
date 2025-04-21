@@ -53,8 +53,8 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
 
     // أدخل رمز في المكان الصحيح
     const { selectionStart, selectionEnd, value } = target;
-    const start = selectionStart || 0;
-    const end = selectionEnd || 0;
+    const start = selectionStart !== null ? selectionStart : 0;
+    const end = selectionEnd !== null ? selectionEnd : 0;
     const before = value.slice(0, start);
     const after = value.slice(end);
 
@@ -62,22 +62,25 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
     target.value = newValue;
 
     // أثّر value في الريأكت إذا فيه oninput أو onchange
-    target.dispatchEvent(new Event('input', { bubbles: true }));
-    target.dispatchEvent(new Event('change', { bubbles: true }));
+    const inputEvent = new Event('input', { bubbles: true });
+    const changeEvent = new Event('change', { bubbles: true });
+    
+    target.dispatchEvent(inputEvent);
+    target.dispatchEvent(changeEvent);
 
     // انقل المؤشر بعد الحرف المدخل
     const pos = start + ch.length;
     setTimeout(() => {
       target.setSelectionRange(pos, pos);
       target.focus();
-    }, 0);
+    }, 10);
   };
 
   const handleBackspace = () => {
     if (!target) return;
     const { selectionStart, selectionEnd, value } = target;
-    const start = selectionStart || 0;
-    const end = selectionEnd || 0;
+    const start = selectionStart !== null ? selectionStart : 0;
+    const end = selectionEnd !== null ? selectionEnd : 0;
 
     if (start === 0 && end === 0) return;
 
@@ -98,13 +101,17 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
 
     const newValue = before + after;
     target.value = newValue;
-    target.dispatchEvent(new Event('input', { bubbles: true }));
-    target.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    const inputEvent = new Event('input', { bubbles: true });
+    const changeEvent = new Event('change', { bubbles: true });
+    
+    target.dispatchEvent(inputEvent);
+    target.dispatchEvent(changeEvent);
     
     setTimeout(() => {
       target.setSelectionRange(newStart, newStart);
       target.focus();
-    }, 0);
+    }, 10);
   };
 
   const handleClose = () => {
@@ -116,7 +123,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
   return (
     <div
       ref={ref}
-      className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t z-[6000] px-2 py-2 animate-in fade-in onscreen-keyboard"
+      className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-lg border-t z-[6000] px-2 py-2 animate-in fade-in onscreen-keyboard"
       style={{ userSelect: "none" }}
       dir={isArabic ? "rtl" : "ltr"}
     >
@@ -127,7 +134,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
               <button
                 type="button"
                 key={ch}
-                className="bg-gray-200 rounded font-bold text-lg px-2 py-2 min-w-10 active:bg-gray-300 border"
+                className="bg-gray-200/90 rounded font-bold text-lg px-2 py-2 min-w-10 active:bg-gray-300 border"
                 onClick={() => handleKeyPress(ch)}
                 tabIndex={-1}
               >
@@ -138,7 +145,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
               <button
                 key="backspace"
                 type="button"
-                className="bg-red-200 rounded font-bold text-lg px-2 py-2 min-w-12 ml-2 active:bg-red-300 border"
+                className="bg-red-200/90 rounded font-bold text-lg px-2 py-2 min-w-12 ml-2 active:bg-red-300 border"
                 onClick={handleBackspace}
                 tabIndex={-1}
               >
@@ -150,7 +157,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
         <div className="flex justify-center gap-6 mt-2">
           <button
             type="button"
-            className="bg-blue-600 text-white px-5 py-2 rounded shadow font-bold text-lg"
+            className="bg-blue-600/90 text-white px-5 py-2 rounded shadow font-bold text-lg"
             onClick={handleClose}
             tabIndex={-1}
           >
