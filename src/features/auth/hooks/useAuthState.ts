@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { AuthState } from '../types/authState';
 import { User } from '@/types';
+import { companyService } from '@/services';
 
 export const useAuthState = () => {
   const [state, setState] = useState<AuthState>({
@@ -27,6 +28,7 @@ export const useAuthState = () => {
     } else {
       localStorage.removeItem('user');
       localStorage.removeItem('currentCompanyId');
+      localStorage.removeItem('isCompanyLogin');
     }
   };
 
@@ -34,15 +36,34 @@ export const useAuthState = () => {
     setState(prev => ({ ...prev, isProcessing }));
   };
 
-  const initializeAuth = () => {
+  const initializeAuth = async () => {
     try {
       console.log("تحميل بيانات المستخدم من التخزين المحلي");
       const storedUser = localStorage.getItem('user');
+      const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
       
       if (storedUser) {
         try {
           const parsedUser = JSON.parse(storedUser);
           console.log("تم تحميل المستخدم:", parsedUser.email || parsedUser.username);
+          
+          // التحقق مما إذا كان هذا حساب شركة
+          if (isCompanyLogin && parsedUser.companyId) {
+            console.log("تحميل بيانات الشركة:", parsedUser.companyId);
+            const companyData = await companyService.getCompanyById(parsedUser.companyId);
+            
+            if (!companyData) {
+              console.error("لم يتم العثور على بيانات الشركة");
+              localStorage.removeItem('user');
+              localStorage.removeItem('currentCompanyId');
+              localStorage.removeItem('isCompanyLogin');
+              setState(prev => ({ ...prev, isInitialized: true }));
+              return;
+            }
+            
+            // تحديث بيانات المستخدم بمعلومات الشركة المحدثة
+            parsedUser.name = `مدير (${companyData.name})`;
+          }
           
           setState(prev => ({
             ...prev,
@@ -57,6 +78,7 @@ export const useAuthState = () => {
         } catch (parseError) {
           console.error("خطأ في تحليل بيانات المستخدم:", parseError);
           localStorage.removeItem('user');
+          localStorage.removeItem('isCompanyLogin');
         }
       } else {
         console.log("لا توجد بيانات مستخدم مخزنة");
@@ -64,6 +86,7 @@ export const useAuthState = () => {
     } catch (error) {
       console.error("خطأ في تحميل بيانات المستخدم من localStorage:", error);
       localStorage.removeItem('user');
+      localStorage.removeItem('isCompanyLogin');
     } finally {
       setState(prev => ({ ...prev, isInitialized: true }));
     }

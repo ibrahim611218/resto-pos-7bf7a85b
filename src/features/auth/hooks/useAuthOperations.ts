@@ -66,10 +66,11 @@ export const useAuthOperations = (
           isActive: true
         };
         
-        // تخزين معلومات الشركة
+        // تخزين معلومات الشركة بشكل أكثر وضوحاً
         console.log("تسجيل دخول كمدير شركة:", companyAdminUser.name);
         localStorage.setItem('currentCompanyId', foundCompany.id);
         localStorage.setItem('user', JSON.stringify(companyAdminUser));
+        localStorage.setItem('isCompanyLogin', 'true'); // علامة للإشارة إلى أن الدخول كان كشركة
         setUser(companyAdminUser);
         return true;
       }
@@ -94,6 +95,7 @@ export const useAuthOperations = (
       
       localStorage.removeItem('user');
       localStorage.removeItem('currentCompanyId');
+      localStorage.removeItem('isCompanyLogin'); // إزالة علامة تسجيل الدخول كشركة
       setUser(null);
     } finally {
       setTimeout(() => {

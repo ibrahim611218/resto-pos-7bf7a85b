@@ -41,7 +41,14 @@ class CompanyService extends BaseService {
   async getCompanyById(companyId: string): Promise<Company | null> {
     try {
       const companies = await this.getCompanies();
-      return companies.find(company => company.id === companyId) || null;
+      const company = companies.find(company => company.id === companyId);
+      
+      if (!company) {
+        console.error('Company not found with ID:', companyId);
+        return null;
+      }
+      
+      return company;
     } catch (error) {
       console.error('Error getting company by ID:', error);
       return null;
@@ -70,7 +77,14 @@ class CompanyService extends BaseService {
       }
       
       const companies = await this.getCompanies();
-      companies.push(company);
+      
+      // التحقق من وجود الشركة مسبقاً
+      const existingCompanyIndex = companies.findIndex(c => c.id === company.id);
+      if (existingCompanyIndex >= 0) {
+        companies[existingCompanyIndex] = company;
+      } else {
+        companies.push(company);
+      }
       
       console.log("Saving company:", company);
       localStorage.setItem(this.storageKey, JSON.stringify(companies));

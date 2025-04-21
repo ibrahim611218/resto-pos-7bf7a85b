@@ -1,11 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Language } from "@/types";
-import { userService } from "@/services";
+import { userService, companyService } from "@/services";
 import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
 import LoginFormInputs from './form/LoginFormInputs';
 import LoginFormActions from './form/LoginFormActions';
@@ -21,6 +21,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const { login, isProcessing } = useAuth();
   const isArabic = language === "ar";
+  
+  // تحميل البيانات المحفوظة إذا تم تحديد "تذكرني" سابقًا
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,18 +45,41 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
     
     try {
       console.log("محاولة تسجيل الدخول باستخدام:", email);
+      
+      // إذا تم اختيار "تذكرني"، قم بحفظ البريد الإلكتروني
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
+      
       const success = await login(email, password);
       
       if (success) {
         try {
-          const users = await userService.getUsers();
-          const loggedInUser = users.find(u => 
-            (u.email && u.email.toLowerCase() === email.toLowerCase()) || 
-            (u.username && u.username.toLowerCase() === email.toLowerCase())
-          );
+          // تحقق مما إذا كان تسجيل الدخول كشركة
+          const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
           
-          if (loggedInUser?.companyId) {
-            localStorage.setItem('currentCompanyId', loggedInUser.companyId);
+          if (isCompanyLogin) {
+            const companies = await companyService.getCompanies();
+            const companyEmail = email.toLowerCase().trim();
+            const foundCompany = companies.find(c => 
+              c.email && c.email.toLowerCase() === companyEmail
+            );
+            
+            if (foundCompany) {
+              localStorage.setItem('currentCompanyId', foundCompany.id);
+            }
+          } else {
+            const users = await userService.getUsers();
+            const loggedInUser = users.find(u => 
+              (u.email && u.email.toLowerCase() === email.toLowerCase()) || 
+              (u.username && u.username.toLowerCase() === email.toLowerCase())
+            );
+            
+            if (loggedInUser?.companyId) {
+              localStorage.setItem('currentCompanyId', loggedInUser.companyId);
+            }
           }
           
           toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
