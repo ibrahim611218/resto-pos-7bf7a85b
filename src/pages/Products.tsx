@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
@@ -53,19 +54,19 @@ const Products = () => {
         if (result) {
           toast({ 
             title: isArabic ? "تم حذف المنتج بنجاح" : "Product deleted successfully",
-            type: "success"
+            variant: "default"
           });
         } else {
           toast({ 
             title: isArabic ? "تعذر حذف المنتج" : "Failed to delete product",
-            type: "error"
+            variant: "destructive"
           });
         }
         setRefreshTrigger(v => v + 1);
       } catch (e) {
         toast({ 
           title: isArabic ? "حدث خطأ أثناء حذف المنتج" : "Error deleting product",
-          type: "error"
+          variant: "destructive"
         });
       }
     }
