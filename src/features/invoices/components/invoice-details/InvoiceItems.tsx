@@ -14,8 +14,8 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
       <h3 className="font-semibold mb-2">الأصناف</h3>
       <div className="space-y-2">
         {items.map((item) => {
-          // Only show size if it's not regular AND not empty
-          const shouldShowSize = item.size !== "regular" && item.size !== "";
+          // Only show size if it's not regular
+          const shouldShowSize = item.size !== "regular";
           
           return (
             <div key={item.id} className="flex justify-between items-center">
