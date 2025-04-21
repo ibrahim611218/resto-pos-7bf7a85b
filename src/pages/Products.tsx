@@ -4,8 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import productService from "@/services/products/ProductService";
+import { toast } from "@/hooks/use-toast";
 
 const Products = () => {
   const location = useLocation();
@@ -38,10 +40,28 @@ const Products = () => {
     navigate("/products/add");
   };
 
-  // هنا يجب الانتقال لمسار /products/edit/:id وليس أي صفحة أخرى
+  // الانتقال لتعديل المنتج
   const handleEditProduct = (id: string) => {
     console.log(`Navigating to edit product with ID: ${id}`);
     navigate(`/products/edit/${id}`);
+  };
+
+  // حذف المنتج
+  const handleDeleteProduct = async (id: string) => {
+    const confirmMsg = isArabic ? "هل أنت متأكد أنك تريد حذف هذا المنتج؟ لا يمكن التراجع عن الحذف." : "Are you sure you want to delete this product? This action cannot be undone.";
+    if (window.confirm(confirmMsg)) {
+      try {
+        const result = await productService.deleteProduct(id);
+        if (result) {
+          toast.success(isArabic ? "تم حذف المنتج بنجاح" : "Product deleted successfully");
+        } else {
+          toast.error(isArabic ? "تعذر حذف المنتج" : "Failed to delete product");
+        }
+        setRefreshTrigger(v => v + 1);
+      } catch (e) {
+        toast.error(isArabic ? "حدث خطأ أثناء حذف المنتج" : "Error deleting product");
+      }
+    }
   };
 
   return (
@@ -57,6 +77,7 @@ const Products = () => {
         viewMode={viewMode} 
         onViewModeChange={setViewMode} 
         onEditProduct={handleEditProduct}
+        onDeleteProduct={handleDeleteProduct}
         key={`products-grid-${refreshTrigger}`}  
       />
     </div>
