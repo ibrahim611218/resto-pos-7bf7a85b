@@ -10,6 +10,7 @@ interface ProductListProps {
   viewMode: ViewMode;
   refreshKey: number;
   onEditProduct?: (id: string) => void;
+  onDeleteProduct?: (id: string) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
@@ -17,6 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({
   viewMode,
   refreshKey,
   onEditProduct,
+  onDeleteProduct
 }) => {
   const getGridClass = () => {
     switch (viewMode) {
@@ -39,12 +41,14 @@ const ProductList: React.FC<ProductListProps> = ({
             key={`${product.id}-${refreshKey}`}
             product={product}
             onEdit={onEditProduct}
+            onDelete={onDeleteProduct}
           />
         ) : (
           <ProductCard
             key={`${product.id}-${refreshKey}`}
             product={product}
             onEdit={onEditProduct}
+            onDelete={onDeleteProduct}
           />
         )
       )}
@@ -53,3 +57,4 @@ const ProductList: React.FC<ProductListProps> = ({
 };
 
 export default ProductList;
+

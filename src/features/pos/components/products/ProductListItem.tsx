@@ -1,8 +1,7 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit } from "lucide-react";
+import { Plus, Edit, Trash } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
@@ -20,9 +19,10 @@ import { getSizeLabel } from "../../utils/sizeLabels";
 interface ProductListItemProps {
   product: Product;
   onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDelete }) => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isArabic = language === "ar";
@@ -31,18 +31,15 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) =>
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleAddToCart = () => {
-    // Ensure product has variants before proceeding
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
       return;
     }
     
-    // If product has multiple sizes, show size selection dialog
     if (product.variants.length > 1) {
       setSelectedSize(product.variants[0].size);
       setShowSizeDialog(true);
     } else {
-      // For single-size products, add directly to cart
       const variant = product.variants[0];
       addToCart({
         id: product.id,
@@ -84,7 +81,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) =>
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click event
+    e.stopPropagation();
     if (onEdit) {
       onEdit(product.id);
     } else {
@@ -92,9 +89,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) =>
     }
   };
 
-  // Ensure product has variants before rendering
   if (!product.variants || product.variants.length === 0) {
-    return null; // Or render a fallback UI for products with no variants
+    return null;
   }
 
   return (
@@ -141,12 +137,25 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit }) =>
               >
                 <Edit className="h-4 w-4" />
               </Button>
+              {onDelete && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="flex-shrink-0 bg-red-600 text-white rounded-full h-8 w-8"
+                  onClick={e => {
+                    e.stopPropagation();
+                    onDelete(product.id);
+                  }}
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 size="icon" 
                 className="flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click event
+                  e.stopPropagation();
                   handleAddToCart();
                 }}
               >

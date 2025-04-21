@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Category } from "@/types";
@@ -8,17 +7,20 @@ import categoryService from "@/services/categories/CategoryService";
 import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
+import { Trash } from "lucide-react";
 
 interface ProductsGridProps {
   viewMode?: ViewMode;
   onViewModeChange?: (mode: ViewMode) => void;
   onEditProduct?: (id: string) => void;
+  onDeleteProduct?: (id: string) => void;
 }
 
 const ProductsGrid: React.FC<ProductsGridProps> = ({
   viewMode = "grid-small",
   onViewModeChange,
   onEditProduct,
+  onDeleteProduct
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -149,6 +151,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
           viewMode={viewMode}
           refreshKey={refreshKey}
           onEditProduct={onEditProduct}
+          onDeleteProduct={onDeleteProduct}
         />
       )}
     </>
