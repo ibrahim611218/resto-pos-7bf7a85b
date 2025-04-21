@@ -1,4 +1,3 @@
-
 import { mockProducts } from "@/features/pos/data/mockData";
 import { sampleCategories } from "@/data/sampleData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
@@ -22,9 +21,15 @@ export const deleteAllCategories = async () => {
   window.dispatchEvent(new CustomEvent('data-updated'));
   
   // If using Electron, also delete categories from the database
-  if (window.db && window.db.deleteAllCategories) {
+  if (window.db) {
     try {
-      await window.db.deleteAllCategories();
+      // Check if the deleteAllCategories method exists, otherwise use the IPC invoke method directly
+      if (window.db.deleteAllCategories) {
+        await window.db.deleteAllCategories();
+      } else if (window.electron) {
+        // Fallback to using IPC invoke directly
+        await window.electron.invoke('db:deleteAllCategories');
+      }
       console.log('All categories deleted from database');
     } catch (error) {
       console.error('Error deleting all categories from database:', error);

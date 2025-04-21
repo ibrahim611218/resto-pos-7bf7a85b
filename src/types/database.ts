@@ -17,6 +17,10 @@ export interface IDatabaseService {
   getProducts: () => Promise<Product[]>;
   getCategories: () => Promise<Category[]>;
   
+  // Category operations
+  deleteCategory: (categoryId: string) => Promise<any>;
+  deleteAllCategories: () => Promise<any>;
+  
   // User management operations
   getUsers: () => Promise<UserWithPassword[]>;
   saveUser: (user: UserWithPassword) => Promise<any>;

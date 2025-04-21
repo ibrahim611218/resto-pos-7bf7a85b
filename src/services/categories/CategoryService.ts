@@ -95,6 +95,36 @@ class CategoryService {
     }
   }
 
+  async deleteAllCategories(): Promise<boolean> {
+    try {
+      // Remove from localStorage
+      localStorage.removeItem(this.STORAGE_KEY);
+      
+      // If using electron, try to delete from the database as well
+      if (window.db) {
+        try {
+          if (window.db.deleteAllCategories) {
+            await window.db.deleteAllCategories();
+          } else if (window.electron) {
+            await window.electron.invoke('db:deleteAllCategories');
+          }
+          console.log('All categories deleted from database');
+        } catch (dbError) {
+          console.error('Error deleting all categories from database:', dbError);
+        }
+      }
+      
+      // Dispatch events to notify the application of data changes
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting all categories:', error);
+      return false;
+    }
+  }
+
   // Method to clear the cache and force refresh
   async refreshCategories(): Promise<void> {
     try {

@@ -11,6 +11,7 @@ interface Window {
     addCategory: (category: any) => Promise<any>;
     updateCategory: (category: any) => Promise<any>;
     deleteCategory: (categoryId: string) => Promise<any>;
+    deleteAllCategories: () => Promise<any>;
     getSettings: () => Promise<any>;
     saveSettings: (settings: any) => Promise<any>;
   };
