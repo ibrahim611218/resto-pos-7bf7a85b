@@ -28,9 +28,12 @@ const DisplaySettings = () => {
     if (!settings.touchMode) {
       setKbVisible(false);
       setKbTarget(null);
+      document.body.classList.remove('touch-target-fix');
       return;
     }
 
+    document.body.classList.add('touch-target-fix');
+    
     // global focusin/focusout events
     function handleFocusIn(e: FocusEvent) {
       const tgt = e.target as HTMLElement;
@@ -41,14 +44,21 @@ const DisplaySettings = () => {
         !tgt.hasAttribute("readonly") &&
         !tgt.hasAttribute("disabled")
       ) {
+        console.log("Input focused:", tgt);
         setKbTarget(tgt as HTMLInputElement | HTMLTextAreaElement);
         setKbVisible(true);
       }
     }
 
     function handleFocusOut(e: FocusEvent) {
+      // Use setTimeout to handle focus changing between elements
       setTimeout(() => {
-        if (document.activeElement !== kbTarget) {
+        const activeElement = document.activeElement;
+        console.log("Focus out, active element:", activeElement);
+        
+        if (activeElement !== kbTarget && 
+            activeElement?.tagName !== "INPUT" && 
+            activeElement?.tagName !== "TEXTAREA") {
           setKbVisible(false);
           setKbTarget(null);
         }
@@ -61,7 +71,6 @@ const DisplaySettings = () => {
       window.removeEventListener("focusin", handleFocusIn);
       window.removeEventListener("focusout", handleFocusOut);
     };
-    // eslint-disable-next-line
   }, [settings.touchMode, kbTarget]);
 
   // إذا خرج المستخدم من إعدادات العرض أو أغلق وضع اللمس، أخفِ الكيبورد
@@ -137,4 +146,3 @@ const DisplaySettings = () => {
 };
 
 export default DisplaySettings;
-

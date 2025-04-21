@@ -40,8 +40,11 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
   useEffect(() => {
     if (visible && target) {
       target.focus();
+      console.log("Keyboard visible, focusing target:", target);
     }
   }, [visible, target]);
+
+  console.log("Keyboard component rendering, visible:", visible, "target:", target);
 
   if (!visible || !target) return null;
 
@@ -60,6 +63,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
 
     // أثّر value في الريأكت إذا فيه oninput أو onchange
     target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
 
     // انقل المؤشر بعد الحرف المدخل
     const pos = start + ch.length;
@@ -95,6 +99,8 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
     const newValue = before + after;
     target.value = newValue;
     target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+    
     setTimeout(() => {
       target.setSelectionRange(newStart, newStart);
       target.focus();
@@ -110,7 +116,7 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
   return (
     <div
       ref={ref}
-      className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t z-[6000] px-2 py-2 animate-in fade-in"
+      className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t z-[6000] px-2 py-2 animate-in fade-in onscreen-keyboard"
       style={{ userSelect: "none" }}
       dir={isArabic ? "rtl" : "ltr"}
     >
@@ -157,4 +163,3 @@ const OnScreenKeyboard: React.FC<OnScreenKeyboardProps> = ({
 };
 
 export default OnScreenKeyboard;
-
