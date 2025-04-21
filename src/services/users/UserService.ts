@@ -1,3 +1,4 @@
+
 import { UserWithPassword } from "@/features/users/types";
 import { BaseService } from "../base/BaseService";
 import { v4 as uuidv4 } from 'uuid';
@@ -23,9 +24,13 @@ class UserService extends BaseService {
         return mockUsers;
       }
       
-      // Filter users by company
+      // Get current user
+      const currentUserJson = localStorage.getItem('current-user');
+      const isPrimaryOwner = currentUserJson && JSON.parse(currentUserJson)?.email === "eng.ibrahimabdalfatah@gmail.com";
+      
+      // Filter users by company only if not primary owner
       const currentCompanyId = localStorage.getItem('currentCompanyId');
-      if (currentCompanyId) {
+      if (currentCompanyId && !isPrimaryOwner) {
         return users.filter(user => user.companyId === currentCompanyId);
       }
       

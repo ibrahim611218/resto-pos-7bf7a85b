@@ -1,20 +1,24 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Company } from "@/features/users/types";
 import { companyService } from "@/services";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const useCompanies = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { language } = useLanguage();
+  const { user } = useAuth();
   const isArabic = language === "ar";
+  const isPrimaryOwner = user?.email === "eng.ibrahimabdalfatah@gmail.com";
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
     try {
       const fetchedCompanies = await companyService.getCompanies();
+      console.log("Fetched companies:", fetchedCompanies);
       setCompanies(fetchedCompanies);
     } catch (error) {
       console.error("Error fetching companies:", error);
@@ -22,11 +26,11 @@ export const useCompanies = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isArabic]);
 
   useEffect(() => {
     fetchCompanies();
-  }, []);
+  }, [fetchCompanies]);
 
   const handleAddCompany = async (company: Company) => {
     try {

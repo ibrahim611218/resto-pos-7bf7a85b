@@ -22,7 +22,8 @@ const CompanyManagement: React.FC = () => {
     handleAddCompany,
     handleUpdateCompany,
     handleDeleteCompany,
-    handleRenewSubscription
+    handleRenewSubscription,
+    fetchCompanies
   } = useCompanies();
   
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -53,9 +54,17 @@ const CompanyManagement: React.FC = () => {
     window.location.href = "/user-management";
   };
   
-  // Check if user is authorized to access this page
-  const isAuthorizedEmail = user?.email === "eng.ibrahimabdalfatah@gmail.com"; // Changed from "emg" to "eng"
-  const canManageCompanies = (isOwner() || user?.role === 'admin') && isAuthorizedEmail;
+  // Check if user is authorized to access this page - primary owner check
+  // For the primary owner, we'll use a specific email - "eng.ibrahimabdalfatah@gmail.com"
+  const isPrimaryOwner = user?.email === "eng.ibrahimabdalfatah@gmail.com";
+  const canManageCompanies = (isOwner() || user?.role === 'admin' || isPrimaryOwner);
+  
+  // Force fetch companies when the component mounts for primary owner
+  React.useEffect(() => {
+    if (isPrimaryOwner) {
+      fetchCompanies();
+    }
+  }, [isPrimaryOwner, fetchCompanies]);
   
   if (!canManageCompanies) {
     return (
