@@ -39,6 +39,7 @@ export interface InvoiceItem {
   productId?: string;
   variantId?: string;
   taxable?: boolean;
+  type?: "sized" | "single"; // Add the type property as optional
 }
 
 export type InvoiceExportType = "print" | "pdf" | "email";
