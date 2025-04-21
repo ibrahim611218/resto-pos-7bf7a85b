@@ -28,20 +28,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
     if (!email || !password) {
       toast.error(
         isArabic
-          ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-          : "Please enter email and password"
+          ? "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور"
+          : "Please enter email/username and password"
       );
       return;
     }
     
     try {
-      console.log("Attempting login with:", email);
+      console.log("محاولة تسجيل الدخول باستخدام:", email);
       const success = await login(email, password);
       
       if (success) {
         try {
           const users = await userService.getUsers();
-          const loggedInUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+          const loggedInUser = users.find(u => 
+            (u.email && u.email.toLowerCase() === email.toLowerCase()) || 
+            (u.username && u.username.toLowerCase() === email.toLowerCase())
+          );
+          
           if (loggedInUser?.companyId) {
             localStorage.setItem('currentCompanyId', loggedInUser.companyId);
           }
@@ -49,10 +53,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
           toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
           navigate("/");
         } catch (error) {
-          console.error("Error processing user data after login:", error);
+          console.error("خطأ في معالجة بيانات المستخدم بعد تسجيل الدخول:", error);
         }
       } else {
-        console.error("Login failed for:", email);
+        console.error("فشل تسجيل الدخول لـ:", email);
         toast.error(
           isArabic
             ? "بيانات الدخول غير صحيحة"
@@ -60,7 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
         );
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("خطأ تسجيل الدخول:", error);
       toast.error(
         isArabic
           ? "حدث خطأ أثناء تسجيل الدخول"

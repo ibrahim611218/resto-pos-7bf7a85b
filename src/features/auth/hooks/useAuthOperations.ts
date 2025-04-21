@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { User } from '@/types';
 import { UserRole } from '@/features/users/types';
-import { userService } from '@/services';
+import { userService, companyService } from '@/services';
 
 export const useAuthOperations = (
   setUser: (user: User | null) => void,
@@ -12,28 +12,30 @@ export const useAuthOperations = (
     if (setProcessing) setProcessing(true);
     
     try {
-      console.log("Login starting for:", email);
+      console.log("بدء تسجيل الدخول لـ:", email);
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const trimmedEmail = email.trim().toLowerCase();
       
       // أولاً نحاول المصادقة كمستخدم
       const allUsers = await userService.getUsers();
-      console.log("Retrieved users:", allUsers.length);
+      console.log("تم استرجاع المستخدمين:", allUsers.length);
       
+      // البحث عن المستخدم إما بالبريد الإلكتروني أو اسم المستخدم
       const foundUser = allUsers.find(
-        u => u.email.toLowerCase() === trimmedEmail && u.password === password
+        u => (u.email && u.email.toLowerCase() === trimmedEmail || 
+              u.username && u.username.toLowerCase() === trimmedEmail) && 
+              u.password === password
       );
 
       if (foundUser) {
-        console.log("User found:", foundUser.email);
+        console.log("تم العثور على المستخدم:", foundUser.email || foundUser.username);
         const { password: _, ...userWithoutPassword } = foundUser;
         
-        // تخزين معلومات المستخدم في localStorage
-        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
         setUser(userWithoutPassword);
         
         if (foundUser.companyId) {
+          console.log("تم تعيين معرف الشركة:", foundUser.companyId);
           localStorage.setItem('currentCompanyId', foundUser.companyId);
         }
         
@@ -41,36 +43,37 @@ export const useAuthOperations = (
       }
       
       // محاولة المصادقة كشركة
-      const allCompanies = await userService.getCompanies();
-      console.log("Checking company login with:", trimmedEmail);
+      const allCompanies = await companyService.getCompanies();
+      console.log("التحقق من تسجيل دخول الشركة باستخدام:", trimmedEmail);
       
       const foundCompany = allCompanies.find(
         c => (c.email && c.email.toLowerCase() === trimmedEmail) && c.password === password
       );
       
       if (foundCompany) {
-        console.log("Company found:", foundCompany);
+        console.log("تم العثور على الشركة:", foundCompany.name);
         
         const companyAdminUser: User = {
           id: `company-${foundCompany.id}`,
-          username: `company-${foundCompany.id}`,  // Added username
-          name: `Admin (${foundCompany.name})`,
+          username: `company-${foundCompany.id}`,  
+          name: `مدير (${foundCompany.name})`,
           email: foundCompany.email || '',
           role: 'admin' as UserRole,
-          companyId: foundCompany.id
+          companyId: foundCompany.id,
+          isActive: true
         };
         
-        // تخزين معلومات الشركة في localStorage
-        localStorage.setItem('user', JSON.stringify(companyAdminUser));
+        // تخزين معلومات الشركة
+        console.log("تسجيل دخول كمدير شركة:", companyAdminUser.name);
         localStorage.setItem('currentCompanyId', foundCompany.id);
         setUser(companyAdminUser);
         return true;
       }
       
-      console.log("No matching user or company found");
+      console.log("لم يتم العثور على مستخدم أو شركة مطابقة");
       return false;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("خطأ في تسجيل الدخول:", error);
       return false;
     } finally {
       setTimeout(() => {

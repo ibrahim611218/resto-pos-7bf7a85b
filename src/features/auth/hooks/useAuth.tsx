@@ -1,3 +1,4 @@
+
 import { useContext, createContext } from 'react';
 import { AuthContextType } from '../types/authState';
 import { useAuthState } from './useAuthState';
@@ -11,11 +12,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user, isAuthenticated, isInitialized, isProcessing, setUser, setProcessing } = useAuthState();
   const { login, logout } = useAuthOperations(setUser, setProcessing);
   const { hasPermission, isOwner, isSupervisor } = usePermissions(user);
-  const { permissionsMap, getUserPermissions, updateUserPermissions } = useUserPermissions();
+  const { permissionsMap, getUserPermissions, updateUserPermissions, allPermissions } = useUserPermissions();
 
   // Don't show anything until auth is initialized
   if (!isInitialized) {
-    return null;
+    return (
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   return (
@@ -28,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasPermission,
       isOwner,
       isSupervisor,
-      allPermissions: [], 
+      allPermissions, 
       getUserPermissions,
       updateUserPermissions
     }}>
