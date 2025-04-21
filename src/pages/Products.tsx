@@ -38,6 +38,7 @@ const Products = () => {
     navigate("/products/add");
   };
 
+  // هنا يجب الانتقال لمسار /products/edit/:id وليس أي صفحة أخرى
   const handleEditProduct = (id: string) => {
     console.log(`Navigating to edit product with ID: ${id}`);
     navigate(`/products/edit/${id}`);
@@ -63,3 +64,4 @@ const Products = () => {
 };
 
 export default Products;
+

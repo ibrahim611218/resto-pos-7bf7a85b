@@ -9,6 +9,7 @@ interface ItemDetailsProps {
   quantity: number;
   isArabic: boolean;
   sizeLabel: string;
+  type?: string; // سنضيف هذا الحقل الاختياري
 }
 
 const ItemDetails: React.FC<ItemDetailsProps> = ({
@@ -19,9 +20,10 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   quantity,
   isArabic,
   sizeLabel,
+  type = "sized", // القيمة الافتراضية
 }) => {
-  // Only show size label if it's not regular AND not medium (when displayed as regular)
-  const shouldShowSizeLabel = size !== "regular" && size !== "medium";
+  // لا يظهر اسم المقاس في منتجات الحبة (single)
+  const shouldShowSizeLabel = type !== "single" && size !== "regular" && size !== "medium";
   
   return (
     <div className="flex-1">
@@ -41,3 +43,4 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
 };
 
 export default ItemDetails;
+

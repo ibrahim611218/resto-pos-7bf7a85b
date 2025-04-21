@@ -4,6 +4,9 @@ import { CartItem } from "@/types";
 import { getSizeLabel } from "@/features/pos/utils/sizeLabels";
 import { formatCurrency } from "@/utils/invoice";
 
+// helper: هل هذا المنتج فردي (حبة)؟
+const isSingle = (item: CartItem) => item.type === "single" || (!item.size && !item.variantId);
+
 interface InvoiceItemsProps {
   items: CartItem[];
 }
@@ -14,8 +17,8 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
       <h3 className="font-semibold mb-2">الأصناف</h3>
       <div className="space-y-2">
         {items.map((item) => {
-          // Only show size if it's not regular AND not medium (when displayed as regular)
-          const shouldShowSize = item.size !== "regular" && item.size !== "medium";
+          // إذا المنتج حبة، لا تظهر المقاس
+          const shouldShowSize = !isSingle(item) && item.size !== "regular" && item.size !== "medium";
           
           return (
             <div key={item.id} className="flex justify-between items-center">
@@ -42,3 +45,4 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
     </div>
   );
 };
+
