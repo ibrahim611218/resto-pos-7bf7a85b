@@ -31,7 +31,7 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
         )}
       </p>
       <p className="text-sm text-muted-foreground">
-        {price} {isArabic ? "ر.س" : "SAR"} x {quantity}
+        {price.toFixed(2)} {isArabic ? "ر.س" : "SAR"} x {quantity}
       </p>
     </div>
   );
