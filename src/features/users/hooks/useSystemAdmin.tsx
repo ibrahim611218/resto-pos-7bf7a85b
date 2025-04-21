@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { UserWithPassword } from "../types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { userService } from "@/services";
 
 const SYSTEM_ADMIN_CREATED_KEY = 'system_admin_initialized';
 
@@ -25,8 +26,13 @@ export const useSystemAdmin = (
       user.email === OWNER_EMAIL && user.role === "owner"
     );
 
+    console.log("Checking system admin:", { systemAdminExists, systemAdminInitialized });
+    console.log("Current users:", users);
+
     // فقط أنشئ حساب مدير النظام إذا لم يكن قد تم إنشاؤه ولم يوجد في قائمة المستخدمين
     if (!systemAdminInitialized && !systemAdminExists) {
+      console.log("Creating system admin account");
+      
       const systemAdmin: UserWithPassword = {
         id: "sys-admin-1",
         username: "ibrahim",
@@ -37,13 +43,21 @@ export const useSystemAdmin = (
         isActive: true
       };
 
-      setUsers(prevUsers => [...prevUsers, systemAdmin]);
-
-      // أمنح كافة الصلاحيات لمدير النظام
-      updateUserPermissions(systemAdmin.id, allPermissions);
-
-      // اعلم أنه تم الإنشاء في localStorage
-      localStorage.setItem(SYSTEM_ADMIN_CREATED_KEY, 'true');
+      // حفظ المستخدم في localStorage مباشرة باستخدام service
+      userService.saveUser(systemAdmin).then(success => {
+        if (success) {
+          console.log("System admin user saved successfully");
+          setUsers(prevUsers => [...prevUsers, systemAdmin]);
+          
+          // أمنح كافة الصلاحيات لمدير النظام
+          updateUserPermissions(systemAdmin.id, allPermissions);
+          
+          // اعلم أنه تم الإنشاء في localStorage
+          localStorage.setItem(SYSTEM_ADMIN_CREATED_KEY, 'true');
+        }
+      }).catch(error => {
+        console.error("Error saving system admin:", error);
+      });
     }
   }, [users, allPermissions, updateUserPermissions, setUsers]);
 };

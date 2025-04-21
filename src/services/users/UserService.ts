@@ -16,24 +16,32 @@ class UserService extends BaseService {
       
       if (storedUsers) {
         users = JSON.parse(storedUsers);
+        console.log("Users loaded from localStorage:", users.length);
       }
       
       if (!users || users.length === 0) {
+        console.log("No users found in localStorage, loading mock users");
         const { mockUsers } = await import('../../features/auth/data/mockUsers');
         localStorage.setItem(this.storageKey, JSON.stringify(mockUsers));
         return mockUsers;
       }
       
       // Get current user
-      const currentUserJson = localStorage.getItem('current-user');
-      const isPrimaryOwner = currentUserJson && JSON.parse(currentUserJson)?.email === "eng.ibrahimabdalfatah@gmail.com";
+      const currentUserJson = localStorage.getItem('user');
+      const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
+      const isPrimaryOwner = currentUser && currentUser.email === "eng.ibrahimabdalfatah@gmail.com";
+      
+      console.log("Current user:", currentUser?.email);
+      console.log("Is primary owner:", isPrimaryOwner);
       
       // Filter users by company only if not primary owner
       const currentCompanyId = localStorage.getItem('currentCompanyId');
       if (currentCompanyId && !isPrimaryOwner) {
+        console.log("Filtering users by company ID:", currentCompanyId);
         return users.filter(user => user.companyId === currentCompanyId);
       }
       
+      console.log("Returning all users:", users.length);
       return users;
     } catch (error) {
       console.error('Error getting users:', error);
@@ -45,7 +53,9 @@ class UserService extends BaseService {
     try {
       const storedCompanies = localStorage.getItem(this.companiesKey);
       if (storedCompanies) {
-        return JSON.parse(storedCompanies);
+        const companies = JSON.parse(storedCompanies);
+        console.log("Retrieved companies:", companies);
+        return companies;
       }
       return [];
     } catch (error) {
@@ -70,8 +80,24 @@ class UserService extends BaseService {
         user.id = uuidv4();
       }
       
-      const users = await this.getUsers();
-      users.push(user);
+      console.log("Saving user:", user.email);
+      
+      // Get existing users or initialize empty array
+      const storedUsers = localStorage.getItem(this.storageKey);
+      let users: UserWithPassword[] = storedUsers ? JSON.parse(storedUsers) : [];
+      
+      // Check if user already exists (by id or email)
+      const existingUserIndex = users.findIndex(u => 
+        u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase())
+      );
+      
+      if (existingUserIndex >= 0) {
+        console.log("User already exists, updating:", user.email);
+        users[existingUserIndex] = user;
+      } else {
+        console.log("Adding new user:", user.email);
+        users.push(user);
+      }
       
       localStorage.setItem(this.storageKey, JSON.stringify(users));
       return true;

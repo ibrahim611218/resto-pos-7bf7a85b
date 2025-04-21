@@ -20,6 +20,7 @@ export const useAuthOperations = (
       // أولاً نحاول المصادقة كمستخدم
       const allUsers = await userService.getUsers();
       console.log("تم استرجاع المستخدمين:", allUsers.length);
+      console.log("قائمة المستخدمين:", allUsers.map(u => ({email: u.email, username: u.username})));
       
       // البحث عن المستخدم إما بالبريد الإلكتروني أو اسم المستخدم
       const foundUser = allUsers.find(
@@ -32,6 +33,7 @@ export const useAuthOperations = (
         console.log("تم العثور على المستخدم:", foundUser.email || foundUser.username);
         const { password: _, ...userWithoutPassword } = foundUser;
         
+        localStorage.setItem('user', JSON.stringify(userWithoutPassword));
         setUser(userWithoutPassword);
         
         if (foundUser.companyId) {
@@ -45,6 +47,7 @@ export const useAuthOperations = (
       // محاولة المصادقة كشركة
       const allCompanies = await companyService.getCompanies();
       console.log("التحقق من تسجيل دخول الشركة باستخدام:", trimmedEmail);
+      console.log("Retrieved companies:", allCompanies);
       
       const foundCompany = allCompanies.find(
         c => (c.email && c.email.toLowerCase() === trimmedEmail) && c.password === password
@@ -66,6 +69,7 @@ export const useAuthOperations = (
         // تخزين معلومات الشركة
         console.log("تسجيل دخول كمدير شركة:", companyAdminUser.name);
         localStorage.setItem('currentCompanyId', foundCompany.id);
+        localStorage.setItem('user', JSON.stringify(companyAdminUser));
         setUser(companyAdminUser);
         return true;
       }

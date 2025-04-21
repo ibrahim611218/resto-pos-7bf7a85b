@@ -38,20 +38,28 @@ export const useAuthState = () => {
     try {
       console.log("تحميل بيانات المستخدم من التخزين المحلي");
       const storedUser = localStorage.getItem('user');
+      
       if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        console.log("تم تحميل المستخدم:", parsedUser.email || parsedUser.username);
-        
-        setState(prev => ({
-          ...prev,
-          user: parsedUser,
-          isAuthenticated: true
-        }));
-        
-        if (parsedUser.companyId) {
-          console.log("تم تعيين معرف الشركة:", parsedUser.companyId);
-          localStorage.setItem('currentCompanyId', parsedUser.companyId);
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          console.log("تم تحميل المستخدم:", parsedUser.email || parsedUser.username);
+          
+          setState(prev => ({
+            ...prev,
+            user: parsedUser,
+            isAuthenticated: true
+          }));
+          
+          if (parsedUser.companyId) {
+            console.log("تم تعيين معرف الشركة:", parsedUser.companyId);
+            localStorage.setItem('currentCompanyId', parsedUser.companyId);
+          }
+        } catch (parseError) {
+          console.error("خطأ في تحليل بيانات المستخدم:", parseError);
+          localStorage.removeItem('user');
         }
+      } else {
+        console.log("لا توجد بيانات مستخدم مخزنة");
       }
     } catch (error) {
       console.error("خطأ في تحميل بيانات المستخدم من localStorage:", error);
