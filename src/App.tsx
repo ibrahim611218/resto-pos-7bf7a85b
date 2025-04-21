@@ -12,7 +12,7 @@ import Settings from './pages/Settings';
 import CategoryAdd from './pages/CategoryAdd';
 import CategoryEdit from './pages/CategoryEdit';
 import ProductAdd from "./pages/ProductAdd";
-import ProductEdit from "./pages/ProductEdit"; // Import ProductEdit page
+import ProductEdit from "./pages/ProductEdit"; 
 import Invoices from "./pages/Invoices";
 import Purchases from "./pages/Purchases";
 import Customers from "./pages/Customers";
@@ -44,7 +44,7 @@ function App() {
         <Route path="/pos" element={<Pos />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/add" element={<ProductAdd />} />
-        <Route path="/products/edit/:id" element={<ProductEdit />} /> {/* Add route for editing products */}
+        <Route path="/products/edit/:id" element={<ProductEdit />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/add" element={<CategoryAdd />} />
         <Route path="/categories/:id/edit" element={<CategoryEdit />} />

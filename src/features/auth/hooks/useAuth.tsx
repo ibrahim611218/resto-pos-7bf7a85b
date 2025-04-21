@@ -6,6 +6,7 @@ import { useAuthOperations } from './useAuthOperations';
 import { usePermissions } from './usePermissions';
 import { useUserPermissions } from './useUserPermissions';
 
+// Create the Auth Context with proper typing
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
