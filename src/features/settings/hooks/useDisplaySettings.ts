@@ -25,18 +25,13 @@ export const useDisplaySettings = () => {
     height: settings.height?.toString() || ""
   });
 
-  // Apply touch mode class to body
   useEffect(() => {
     saveSettings(settings);
     
     if (settings.touchMode) {
       document.body.classList.add("touch-target-fix");
-      document.documentElement.classList.add("touch-mode-active");
-      console.log("Touch mode activated");
     } else {
       document.body.classList.remove("touch-target-fix");
-      document.documentElement.classList.remove("touch-mode-active");
-      console.log("Touch mode deactivated");
     }
   }, [settings]);
 
