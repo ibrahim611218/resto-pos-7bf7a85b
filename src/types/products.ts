@@ -16,6 +16,7 @@ export interface Product {
   taxable: boolean;
   variants: ProductVariant[];  // This should never be undefined
   sizes?: string[];
+  companyId?: string; // Added companyId property
 }
 
 export interface ProductVariant {
@@ -33,4 +34,5 @@ export interface Category {
   image?: string;
   imageUrl?: string;
   isDeleted?: boolean; // Flag to indicate if category is deleted
+  companyId?: string; // Added companyId property
 }

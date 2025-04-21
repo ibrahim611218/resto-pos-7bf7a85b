@@ -115,6 +115,33 @@ class CategoryService extends BaseService {
       return false;
     }
   }
+  
+  async deleteAllCategories(): Promise<boolean> {
+    try {
+      // Get all categories
+      const storedCategories = localStorage.getItem(this.storageKey);
+      if (!storedCategories) return true; // If no categories exist, consider it success
+      
+      let categories: Category[] = JSON.parse(storedCategories);
+      
+      // Mark all categories as deleted
+      categories = categories.map(category => ({
+        ...category,
+        isDeleted: true
+      }));
+      
+      // Save back to localStorage
+      localStorage.setItem(this.storageKey, JSON.stringify(categories));
+      
+      // Notify components
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      
+      return true;
+    } catch (error) {
+      console.error("Error deleting all categories:", error);
+      return false;
+    }
+  }
 }
 
 const categoryService = new CategoryService();

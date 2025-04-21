@@ -34,15 +34,7 @@ const databaseService: IDatabaseService = {
     return categoryService.deleteCategory(categoryId);
   },
   deleteAllCategories: async () => {
-    // Fetch all categories
-    const categories = await categoryService.getCategories();
-    
-    // Delete each category one by one
-    for (const category of categories) {
-      await categoryService.deleteCategory(category.id);
-    }
-    
-    return { success: true };
+    return categoryService.deleteAllCategories();
   },
 
   // User methods
