@@ -1,6 +1,6 @@
 
 import React from "react";
-import { formatCurrency } from "@/utils/invoice";
+import { formatCurrency } from "@/utils/formatters";
 
 export interface CartSummaryProps {
   subtotal: number;
@@ -34,8 +34,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     ? total * (discount / 100)
     : discount;
 
-  // تقريب المجموع الإجمالي
-  const roundedTotal = Math.round(total);
+  // استخدام القيمة الفعلية بدلاً من التقريب
+  const actualTotal = total;
 
   const textSizeClass = isMobile ? 'text-sm' : 'text-base';
   const spacingClass = isMobile ? 'space-y-2' : 'space-y-3';
@@ -44,7 +44,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   
   // حساب المبلغ المتبقي للعميل (للدفع النقدي)
   const changeAmount = showPaymentDetails && paidAmount 
-    ? Math.max(0, paidAmount - roundedTotal)
+    ? Math.max(0, paidAmount - actualTotal)
     : 0;
 
   return (
@@ -92,7 +92,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           {isArabic ? "الإجمالي" : "Total"}
         </span>
         <span>
-          {formatCurrency(roundedTotal, isArabic ? "ar-SA" : "en-US", "SAR")}
+          {formatCurrency(actualTotal, isArabic ? "ar-SA" : "en-US", "SAR")}
         </span>
       </div>
 
