@@ -13,12 +13,14 @@ interface ProductsGridProps {
   viewMode?: ViewMode;
   onViewModeChange?: (mode: ViewMode) => void;
   onEditProduct?: (id: string) => void;
+  onDeleteProduct?: (id: string) => void;
 }
 
 const ProductsGrid: React.FC<ProductsGridProps> = ({
   viewMode = "grid-small",
   onViewModeChange,
   onEditProduct,
+  onDeleteProduct,
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
@@ -149,6 +151,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
           viewMode={viewMode}
           refreshKey={refreshKey}
           onEditProduct={onEditProduct}
+          onDeleteProduct={onDeleteProduct}
         />
       )}
     </>

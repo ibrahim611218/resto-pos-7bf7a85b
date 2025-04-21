@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
@@ -7,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import productService from "@/services/products/ProductService";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const Products = () => {
   const location = useLocation();
@@ -17,7 +16,6 @@ const Products = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Listen for product updates to trigger refresh
   useEffect(() => {
     const handleUpdate = () => {
       console.log("Products page detected update, refreshing...");
@@ -40,26 +38,30 @@ const Products = () => {
     navigate("/products/add");
   };
 
-  // الانتقال لتعديل المنتج
   const handleEditProduct = (id: string) => {
     console.log(`Navigating to edit product with ID: ${id}`);
     navigate(`/products/edit/${id}`);
   };
 
-  // حذف المنتج
   const handleDeleteProduct = async (id: string) => {
     const confirmMsg = isArabic ? "هل أنت متأكد أنك تريد حذف هذا المنتج؟ لا يمكن التراجع عن الحذف." : "Are you sure you want to delete this product? This action cannot be undone.";
     if (window.confirm(confirmMsg)) {
       try {
         const result = await productService.deleteProduct(id);
         if (result) {
-          toast.success(isArabic ? "تم حذف المنتج بنجاح" : "Product deleted successfully");
+          toast(isArabic ? "تم حذف المنتج بنجاح" : "Product deleted successfully", {
+            description: isArabic ? "تم حذف المنتج بنجاح" : "The product has been deleted successfully",
+          });
         } else {
-          toast.error(isArabic ? "تعذر حذف المنتج" : "Failed to delete product");
+          toast(isArabic ? "تعذر حذف المنتج" : "Failed to delete product", {
+            description: isArabic ? "حدث خطأ أثناء محاولة حذف المنتج" : "An error occurred while trying to delete the product",
+          });
         }
         setRefreshTrigger(v => v + 1);
       } catch (e) {
-        toast.error(isArabic ? "حدث خطأ أثناء حذف المنتج" : "Error deleting product");
+        toast(isArabic ? "حدث خطأ أثناء حذف المنتج" : "Error deleting product", {
+          description: isArabic ? "حدث خطأ غير متوقع أثناء محاولة حذف المنتج" : "An unexpected error occurred while trying to delete the product",
+        });
       }
     }
   };
@@ -85,4 +87,3 @@ const Products = () => {
 };
 
 export default Products;
-
