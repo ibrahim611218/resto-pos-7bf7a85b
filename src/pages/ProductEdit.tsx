@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductForm from "@/components/ProductForm";
-import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import productService from "@/services/products/ProductService";
 import { useLanguage } from "@/context/LanguageContext";
@@ -50,16 +49,17 @@ const ProductEdit: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">
-        <Spinner className="h-8 w-8" />
+        <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <ProductForm 
-      product={productData} 
-      isEditing={true} 
-    />
+    <div className="container mx-auto p-4">
+      {productData && (
+        <ProductForm />
+      )}
+    </div>
   );
 };
 
