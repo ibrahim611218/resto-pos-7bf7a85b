@@ -45,4 +45,3 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
     </div>
   );
 };
-

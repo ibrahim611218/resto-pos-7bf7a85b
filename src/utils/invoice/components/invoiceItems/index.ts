@@ -38,7 +38,13 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
       console.log(`Processing item ${index+1}:`, item.nameAr || item.name);
       
       const itemName = item.nameAr || item.name || "غير معروف";
-      const itemSize = item.size ? `(${item.size})` : '';
+      
+      // Only show size if not a single product type
+      const isSingleProduct = item.type === "single";
+      const sizeText = (!isSingleProduct && item.size && item.size !== "regular" && item.size !== "medium") 
+        ? `(${item.size})` 
+        : '';
+        
       const itemPrice = typeof item.price === 'number' ? item.price.toFixed(2) : '0.00';
       const itemQuantity = item.quantity || 1;
       const itemTotal = (Number(item.price) * Number(itemQuantity)).toFixed(2);
@@ -46,7 +52,7 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
       tableHTML += `
         <tr>
           <td>${index + 1}</td>
-          <td>${itemName} ${itemSize}</td>
+          <td>${itemName} ${sizeText}</td>
           <td>${itemPrice} ر.س</td>
           <td>${itemQuantity}</td>
           <td>${itemTotal} ر.س</td>
