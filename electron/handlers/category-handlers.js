@@ -80,12 +80,29 @@ function setupCategoryHandlers(ipcMain, db) {
   // Delete a category
   ipcMain.handle('db:deleteCategory', async (event, categoryId) => {
     try {
+      console.log(`Deleting category with ID: ${categoryId}`);
       const stmt = db.prepare(`DELETE FROM categories WHERE id = ?`);
-      stmt.run(categoryId);
+      const result = stmt.run(categoryId);
       
-      return { success: true };
+      console.log(`Category deletion result:`, result);
+      return { success: true, changes: result.changes };
     } catch (error) {
       console.error('Error deleting category:', error);
+      return { success: false, error: error.message };
+    }
+  });
+  
+  // Delete all categories
+  ipcMain.handle('db:deleteAllCategories', async () => {
+    try {
+      console.log(`Deleting all categories from database`);
+      const stmt = db.prepare(`DELETE FROM categories`);
+      const result = stmt.run();
+      
+      console.log(`All categories deletion result:`, result);
+      return { success: true, changes: result.changes };
+    } catch (error) {
+      console.error('Error deleting all categories:', error);
       return { success: false, error: error.message };
     }
   });

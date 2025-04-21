@@ -1,18 +1,35 @@
+
 import { mockProducts } from "@/features/pos/data/mockData";
 import { sampleCategories } from "@/data/sampleData";
 import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { mockCustomers } from "@/features/customers/hooks/useCustomers";
+import categoryService from "@/services/categories/CategoryService";
 
 export const deleteAllProducts = () => {
   localStorage.removeItem('products');
   localStorage.removeItem('stored-products');
   mockProducts.length = 0;
+  window.dispatchEvent(new CustomEvent('product-updated'));
 };
 
-export const deleteAllCategories = () => {
+export const deleteAllCategories = async () => {
   localStorage.removeItem('categories');
   localStorage.removeItem('stored-categories');
   sampleCategories.length = 0;
+  
+  // Dispatch events to ensure UI updates
+  window.dispatchEvent(new CustomEvent('category-updated'));
+  window.dispatchEvent(new CustomEvent('data-updated'));
+  
+  // If using Electron, also delete categories from the database
+  if (window.db && window.db.deleteAllCategories) {
+    try {
+      await window.db.deleteAllCategories();
+      console.log('All categories deleted from database');
+    } catch (error) {
+      console.error('Error deleting all categories from database:', error);
+    }
+  }
 };
 
 export const deleteAllInventory = () => {
@@ -81,5 +98,8 @@ export const deleteAllData = () => {
     localStorage.removeItem('defaultCategories');
     localStorage.removeItem('defaultInventory');
     localStorage.removeItem('lastInvoiceNumber');
+    
+    // Final refresh of UI
+    window.dispatchEvent(new CustomEvent('data-updated'));
   }
 };

@@ -22,7 +22,7 @@ class CategoryService {
       return categories;
     } catch (error) {
       console.error('Error fetching categories:', error);
-      return sampleCategories;
+      return [];
     }
   }
 
@@ -68,15 +68,47 @@ class CategoryService {
         return false; // Category not found
       }
       
+      // Save the updated list to localStorage
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filteredCategories));
       
       // Dispatch events to notify the application of data changes
       window.dispatchEvent(new CustomEvent('category-updated'));
       window.dispatchEvent(new CustomEvent('data-updated'));
+      
+      // Also clear out any additional storage for this category
+      localStorage.removeItem(`category_${id}`);
+
+      // If using electron, try to delete from the database as well
+      if (window.db && window.db.deleteCategory) {
+        try {
+          await window.db.deleteCategory(id);
+          console.log(`Category ${id} deleted from database`);
+        } catch (dbError) {
+          console.error('Error deleting category from database:', dbError);
+        }
+      }
+      
       return true;
     } catch (error) {
       console.error('Error deleting category:', error);
       return false;
+    }
+  }
+
+  // Method to clear the cache and force refresh
+  async refreshCategories(): Promise<void> {
+    try {
+      // Force a fresh fetch
+      if (window.db && window.db.getCategories) {
+        const freshCategories = await window.db.getCategories();
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(freshCategories));
+      }
+      
+      // Dispatch events to notify the application of data changes
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      window.dispatchEvent(new CustomEvent('data-updated'));
+    } catch (error) {
+      console.error('Error refreshing categories:', error);
     }
   }
 }

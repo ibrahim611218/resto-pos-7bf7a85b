@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
@@ -31,7 +31,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0); // Add a refresh key to force re-render
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       console.log('Loading products and categories data');
@@ -42,6 +42,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
           window.db.getProducts()
         ]);
         console.log('Loaded products from db:', productsResult.length);
+        console.log('Loaded categories from db:', categoriesResult.length);
         setCategories(categoriesResult);
         setProducts(productsResult);
       } else {
@@ -51,6 +52,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
           productService.getProducts()
         ]);
         console.log('Loaded products from localStorage:', productsResult.length);
+        console.log('Loaded categories from localStorage:', categoriesResult.length);
         setCategories(categoriesResult);
         setProducts(productsResult);
       }
@@ -60,20 +62,20 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [isArabic]);
 
   useEffect(() => {
     loadData();
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        console.log('Page is now visible, refreshing products');
+        console.log('Page is now visible, refreshing products and categories');
         loadData();
       }
     };
 
     const handleDataUpdate = () => {
-      console.log('Data update event detected, refreshing products');
+      console.log('Data update event detected, refreshing products and categories');
       loadData();
       setRefreshKey(prev => prev + 1); // Force re-render on data update
     };
@@ -91,9 +93,18 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       window.removeEventListener('product-updated', handleDataUpdate);
       window.removeEventListener('category-updated', handleDataUpdate);
     };
-  }, [isArabic]);
+  }, [isArabic, loadData]);
 
   useEffect(() => {
+    // Reset selected category to "all" if the current selection no longer exists
+    if (selectedCategory !== "all") {
+      const categoryExists = categories.some(cat => cat.id === selectedCategory);
+      if (!categoryExists) {
+        console.log('Selected category no longer exists, resetting to all');
+        setSelectedCategory("all");
+      }
+    }
+    
     let result = [...products];
 
     if (searchTerm) {
@@ -110,7 +121,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 
     console.log(`Filtering products: ${result.length} results from ${products.length} products`);
     setFilteredProducts(result);
-  }, [searchTerm, selectedCategory, products, refreshKey]); // Add refreshKey to dependencies
+  }, [searchTerm, selectedCategory, products, categories, refreshKey]); // Add categories to dependencies
   
   const getGridClass = () => {
     switch (viewMode) {
@@ -133,7 +144,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     );
   }
 
-  console.log('Rendering products grid with', filteredProducts.length, 'products');
+  console.log('Rendering products grid with', filteredProducts.length, 'products and', categories.length, 'categories');
   
   return (
     <div className="space-y-4 h-full">
@@ -162,7 +173,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
               {isArabic ? "جميع الأصناف" : "All Categories"}
             </TabsTrigger>
             {categories.map((category) => (
-              <TabsTrigger key={category.id} value={category.id} className="px-4 whitespace-nowrap flex-shrink-0">
+              <TabsTrigger key={`cat-${category.id}-${refreshKey}`} value={category.id} className="px-4 whitespace-nowrap flex-shrink-0">
                 {isArabic ? category.nameAr || category.name : category.name}
               </TabsTrigger>
             ))}

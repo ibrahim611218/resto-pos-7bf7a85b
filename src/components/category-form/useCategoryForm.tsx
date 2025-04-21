@@ -84,6 +84,9 @@ export const useCategoryForm = () => {
       // Save category using the service
       await categoryService.saveCategory(updatedCategory);
       
+      // Force a refresh of categories in the app
+      await categoryService.refreshCategories();
+      
       const successMessage = isEditing 
         ? isArabic ? "تم تعديل التصنيف بنجاح" : "Category updated successfully" 
         : isArabic ? "تم إضافة التصنيف بنجاح" : "Category added successfully";
@@ -98,6 +101,35 @@ export const useCategoryForm = () => {
     }
   };
 
+  const deleteCategory = async () => {
+    if (!category.id) return;
+
+    if (confirm(isArabic ? "هل أنت متأكد من حذف هذا التصنيف؟" : "Are you sure you want to delete this category?")) {
+      setIsSubmitting(true);
+      
+      try {
+        const deleted = await categoryService.deleteCategory(category.id);
+        
+        if (deleted) {
+          toast.success(isArabic ? "تم حذف التصنيف بنجاح" : "Category deleted successfully");
+          
+          // Force refresh of category data
+          window.dispatchEvent(new CustomEvent('category-updated'));
+          window.dispatchEvent(new CustomEvent('data-updated'));
+          
+          navigate("/categories");
+        } else {
+          toast.error(isArabic ? "فشل حذف التصنيف" : "Failed to delete category");
+        }
+      } catch (error) {
+        console.error('Error deleting category:', error);
+        toast.error(isArabic ? "حدث خطأ أثناء حذف التصنيف" : "Error deleting category");
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
   return {
     category,
     isEditing,
@@ -105,6 +137,7 @@ export const useCategoryForm = () => {
     handleInputChange,
     handleImageChange,
     handleSubmit,
+    deleteCategory,
     navigate,
     isSubmitting
   };
