@@ -5,6 +5,11 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const SYSTEM_ADMIN_CREATED_KEY = 'system_admin_initialized';
 
+// بيانات حساب مدير النظام الجديدة
+const OWNER_EMAIL = "eng.ibrahimabdalfatah@gmail.com";
+const OWNER_PASSWORD = "Ibrahim@1995";
+const OWNER_NAME = "إبراهيم عبدالفتاح";
+
 export const useSystemAdmin = (
   users: UserWithPassword[],
   setUsers: React.Dispatch<React.SetStateAction<UserWithPassword[]>>
@@ -12,32 +17,32 @@ export const useSystemAdmin = (
   const { allPermissions, updateUserPermissions } = useAuth();
 
   useEffect(() => {
-    // Check if we've already created the system admin in this session
+    // تحقق إذا تم إنشاء حساب مدير النظام بالفعل
     const systemAdminInitialized = localStorage.getItem(SYSTEM_ADMIN_CREATED_KEY);
-    
-    // Check if system admin exists in users array
-    const systemAdminExists = users.some(user => 
-      user.email === "system_admin@example.com" && user.role === "owner"
+
+    // تحقق إذا كان مدير النظام موجود ضمن قائمة المستخدمين
+    const systemAdminExists = users.some(user =>
+      user.email === OWNER_EMAIL && user.role === "owner"
     );
-    
-    // Only create if not initialized and not in the users array
+
+    // فقط أنشئ حساب مدير النظام إذا لم يكن قد تم إنشاؤه ولم يوجد في قائمة المستخدمين
     if (!systemAdminInitialized && !systemAdminExists) {
       const systemAdmin: UserWithPassword = {
         id: "sys-admin-1",
-        username: "sys-admin",
-        name: "مدير النظام",
-        email: "system_admin@example.com",
+        username: "ibrahim",
+        name: OWNER_NAME,
+        email: OWNER_EMAIL,
         role: "owner",
-        password: "********",
+        password: OWNER_PASSWORD,
         isActive: true
       };
-      
+
       setUsers(prevUsers => [...prevUsers, systemAdmin]);
-      
-      // Ensure system admin has all permissions
+
+      // أمنح كافة الصلاحيات لمدير النظام
       updateUserPermissions(systemAdmin.id, allPermissions);
-      
-      // Mark as initialized in localStorage
+
+      // اعلم أنه تم الإنشاء في localStorage
       localStorage.setItem(SYSTEM_ADMIN_CREATED_KEY, 'true');
     }
   }, [users, allPermissions, updateUserPermissions, setUsers]);
