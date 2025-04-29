@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './features/auth/hooks/useAuth';
@@ -27,7 +26,6 @@ import Pos from "./pages/Pos";
 import CompanyManagementPage from './pages/CompanyManagement';
 import UserManagementPage from './pages/UserManagement';
 import BusinessSettingsPage from './pages/BusinessSettings';
-import Index from './pages/Index';
 
 function App() {
   const { isAuthenticated } = useAuth();
