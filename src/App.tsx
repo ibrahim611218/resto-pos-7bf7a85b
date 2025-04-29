@@ -1,5 +1,6 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './features/auth/hooks/useAuth';
 import Login from './pages/Login';
 import MainLayout from './components/layout/MainLayout';
@@ -28,15 +29,24 @@ import UserManagementPage from './pages/UserManagement';
 import BusinessSettingsPage from './pages/BusinessSettings';
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitialized } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Force redirect to login if not authenticated and not already on login page
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated && location.pathname !== '/login') {
+      navigate('/login', { replace: true });
+    }
+  }, [isInitialized, isAuthenticated, navigate, location.pathname]);
 
   return (
     <Routes>
-      {/* Make login the default route */}
-      <Route path="/" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
+      {/* Root path always redirects to login if not authenticated */}
+      <Route path="/" element={!isAuthenticated ? <Navigate to="/login" replace /> : <Navigate to="/pos" replace />} />
       
-      {/* Keep login route for explicit /login navigation */}
-      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
+      {/* Login route is accessible for non-authenticated users */}
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/pos" replace /> : <Login />} />
       
       {/* All other routes require authentication */}
       <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
@@ -65,8 +75,8 @@ function App() {
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
 
-      {/* Catch-all route redirects to login */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Catch-all route redirects to login if not authenticated */}
+      <Route path="*" element={!isAuthenticated ? <Navigate to="/login" replace /> : <Navigate to="/pos" replace />} />
     </Routes>
   );
 }

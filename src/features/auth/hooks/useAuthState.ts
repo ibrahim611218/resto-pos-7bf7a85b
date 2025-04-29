@@ -37,6 +37,8 @@ export const useAuthState = () => {
   };
 
   const initializeAuth = async () => {
+    setState(prev => ({ ...prev, isProcessing: true }));
+    
     try {
       console.log("تحميل بيانات المستخدم من التخزين المحلي");
       const storedUser = localStorage.getItem('user');
@@ -57,7 +59,7 @@ export const useAuthState = () => {
               localStorage.removeItem('user');
               localStorage.removeItem('currentCompanyId');
               localStorage.removeItem('isCompanyLogin');
-              setState(prev => ({ ...prev, isInitialized: true }));
+              setState(prev => ({ ...prev, isInitialized: true, isProcessing: false }));
               return;
             }
             
@@ -68,7 +70,9 @@ export const useAuthState = () => {
           setState(prev => ({
             ...prev,
             user: parsedUser,
-            isAuthenticated: true
+            isAuthenticated: true,
+            isInitialized: true,
+            isProcessing: false
           }));
           
           if (parsedUser.companyId) {
@@ -79,16 +83,17 @@ export const useAuthState = () => {
           console.error("خطأ في تحليل بيانات المستخدم:", parseError);
           localStorage.removeItem('user');
           localStorage.removeItem('isCompanyLogin');
+          setState(prev => ({ ...prev, isInitialized: true, isProcessing: false }));
         }
       } else {
         console.log("لا توجد بيانات مستخدم مخزنة");
+        setState(prev => ({ ...prev, isInitialized: true, isProcessing: false }));
       }
     } catch (error) {
       console.error("خطأ في تحميل بيانات المستخدم من localStorage:", error);
       localStorage.removeItem('user');
       localStorage.removeItem('isCompanyLogin');
-    } finally {
-      setState(prev => ({ ...prev, isInitialized: true }));
+      setState(prev => ({ ...prev, isInitialized: true, isProcessing: false }));
     }
   };
 
