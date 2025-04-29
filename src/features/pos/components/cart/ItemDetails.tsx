@@ -22,8 +22,8 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({
   sizeLabel,
   type = "sized",
 }) => {
-  // لا يظهر اسم المقاس في منتجات الحبة (single)
-  const shouldShowSizeLabel = type !== "single" && size !== "regular" && size !== "medium";
+  // تعديل الشرط ليظهر مسمى الحجم للمنتجات من نوع sized ماعدا الحجم "regular"
+  const shouldShowSizeLabel = type !== "single" && size !== "regular";
   
   return (
     <div className="flex-1">

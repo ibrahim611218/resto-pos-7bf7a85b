@@ -42,10 +42,11 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
       // Only show size if not a single product type
       const isSingleProduct = item.type === "single";
       
-      // Get Arabic size name
+      // Get Arabic size name - تعديل الشرط ليظهر مسمى الحجم "وسط"
       let sizeText = '';
-      if (!isSingleProduct && item.size && item.size !== "regular" && item.size !== "medium") {
+      if (!isSingleProduct && item.size && item.size !== "regular") {
         if (item.size === "small") sizeText = "(صغير)";
+        else if (item.size === "medium") sizeText = "(وسط)";
         else if (item.size === "large") sizeText = "(كبير)";
         else if (item.size === "xlarge") sizeText = "(كبير جداً)";
         else sizeText = `(${item.size})`;

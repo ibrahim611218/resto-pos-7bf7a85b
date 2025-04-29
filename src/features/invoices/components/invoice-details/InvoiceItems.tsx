@@ -17,8 +17,8 @@ export const InvoiceItems: React.FC<InvoiceItemsProps> = ({ items }) => {
       <h3 className="font-semibold mb-2">الأصناف</h3>
       <div className="space-y-2">
         {items.map((item) => {
-          // إذا المنتج حبة، لا تظهر المقاس
-          const shouldShowSize = !isSingle(item) && item.size !== "regular" && item.size !== "medium";
+          // تعديل الشرط ليظهر مسمى الحجم للمنتجات من نوع sized ماعدا الحجم "regular"
+          const shouldShowSize = !isSingle(item) && item.size !== "regular";
           
           return (
             <div key={item.id} className="flex justify-between items-center">
