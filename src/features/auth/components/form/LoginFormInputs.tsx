@@ -10,6 +10,8 @@ interface LoginFormInputsProps {
   setPassword: (value: string) => void;
   isProcessing: boolean;
   language: Language;
+  errorMessage?: string;
+  isArabic: boolean;
 }
 
 const LoginFormInputs: React.FC<LoginFormInputsProps> = ({
@@ -18,10 +20,10 @@ const LoginFormInputs: React.FC<LoginFormInputsProps> = ({
   setEmail,
   setPassword,
   isProcessing,
-  language
+  language,
+  errorMessage,
+  isArabic
 }) => {
-  const isArabic = language === "ar";
-  
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -46,6 +48,11 @@ const LoginFormInputs: React.FC<LoginFormInputsProps> = ({
           disabled={isProcessing}
         />
       </div>
+      {errorMessage && (
+        <div className="text-sm font-medium text-destructive mt-2">
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 };

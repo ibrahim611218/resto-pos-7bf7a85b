@@ -5,26 +5,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Language } from "@/types";
 
 interface LoginFormActionsProps {
-  rememberMe: boolean;
-  setRememberMe: (checked: boolean) => void;
+  rememberMe?: boolean;
+  setRememberMe?: (checked: boolean) => void;
   isProcessing: boolean;
   language: Language;
-  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onSubmit?: (e: React.FormEvent) => Promise<void>;
+  isArabic: boolean;
 }
 
 const LoginFormActions: React.FC<LoginFormActionsProps> = ({
-  rememberMe,
-  setRememberMe,
+  rememberMe = false,
+  setRememberMe = () => {},
   isProcessing,
   language,
-  onSubmit
+  onSubmit,
+  isArabic
 }) => {
-  const isArabic = language === "ar";
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <Checkbox
             id="remember"
             checked={rememberMe}
@@ -35,7 +35,7 @@ const LoginFormActions: React.FC<LoginFormActionsProps> = ({
           />
           <label
             htmlFor="remember"
-            className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${isArabic ? "mr-2" : "ml-2"}`}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             {isArabic ? "تذكرني" : "Remember me"}
           </label>
@@ -48,7 +48,6 @@ const LoginFormActions: React.FC<LoginFormActionsProps> = ({
         type="submit" 
         className="w-full h-12" 
         disabled={isProcessing}
-        onClick={onSubmit}
       >
         {isProcessing 
           ? (isArabic ? "جاري تسجيل الدخول..." : "Signing in...") 

@@ -23,6 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +75,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
               setPassword={setPassword}
               isArabic={isArabic}
               errorMessage={errorMessage}
+              isProcessing={isProcessing}
+              language={language}
             />
           </CardContent>
 
@@ -81,6 +84,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
             <LoginFormActions
               isProcessing={isProcessing}
               isArabic={isArabic}
+              language={language}
+              rememberMe={rememberMe}
+              setRememberMe={setRememberMe}
             />
           </CardFooter>
         </form>
