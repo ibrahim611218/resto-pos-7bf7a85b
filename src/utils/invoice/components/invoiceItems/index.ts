@@ -41,9 +41,15 @@ export const generateInvoiceItemsTable = (invoice: Invoice): string => {
       
       // Only show size if not a single product type
       const isSingleProduct = item.type === "single";
-      const sizeText = (!isSingleProduct && item.size && item.size !== "regular" && item.size !== "medium") 
-        ? `(${item.size})` 
-        : '';
+      
+      // Get Arabic size name
+      let sizeText = '';
+      if (!isSingleProduct && item.size && item.size !== "regular" && item.size !== "medium") {
+        if (item.size === "small") sizeText = "(صغير)";
+        else if (item.size === "large") sizeText = "(كبير)";
+        else if (item.size === "xlarge") sizeText = "(كبير جداً)";
+        else sizeText = `(${item.size})`;
+      }
         
       const itemPrice = typeof item.price === 'number' ? item.price.toFixed(2) : '0.00';
       const itemQuantity = item.quantity || 1;

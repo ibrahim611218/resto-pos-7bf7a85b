@@ -1,30 +1,24 @@
 
-const sizeLabels = {
-  small: {
-    en: "Small",
-    ar: "صغير"
-  },
-  medium: {
-    en: "Medium",
-    ar: "وسط"  // Updated to use Arabic translation
-  },
-  large: {
-    en: "Large",
-    ar: "كبير"
-  },
-  regular: {
-    en: "Regular",
-    ar: "عادي"
-  }
-};
+import { Size } from "@/types";
 
-export const getSizeLabel = (size: string, isArabic: boolean | string): string => {
-  const sizeKey = size as keyof typeof sizeLabels;
-  // Convert string "ar" to boolean true
-  const isArabicBool = isArabic === true || isArabic === "ar";
-  
-  if (sizeLabels[sizeKey]) {
-    return isArabicBool ? sizeLabels[sizeKey].ar : sizeLabels[sizeKey].en;
+export const getSizeLabel = (size: string, isArabic: boolean): string => {
+  if (isArabic) {
+    switch (size) {
+      case "small": return "صغير";
+      case "medium": return "وسط";
+      case "large": return "كبير";
+      case "xlarge": return "كبير جداً";
+      case "regular": return "عادي";
+      default: return size;
+    }
+  } else {
+    switch (size) {
+      case "small": return "Small";
+      case "medium": return "Medium";
+      case "large": return "Large";
+      case "xlarge": return "X-Large";
+      case "regular": return "Regular";
+      default: return size;
+    }
   }
-  return size;
 };

@@ -34,7 +34,11 @@ const SizeSelect: React.FC<SizeSelectProps> = ({
         {product?.variants.map(variant => (
           <SelectItem key={variant.id} value={variant.size}>
             {isArabic 
-              ? (variant.size === 'small' ? 'صغير' : variant.size === 'medium' ? 'وسط' : 'كبير')
+              ? (variant.size === 'small' ? 'صغير' 
+                : variant.size === 'medium' ? 'وسط' 
+                : variant.size === 'large' ? 'كبير'
+                : variant.size === 'xlarge' ? 'كبير جداً'
+                : variant.size)
               : variant.size
             }
           </SelectItem>

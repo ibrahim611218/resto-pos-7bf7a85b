@@ -55,6 +55,7 @@ const ProductVariantsManager: React.FC<ProductVariantsManagerProps> = ({
                   <SelectItem value="small">صغير</SelectItem>
                   <SelectItem value="medium">وسط</SelectItem>
                   <SelectItem value="large">كبير</SelectItem>
+                  <SelectItem value="xlarge">كبير جداً</SelectItem>
                 </SelectContent>
               </Select>
               

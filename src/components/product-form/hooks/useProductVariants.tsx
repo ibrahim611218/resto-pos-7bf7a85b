@@ -11,7 +11,8 @@ export const useProductVariants = (initialVariants: ProductVariant[] = []) => {
     const sizeOptions: { size: string, label: string }[] = [
       { size: "small", label: "صغير" },
       { size: "medium", label: "وسط" },
-      { size: "large", label: "كبير" }
+      { size: "large", label: "كبير" },
+      { size: "xlarge", label: "كبير جداً" }
     ];
     
     const availableSizes = sizeOptions
