@@ -1,147 +1,90 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { toast } from "sonner";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Language } from "@/types";
-import { userService, companyService } from "@/services";
-import AnimatedTransition from "@/components/ui-custom/AnimatedTransition";
-import LoginFormInputs from './form/LoginFormInputs';
-import LoginFormActions from './form/LoginFormActions';
+import LoginFormInputs from "./form/LoginFormInputs";
+import LoginFormActions from "./form/LoginFormActions";
 
 interface LoginFormProps {
   language: Language;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ language }) => {
+  const isArabic = language === "ar";
+  const { login, isProcessing } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const { login, isProcessing } = useAuth();
-  const isArabic = language === "ar";
-  
-  // تحميل البيانات المحفوظة إذا تم تحديد "تذكرني" سابقًا
-  useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberedEmail');
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setRememberMe(true);
-    }
-  }, []);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
     
     if (!email || !password) {
-      toast.error(
-        isArabic
-          ? "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور"
-          : "Please enter email/username and password"
-      );
+      setErrorMessage(isArabic ? "الرجاء إدخال البريد الإلكتروني وكلمة المرور" : "Please enter email and password");
       return;
     }
     
-    try {
-      console.log("محاولة تسجيل الدخول باستخدام:", email);
-      
-      // إذا تم اختيار "تذكرني"، قم بحفظ البريد الإلكتروني
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', email);
-      } else {
-        localStorage.removeItem('rememberedEmail');
-      }
-      
-      const success = await login(email, password);
-      
-      if (success) {
-        try {
-          // تحقق مما إذا كان تسجيل الدخول كشركة
-          const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
-          
-          if (isCompanyLogin) {
-            const companies = await companyService.getCompanies();
-            const companyEmail = email.toLowerCase().trim();
-            const foundCompany = companies.find(c => 
-              c.email && c.email.toLowerCase() === companyEmail
-            );
-            
-            if (foundCompany) {
-              localStorage.setItem('currentCompanyId', foundCompany.id);
-            }
-          } else {
-            const users = await userService.getUsers();
-            const loggedInUser = users.find(u => 
-              (u.email && u.email.toLowerCase() === email.toLowerCase()) || 
-              (u.username && u.username.toLowerCase() === email.toLowerCase())
-            );
-            
-            if (loggedInUser?.companyId) {
-              localStorage.setItem('currentCompanyId', loggedInUser.companyId);
-            }
-          }
-          
-          toast.success(isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in");
-          navigate("/");
-        } catch (error) {
-          console.error("خطأ في معالجة بيانات المستخدم بعد تسجيل الدخول:", error);
-        }
-      } else {
-        console.error("فشل تسجيل الدخول لـ:", email);
-        toast.error(
-          isArabic
-            ? "بيانات الدخول غير صحيحة"
-            : "Invalid login credentials"
-        );
-      }
-    } catch (error) {
-      console.error("خطأ تسجيل الدخول:", error);
-      toast.error(
-        isArabic
-          ? "حدث خطأ أثناء تسجيل الدخول"
-          : "An error occurred during login"
-      );
+    const success = await login(email, password);
+    
+    if (success) {
+      navigate("/pos");
+      toast({
+        title: isArabic ? "تم تسجيل الدخول بنجاح" : "Successfully logged in",
+        description: isArabic ? "مرحبا بعودتك" : "Welcome back",
+      });
+    } else {
+      setErrorMessage(isArabic ? "بيانات الدخول غير صحيحة" : "Invalid credentials");
+      toast({
+        variant: "destructive",
+        title: isArabic ? "خطأ في تسجيل الدخول" : "Login Error",
+        description: isArabic ? "بيانات الدخول غير صحيحة" : "Invalid credentials",
+      });
     }
   };
 
   return (
-    <div className="w-full md:w-1/2 p-8 flex items-center justify-center">
-      <AnimatedTransition animation="slide-up" className="w-full max-w-md">
-        <Card className="shadow-xl border-opacity-50 backdrop-blur-sm bg-background/95">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">
-              {isArabic ? "تسجيل الدخول" : "Sign in"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <LoginFormInputs
-                email={email}
-                password={password}
-                setEmail={setEmail}
-                setPassword={setPassword}
-                isProcessing={isProcessing}
-                language={language}
-              />
-              <LoginFormActions
-                rememberMe={rememberMe}
-                setRememberMe={setRememberMe}
-                isProcessing={isProcessing}
-                language={language}
-                onSubmit={handleLogin}
-              />
-            </form>
+    <div dir={isArabic ? "rtl" : "ltr"} className="w-full md:w-1/2 p-8 flex justify-center items-center bg-card bg-opacity-50 backdrop-blur-sm">
+      <Card className="w-full max-w-md shadow-lg border-0 bg-card/50 backdrop-blur">
+        <form onSubmit={handleSubmit}>
+          <CardContent className="pt-6">
+            <div className="mb-6">
+              <h2 className={`text-2xl font-bold ${isArabic ? "font-[Tajawal]" : ""} text-center`}>
+                {isArabic ? "تسجيل الدخول" : "Login"}
+              </h2>
+              <p className="text-center text-muted-foreground mt-1">
+                {isArabic 
+                  ? "أدخل بيانات تسجيل الدخول الخاصة بك"
+                  : "Enter your credentials to access the dashboard"}
+              </p>
+            </div>
+
+            <LoginFormInputs
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              isArabic={isArabic}
+              errorMessage={errorMessage}
+            />
           </CardContent>
+
           <CardFooter>
-            <p className="text-xs text-center text-muted-foreground w-full">
-              {isArabic
-                ? "© 2024 نظام المطاعم. جميع الحقوق محفوظة"
-                : "© 2024 Restaurant System. All rights reserved"}
-            </p>
+            <LoginFormActions
+              isProcessing={isProcessing}
+              isArabic={isArabic}
+            />
           </CardFooter>
-        </Card>
-      </AnimatedTransition>
+        </form>
+      </Card>
     </div>
   );
 };

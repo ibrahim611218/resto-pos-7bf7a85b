@@ -17,7 +17,7 @@ const Login: React.FC<LoginProps> = ({ language }) => {
   // Check if user is already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/pos");
     }
   }, [isAuthenticated, navigate]);
 

@@ -38,6 +38,7 @@ function App() {
       {/* Keep login route for explicit /login navigation */}
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/pos" replace />} />
       
+      {/* All other routes require authentication */}
       <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
         <Route path="/pos" element={<Pos />} />
         <Route path="/products" element={<Products />} />
