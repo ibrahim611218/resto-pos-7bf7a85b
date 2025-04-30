@@ -29,6 +29,7 @@ export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isProcessing: boolean;
+  isInitialized: boolean; // Added the missing property
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   hasPermission: (requiredRole: UserRole | UserRole[]) => boolean;

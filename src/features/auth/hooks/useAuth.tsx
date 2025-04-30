@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user, 
       isAuthenticated,
       isProcessing,
+      isInitialized, // Added the missing property
       login, 
       logout, 
       hasPermission,
