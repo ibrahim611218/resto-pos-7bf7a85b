@@ -31,6 +31,10 @@ class UserService extends BaseService implements IUserService {
       
       // إضافة مدير النظام إذا كان المستخدم الحالي هو المدير الرئيسي
       const systemAdminEmail = "eng.ibrahimabdalfatah@gmail.com";
+      
+      // قبل إجراء أي تصفية، نقوم بإزالة أي نسخ مكررة من المستخدمين بناءً على معرف المستخدم
+      users = this.removeDuplicateUsers(users);
+      
       const hasSystemAdmin = users.some(user => user.email === systemAdminEmail);
       
       if (!hasSystemAdmin && isPrimaryOwner) {
@@ -53,7 +57,7 @@ class UserService extends BaseService implements IUserService {
       if (isCompanyLogin && currentCompanyId) {
         console.log("Company login detected, hiding system admin account");
         users = users.filter(user => 
-          user.email !== "eng.ibrahimabdalfatah@gmail.com" && 
+          user.email !== systemAdminEmail && 
           user.companyId === currentCompanyId
         );
       } 
@@ -63,11 +67,26 @@ class UserService extends BaseService implements IUserService {
         users = users.filter(user => user.companyId === currentCompanyId);
       }
       
+      console.log("Returning users after filtering:", users.length);
       return users;
     } catch (error) {
       console.error('Error getting users:', error);
       return [];
     }
+  }
+  
+  // إضافة وظيفة جديدة لإزالة المستخدمين المكررين
+  private removeDuplicateUsers(users: UserWithPassword[]): UserWithPassword[] {
+    const uniqueUsers = new Map<string, UserWithPassword>();
+    
+    // حفظ المستخدمين الفريدين بناءً على المعرف
+    for (const user of users) {
+      if (!uniqueUsers.has(user.id)) {
+        uniqueUsers.set(user.id, user);
+      }
+    }
+    
+    return Array.from(uniqueUsers.values());
   }
 
   async getUserById(userId: string): Promise<UserWithPassword | null> {
@@ -86,6 +105,9 @@ class UserService extends BaseService implements IUserService {
       
       const storedUsers = localStorage.getItem(this.storageKey);
       let users: UserWithPassword[] = storedUsers ? JSON.parse(storedUsers) : [];
+      
+      // إزالة النسخ المكررة قبل الحفظ
+      users = this.removeDuplicateUsers(users);
       
       const existingUserIndex = users.findIndex(u => 
         u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase())

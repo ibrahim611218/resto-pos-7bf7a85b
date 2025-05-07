@@ -72,6 +72,9 @@ export const useAuthOperations = (
         if (foundUser.companyId) {
           console.log("تم تعيين معرف الشركة:", foundUser.companyId);
           localStorage.setItem('currentCompanyId', foundUser.companyId);
+        } else {
+          // إذا لم يكن لديه معرف شركة، نتأكد من إزالة أي معرف سابق
+          localStorage.removeItem('currentCompanyId');
         }
         
         return true;
