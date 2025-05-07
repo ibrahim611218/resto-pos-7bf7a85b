@@ -24,12 +24,17 @@ class UserService extends BaseService implements IUserService {
         return mockUsers;
       }
       
-      // Ensure system admin exists in the list
+      // الحصول على معلومات المستخدم الحالي والتحقق مما إذا كان مدير شركة
+      const currentUserJson = localStorage.getItem('user');
+      const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
+      const isPrimaryOwner = currentUser && currentUser.email === "eng.ibrahimabdalfatah@gmail.com";
+      const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
+      
+      // إضافة مدير النظام إذا كان المستخدم الحالي هو المدير الرئيسي
       const systemAdminEmail = "eng.ibrahimabdalfatah@gmail.com";
       const hasSystemAdmin = users.some(user => user.email === systemAdminEmail);
       
-      if (!hasSystemAdmin) {
-        // Add system admin if not present
+      if (!hasSystemAdmin && isPrimaryOwner) {
         console.log("System admin not found, adding it to users list");
         const systemAdmin = mockUsers.find(user => user.email === systemAdminEmail);
         if (systemAdmin) {
@@ -38,16 +43,21 @@ class UserService extends BaseService implements IUserService {
         }
       }
       
-      // Get current user
-      const currentUserJson = localStorage.getItem('user');
-      const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
-      const isPrimaryOwner = currentUser && currentUser.email === "eng.ibrahimabdalfatah@gmail.com";
-      
-      // Filter users by company only if not primary owner
+      // فلترة المستخدمين حسب الشركة
       const currentCompanyId = localStorage.getItem('currentCompanyId');
-      if (currentCompanyId && !isPrimaryOwner) {
+      
+      // إذا كان تسجيل الدخول من حساب شركة، إخفاء مدير النظام
+      if (isCompanyLogin && currentCompanyId) {
+        console.log("Company login detected, hiding system admin account");
+        users = users.filter(user => 
+          user.email !== "eng.ibrahimabdalfatah@gmail.com" && 
+          user.companyId === currentCompanyId
+        );
+      } 
+      // إذا كان مستخدم عادي وليس المدير الرئيسي
+      else if (currentCompanyId && !isPrimaryOwner) {
         console.log("Filtering users by company ID:", currentCompanyId);
-        return users.filter(user => user.companyId === currentCompanyId);
+        users = users.filter(user => user.companyId === currentCompanyId);
       }
       
       return users;
