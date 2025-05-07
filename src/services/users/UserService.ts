@@ -28,7 +28,6 @@ class UserService extends BaseService implements IUserService {
       const currentUserJson = localStorage.getItem('user');
       const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
       const isPrimaryOwner = currentUser && currentUser.email === "eng.ibrahimabdalfatah@gmail.com";
-      const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
       
       // إضافة مدير النظام إذا كان المستخدم الحالي هو المدير الرئيسي
       const systemAdminEmail = "eng.ibrahimabdalfatah@gmail.com";
@@ -45,6 +44,10 @@ class UserService extends BaseService implements IUserService {
       
       // فلترة المستخدمين حسب الشركة
       const currentCompanyId = localStorage.getItem('currentCompanyId');
+      const isCompanyLogin = localStorage.getItem('isCompanyLogin') === 'true';
+      
+      console.log("Is company login:", isCompanyLogin);
+      console.log("Current company ID:", currentCompanyId);
       
       // إذا كان تسجيل الدخول من حساب شركة، إخفاء مدير النظام
       if (isCompanyLogin && currentCompanyId) {
