@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useBusinessSettings } from '@/hooks/useBusinessSettings';
@@ -22,21 +23,37 @@ const BusinessSettingsForm: React.FC = () => {
   const isArabic = language === 'ar';
   const { settings, updateSettings, loading } = useBusinessSettings();
   const [activeTab, setActiveTab] = useState('general');
+  const [localSettings, setLocalSettings] = useState(settings);
 
   // تفعيل النسخ الاحتياطي التلقائي عند تحميل المكون
   useEffect(() => {
     backupService.setupAutoBackup(60); // كل ساعة
   }, []);
 
-  const handleSettingsChange = (newSettings: any) => {
-    // Implement your settings change logic here
-    // For example, you can update the state with the new settings
-    console.log('New settings:', newSettings);
+  // تحديث الإعدادات المحلية عند تغيير الإعدادات من الخادم
+  useEffect(() => {
+    setLocalSettings(settings);
+  }, [settings]);
+
+  const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    
+    setLocalSettings(prev => ({
+      ...prev,
+      [name]: type === 'number' ? Number(value) : value
+    }));
+  };
+
+  const handleSwitchChange = (name: string, checked: boolean) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      [name]: checked
+    }));
   };
 
   const handleSave = async () => {
     try {
-      await updateSettings(settings);
+      await updateSettings(localSettings);
       toast.success(isArabic ? 'تم حفظ الإعدادات بنجاح' : 'Settings saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -48,22 +65,22 @@ const BusinessSettingsForm: React.FC = () => {
     {
       id: 'general',
       label: isArabic ? 'المعلومات العامة' : 'General Info',
-      component: <GeneralInfo settings={settings} />
+      component: <GeneralInfo settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} />
     },
     {
       id: 'contact',
       label: isArabic ? 'معلومات الاتصال' : 'Contact Information',
-      component: <ContactInformation settings={settings} />
+      component: <ContactInformation settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} />
     },
     {
       id: 'tax',
       label: isArabic ? 'إعدادات الضرائب' : 'Tax Settings',
-      component: <TaxSettings settings={settings} />
+      component: <TaxSettings settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} onSwitchChange={handleSwitchChange} />
     },
     {
       id: 'hours',
       label: isArabic ? 'ساعات العمل' : 'Work Hours',
-      component: <WorkHoursSettings settings={settings} />
+      component: <WorkHoursSettings settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} />
     },
     {
       id: 'display',
@@ -138,3 +155,4 @@ const BusinessSettingsForm: React.FC = () => {
 };
 
 export default BusinessSettingsForm;
+
