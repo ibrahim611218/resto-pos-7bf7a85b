@@ -1,100 +1,131 @@
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
+import { useBusinessSettings } from '@/hooks/useBusinessSettings';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+import GeneralInfo from './components/general-info/GeneralInfo';
+import ContactInformation from './components/contact-info/ContactInformation';
+import TaxSettings from './components/tax-settings/TaxSettings';
+import WorkHoursSettings from './components/work-hours/WorkHoursSettings';
+import TouchModeSettings from './components/touch-mode/TouchModeSettings';
+import WindowSizeSettings from './components/window-size/WindowSizeSettings';
+import DataManagement from './components/DataManagement';
+import BackupManagement from './components/BackupManagement';
+import backupService from '@/services/backup/BackupService';
 
-import React, { useState } from "react";
-import { Language } from "@/types";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Building2, Save } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-import { useBusinessSettings } from "@/hooks/useBusinessSettings";
-import LogoUploader from "./components/LogoUploader";
-import BusinessInfoFields from "./components/BusinessInfoFields";
-
-interface BusinessSettingsFormProps {
-  language: Language;
-}
-
-const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({ language }) => {
-  const isArabic = language === "ar";
-  
+const BusinessSettingsForm: React.FC = () => {
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
   const { settings, updateSettings, loading } = useBusinessSettings();
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    
-    // Handle tax rate field specifically
-    if (name === "taxRate") {
-      // Only update if the value is a valid number or empty
-      if (value === "" || !isNaN(parseFloat(value))) {
-        updateSettings({
-          [name]: value === "" ? 0 : parseFloat(value)
-        });
-      }
-    } else {
-      updateSettings({
-        [name]: value
-      });
+  const [activeTab, setActiveTab] = useState('general');
+
+  // تفعيل النسخ الاحتياطي التلقائي عند تحميل المكون
+  useEffect(() => {
+    backupService.setupAutoBackup(60); // كل ساعة
+  }, []);
+
+  const handleSettingsChange = (newSettings: any) => {
+    // Implement your settings change logic here
+    // For example, you can update the state with the new settings
+    console.log('New settings:', newSettings);
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateSettings(settings);
+      toast.success(isArabic ? 'تم حفظ الإعدادات بنجاح' : 'Settings saved successfully');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast.error(isArabic ? 'فشل في حفظ الإعدادات' : 'Failed to save settings');
     }
   };
-  
-  const handleSwitchChange = (name: string, checked: boolean) => {
-    updateSettings({
-      [name]: checked
-    });
-  };
-  
-  const handleLogoChange = (logoData: string) => {
-    updateSettings({
-      logo: logoData
-    });
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, this would save to a database
-    toast({
-      title: isArabic ? "تم حفظ الإعدادات" : "Settings Saved",
-      description: isArabic ? "تم حفظ إعدادات المطعم بنجاح" : "Restaurant settings have been saved successfully",
-    });
-  };
-  
+
+  const tabs = [
+    {
+      id: 'general',
+      label: isArabic ? 'المعلومات العامة' : 'General Info',
+      component: <GeneralInfo settings={settings} onUpdate={handleSettingsChange} />
+    },
+    {
+      id: 'contact',
+      label: isArabic ? 'معلومات الاتصال' : 'Contact Information',
+      component: <ContactInformation settings={settings} onUpdate={handleSettingsChange} />
+    },
+    {
+      id: 'tax',
+      label: isArabic ? 'إعدادات الضرائب' : 'Tax Settings',
+      component: <TaxSettings settings={settings} onUpdate={handleSettingsChange} />
+    },
+    {
+      id: 'hours',
+      label: isArabic ? 'ساعات العمل' : 'Work Hours',
+      component: <WorkHoursSettings settings={settings} onUpdate={handleSettingsChange} />
+    },
+    {
+      id: 'display',
+      label: isArabic ? 'إعدادات العرض' : 'Display Settings',
+      component: (
+        <div className="space-y-6">
+          <TouchModeSettings settings={settings} onUpdate={handleSettingsChange} />
+          <WindowSizeSettings settings={settings} onUpdate={handleSettingsChange} />
+        </div>
+      )
+    },
+    {
+      id: 'backup',
+      label: isArabic ? 'النسخ الاحتياطية' : 'Backup & Restore',
+      component: <BackupManagement />
+    },
+    {
+      id: 'data',
+      label: isArabic ? 'إدارة البيانات' : 'Data Management',
+      component: <DataManagement />
+    }
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto py-6">
-      <form onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Building2 className="ml-2" size={18} />
-              {isArabic ? "إعدادات المطعم" : "Restaurant Settings"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Logo Upload Section */}
-            <LogoUploader 
-              logo={settings.logo || null} 
-              isArabic={isArabic} 
-              onLogoChange={handleLogoChange} 
-            />
-            
-            {/* Business Information */}
-            <BusinessInfoFields 
-              settings={settings} 
-              isArabic={isArabic} 
-              onChange={handleInputChange} 
-              onSwitchChange={handleSwitchChange}
-            />
-          </CardContent>
-          <CardFooter>
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={loading}
-            >
-              <Save className="ml-2" size={16} />
-              {isArabic ? "حفظ الإعدادات" : "Save Settings"}
+    <div className="space-y-6" dir={isArabic ? 'rtl' : 'ltr'}>
+      <Card>
+        <CardHeader>
+          <CardTitle>{isArabic ? 'إعدادات الأعمال' : 'Business Settings'}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-7 w-full">
+              {tabs.map((tab) => (
+                <TabsTrigger key={tab.id} value={tab.id} className="text-xs">
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {tabs.map((tab) => (
+              <TabsContent key={tab.id} value={tab.id} className="mt-6">
+                {tab.component}
+              </TabsContent>
+            ))}
+          </Tabs>
+
+          <Separator className="my-6" />
+
+          <div className="flex justify-end">
+            <Button onClick={handleSave} disabled={loading}>
+              {loading ? (isArabic ? 'جاري الحفظ...' : 'Saving...') : (isArabic ? 'حفظ الإعدادات' : 'Save Settings')}
             </Button>
-          </CardFooter>
-        </Card>
-      </form>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

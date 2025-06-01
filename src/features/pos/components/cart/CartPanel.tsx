@@ -76,11 +76,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col border-l bg-card cart-panel rounded-sm",
-        expanded ? "w-full lg:w-1/3 xl:w-1/4" : "w-20",
-        "transition-all duration-300 ease-in-out"
+        "h-full flex flex-col border-l bg-card cart-panel rounded-sm overflow-hidden",
+        expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
+        "transition-all duration-300 ease-in-out",
+        "max-w-full" // تأكد من عدم تجاوز حدود الشاشة
       )}
-      style={{ maxWidth: expanded ? "100%" : "5rem" }}
     >
       <CartHeader 
         isMobile={isMobile}
@@ -89,36 +89,40 @@ const CartPanel: React.FC<CartPanelProps> = ({
         toggleExpand={onToggleExpand}
         clearCart={clearCart}
         isArabic={isArabic}
-        className="cart-header"
+        className="cart-header flex-shrink-0"
       />
       
       {expanded ? (
         <>
-          <CartContent cartItems={cartItems} isArabic={isArabic} />
+          <div className="flex-1 overflow-hidden">
+            <CartContent cartItems={cartItems} isArabic={isArabic} />
+          </div>
           
-          <CartFooter 
-            isMobile={isMobile}
-            cartItems={cartItems}
-            orderType={orderType}
-            tableNumber={tableNumber}
-            discount={discount}
-            discountType={discountType}
-            subtotal={subtotal}
-            taxAmount={taxAmount}
-            total={total}
-            paymentMethod={paymentMethod}
-            paidAmount={paidAmount}
-            setOrderType={setOrderType}
-            setTableNumber={setTableNumber}
-            setDiscount={setDiscount}
-            setDiscountType={setDiscountType}
-            handleCreateInvoice={handleCreateInvoice}
-            clearCart={clearCart}
-            isArabic={isArabic}
-            onPaidAmountClick={handleShowPaidAmountDialog}
-            customer={customer}
-            className="cart-footer"
-          />
+          <div className="flex-shrink-0">
+            <CartFooter 
+              isMobile={isMobile}
+              cartItems={cartItems}
+              orderType={orderType}
+              tableNumber={tableNumber}
+              discount={discount}
+              discountType={discountType}
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              total={total}
+              paymentMethod={paymentMethod}
+              paidAmount={paidAmount}
+              setOrderType={setOrderType}
+              setTableNumber={setTableNumber}
+              setDiscount={setDiscount}
+              setDiscountType={setDiscountType}
+              handleCreateInvoice={handleCreateInvoice}
+              clearCart={clearCart}
+              isArabic={isArabic}
+              onPaidAmountClick={handleShowPaidAmountDialog}
+              customer={customer}
+              className="cart-footer"
+            />
+          </div>
         </>
       ) : (
         <div className="flex-1 flex flex-col items-center pt-4 text-center">
