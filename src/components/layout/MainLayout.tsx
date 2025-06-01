@@ -84,12 +84,12 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden relative">
+    <div className="flex min-h-screen h-screen bg-background w-full overflow-hidden">
       {!sidebarHidden && (
         <div 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="relative z-30 flex-shrink-0"
+          className="flex-shrink-0 z-30"
         >
           <Sidebar 
             collapsed={sidebarCollapsed} 
@@ -99,32 +99,23 @@ const MainLayout: React.FC = () => {
         </div>
       )}
       
-      <AnimatedTransition animation="fade" delay={100}>
-        <div 
-          className={cn(
-            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container relative z-10 overflow-hidden",
-            sidebarHidden ? "ml-0 mr-0" : ""
-          )}
-        >
-          {sidebarHidden && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className={`fixed top-4 ${isArabic ? "right-4" : "left-4"} z-50 bg-background/80 backdrop-blur-sm shadow-sm sidebar-toggle-floating`}
-              onClick={showSidebar}
-              title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-          )}
-          
-          <ScrollArea className="h-full w-full scrollable-content">
-            <div className="centered-content" dir={isArabic ? "rtl" : "ltr"}>
-              <Outlet />
-            </div>
-          </ScrollArea>
-        </div>
-      </AnimatedTransition>
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {sidebarHidden && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={`fixed top-4 ${isArabic ? "right-4" : "left-4"} z-50 bg-background/80 backdrop-blur-sm shadow-sm`}
+            onClick={showSidebar}
+            title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        )}
+        
+        <main className="flex-1 overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };
