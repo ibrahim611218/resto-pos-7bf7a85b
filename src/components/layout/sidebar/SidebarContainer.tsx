@@ -39,7 +39,7 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 z-50 flex h-screen flex-col shadow-md",
+          "fixed lg:relative inset-y-0 z-40 flex h-screen flex-col shadow-md",
           sidePosition,
           sidebarTransition,
           borderClass,
@@ -51,7 +51,6 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           direction: isArabic ? "rtl" : "ltr",
           pointerEvents: "auto", 
           touchAction: "auto", 
-          zIndex: 999,
           userSelect: "none",
           backgroundColor: "#004d40",
           position: "fixed"

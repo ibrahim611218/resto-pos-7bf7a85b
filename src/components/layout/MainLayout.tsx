@@ -83,11 +83,12 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden">
+    <div className="flex min-h-screen h-screen bg-background w-full m-0 p-0 auto-scale-container overflow-hidden relative">
       {!sidebarHidden && (
         <div 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          className="relative z-30"
         >
           <Sidebar 
             collapsed={sidebarCollapsed} 
@@ -100,15 +101,11 @@ const MainLayout: React.FC = () => {
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={cn(
-            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container",
+            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container relative z-10",
             !sidebarHidden && !sidebarCollapsed && !isMobile ? 
               isArabic ? "md:mr-64" : "md:ml-64" 
               : "mx-0"
           )}
-          style={{ 
-            zIndex: 1, 
-            position: "relative" 
-          }}
         >
           {sidebarHidden && (
             <Button 
