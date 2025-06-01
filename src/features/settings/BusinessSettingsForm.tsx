@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useBusinessSettings } from '@/hooks/useBusinessSettings';
@@ -10,8 +11,8 @@ import GeneralInfo from './components/general-info/GeneralInfo';
 import ContactInformation from './components/contact-info/ContactInformation';
 import TaxSettings from './components/tax-settings/TaxSettings';
 import WorkHoursSettings from './components/work-hours/WorkHoursSettings';
-import TouchModeSettings from './components/touch-mode/TouchModeSettings';
-import WindowSizeSettings from './components/window-size/WindowSizeSettings';
+import { TouchModeSettings } from './components/touch-mode/TouchModeSettings';
+import { WindowSizeSettings } from './components/window-size/WindowSizeSettings';
 import DataManagement from './components/DataManagement';
 import BackupManagement from './components/BackupManagement';
 import backupService from '@/services/backup/BackupService';
@@ -47,30 +48,36 @@ const BusinessSettingsForm: React.FC = () => {
     {
       id: 'general',
       label: isArabic ? 'المعلومات العامة' : 'General Info',
-      component: <GeneralInfo settings={settings} onUpdate={handleSettingsChange} />
+      component: <GeneralInfo settings={settings} />
     },
     {
       id: 'contact',
       label: isArabic ? 'معلومات الاتصال' : 'Contact Information',
-      component: <ContactInformation settings={settings} onUpdate={handleSettingsChange} />
+      component: <ContactInformation settings={settings} />
     },
     {
       id: 'tax',
       label: isArabic ? 'إعدادات الضرائب' : 'Tax Settings',
-      component: <TaxSettings settings={settings} onUpdate={handleSettingsChange} />
+      component: <TaxSettings settings={settings} />
     },
     {
       id: 'hours',
       label: isArabic ? 'ساعات العمل' : 'Work Hours',
-      component: <WorkHoursSettings settings={settings} onUpdate={handleSettingsChange} />
+      component: <WorkHoursSettings settings={settings} />
     },
     {
       id: 'display',
       label: isArabic ? 'إعدادات العرض' : 'Display Settings',
       component: (
         <div className="space-y-6">
-          <TouchModeSettings settings={settings} onUpdate={handleSettingsChange} />
-          <WindowSizeSettings settings={settings} onUpdate={handleSettingsChange} />
+          <TouchModeSettings settings={{touchMode: false}} toggleTouchMode={() => {}} isArabic={isArabic} />
+          <WindowSizeSettings 
+            windowSize={{width: '1024', height: '768'}} 
+            setWindowSize={() => {}} 
+            applyWindowSize={() => {}} 
+            maximizeWindow={() => {}} 
+            isArabic={isArabic} 
+          />
         </div>
       )
     },

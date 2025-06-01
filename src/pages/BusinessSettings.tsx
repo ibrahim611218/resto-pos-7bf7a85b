@@ -42,7 +42,7 @@ const BusinessSettings = () => {
         </TabsList>
         
         <TabsContent value="business">
-          <BusinessSettingsForm language={language} />
+          <BusinessSettingsForm />
         </TabsContent>
         <TabsContent value="display">
           <Card>
