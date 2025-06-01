@@ -26,9 +26,6 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
   const isArabic = language === "ar";
   const isDark = theme === "dark";
   
-  // Determine sidebar position based on RTL setting
-  const sidePosition = isArabic ? "right-0" : "left-0";
-  
   // Set width transition
   const sidebarTransition = collapsed ? "w-20" : "w-64";
 
@@ -39,12 +36,10 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "fixed lg:relative inset-y-0 z-40 flex h-screen flex-col shadow-md",
-          sidePosition,
+          "relative inset-y-0 z-40 flex h-screen flex-col shadow-md",
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
-          collapsed && isMobile ? "transform -translate-x-full rtl:translate-x-full" : "transform translate-x-0",
           "bg-[#004d40] text-white restopos-sidebar"
         )}
         style={{ 
@@ -52,8 +47,7 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           pointerEvents: "auto", 
           touchAction: "auto", 
           userSelect: "none",
-          backgroundColor: "#004d40",
-          position: "fixed"
+          backgroundColor: "#004d40"
         }}
         data-sidebar="sidebar"
       >

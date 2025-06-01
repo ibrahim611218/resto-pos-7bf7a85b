@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -88,7 +89,7 @@ const MainLayout: React.FC = () => {
         <div 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="relative z-30"
+          className="relative z-30 flex-shrink-0"
         >
           <Sidebar 
             collapsed={sidebarCollapsed} 
@@ -101,10 +102,8 @@ const MainLayout: React.FC = () => {
       <AnimatedTransition animation="fade" delay={100}>
         <div 
           className={cn(
-            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container relative z-10",
-            !sidebarHidden && !sidebarCollapsed && !isMobile ? 
-              isArabic ? "md:mr-64" : "md:ml-64" 
-              : "mx-0"
+            "flex-1 transition-all duration-300 ease-in-out w-full m-0 p-0 content-container relative z-10 overflow-hidden",
+            sidebarHidden ? "ml-0 mr-0" : ""
           )}
         >
           {sidebarHidden && (
