@@ -132,42 +132,46 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-10">
+      <div className="flex justify-center items-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <>
-      <ProductSearchAndCategories
-        searchTerm={searchTerm}
-        onSearchTermChange={setSearchTerm}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={categories}
-        isArabic={isArabic}
-        viewMode={
-          onViewModeChange ? (
-            <ViewToggle value={viewMode} onValueChange={onViewModeChange} />
-          ) : null
-        }
-      />
-
-      {filteredProducts.length === 0 ? (
-        <div className="text-center py-10 text-muted-foreground">
-          {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
-        </div>
-      ) : (
-        <ProductList
-          products={filteredProducts}
-          viewMode={viewMode}
-          refreshKey={refreshKey}
-          onEditProduct={onEditProduct}
-          onDeleteProduct={onDeleteProduct}
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-shrink-0">
+        <ProductSearchAndCategories
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          categories={categories}
+          isArabic={isArabic}
+          viewMode={
+            onViewModeChange ? (
+              <ViewToggle value={viewMode} onValueChange={onViewModeChange} />
+            ) : null
+          }
         />
-      )}
-    </>
+      </div>
+
+      <div className="flex-1 overflow-hidden">
+        {filteredProducts.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
+          </div>
+        ) : (
+          <ProductList
+            products={filteredProducts}
+            viewMode={viewMode}
+            refreshKey={refreshKey}
+            onEditProduct={onEditProduct}
+            onDeleteProduct={onDeleteProduct}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

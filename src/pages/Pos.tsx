@@ -22,8 +22,9 @@ const Pos = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className="p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
+    <div className="h-screen w-full flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={toggleViewMode}>
@@ -32,13 +33,18 @@ const Pos = () => {
         </div>
       </div>
       
-      <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 overflow-hidden min-w-0">
-          <div className="h-full p-2">
-            <ProductsGrid viewMode={viewMode} />
-          </div>
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Products Section */}
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+          <ScrollArea className="flex-1">
+            <div className="p-2 h-full">
+              <ProductsGrid viewMode={viewMode} />
+            </div>
+          </ScrollArea>
         </div>
         
+        {/* Cart Panel */}
         <div className="flex-shrink-0">
           <CartPanel 
             expanded={cartExpanded} 
