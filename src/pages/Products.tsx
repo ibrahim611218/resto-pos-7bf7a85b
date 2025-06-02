@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
+import ProductForm from "@/components/ProductForm";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import productService from "@/services/products/ProductService";
 import { toast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Products = () => {
   const location = useLocation();
@@ -16,6 +18,7 @@ const Products = () => {
   const isArabic = language === "ar";
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [activeTab, setActiveTab] = useState("list");
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -34,13 +37,8 @@ const Products = () => {
     };
   }, []);
 
-  const handleAddProduct = () => {
-    console.log("Navigating to /products/add");
-    navigate("/products/add");
-  };
-
   const handleEditProduct = (id: string) => {
-    console.log(`Navigating to edit product with ID: ${id}`);
+    console.log(`Editing product with ID: ${id}`);
     navigate(`/products/edit/${id}`);
   };
 
@@ -73,21 +71,35 @@ const Products = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
-        <Button onClick={handleAddProduct}>
-          <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
-          {isArabic ? "إضافة منتج" : "Add Product"}
-        </Button>
       </div>
-      <ProductsGrid 
-        viewMode={viewMode} 
-        onViewModeChange={setViewMode} 
-        onEditProduct={handleEditProduct}
-        onDeleteProduct={handleDeleteProduct}
-        key={`products-grid-${refreshTrigger}`}  
-      />
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="list">
+            {isArabic ? "قائمة المنتجات" : "Products List"}
+          </TabsTrigger>
+          <TabsTrigger value="add">
+            {isArabic ? "إضافة منتج" : "Add Product"}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list" className="space-y-4">
+          <ProductsGrid 
+            viewMode={viewMode} 
+            onViewModeChange={setViewMode} 
+            onEditProduct={handleEditProduct}
+            onDeleteProduct={handleDeleteProduct}
+            key={`products-grid-${refreshTrigger}`}  
+          />
+        </TabsContent>
+
+        <TabsContent value="add">
+          <ProductForm />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

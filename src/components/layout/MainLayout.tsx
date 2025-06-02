@@ -2,14 +2,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import AnimatedTransition from "../ui-custom/AnimatedTransition";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { useLanguage } from "@/context/LanguageContext";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTheme } from "@/context/ThemeContext";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -18,7 +14,6 @@ const MainLayout: React.FC = () => {
   const { isMobile, isTablet, width } = useWindowDimensions();
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { theme } = useTheme();
   
   useEffect(() => {
     if (isMobile || (isTablet && width < 768)) {
@@ -84,12 +79,12 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen h-screen bg-background w-full overflow-hidden">
+    <div className="flex h-screen bg-background">
       {!sidebarHidden && (
         <div 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="flex-shrink-0 z-30"
+          className="flex-shrink-0"
         >
           <Sidebar 
             collapsed={sidebarCollapsed} 
@@ -99,7 +94,7 @@ const MainLayout: React.FC = () => {
         </div>
       )}
       
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {sidebarHidden && (
           <Button 
             variant="ghost" 
@@ -112,7 +107,7 @@ const MainLayout: React.FC = () => {
           </Button>
         )}
         
-        <main className="flex-1 overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+        <main className="flex-1 overflow-auto p-4" dir={isArabic ? "rtl" : "ltr"}>
           <Outlet />
         </main>
       </div>

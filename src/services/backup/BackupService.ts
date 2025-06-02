@@ -29,7 +29,6 @@ class BackupService {
     try {
       console.log("إنشاء نسخة احتياطية من البيانات...");
 
-      // جمع جميع البيانات من localStorage
       const products = JSON.parse(localStorage.getItem('stored-products') || '[]');
       const categories = JSON.parse(localStorage.getItem('stored-categories') || '[]');
       const invoices = JSON.parse(localStorage.getItem('stored-invoices') || '[]');
@@ -88,7 +87,6 @@ class BackupService {
     try {
       console.log("بدء استعادة النسخة الاحتياطية...");
 
-      // التحقق من إصدار النسخة الاحتياطية
       if (!this.isValidBackup(backupData)) {
         throw new Error("النسخة الاحتياطية غير صالحة أو تالفة");
       }
@@ -100,17 +98,24 @@ class BackupService {
       // استعادة البيانات
       const { data } = backupData;
       
-      localStorage.setItem('stored-products', JSON.stringify(data.products));
-      localStorage.setItem('stored-categories', JSON.stringify(data.categories));
-      localStorage.setItem('stored-invoices', JSON.stringify(data.invoices));
-      localStorage.setItem('stored-users', JSON.stringify(data.users));
-      localStorage.setItem('stored-companies', JSON.stringify(data.companies));
-      localStorage.setItem('customers', JSON.stringify(data.customers));
-      localStorage.setItem('purchase-invoices', JSON.stringify(data.purchases));
-      localStorage.setItem('business-settings', JSON.stringify(data.settings));
+      localStorage.setItem('stored-products', JSON.stringify(data.products || []));
+      localStorage.setItem('stored-categories', JSON.stringify(data.categories || []));
+      localStorage.setItem('stored-invoices', JSON.stringify(data.invoices || []));
+      localStorage.setItem('stored-users', JSON.stringify(data.users || []));
+      localStorage.setItem('stored-companies', JSON.stringify(data.companies || []));
+      localStorage.setItem('customers', JSON.stringify(data.customers || []));
+      localStorage.setItem('purchase-invoices', JSON.stringify(data.purchases || []));
+      localStorage.setItem('business-settings', JSON.stringify(data.settings || {}));
 
-      // إرسال حدث لتحديث البيانات في التطبيق
-      window.dispatchEvent(new Event('data-updated'));
+      // إرسال أحداث لتحديث البيانات في التطبيق
+      window.dispatchEvent(new CustomEvent('data-updated'));
+      window.dispatchEvent(new CustomEvent('product-updated'));
+      window.dispatchEvent(new CustomEvent('category-updated'));
+      
+      // إعادة تحميل الصفحة لضمان تحديث جميع المكونات
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
       console.log("تم استعادة النسخة الاحتياطية بنجاح");
     } catch (error) {
@@ -136,14 +141,13 @@ class BackupService {
       typeof backupData.version === 'string' &&
       typeof backupData.timestamp === 'string' &&
       backupData.data &&
-      Array.isArray(backupData.data.products) &&
-      Array.isArray(backupData.data.categories) &&
-      Array.isArray(backupData.data.invoices) &&
-      Array.isArray(backupData.data.users)
+      (Array.isArray(backupData.data.products) || !backupData.data.products) &&
+      (Array.isArray(backupData.data.categories) || !backupData.data.categories) &&
+      (Array.isArray(backupData.data.invoices) || !backupData.data.invoices) &&
+      (Array.isArray(backupData.data.users) || !backupData.data.users)
     );
   }
 
-  // إنشاء نسخة احتياطية تلقائية
   setupAutoBackup(intervalMinutes: number = 60): void {
     const intervalMs = intervalMinutes * 60 * 1000;
     
@@ -153,7 +157,6 @@ class BackupService {
         const backupKey = `auto-backup-${Date.now()}`;
         localStorage.setItem(backupKey, JSON.stringify(backup));
         
-        // الاحتفاظ بآخر 5 نسخ احتياطية تلقائية فقط
         this.cleanupAutoBackups();
         
         console.log("تم إنشاء نسخة احتياطية تلقائية");
@@ -166,7 +169,6 @@ class BackupService {
   private cleanupAutoBackups(): void {
     const keys = Object.keys(localStorage).filter(key => key.startsWith('auto-backup-'));
     if (keys.length > 5) {
-      // ترتيب المفاتيح حسب التاريخ وحذف الأقدم
       keys.sort((a, b) => {
         const timeA = parseInt(a.split('-')[2]);
         const timeB = parseInt(b.split('-')[2]);
@@ -184,7 +186,7 @@ class BackupService {
       .sort((a, b) => {
         const timeA = parseInt(a.split('-')[2]);
         const timeB = parseInt(b.split('-')[2]);
-        return timeB - timeA; // الأحدث أولاً
+        return timeB - timeA;
       });
 
     return keys.map(key => {

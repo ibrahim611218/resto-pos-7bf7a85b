@@ -1,70 +1,74 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SalesReport from "@/features/reports/sales-report/SalesReport";
+import InventoryReport from "@/features/reports/inventory-report/InventoryReport";
+import VatReport from "@/features/reports/vat-report/VatReport";
 
 const ReportsPage: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const [activeTab, setActiveTab] = useState("sales");
+  
+  const tabs = [
+    {
+      id: "sales",
+      label: isArabic ? "تقرير المبيعات" : "Sales Report",
+      component: <SalesReport />
+    },
+    {
+      id: "inventory", 
+      label: isArabic ? "تقرير المخزون" : "Inventory Report",
+      component: <InventoryReport />
+    },
+    {
+      id: "vat",
+      label: isArabic ? "تقرير ضريبة القيمة المضافة" : "VAT Report", 
+      component: <VatReport />
+    },
+    {
+      id: "customers",
+      label: isArabic ? "تقرير العملاء" : "Customers Report",
+      component: (
+        <Card>
+          <CardHeader>
+            <CardTitle>{isArabic ? "تقرير العملاء" : "Customers Report"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {isArabic 
+                ? "سيتم إضافة تقرير العملاء قريباً" 
+                : "Customer report will be added soon"}
+            </p>
+          </CardContent>
+        </Card>
+      )
+    }
+  ];
   
   return (
-    <div className="container mx-auto p-4 overflow-auto h-full" dir={isArabic ? "rtl" : "ltr"}>
-      <h1 className="text-2xl font-bold mb-4">
+    <div className="space-y-6" dir={isArabic ? "rtl" : "ltr"}>
+      <h1 className="text-2xl font-bold">
         {isArabic ? "التقارير" : "Reports"}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-xl font-semibold mb-2">
-            {isArabic ? "تقرير المبيعات" : "Sales Report"}
-          </h2>
-          <p className="text-gray-600 mb-4">
-            {isArabic 
-              ? "عرض تقارير المبيعات والإيرادات" 
-              : "View sales and revenue reports"}
-          </p>
-          <a href="/sales-report" className="text-primary hover:underline">
-            {isArabic ? "عرض التقرير" : "View Report"} →
-          </a>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-xl font-semibold mb-2">
-            {isArabic ? "تقرير المخزون" : "Inventory Report"}
-          </h2>
-          <p className="text-gray-600 mb-4">
-            {isArabic 
-              ? "مراقبة حالة المخزون والمنتجات" 
-              : "Monitor inventory and product status"}
-          </p>
-          <a href="/inventory-report" className="text-primary hover:underline">
-            {isArabic ? "عرض التقرير" : "View Report"} →
-          </a>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-xl font-semibold mb-2">
-            {isArabic ? "تقرير العملاء" : "Customers Report"}
-          </h2>
-          <p className="text-gray-600 mb-4">
-            {isArabic 
-              ? "تحليل بيانات العملاء والمبيعات" 
-              : "Analyze customer data and sales"}
-          </p>
-          <a href="/customers-report" className="text-primary hover:underline">
-            {isArabic ? "عرض التقرير" : "View Report"} →
-          </a>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <h2 className="text-xl font-semibold mb-2">
-            {isArabic ? "تقرير ضريبة القيمة المضافة" : "VAT Report"}
-          </h2>
-          <p className="text-gray-600 mb-4">
-            {isArabic 
-              ? "عرض تقارير ضريبة القيمة المضافة" 
-              : "View VAT tax reports"}
-          </p>
-          <a href="/vat-report" className="text-primary hover:underline">
-            {isArabic ? "عرض التقرير" : "View Report"} →
-          </a>
-        </div>
-      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl">
+          {tabs.map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="text-sm">
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {tabs.map((tab) => (
+          <TabsContent key={tab.id} value={tab.id} className="mt-6">
+            {tab.component}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 };
