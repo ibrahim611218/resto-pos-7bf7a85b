@@ -1,9 +1,20 @@
 
 import React from "react";
 import CustomersReport from "@/features/reports/CustomersReport";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CustomersReportPage: React.FC = () => {
-  return <CustomersReport />;
+  return (
+    <div className="h-screen w-full flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="p-4">
+            <CustomersReport />
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  );
 };
 
 export default CustomersReportPage;

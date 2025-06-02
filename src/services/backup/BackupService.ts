@@ -25,6 +25,12 @@ export interface BackupData {
 class BackupService {
   private readonly BACKUP_VERSION = "1.0.0";
 
+  constructor() {
+    // تشغيل النسخ الاحتياطي التلقائي عند بدء تشغيل الخدمة
+    this.setupAutoBackup();
+    this.setupDataProtection();
+  }
+
   async createBackup(): Promise<BackupData> {
     try {
       console.log("إنشاء نسخة احتياطية من البيانات...");
@@ -111,6 +117,7 @@ class BackupService {
 
       // إرسال حدث لتحديث البيانات في التطبيق
       window.dispatchEvent(new Event('data-updated'));
+      window.dispatchEvent(new Event('backup-restored'));
 
       console.log("تم استعادة النسخة الاحتياطية بنجاح");
     } catch (error) {
@@ -144,8 +151,20 @@ class BackupService {
   }
 
   // إنشاء نسخة احتياطية تلقائية
-  setupAutoBackup(intervalMinutes: number = 60): void {
+  setupAutoBackup(intervalMinutes: number = 30): void {
     const intervalMs = intervalMinutes * 60 * 1000;
+    
+    // نسخة احتياطية فورية عند بدء التشغيل
+    setTimeout(async () => {
+      try {
+        const backup = await this.createBackup();
+        const backupKey = `auto-backup-startup-${Date.now()}`;
+        localStorage.setItem(backupKey, JSON.stringify(backup));
+        console.log("تم إنشاء نسخة احتياطية عند بدء التشغيل");
+      } catch (error) {
+        console.error("خطأ في النسخة الاحتياطية الأولية:", error);
+      }
+    }, 5000);
     
     setInterval(async () => {
       try {
@@ -153,8 +172,8 @@ class BackupService {
         const backupKey = `auto-backup-${Date.now()}`;
         localStorage.setItem(backupKey, JSON.stringify(backup));
         
-        // الاحتفاظ بآخر 5 نسخ احتياطية تلقائية فقط
-        this.cleanupAutoBackups();
+        // الاحتفاظ بآخر 10 نسخ احتياطية تلقائية
+        this.cleanupAutoBackups(10);
         
         console.log("تم إنشاء نسخة احتياطية تلقائية");
       } catch (error) {
@@ -163,13 +182,86 @@ class BackupService {
     }, intervalMs);
   }
 
-  private cleanupAutoBackups(): void {
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('auto-backup-'));
-    if (keys.length > 5) {
+  // حماية البيانات من الحذف
+  setupDataProtection(): void {
+    // نسخة احتياطية قبل إعادة تحميل الصفحة
+    window.addEventListener('beforeunload', async () => {
+      try {
+        const backup = await this.createBackup();
+        localStorage.setItem('backup-before-unload', JSON.stringify(backup));
+      } catch (error) {
+        console.error("خطأ في النسخة الاحتياطية قبل إعادة التحميل:", error);
+      }
+    });
+
+    // استعادة البيانات عند تحميل الصفحة
+    window.addEventListener('load', () => {
+      const backupBeforeUnload = localStorage.getItem('backup-before-unload');
+      if (backupBeforeUnload) {
+        try {
+          const backup = JSON.parse(backupBeforeUnload);
+          console.log("تم العثور على نسخة احتياطية قبل إعادة التحميل");
+          // يمكن استخدامها لاستعادة البيانات إذا لزم الأمر
+        } catch (error) {
+          console.error("خطأ في قراءة النسخة الاحتياطية:", error);
+        }
+      }
+    });
+
+    // نسخة احتياطية عند تغيير البيانات
+    const dataKeys = [
+      'stored-products', 'stored-categories', 'stored-invoices',
+      'stored-users', 'stored-companies', 'customers', 
+      'purchase-invoices', 'business-settings'
+    ];
+
+    dataKeys.forEach(key => {
+      const originalSetItem = localStorage.setItem.bind(localStorage);
+      const backupService = this;
+      
+      // مراقبة تغييرات البيانات المهمة
+      if (key.includes('stored-') || key === 'customers' || key === 'purchase-invoices' || key === 'business-settings') {
+        window.addEventListener('storage', (e) => {
+          if (e.key === key && e.newValue !== e.oldValue) {
+            setTimeout(async () => {
+              try {
+                const backup = await backupService.createBackup();
+                localStorage.setItem(`change-backup-${Date.now()}`, JSON.stringify(backup));
+                backupService.cleanupChangeBackups();
+              } catch (error) {
+                console.error("خطأ في النسخة الاحتياطية عند التغيير:", error);
+              }
+            }, 1000);
+          }
+        });
+      }
+    });
+  }
+
+  private cleanupAutoBackups(keepCount: number = 10): void {
+    const keys = Object.keys(localStorage).filter(key => 
+      key.startsWith('auto-backup-') || key.startsWith('change-backup-')
+    );
+    
+    if (keys.length > keepCount) {
       // ترتيب المفاتيح حسب التاريخ وحذف الأقدم
       keys.sort((a, b) => {
-        const timeA = parseInt(a.split('-')[2]);
-        const timeB = parseInt(b.split('-')[2]);
+        const timeA = parseInt(a.split('-').pop() || '0');
+        const timeB = parseInt(b.split('-').pop() || '0');
+        return timeA - timeB;
+      });
+      
+      const toDelete = keys.slice(0, keys.length - keepCount);
+      toDelete.forEach(key => localStorage.removeItem(key));
+    }
+  }
+
+  private cleanupChangeBackups(): void {
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('change-backup-'));
+    if (keys.length > 5) {
+      keys.sort((a, b) => {
+        const timeA = parseInt(a.split('-').pop() || '0');
+        const timeB = parseInt(b.split('-').pop() || '0');
         return timeA - timeB;
       });
       
@@ -180,10 +272,10 @@ class BackupService {
 
   getAutoBackups(): BackupData[] {
     const keys = Object.keys(localStorage)
-      .filter(key => key.startsWith('auto-backup-'))
+      .filter(key => key.startsWith('auto-backup-') || key.startsWith('change-backup-'))
       .sort((a, b) => {
-        const timeA = parseInt(a.split('-')[2]);
-        const timeB = parseInt(b.split('-')[2]);
+        const timeA = parseInt(a.split('-').pop() || '0');
+        const timeB = parseInt(b.split('-').pop() || '0');
         return timeB - timeA; // الأحدث أولاً
       });
 
@@ -194,6 +286,21 @@ class BackupService {
         return null;
       }
     }).filter(Boolean);
+  }
+
+  // استعادة آخر نسخة احتياطية متاحة
+  async restoreLatestBackup(): Promise<boolean> {
+    try {
+      const backups = this.getAutoBackups();
+      if (backups.length > 0) {
+        await this.restoreBackup(backups[0]);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("خطأ في استعادة آخر نسخة احتياطية:", error);
+      return false;
+    }
   }
 }
 

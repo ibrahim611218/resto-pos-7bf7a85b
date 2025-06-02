@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import {
   Clock, 
   Shield, 
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
 import backupService from "@/services/backup/BackupService";
@@ -32,6 +33,21 @@ const BackupManagement: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [autoBackups, setAutoBackups] = useState(backupService.getAutoBackups());
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleBackupRestored = () => {
+      setAutoBackups(backupService.getAutoBackups());
+      toast.success(isArabic ? "تم تحديث قائمة النسخ الاحتياطية" : "Backup list updated");
+    };
+
+    window.addEventListener('backup-restored', handleBackupRestored);
+    window.addEventListener('data-updated', handleBackupRestored);
+
+    return () => {
+      window.removeEventListener('backup-restored', handleBackupRestored);
+      window.removeEventListener('data-updated', handleBackupRestored);
+    };
+  }, [isArabic]);
 
   const handleExportBackup = async () => {
     try {
@@ -74,12 +90,36 @@ const BackupManagement: React.FC = () => {
       setIsProcessing(true);
       await backupService.restoreBackup(backup);
       toast.success(isArabic ? "تم استعادة النسخة الاحتياطية بنجاح" : "Backup restored successfully");
+      setAutoBackups(backupService.getAutoBackups());
     } catch (error) {
       console.error("Error restoring backup:", error);
       toast.error(isArabic ? "فشل في استعادة النسخة الاحتياطية" : "Failed to restore backup");
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleRestoreLatest = async () => {
+    try {
+      setIsProcessing(true);
+      const success = await backupService.restoreLatestBackup();
+      if (success) {
+        toast.success(isArabic ? "تم استعادة آخر نسخة احتياطية" : "Latest backup restored successfully");
+        setAutoBackups(backupService.getAutoBackups());
+      } else {
+        toast.error(isArabic ? "لا توجد نسخ احتياطية متاحة" : "No backups available");
+      }
+    } catch (error) {
+      console.error("Error restoring latest backup:", error);
+      toast.error(isArabic ? "فشل في استعادة النسخة الاحتياطية" : "Failed to restore backup");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const refreshBackupList = () => {
+    setAutoBackups(backupService.getAutoBackups());
+    toast.success(isArabic ? "تم تحديث قائمة النسخ الاحتياطية" : "Backup list refreshed");
   };
 
   const formatDate = (dateString: string) => {
@@ -102,11 +142,11 @@ const BackupManagement: React.FC = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert>
-              <AlertTriangle className="h-4 w-4" />
+              <CheckCircle className="h-4 w-4" />
               <AlertDescription>
                 {isArabic 
-                  ? "تأكد من إنشاء نسخة احتياطية بانتظام لحماية بياناتك"
-                  : "Make sure to create regular backups to protect your data"
+                  ? "النظام محمي بنسخ احتياطية تلقائية كل 30 دقيقة"
+                  : "System is protected with automatic backups every 30 minutes"
                 }
               </AlertDescription>
             </Alert>
@@ -132,6 +172,16 @@ const BackupManagement: React.FC = () => {
                 {isArabic ? "استيراد نسخة احتياطية" : "Import Backup"}
               </Button>
 
+              <Button
+                onClick={handleRestoreLatest}
+                disabled={isProcessing}
+                className="w-full"
+                variant="secondary"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                {isArabic ? "استعادة آخر نسخة" : "Restore Latest"}
+              </Button>
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -146,15 +196,20 @@ const BackupManagement: React.FC = () => {
         {/* النسخ الاحتياطية التلقائية */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              {isArabic ? "النسخ الاحتياطية التلقائية" : "Auto Backups"}
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-5 w-5" />
+                {isArabic ? "النسخ الاحتياطية التلقائية" : "Auto Backups"}
+              </div>
+              <Button size="sm" variant="ghost" onClick={refreshBackupList}>
+                <RefreshCw className="h-4 w-4" />
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {autoBackups.length > 0 ? (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {autoBackups.map((backup, index) => (
+              <div className="space-y-2 max-h-80 overflow-y-auto">
+                {autoBackups.slice(0, 10).map((backup, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between p-3 border rounded-lg"
@@ -170,7 +225,7 @@ const BackupManagement: React.FC = () => {
                     
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" disabled={isProcessing}>
                           <CheckCircle className="h-4 w-4 mr-1" />
                           {isArabic ? "استعادة" : "Restore"}
                         </Button>
@@ -193,7 +248,7 @@ const BackupManagement: React.FC = () => {
                           </AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleRestoreAutoBackup(backup)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90"
                           >
                             {isArabic ? "استعادة" : "Restore"}
                           </AlertDialogAction>
@@ -218,18 +273,19 @@ const BackupManagement: React.FC = () => {
       </div>
 
       <Alert>
-        <CheckCircle className="h-4 w-4" />
+        <Shield className="h-4 w-4" />
         <AlertDescription>
           {isArabic 
-            ? "يتم إنشاء نسخة احتياطية تلقائية كل ساعة. يتم الاحتفاظ بآخر 5 نسخ فقط."
-            : "Automatic backups are created every hour. Only the last 5 backups are kept."
+            ? "البيانات محمية تلقائياً. يتم إنشاء نسخ احتياطية عند التغييرات وقبل إعادة تحميل الصفحة."
+            : "Data is automatically protected. Backups are created on changes and before page reload."
           }
         </AlertDescription>
       </Alert>
 
       {isProcessing && (
         <Alert>
-          <AlertDescription>
+          <AlertDescription className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4 animate-spin" />
             {isArabic ? "جاري المعالجة..." : "Processing..."}
           </AlertDescription>
         </Alert>

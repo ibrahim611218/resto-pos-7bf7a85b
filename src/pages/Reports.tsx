@@ -8,7 +8,7 @@ const ReportsPage: React.FC = () => {
   const isArabic = language === "ar";
   
   return (
-    <div className="h-screen w-full overflow-hidden flex flex-col" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="h-screen w-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
       <div className="flex-shrink-0 p-4 border-b bg-background">
         <h1 className="text-2xl font-bold">
           {isArabic ? "التقارير" : "Reports"}
@@ -17,8 +17,8 @@ const ReportsPage: React.FC = () => {
       
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="p-4 pb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 max-w-full">
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                 <h2 className="text-xl font-semibold mb-2">
                   {isArabic ? "تقرير المبيعات" : "Sales Report"}
