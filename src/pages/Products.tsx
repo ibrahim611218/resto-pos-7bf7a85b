@@ -73,21 +73,26 @@ const Products = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
-        <Button onClick={handleAddProduct}>
-          <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
-          {isArabic ? "إضافة منتج" : "Add Product"}
-        </Button>
+    <div className="h-screen w-full overflow-hidden flex flex-col">
+      <div className="flex-shrink-0 p-4 border-b bg-background">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
+          <Button onClick={handleAddProduct}>
+            <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
+            {isArabic ? "إضافة منتج" : "Add Product"}
+          </Button>
+        </div>
       </div>
-      <ProductsGrid 
-        viewMode={viewMode} 
-        onViewModeChange={setViewMode} 
-        onEditProduct={handleEditProduct}
-        onDeleteProduct={handleDeleteProduct}
-        key={`products-grid-${refreshTrigger}`}  
-      />
+      
+      <div className="flex-1 overflow-hidden">
+        <ProductsGrid 
+          viewMode={viewMode} 
+          onViewModeChange={setViewMode} 
+          onEditProduct={handleEditProduct}
+          onDeleteProduct={handleDeleteProduct}
+          key={`products-grid-${refreshTrigger}`}  
+        />
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import DataManagement from "@/features/settings/components/DataManagement";
 import DisplaySettings from "@/features/settings/components/DisplaySettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const BusinessSettings = () => {
   const { language } = useLanguage();
@@ -27,44 +28,58 @@ const BusinessSettings = () => {
   }, []);
   
   return (
-    <div className="container p-4" dir={isArabic ? "rtl" : "ltr"}>
-      <Tabs defaultValue="business" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
-          <TabsTrigger value="business">
-            {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
-          </TabsTrigger>
-          <TabsTrigger value="display">
-            {isArabic ? "إعدادات العرض" : "Display Settings"}
-          </TabsTrigger>
-          <TabsTrigger value="data">
-            {isArabic ? "إدارة البيانات" : "Data Management"}
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="business">
-          <BusinessSettingsForm />
-        </TabsContent>
-        <TabsContent value="display">
-          <Card>
-            <CardHeader>
-              <CardTitle>{isArabic ? "إعدادات العرض" : "Display Settings"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DisplaySettings />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="data">
-          <Card>
-            <CardHeader>
-              <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DataManagement />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+    <div className="h-screen w-full overflow-hidden flex flex-col" dir={isArabic ? "rtl" : "ltr"}>
+      <div className="flex-1 overflow-hidden p-4">
+        <div className="h-full max-w-6xl mx-auto">
+          <Tabs defaultValue="business" className="h-full flex flex-col">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-4 flex-shrink-0">
+              <TabsTrigger value="business">
+                {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
+              </TabsTrigger>
+              <TabsTrigger value="display">
+                {isArabic ? "إعدادات العرض" : "Display Settings"}
+              </TabsTrigger>
+              <TabsTrigger value="data">
+                {isArabic ? "إدارة البيانات" : "Data Management"}
+              </TabsTrigger>
+            </TabsList>
+            
+            <div className="flex-1 overflow-hidden">
+              <TabsContent value="business" className="h-full">
+                <ScrollArea className="h-full">
+                  <BusinessSettingsForm />
+                </ScrollArea>
+              </TabsContent>
+              
+              <TabsContent value="display" className="h-full">
+                <ScrollArea className="h-full">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{isArabic ? "إعدادات العرض" : "Display Settings"}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <DisplaySettings />
+                    </CardContent>
+                  </Card>
+                </ScrollArea>
+              </TabsContent>
+              
+              <TabsContent value="data" className="h-full">
+                <ScrollArea className="h-full">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <DataManagement />
+                    </CardContent>
+                  </Card>
+                </ScrollArea>
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 };
