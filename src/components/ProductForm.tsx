@@ -11,6 +11,7 @@ import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
 import { useProductForm } from "./product-form/hooks/useProductForm";
+import { Toaster } from "@/components/ui/toaster";
 
 const ProductForm = () => {
   const {
@@ -38,71 +39,74 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="h-screen w-full overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-hidden p-4">
-        <div className="h-full max-w-4xl mx-auto">
-          <Card className="h-full flex flex-col">
-            <form onSubmit={onFormSubmit} className="h-full flex flex-col">
-              <ProductFormHeader isEditing={isEditing} isArabic={isArabic} />
-              
-              <div className="flex-1 overflow-hidden">
-                <ScrollArea className="h-full">
-                  <CardContent className="space-y-4 p-6">
-                    <ProductBasicInfo 
-                      product={product}
-                      handleInputChange={handleInputChange}
-                      handleImageChange={handleImageChange}
-                      isArabic={isArabic}
-                    />
-                    
-                    <ProductCategorySelect 
-                      categoryId={product.categoryId}
-                      handleCategoryChange={handleCategoryChange}
-                      isArabic={isArabic}
-                    />
-                    
-                    <ProductTypeRadio 
-                      productType={product.type}
-                      handleTypeChange={handleTypeChange}
-                      isArabic={isArabic}
-                    />
-                    
-                    <ProductTaxSwitch 
-                      taxable={product.taxable}
-                      handleSwitchChange={handleSwitchChange}
-                      isArabic={isArabic}
-                    />
-                    
-                    {product.type === "single" ? (
-                      <ProductPriceInput 
-                        price={product.price}
-                        handlePriceChange={handlePriceChange}
+    <>
+      <div className="h-screen w-full overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-hidden p-4">
+          <div className="h-full max-w-4xl mx-auto">
+            <Card className="h-full flex flex-col">
+              <form onSubmit={onFormSubmit} className="h-full flex flex-col">
+                <ProductFormHeader isEditing={isEditing} isArabic={isArabic} />
+                
+                <div className="flex-1 overflow-hidden">
+                  <ScrollArea className="h-full">
+                    <CardContent className="space-y-4 p-6">
+                      <ProductBasicInfo 
+                        product={product}
+                        handleInputChange={handleInputChange}
+                        handleImageChange={handleImageChange}
                         isArabic={isArabic}
                       />
-                    ) : (
-                      <ProductVariantsManager 
-                        variants={variants}
-                        addVariant={addVariant}
-                        updateVariant={updateVariant}
-                        removeVariant={removeVariant}
+                      
+                      <ProductCategorySelect 
+                        categoryId={product.categoryId}
+                        handleCategoryChange={handleCategoryChange}
                         isArabic={isArabic}
                       />
-                    )}
-                  </CardContent>
-                </ScrollArea>
-              </div>
-              
-              <ProductFormFooter 
-                isEditing={isEditing}
-                isArabic={isArabic}
-                isSubmitting={isSubmitting}
-                onCancel={() => navigate("/products")}
-              />
-            </form>
-          </Card>
+                      
+                      <ProductTypeRadio 
+                        productType={product.type}
+                        handleTypeChange={handleTypeChange}
+                        isArabic={isArabic}
+                      />
+                      
+                      <ProductTaxSwitch 
+                        taxable={product.taxable}
+                        handleSwitchChange={handleSwitchChange}
+                        isArabic={isArabic}
+                      />
+                      
+                      {product.type === "single" ? (
+                        <ProductPriceInput 
+                          price={product.price}
+                          handlePriceChange={handlePriceChange}
+                          isArabic={isArabic}
+                        />
+                      ) : (
+                        <ProductVariantsManager 
+                          variants={variants}
+                          addVariant={addVariant}
+                          updateVariant={updateVariant}
+                          removeVariant={removeVariant}
+                          isArabic={isArabic}
+                        />
+                      )}
+                    </CardContent>
+                  </ScrollArea>
+                </div>
+                
+                <ProductFormFooter 
+                  isEditing={isEditing}
+                  isArabic={isArabic}
+                  isSubmitting={isSubmitting}
+                  onCancel={() => navigate("/products")}
+                />
+              </form>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+      <Toaster />
+    </>
   );
 };
 
