@@ -29,8 +29,13 @@ const TransferReceiptDialog: React.FC<TransferReceiptDialogProps> = ({
     onConfirm(receiptNumber, customer);
   };
 
-  const handleCustomerChange = (selectedCustomer?: Customer) => {
+  const handleCustomerSubmit = (selectedCustomer?: Customer) => {
     setCustomer(selectedCustomer);
+  };
+
+  const handleCustomerCancel = () => {
+    // Reset customer selection
+    setCustomer(undefined);
   };
 
   return (
@@ -57,8 +62,8 @@ const TransferReceiptDialog: React.FC<TransferReceiptDialogProps> = ({
               {isArabic ? "بيانات العميل (اختياري)" : "Customer Information (Optional)"}
             </h3>
             <CustomerSelectionForm 
-              onCustomerChange={handleCustomerChange}
-              isArabic={isArabic}
+              onSubmit={handleCustomerSubmit}
+              onCancel={handleCustomerCancel}
             />
           </div>
         </div>
