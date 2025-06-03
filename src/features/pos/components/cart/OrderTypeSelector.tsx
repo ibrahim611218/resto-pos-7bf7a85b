@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ShoppingBag, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import NumberPad from "./NumberPad";
 
 export interface OrderTypeSelectorProps {
   orderType: "takeaway" | "dineIn";
@@ -22,6 +23,17 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
   isMobile = false,
   isArabic = false
 }) => {
+  const [showNumberPad, setShowNumberPad] = useState(false);
+
+  const handleTableNumberClick = () => {
+    setShowNumberPad(true);
+  };
+
+  const handleNumberPadConfirm = (value: number) => {
+    setTableNumber(value.toString());
+    setShowNumberPad(false);
+  };
+
   return (
     <>
       <div className={`mb-${isMobile ? '2' : '3'}`}>
@@ -51,18 +63,28 @@ const OrderTypeSelector: React.FC<OrderTypeSelectorProps> = ({
       </div>
       
       {orderType === "dineIn" && (
-        <div className={`mb-${isMobile ? '2' : '3'}`}>
-          <Label htmlFor="tableNumber" className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
-            {isArabic ? "رقم الطاولة" : "Table Number"}
-          </Label>
-          <Input
-            id="tableNumber"
-            value={tableNumber}
-            onChange={(e) => setTableNumber(e.target.value)}
-            className={`w-full p-${isMobile ? '1.5' : '2'} ${isMobile ? 'text-sm' : 'text-base'}`}
-            placeholder={isArabic ? "أدخل رقم الطاولة" : "Enter table number"}
+        <>
+          <div className={`mb-${isMobile ? '2' : '3'}`}>
+            <Label htmlFor="tableNumber" className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
+              {isArabic ? "رقم الطاولة" : "Table Number"}
+            </Label>
+            <Input
+              id="tableNumber"
+              value={tableNumber}
+              onClick={handleTableNumberClick}
+              className={`w-full p-${isMobile ? '1.5' : '2'} ${isMobile ? 'text-sm' : 'text-base'}`}
+              placeholder={isArabic ? "أدخل رقم الطاولة" : "Enter table number"}
+              readOnly
+            />
+          </div>
+
+          <NumberPad
+            isOpen={showNumberPad}
+            onClose={() => setShowNumberPad(false)}
+            onConfirm={handleNumberPadConfirm}
+            initialValue={parseInt(tableNumber) || 1}
           />
-        </div>
+        </>
       )}
     </>
   );

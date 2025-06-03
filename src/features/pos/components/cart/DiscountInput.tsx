@@ -1,10 +1,12 @@
 
-import React from "react";
-import { Label } from "@/components/ui/label";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Percent, DollarSign } from "lucide-react";
+import NumberPad from "./NumberPad";
 
-export interface DiscountInputProps {
+interface DiscountInputProps {
   discount: number;
   discountType: "percentage" | "fixed";
   setDiscount: (discount: number) => void;
@@ -21,48 +23,68 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   isMobile = false,
   isArabic = false
 }) => {
+  const [showNumberPad, setShowNumberPad] = useState(false);
+
   const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = parseFloat(e.target.value);
-    if (isNaN(value)) value = 0;
+    const value = parseFloat(e.target.value) || 0;
     setDiscount(value);
   };
 
-  const textSizeClass = isMobile ? 'text-sm' : 'text-base';
+  const handleInputClick = () => {
+    setShowNumberPad(true);
+  };
+
+  const handleNumberPadConfirm = (value: number) => {
+    setDiscount(value);
+    setShowNumberPad(false);
+  };
 
   return (
-    <div className={`mb-${isMobile ? '2' : '3'}`}>
-      <Label className={`block mb-1 ${textSizeClass}`}>
-        {isArabic ? "الخصم" : "Discount"}
-      </Label>
-      <div className="flex space-x-2">
-        <div className="flex-1">
+    <>
+      <div className={`mb-${isMobile ? '2' : '3'}`}>
+        <Label className={`block mb-1 ${isMobile ? 'text-sm' : 'text-base'}`}>
+          {isArabic ? "الخصم" : "Discount"}
+        </Label>
+        <div className="flex space-x-1 space-x-reverse">
           <Input
             type="number"
-            min="0"
-            value={discount || ""}
+            value={discount}
             onChange={handleDiscountChange}
-            className={`w-full p-${isMobile ? '1.5' : '2'}`}
-            placeholder={isArabic ? "أدخل قيمة الخصم" : "Enter discount"}
+            onClick={handleInputClick}
+            className={`flex-1 p-${isMobile ? '1.5' : '2'} ${isMobile ? 'text-sm' : 'text-base'}`}
+            placeholder="0"
+            min="0"
+            step="0.01"
+            readOnly
           />
+          <Button
+            type="button"
+            variant={discountType === "percentage" ? "default" : "outline"}
+            onClick={() => setDiscountType("percentage")}
+            className={`px-${isMobile ? '2' : '3'}`}
+            size={isMobile ? "sm" : "default"}
+          >
+            <Percent className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
+          </Button>
+          <Button
+            type="button"
+            variant={discountType === "fixed" ? "default" : "outline"}
+            onClick={() => setDiscountType("fixed")}
+            className={`px-${isMobile ? '2' : '3'}`}
+            size={isMobile ? "sm" : "default"}
+          >
+            <DollarSign className={`h-${isMobile ? '3' : '4'} w-${isMobile ? '3' : '4'}`} />
+          </Button>
         </div>
-        <RadioGroup 
-          value={discountType} 
-          onValueChange={(value: "percentage" | "fixed") => setDiscountType(value)}
-          className="flex shrink-0 items-center justify-end space-x-2"
-        >
-          <div className="flex items-center space-x-1">
-            <RadioGroupItem value="percentage" id="percentage" />
-            <Label htmlFor="percentage" className="cursor-pointer">%</Label>
-          </div>
-          <div className="flex items-center space-x-1">
-            <RadioGroupItem value="fixed" id="fixed" />
-            <Label htmlFor="fixed" className="cursor-pointer">
-              {isArabic ? "ر.س" : "SAR"}
-            </Label>
-          </div>
-        </RadioGroup>
       </div>
-    </div>
+
+      <NumberPad
+        isOpen={showNumberPad}
+        onClose={() => setShowNumberPad(false)}
+        onConfirm={handleNumberPadConfirm}
+        initialValue={discount}
+      />
+    </>
   );
 };
 

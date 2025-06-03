@@ -5,13 +5,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Coins, Banknote } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
+import { CreditCard, Banknote, Smartphone, X } from "lucide-react";
 import { PaymentMethod, Customer } from "@/types";
-import { formatPaymentMethod } from "@/features/reports/sales-report/utils/formatters";
+import { useLanguage } from "@/context/LanguageContext";
 import CustomerSelectionForm from "./CustomerSelectionForm";
 
 interface PaymentMethodDialogProps {
@@ -27,56 +25,107 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>();
+  const [showCustomerForm, setShowCustomerForm] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
 
-  const handleSelectPayment = (method: PaymentMethod) => {
-    onSelectPaymentMethod(method, selectedCustomer);
+  const handleMethodSelect = (method: PaymentMethod) => {
+    if (method === "transfer") {
+      setSelectedMethod(method);
+      setShowCustomerForm(true);
+    } else {
+      onSelectPaymentMethod(method);
+    }
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle className="text-center">
-            {isArabic ? "اختر طريقة الدفع" : "Select Payment Method"}
-          </DialogTitle>
-        </DialogHeader>
+  const handleCustomerSubmit = (customer?: Customer) => {
+    if (selectedMethod) {
+      onSelectPaymentMethod(selectedMethod, customer);
+    }
+    setShowCustomerForm(false);
+    setSelectedMethod(null);
+  };
 
-        <div className="grid grid-cols-3 gap-4 py-6">
-          <Button
-            onClick={() => handleSelectPayment("cash")}
-            variant="outline"
-            className="flex flex-col items-center justify-center h-32 py-6"
-          >
-            <Coins className="h-12 w-12 mb-2" />
-            <span>{formatPaymentMethod("cash", isArabic)}</span>
-          </Button>
-          <Button
-            onClick={() => handleSelectPayment("card")}
-            variant="outline"
-            className="flex flex-col items-center justify-center h-32 py-6"
-          >
-            <CreditCard className="h-12 w-12 mb-2" />
-            <span>{formatPaymentMethod("card", isArabic)}</span>
-          </Button>
-          <Button
-            onClick={() => handleSelectPayment("transfer")}
-            variant="outline"
-            className="flex flex-col items-center justify-center h-32 py-6"
-          >
-            <Banknote className="h-12 w-12 mb-2" />
-            <span>{formatPaymentMethod("transfer", isArabic)}</span>
-          </Button>
-        </div>
+  const handleClose = () => {
+    // عند الضغط على X يجب الرجوع للسلة وليس حفظ الفاتورة
+    setShowCustomerForm(false);
+    setSelectedMethod(null);
+    onClose();
+  };
 
-        <div className="border-t pt-4">
-          <h3 className="font-medium mb-4">
-            {isArabic ? "بيانات العميل" : "Customer Information"}
-          </h3>
-          <CustomerSelectionForm
-            onCustomerChange={setSelectedCustomer}
-            isArabic={isArabic}
+  if (showCustomerForm) {
+    return (
+      <Dialog open={open} onOpenChange={() => handleClose()}>
+        <DialogContent className="sm:max-w-md" dir={isArabic ? "rtl" : "ltr"}>
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl">
+                {isArabic ? "معلومات العميل" : "Customer Information"}
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClose}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          <CustomerSelectionForm 
+            onSubmit={handleCustomerSubmit}
+            onCancel={() => setShowCustomerForm(false)}
           />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={() => handleClose()}>
+      <DialogContent className="sm:max-w-md" dir={isArabic ? "rtl" : "ltr"}>
+        <DialogHeader>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-xl">
+              {isArabic ? "اختر طريقة الدفع" : "Select Payment Method"}
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogHeader>
+        
+        <div className="grid gap-3 py-4">
+          <Button
+            variant="outline"
+            className="h-16 flex items-center justify-start gap-4 px-6"
+            onClick={() => handleMethodSelect("cash")}
+          >
+            <Banknote className="h-6 w-6" />
+            <span className="text-lg">{isArabic ? "نقد" : "Cash"}</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="h-16 flex items-center justify-start gap-4 px-6"
+            onClick={() => handleMethodSelect("card")}
+          >
+            <CreditCard className="h-6 w-6" />
+            <span className="text-lg">{isArabic ? "بطاقة" : "Card"}</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="h-16 flex items-center justify-start gap-4 px-6"
+            onClick={() => handleMethodSelect("transfer")}
+          >
+            <Smartphone className="h-6 w-6" />
+            <span className="text-lg">{isArabic ? "تحويل" : "Transfer"}</span>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
