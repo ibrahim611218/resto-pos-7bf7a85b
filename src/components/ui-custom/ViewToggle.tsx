@@ -9,9 +9,14 @@ export type ViewMode = "list" | "grid-small" | "grid-large";
 interface ViewToggleProps {
   value: ViewMode;
   onValueChange: (value: ViewMode) => void;
+  showZoomControls?: boolean;
 }
 
-const ViewToggle: React.FC<ViewToggleProps> = ({ value, onValueChange }) => {
+const ViewToggle: React.FC<ViewToggleProps> = ({ 
+  value, 
+  onValueChange, 
+  showZoomControls = false 
+}) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
 

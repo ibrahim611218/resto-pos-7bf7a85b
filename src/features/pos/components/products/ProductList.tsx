@@ -21,56 +21,39 @@ const ProductList: React.FC<ProductListProps> = ({
   onDeleteProduct
 }) => {
   
-  // حساب عدد الأعمدة بناءً على عدد المنتجات ونوع العرض
+  // حساب عدد الأعمدة وحجم المنتجات بناءً على نوع العرض
   const getOptimizedGridClass = useMemo(() => {
     if (viewMode === "list") {
       return "flex flex-col gap-2 p-2";
     }
 
     const productCount = products.length;
-    
-    // تحديد عدد الأعمدة بناءً على عدد المنتجات مع ضمان الاحتواء
-    let cols = "grid-cols-2";
-    let smCols = "sm:grid-cols-3";
-    let mdCols = "md:grid-cols-4";
-    let lgCols = "lg:grid-cols-5";
-    let xlCols = "xl:grid-cols-6";
-    let xxlCols = "2xl:grid-cols-8";
+    let gridClass = "";
+    let gapClass = "gap-2";
 
-    if (productCount <= 4) {
-      cols = "grid-cols-2";
-      smCols = "sm:grid-cols-2";
-      mdCols = "md:grid-cols-3";
-      lgCols = "lg:grid-cols-4";
-      xlCols = "xl:grid-cols-4";
-      xxlCols = "2xl:grid-cols-4";
-    } else if (productCount <= 8) {
-      cols = "grid-cols-2";
-      smCols = "sm:grid-cols-3";
-      mdCols = "md:grid-cols-4";
-      lgCols = "lg:grid-cols-5";
-      xlCols = "xl:grid-cols-6";
-      xxlCols = "2xl:grid-cols-6";
-    } else if (productCount <= 16) {
-      cols = "grid-cols-3";
-      smCols = "sm:grid-cols-4";
-      mdCols = "md:grid-cols-5";
-      lgCols = "lg:grid-cols-6";
-      xlCols = "xl:grid-cols-7";
-      xxlCols = "2xl:grid-cols-8";
+    if (viewMode === "grid-large") {
+      // عرض كبير - أقل أعمدة، منتجات أكبر
+      if (productCount <= 6) {
+        gridClass = "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4";
+      } else if (productCount <= 12) {
+        gridClass = "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
+      } else {
+        gridClass = "grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8";
+      }
+      gapClass = "gap-3";
     } else {
-      // للأعداد الكبيرة من المنتجات
-      cols = "grid-cols-4";
-      smCols = "sm:grid-cols-5";
-      mdCols = "md:grid-cols-6";
-      lgCols = "lg:grid-cols-8";
-      xlCols = "xl:grid-cols-10";
-      xxlCols = "2xl:grid-cols-12";
+      // عرض صغير - أعمدة أكثر، منتجات أصغر
+      if (productCount <= 8) {
+        gridClass = "grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8";
+      } else if (productCount <= 20) {
+        gridClass = "grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12";
+      } else {
+        gridClass = "grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 2xl:grid-cols-16";
+      }
+      gapClass = productCount > 30 ? "gap-1" : "gap-1.5";
     }
 
-    const gapClass = productCount > 20 ? "gap-1" : productCount > 12 ? "gap-1.5" : "gap-2";
-
-    return `grid ${cols} ${smCols} ${mdCols} ${lgCols} ${xlCols} ${xxlCols} ${gapClass} auto-rows-max p-2`;
+    return `grid ${gridClass} ${gapClass} auto-rows-max p-2`;
   }, [viewMode, products.length]);
 
   return (
@@ -90,6 +73,7 @@ const ProductList: React.FC<ProductListProps> = ({
               product={product}
               onEdit={onEditProduct}
               onDelete={onDeleteProduct}
+              viewMode={viewMode}
             />
           )
         )}

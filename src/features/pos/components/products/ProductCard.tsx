@@ -22,13 +22,43 @@ interface ProductCardProps {
   onDelete?: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) => {
+const ProductCard: React.FC<ProductCardProps & { viewMode?: ViewMode }> = ({ 
+  product, 
+  onEdit, 
+  onDelete,
+  viewMode = "grid-small"
+}) => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+  // تحديد أحجام العناصر بناءً على نوع العرض
+  const getCardSizes = () => {
+    if (viewMode === "grid-large") {
+      return {
+        imageHeight: "aspect-square",
+        padding: "p-4",
+        titleSize: "text-base font-medium",
+        priceSize: "text-sm",
+        buttonSize: "h-10 w-10" as const,
+        iconSize: 20
+      };
+    } else {
+      return {
+        imageHeight: "aspect-square",
+        padding: "p-2",
+        titleSize: "text-sm font-medium",
+        priceSize: "text-xs",
+        buttonSize: "h-8 w-8" as const,
+        iconSize: 16
+      };
+    }
+  };
+
+  const sizes = getCardSizes();
 
   const handleAddToCart = () => {
     if (!product.variants || product.variants.length === 0) {
@@ -100,7 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
         onClick={handleAddToCart}
       >
         <CardContent className="p-0">
-          <div className="aspect-square bg-gray-100 relative">
+          <div className={`${sizes.imageHeight} bg-gray-100 relative`}>
             {product.image ? (
               <img 
                 src={product.image} 
@@ -115,46 +145,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
             <Button 
               variant="ghost" 
               size="icon" 
-              className="absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
+              className={`absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full ${sizes.buttonSize}`}
               onClick={handleEditClick}
             >
-              <Edit className="h-4 w-4" />
+              <Edit className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
             </Button>
             {onDelete && (
               <Button
                 variant="destructive"
                 size="icon"
-                className="absolute top-2 left-2 bg-red-600 text-white rounded-full h-8 w-8"
+                className={`absolute top-2 left-2 bg-red-600 text-white rounded-full ${sizes.buttonSize}`}
                 onClick={e => {
                   e.stopPropagation();
                   onDelete(product.id);
                 }}
               >
-                <Trash className="h-4 w-4" />
+                <Trash className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
               </Button>
             )}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full h-8 w-8"
+              className={`absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full ${sizes.buttonSize}`}
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToCart();
               }}
             >
-              <Plus className="h-4 w-4" />
+              <Plus className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
             </Button>
           </div>
-          <div className="p-3 text-right">
-            <h3 className="font-medium">
+          <div className={`${sizes.padding} text-right`}>
+            <h3 className={sizes.titleSize}>
               {isArabic ? product.nameAr || product.name : product.name}
             </h3>
             {product.variants.length > 1 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className={`${sizes.priceSize} text-muted-foreground`}>
                 {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className={`${sizes.priceSize} text-muted-foreground`}>
                 {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             )}
