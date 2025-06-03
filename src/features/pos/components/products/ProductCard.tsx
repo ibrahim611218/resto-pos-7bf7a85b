@@ -1,11 +1,10 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
-import { useNavigate } from "react-router-dom";
 import { 
   Dialog, 
   DialogContent, 
@@ -15,21 +14,20 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getSizeLabel } from "../../utils/sizeLabels";
+import { ViewMode } from "@/components/ui-custom/ViewToggle";
 
 interface ProductCardProps {
   product: Product;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  viewMode?: ViewMode;
 }
 
-const ProductCard: React.FC<ProductCardProps & { viewMode?: ViewMode }> = ({ 
+const ProductCard: React.FC<ProductCardProps> = ({ 
   product, 
-  onEdit, 
-  onDelete,
   viewMode = "grid-small"
 }) => {
   const { language } = useLanguage();
-  const navigate = useNavigate();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
@@ -42,18 +40,14 @@ const ProductCard: React.FC<ProductCardProps & { viewMode?: ViewMode }> = ({
         imageHeight: "aspect-square",
         padding: "p-4",
         titleSize: "text-base font-medium",
-        priceSize: "text-sm",
-        buttonSize: "h-10 w-10" as const,
-        iconSize: 20
+        priceSize: "text-sm"
       };
     } else {
       return {
         imageHeight: "aspect-square",
         padding: "p-2",
         titleSize: "text-sm font-medium",
-        priceSize: "text-xs",
-        buttonSize: "h-8 w-8" as const,
-        iconSize: 16
+        priceSize: "text-xs"
       };
     }
   };
@@ -110,15 +104,6 @@ const ProductCard: React.FC<ProductCardProps & { viewMode?: ViewMode }> = ({
     setShowSizeDialog(false);
   };
 
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onEdit) {
-      onEdit(product.id);
-    } else {
-      navigate(`/products/edit/${product.id}`);
-    }
-  };
-
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -142,38 +127,6 @@ const ProductCard: React.FC<ProductCardProps & { viewMode?: ViewMode }> = ({
                 No Image
               </div>
             )}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className={`absolute top-2 right-2 bg-background/80 hover:bg-background text-foreground rounded-full ${sizes.buttonSize}`}
-              onClick={handleEditClick}
-            >
-              <Edit className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
-            </Button>
-            {onDelete && (
-              <Button
-                variant="destructive"
-                size="icon"
-                className={`absolute top-2 left-2 bg-red-600 text-white rounded-full ${sizes.buttonSize}`}
-                onClick={e => {
-                  e.stopPropagation();
-                  onDelete(product.id);
-                }}
-              >
-                <Trash className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
-              </Button>
-            )}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className={`absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full ${sizes.buttonSize}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToCart();
-              }}
-            >
-              <Plus className={`h-${sizes.iconSize/4} w-${sizes.iconSize/4}`} />
-            </Button>
           </div>
           <div className={`${sizes.padding} text-right`}>
             <h3 className={sizes.titleSize}>

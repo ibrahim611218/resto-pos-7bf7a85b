@@ -1,11 +1,10 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Size, Product } from "@/types";
-import { useNavigate } from "react-router-dom";
 import { 
   Dialog, 
   DialogContent, 
@@ -22,9 +21,8 @@ interface ProductListItemProps {
   onDelete?: (id: string) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDelete }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   const { language } = useLanguage();
-  const navigate = useNavigate();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
@@ -80,15 +78,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
     setShowSizeDialog(false);
   };
 
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onEdit) {
-      onEdit(product.id);
-    } else {
-      navigate(`/products/edit/${product.id}`);
-    }
-  };
-
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -127,40 +116,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
                   {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
                 </p>
               )}
-            </div>
-            <div className="flex ml-2 gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="flex-shrink-0 bg-background/80 hover:bg-background text-foreground rounded-full h-8 w-8"
-                onClick={handleEditClick}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              {onDelete && (
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="flex-shrink-0 bg-red-600 text-white rounded-full h-8 w-8"
-                  onClick={e => {
-                    e.stopPropagation();
-                    onDelete(product.id);
-                  }}
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              )}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="flex-shrink-0 bg-primary text-primary-foreground rounded-full h-8 w-8"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddToCart();
-                }}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardContent>
