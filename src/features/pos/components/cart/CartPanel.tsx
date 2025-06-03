@@ -55,6 +55,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
     handleTransferReceiptConfirmed,
     handleShowPaidAmountDialog,
     handleInvoiceModalClose,
+    handleClosePaymentMethodDialog,
     customer
   } = useCartInvoice({
     cartItems,
@@ -79,7 +80,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         "h-full flex flex-col border-l bg-card cart-panel rounded-sm overflow-hidden",
         expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
-        "max-w-full" // تأكد من عدم تجاوز حدود الشاشة
+        "max-w-full"
       )}
     >
       <CartHeader 
@@ -146,6 +147,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
         onConfirmPaidAmount={handlePaidAmountConfirmed}
         onConfirmTransferReceipt={handleTransferReceiptConfirmed}
         onCloseInvoiceModal={handleInvoiceModalClose}
+        onClosePaymentMethodDialog={handleClosePaymentMethodDialog}
       />
     </div>
   );

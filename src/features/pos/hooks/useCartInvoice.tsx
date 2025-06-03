@@ -55,6 +55,13 @@ export const useCartInvoice = ({
     setShowPaymentMethodDialog(true);
   };
 
+  const handleClosePaymentMethodDialog = () => {
+    // إغلاق نافذة طريقة الدفع دون إصدار فاتورة
+    setShowPaymentMethodDialog(false);
+    // إعادة تعيين أي حالة مؤقتة
+    setCustomer(undefined);
+  };
+
   const handlePaymentMethodSelected = (method: PaymentMethod, selectedCustomer?: Customer) => {
     setPaymentMethod(method);
     setShowPaymentMethodDialog(false);
@@ -136,7 +143,6 @@ export const useCartInvoice = ({
       invoice.customer = customer;
     }
     
-    // إضافة معلومات حول ما إذا كانت الضريبة مضمنة أم لا
     invoice.taxIncluded = taxIncluded;
     
     await saveInvoiceToStorage(invoice);
@@ -178,6 +184,7 @@ export const useCartInvoice = ({
     showInvoiceModal,
     setShowInvoiceModal,
     handleCreateInvoice,
+    handleClosePaymentMethodDialog,
     handlePaymentMethodSelected,
     handlePaidAmountConfirmed,
     handleTransferReceiptConfirmed,

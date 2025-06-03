@@ -20,6 +20,7 @@ interface CartInvoiceDialogsProps {
   onConfirmPaidAmount: (amount: number) => void;
   onConfirmTransferReceipt: (receiptNumber: string, customer?: Customer) => void;
   onCloseInvoiceModal: () => void;
+  onClosePaymentMethodDialog: () => void;
 }
 
 const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
@@ -32,7 +33,8 @@ const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
   onSelectPaymentMethod,
   onConfirmPaidAmount,
   onConfirmTransferReceipt,
-  onCloseInvoiceModal
+  onCloseInvoiceModal,
+  onClosePaymentMethodDialog
 }) => {
   const { formatInvoiceDate } = useInvoiceFormatting();
   const { settings } = useBusinessSettings();
@@ -48,7 +50,7 @@ const CartInvoiceDialogs: React.FC<CartInvoiceDialogsProps> = ({
     <>
       <PaymentMethodDialog
         open={showPaymentMethodDialog}
-        onClose={() => onSelectPaymentMethod("card")}
+        onClose={onClosePaymentMethodDialog}
         onSelectPaymentMethod={onSelectPaymentMethod}
       />
       

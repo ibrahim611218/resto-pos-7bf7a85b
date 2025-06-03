@@ -37,24 +37,23 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
     }
   };
 
-  const handleCustomerSubmit = (customer?: Customer) => {
-    if (selectedMethod) {
-      onSelectPaymentMethod(selectedMethod, customer);
-    }
+  const handleClose = () => {
+    // إعادة تعيين الحالة عند الإغلاق
     setShowCustomerForm(false);
     setSelectedMethod(null);
+    // إغلاق النافذة فقط دون إصدار فاتورة
+    onClose();
   };
 
-  const handleClose = () => {
-    // عند الضغط على X يجب الرجوع للسلة وليس حفظ الفاتورة
-    setShowCustomerForm(false);
-    setSelectedMethod(null);
-    onClose();
+  const handleDialogOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      handleClose();
+    }
   };
 
   if (showCustomerForm) {
     return (
-      <Dialog open={open} onOpenChange={() => handleClose()}>
+      <Dialog open={open} onOpenChange={handleDialogOpenChange}>
         <DialogContent className="sm:max-w-md" dir={isArabic ? "rtl" : "ltr"}>
           <DialogHeader>
             <div className="flex items-center justify-between">
@@ -72,7 +71,13 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
             </div>
           </DialogHeader>
           <CustomerSelectionForm 
-            onSubmit={handleCustomerSubmit}
+            onSubmit={(customer) => {
+              if (selectedMethod) {
+                onSelectPaymentMethod(selectedMethod, customer);
+              }
+              setShowCustomerForm(false);
+              setSelectedMethod(null);
+            }}
             onCancel={() => setShowCustomerForm(false)}
           />
         </DialogContent>
@@ -81,7 +86,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   }
 
   return (
-    <Dialog open={open} onOpenChange={() => handleClose()}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent className="sm:max-w-md" dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
           <div className="flex items-center justify-between">
