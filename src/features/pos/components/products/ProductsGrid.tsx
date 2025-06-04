@@ -98,11 +98,10 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       <ProductSearchAndCategories
         categories={categories}
         selectedCategory={selectedCategory}
-        onCategorySelect={setSelectedCategory}
+        onSelectCategory={setSelectedCategory}
         searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        viewMode={viewMode}
-        onViewModeChange={onViewModeChange}
+        onSearchTermChange={setSearchTerm}
+        viewMode={onViewModeChange}
         isArabic={isArabic}
       />
       
