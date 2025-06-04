@@ -13,5 +13,5 @@ export interface CartItem {
   variantId: string;
   categoryId: string;
   taxable: boolean;
-  type?: "sized" | "single"; // Add the type property as optional
+  type?: "sized" | "single";
 }

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { PaymentMethod, CartItem as InvoiceCartItem, Size } from "@/types";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
@@ -15,6 +14,7 @@ interface CartItem {
   variantId: string;
   categoryId: string;
   taxable: boolean;
+  type?: "sized" | "single";
 }
 
 interface CartContextType {
