@@ -21,20 +21,43 @@ const ProductList: React.FC<ProductListProps> = ({
   onDeleteProduct
 }) => {
   
-  // تصفية المنتجات للتأكد من وجود variants صالحة
+  // تصفية المنتجات للتأكد من وجود بيانات صالحة
   const validProducts = useMemo(() => {
-    return products.filter(product => {
-      // السماح بالمنتجات التي لها variants أو المنتجات من نوع single
-      if (product.type === "single") {
-        return true; // المنتجات الفردية مقبولة حتى لو لم تكن لها variants
-      }
-      
-      if (!product.variants || product.variants.length === 0) {
-        console.warn(`Product ${product.name} has no variants, skipping display`);
+    const filtered = products.filter(product => {
+      // قبول جميع المنتجات التي لها اسم
+      if (!product.name && !product.nameAr) {
+        console.warn(`Product ${product.id} has no name, skipping display`);
         return false;
       }
+      
+      // المنتجات الفردية مقبولة دائماً
+      if (product.type === "single") {
+        return true;
+      }
+      
+      // المنتجات ذات المقاسات يجب أن تحتوي على variants
+      if (product.type === "sized") {
+        if (!product.variants || product.variants.length === 0) {
+          console.warn(`Sized product ${product.nameAr || product.name} has no variants, skipping display`);
+          return false;
+        }
+        return true;
+      }
+      
+      // المنتجات الافتراضية (بدون type محدد) نتعامل معها كمنتجات ذات مقاسات
+      if (!product.type) {
+        if (!product.variants || product.variants.length === 0) {
+          console.warn(`Product ${product.nameAr || product.name} has no type and no variants, skipping display`);
+          return false;
+        }
+        return true;
+      }
+      
       return true;
     });
+    
+    console.log(`ProductList: Filtered ${filtered.length} valid products from ${products.length} total`);
+    return filtered;
   }, [products]);
 
   // حساب عدد الأعمدة وحجم المنتجات بناءً على نوع العرض
@@ -72,7 +95,7 @@ const ProductList: React.FC<ProductListProps> = ({
     return `grid ${gridClass} ${gapClass} auto-rows-max p-2`;
   }, [viewMode, validProducts.length]);
 
-  console.log(`ProductList rendering ${validProducts.length} valid products from ${products.length} total`);
+  console.log(`ProductList rendering ${validProducts.length} valid products`);
 
   if (validProducts.length === 0) {
     return (

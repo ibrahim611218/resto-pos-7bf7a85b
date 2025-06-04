@@ -51,8 +51,10 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       const activeCategories = categoriesData.filter(cat => !cat.isDeleted);
       console.log(`Active categories: ${activeCategories.length}`);
       
+      // تحديث البيانات فوراً
       setCategories(activeCategories);
       setProducts(productsData);
+      setFilteredProducts(productsData); // تعيين المنتجات المفلترة مباشرة
       
       setRefreshKey(prev => prev + 1);
     } catch (error) {
@@ -62,10 +64,12 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     }
   };
 
+  // تحميل البيانات عند تحميل المكون لأول مرة
   useEffect(() => {
     loadData();
-  }, [key]);
+  }, []);
 
+  // الاستماع لتحديثات البيانات
   useEffect(() => {
     const handleUpdate = () => {
       console.log("ProductsGrid detected update, refreshing...");
@@ -83,7 +87,13 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     };
   }, []);
 
+  // تطبيق الفلاتر عند تغيير المنتجات أو الفلاتر
   useEffect(() => {
+    if (products.length === 0) {
+      setFilteredProducts([]);
+      return;
+    }
+
     let filtered = [...products];
 
     // تصفية حسب التصنيف
