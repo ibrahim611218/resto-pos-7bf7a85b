@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
+import ViewToggle from "@/components/ui-custom/ViewToggle";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Category } from "@/types";
 import productService from "@/services/products/ProductService";
@@ -101,7 +101,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
         onSelectCategory={setSelectedCategory}
         searchTerm={searchTerm}
         onSearchTermChange={setSearchTerm}
-        viewMode={onViewModeChange}
+        viewMode={<ViewToggle value={viewMode} onValueChange={onViewModeChange} />}
         isArabic={isArabic}
       />
       
