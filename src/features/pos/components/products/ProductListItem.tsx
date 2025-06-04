@@ -14,6 +14,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getSizeLabel } from "../../utils/sizeLabels";
+import { Edit2, Trash2 } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface ProductListItemProps {
   product: Product;
@@ -21,14 +23,23 @@ interface ProductListItemProps {
   onDelete?: (id: string) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDelete }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const location = useLocation();
+  
+  // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
+  const isProductsPage = location.pathname === "/products";
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
+    if ((e.target as HTMLElement).closest('.action-buttons')) {
+      return;
+    }
+
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
       return;
@@ -78,6 +89,20 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
     setShowSizeDialog(false);
   };
 
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit(product.id);
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(product.id);
+    }
+  };
+
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -85,7 +110,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
   return (
     <>
       <Card 
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
         onClick={handleAddToCart}
       >
         <CardContent className="p-2">
@@ -117,6 +142,32 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
                 </p>
               )}
             </div>
+            
+            {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
+            {isProductsPage && (onEdit || onDelete) && (
+              <div className="action-buttons flex gap-1 ml-2">
+                {onEdit && (
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    onClick={handleEdit}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit2 className="h-3 w-3" />
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    variant="destructive"
+                    size="xs"
+                    onClick={handleDelete}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

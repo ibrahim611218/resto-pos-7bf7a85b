@@ -15,6 +15,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getSizeLabel } from "../../utils/sizeLabels";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
+import { Edit2, Trash2 } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface ProductCardProps {
   product: Product;
@@ -25,6 +27,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ 
   product, 
+  onEdit,
+  onDelete,
   viewMode = "grid-small"
 }) => {
   const { language } = useLanguage();
@@ -32,6 +36,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const location = useLocation();
+  
+  // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
+  const isProductsPage = location.pathname === "/products";
 
   // تحديد أحجام العناصر بناءً على نوع العرض
   const getCardSizes = () => {
@@ -54,7 +62,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const sizes = getCardSizes();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
+    if ((e.target as HTMLElement).closest('.action-buttons')) {
+      return;
+    }
+
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
       return;
@@ -104,6 +117,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setShowSizeDialog(false);
   };
 
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit(product.id);
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(product.id);
+    }
+  };
+
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -111,9 +138,35 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Card 
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
         onClick={handleAddToCart}
       >
+        {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
+        {isProductsPage && (onEdit || onDelete) && (
+          <div className="action-buttons absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1 z-10">
+            {onEdit && (
+              <Button
+                variant="secondary"
+                size="xs"
+                onClick={handleEdit}
+                className="h-6 w-6 p-0 bg-white/90 hover:bg-white shadow-sm"
+              >
+                <Edit2 className="h-3 w-3" />
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="destructive"
+                size="xs"
+                onClick={handleDelete}
+                className="h-6 w-6 p-0 bg-red-500/90 hover:bg-red-600 text-white shadow-sm"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
+        )}
+
         <CardContent className="p-0">
           <div className={`${sizes.imageHeight} bg-gray-100 relative`}>
             {product.image ? (

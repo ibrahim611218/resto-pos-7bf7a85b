@@ -10,7 +10,7 @@ interface CartContentProps {
 
 const CartContent: React.FC<CartContentProps> = ({ cartItems, isArabic }) => {
   return (
-    <div className="flex-1 overflow-hidden flex flex-col cart-content">
+    <div className="flex-1 overflow-hidden flex flex-col cart-content min-h-0">
       {cartItems.length > 0 ? (
         <CartItemsList cartItems={cartItems} isArabic={isArabic} />
       ) : (

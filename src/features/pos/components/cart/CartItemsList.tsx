@@ -32,8 +32,8 @@ const CartItemsList: React.FC<CartItemsListProps> = ({ cartItems, isArabic }) =>
   const { increaseQuantity, decreaseQuantity, setItemQuantity, removeItem } = useCart();
   
   return (
-    <ScrollArea className="p-2 h-full flex-1">
-      <div className="space-y-2 pb-2">
+    <ScrollArea className="h-full max-h-[60vh]">
+      <div className="p-2 space-y-2">
         {cartItems.map((item) => (
           <Card key={`${item.id}-${item.size}`} className="p-3 flex items-center">
             <ItemDetails
