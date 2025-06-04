@@ -24,6 +24,11 @@ const ProductList: React.FC<ProductListProps> = ({
   // تصفية المنتجات للتأكد من وجود variants صالحة
   const validProducts = useMemo(() => {
     return products.filter(product => {
+      // السماح بالمنتجات التي لها variants أو المنتجات من نوع single
+      if (product.type === "single") {
+        return true; // المنتجات الفردية مقبولة حتى لو لم تكن لها variants
+      }
+      
       if (!product.variants || product.variants.length === 0) {
         console.warn(`Product ${product.name} has no variants, skipping display`);
         return false;
@@ -67,12 +72,18 @@ const ProductList: React.FC<ProductListProps> = ({
     return `grid ${gridClass} ${gapClass} auto-rows-max p-2`;
   }, [viewMode, validProducts.length]);
 
+  console.log(`ProductList rendering ${validProducts.length} valid products from ${products.length} total`);
+
   if (validProducts.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <p className="text-muted-foreground">لا توجد منتجات صالحة للعرض</p>
-          <p className="text-sm text-muted-foreground mt-2">تأكد من إضافة مقاسات للمنتجات</p>
+          <p className="text-muted-foreground">لا توجد منتجات للعرض</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            {products.length === 0 
+              ? "لم يتم إضافة أي منتجات بعد" 
+              : "تأكد من فلترة البحث أو التصنيف"}
+          </p>
         </div>
       </div>
     );

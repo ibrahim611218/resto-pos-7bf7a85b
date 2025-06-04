@@ -40,6 +40,26 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
       return;
     }
 
+    // التعامل مع المنتجات الفردية
+    if (product.type === "single") {
+      addToCart({
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        nameAr: product.nameAr,
+        price: product.price || 0,
+        quantity: 1,
+        image: product.image,
+        size: "regular" as Size,
+        categoryId: product.categoryId,
+        variantId: `var-${product.id}`,
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
+      });
+      return;
+    }
+
+    // التعامل مع المنتجات ذات المقاسات
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
       return;
@@ -58,10 +78,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
         price: variant.price,
         quantity: 1,
         image: product.image,
-        size: variant.size as Size | "regular",
+        size: variant.size as Size,
         categoryId: product.categoryId,
         variantId: variant.id,
-        taxable: product.taxable !== undefined ? product.taxable : true
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
       });
     }
   };
@@ -79,10 +100,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
         price: variant.price,
         quantity: 1,
         image: product.image,
-        size: variant.size as Size | "regular",
+        size: variant.size as Size,
         categoryId: product.categoryId,
         variantId: variant.id,
-        taxable: product.taxable !== undefined ? product.taxable : true
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
       });
     }
     
@@ -103,9 +125,38 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
     }
   };
 
-  if (!product.variants || product.variants.length === 0) {
-    return null;
-  }
+  // عرض السعر حسب نوع المنتج
+  const renderPrice = () => {
+    if (product.type === "single") {
+      return (
+        <p className="text-sm text-muted-foreground">
+          {product.price?.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+        </p>
+      );
+    }
+
+    if (product.variants && product.variants.length > 0) {
+      if (product.variants.length > 1) {
+        return (
+          <p className="text-sm text-muted-foreground">
+            {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          </p>
+        );
+      } else {
+        return (
+          <p className="text-sm text-muted-foreground">
+            {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          </p>
+        );
+      }
+    }
+
+    return (
+      <p className="text-sm text-muted-foreground text-red-500">
+        {isArabic ? "سعر غير محدد" : "Price not set"}
+      </p>
+    );
+  };
 
   return (
     <>
@@ -132,15 +183,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
               <h3 className="font-medium">
                 {isArabic ? product.nameAr || product.name : product.name}
               </h3>
-              {product.variants.length > 1 ? (
-                <p className="text-sm text-muted-foreground">
-                  {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-                </p>
-              )}
+              {renderPrice()}
             </div>
             
             {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
@@ -172,46 +215,49 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
         </CardContent>
       </Card>
       
-      <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
-        <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
-          <DialogTitle className="text-center">
-            {isArabic ? "اختر الحجم" : "Select Size"}
-          </DialogTitle>
-          
-          <RadioGroup
-            value={selectedSize || ""}
-            onValueChange={setSelectedSize}
-            className="grid gap-3 pt-3"
-          >
-            {product.variants.map((variant) => (
-              <div 
-                key={variant.id} 
-                className="flex items-center justify-between border rounded-md p-3 cursor-pointer"
-                onClick={() => setSelectedSize(variant.size)}
-              >
-                <div className="flex items-center space-x-2 space-x-reverse">
-                  <RadioGroupItem value={variant.size} id={`list-size-${variant.id}`} />
-                  <Label htmlFor={`list-size-${variant.id}`}>
-                    {getSizeLabel(variant.size, isArabic)}
-                  </Label>
+      {/* مربع حوار اختيار المقاس للمنتجات ذات المقاسات المتعددة */}
+      {product.type === "sized" && product.variants && product.variants.length > 1 && (
+        <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
+          <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
+            <DialogTitle className="text-center">
+              {isArabic ? "اختر الحجم" : "Select Size"}
+            </DialogTitle>
+            
+            <RadioGroup
+              value={selectedSize || ""}
+              onValueChange={setSelectedSize}
+              className="grid gap-3 pt-3"
+            >
+              {product.variants.map((variant) => (
+                <div 
+                  key={variant.id} 
+                  className="flex items-center justify-between border rounded-md p-3 cursor-pointer"
+                  onClick={() => setSelectedSize(variant.size)}
+                >
+                  <div className="flex items-center space-x-2 space-x-reverse">
+                    <RadioGroupItem value={variant.size} id={`list-size-${variant.id}`} />
+                    <Label htmlFor={`list-size-${variant.id}`}>
+                      {getSizeLabel(variant.size, isArabic)}
+                    </Label>
+                  </div>
+                  <div className="text-sm font-medium">
+                    {variant.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </div>
                 </div>
-                <div className="text-sm font-medium">
-                  {variant.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-                </div>
-              </div>
-            ))}
-          </RadioGroup>
-          
-          <DialogFooter>
-            <Button onClick={() => setShowSizeDialog(false)} variant="outline">
-              {isArabic ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={handleSizeSelected}>
-              {isArabic ? "إضافة" : "Add"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              ))}
+            </RadioGroup>
+            
+            <DialogFooter>
+              <Button onClick={() => setShowSizeDialog(false)} variant="outline">
+                {isArabic ? "إلغاء" : "Cancel"}
+              </Button>
+              <Button onClick={handleSizeSelected}>
+                {isArabic ? "إضافة" : "Add"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

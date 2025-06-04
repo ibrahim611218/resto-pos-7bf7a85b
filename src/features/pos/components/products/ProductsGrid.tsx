@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
@@ -31,25 +32,33 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadData = async () => {
     try {
-      console.log("Loading mock products and categories data");
+      console.log("Loading products and categories data...");
+      setIsLoading(true);
       
       const [productsData, categoriesData] = await Promise.all([
         productService.getProducts(),
         categoryService.getCategories()
       ]);
       
-      console.log(`Loaded ${categoriesData.length} categories`);
-      console.log(`Loaded ${productsData.length} products`);
+      console.log(`Loaded ${categoriesData.length} categories:`, categoriesData);
+      console.log(`Loaded ${productsData.length} products:`, productsData);
       
-      setCategories(categoriesData);
+      // تصفية التصنيفات المحذوفة
+      const activeCategories = categoriesData.filter(cat => !cat.isDeleted);
+      console.log(`Active categories: ${activeCategories.length}`);
+      
+      setCategories(activeCategories);
       setProducts(productsData);
       
       setRefreshKey(prev => prev + 1);
     } catch (error) {
       console.error("Error loading data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,23 +84,39 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   }, []);
 
   useEffect(() => {
-    let filtered = products;
+    let filtered = [...products];
 
+    // تصفية حسب التصنيف
     if (selectedCategory !== "all") {
       filtered = filtered.filter(product => product.categoryId === selectedCategory);
+      console.log(`Filtered by category ${selectedCategory}: ${filtered.length} products`);
     }
 
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+    // تصفية حسب البحث
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(term) ||
         (product.nameAr && product.nameAr.toLowerCase().includes(term))
       );
+      console.log(`Filtered by search "${searchTerm}": ${filtered.length} products`);
     }
 
-    console.log(`Filtering products: ${filtered.length} results from ${products.length} products`);
+    console.log(`Final filtered products: ${filtered.length} from ${products.length} total`);
     setFilteredProducts(filtered);
   }, [products, selectedCategory, searchTerm]);
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">
+            {isArabic ? "جاري تحميل البيانات..." : "Loading data..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col">
