@@ -1,155 +1,119 @@
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useLanguage } from "@/context/LanguageContext";
-import { Product, Category } from "@/types";
-import { toast } from "sonner";
-import { mockProducts, mockCategories } from "../../data/mockData";
-import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
+import React, { useState, useEffect } from "react";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ViewMode } from "@/components/ui-custom/ViewToggle";
+import { useLanguage } from "@/context/LanguageContext";
+import { Product, Category } from "@/types";
+import productService from "@/services/products/ProductService";
+import categoryService from "@/services/categories/CategoryService";
 
 interface ProductsGridProps {
-  viewMode?: ViewMode;
-  onViewModeChange?: (mode: ViewMode) => void;
+  viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
   onEditProduct?: (id: string) => void;
   onDeleteProduct?: (id: string) => void;
+  key?: string;
 }
 
 const ProductsGrid: React.FC<ProductsGridProps> = ({
-  viewMode = "grid-small",
+  viewMode,
   onViewModeChange,
   onEditProduct,
-  onDeleteProduct
+  onDeleteProduct,
+  key
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { user } = useAuth();
-  const companyId = user?.companyId || localStorage.getItem('currentCompanyId');
-  
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const loadData = useCallback(async () => {
+  const loadData = async () => {
     try {
-      setLoading(true);
-      console.log('Loading mock products and categories data');
+      console.log("Loading mock products and categories data");
       
-      // استخدام البيانات المحدثة من ملف mockData
-      setCategories(mockCategories);
-      setProducts(mockProducts);
+      const [productsData, categoriesData] = await Promise.all([
+        productService.getProducts(),
+        categoryService.getCategories()
+      ]);
       
-      console.log(`Loaded ${mockCategories.length} categories`);
-      console.log(`Loaded ${mockProducts.length} products`);
+      console.log(`Loaded ${categoriesData.length} categories`);
+      console.log(`Loaded ${productsData.length} products`);
+      
+      setCategories(categoriesData);
+      setProducts(productsData);
+      
+      setRefreshKey(prev => prev + 1);
     } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
-    } finally {
-      setLoading(false);
+      console.error("Error loading data:", error);
     }
-  }, [isArabic, companyId]);
+  };
 
   useEffect(() => {
     loadData();
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('Page is now visible, refreshing products and categories');
-        loadData();
-      }
-    };
-
-    const handleDataUpdate = () => {
-      console.log('Data update event detected, refreshing products and categories');
-      loadData();
-      setRefreshKey(prev => prev + 1);
-    };
-
-    window.addEventListener('data-updated', handleDataUpdate);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('product-updated', handleDataUpdate);
-    window.addEventListener('category-updated', handleDataUpdate);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('data-updated', handleDataUpdate);
-      window.removeEventListener('product-updated', handleDataUpdate);
-      window.removeEventListener('category-updated', handleDataUpdate);
-    };
-  }, [loadData]);
+  }, [key]);
 
   useEffect(() => {
-    if (selectedCategory !== "all") {
-      const categoryExists = categories.some(cat => cat.id === selectedCategory);
-      if (!categoryExists) {
-        console.log('Selected category no longer exists, resetting to all');
-        setSelectedCategory("all");
-      }
-    }
+    const handleUpdate = () => {
+      console.log("ProductsGrid detected update, refreshing...");
+      loadData();
+    };
 
-    let result = [...products];
+    window.addEventListener('product-updated', handleUpdate);
+    window.addEventListener('category-updated', handleUpdate);
+    window.addEventListener('data-updated', handleUpdate);
+
+    return () => {
+      window.removeEventListener('product-updated', handleUpdate);
+      window.removeEventListener('category-updated', handleUpdate);
+      window.removeEventListener('data-updated', handleUpdate);
+    };
+  }, []);
+
+  useEffect(() => {
+    let filtered = products;
+
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(product => product.categoryId === selectedCategory);
+    }
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(product =>
+      filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(term) ||
         (product.nameAr && product.nameAr.toLowerCase().includes(term))
       );
     }
 
-    if (selectedCategory !== "all") {
-      result = result.filter(product => product.categoryId === selectedCategory);
-    }
-
-    console.log(`Filtering products: ${result.length} results from ${products.length} products`);
-    setFilteredProducts(result);
-  }, [searchTerm, selectedCategory, products, categories, refreshKey]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+    console.log(`Filtering products: ${filtered.length} results from ${products.length} products`);
+    setFilteredProducts(filtered);
+  }, [products, selectedCategory, searchTerm]);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="flex-shrink-0">
-        <ProductSearchAndCategories
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          categories={categories}
-          isArabic={isArabic}
-          viewMode={
-            onViewModeChange ? (
-              <ViewToggle value={viewMode} onValueChange={onViewModeChange} />
-            ) : null
-          }
-        />
-      </div>
-
+    <div className="h-full flex flex-col">
+      <ProductSearchAndCategories
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategorySelect={setSelectedCategory}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+        isArabic={isArabic}
+      />
+      
       <div className="flex-1 overflow-hidden">
-        {filteredProducts.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
-          </div>
-        ) : (
-          <ProductList
-            products={filteredProducts}
-            viewMode={viewMode}
-            refreshKey={refreshKey}
-            onEditProduct={onEditProduct}
-            onDeleteProduct={onDeleteProduct}
-          />
-        )}
+        <ProductList
+          products={filteredProducts}
+          viewMode={viewMode}
+          refreshKey={refreshKey}
+          onEditProduct={onEditProduct}
+          onDeleteProduct={onDeleteProduct}
+        />
       </div>
     </div>
   );
