@@ -5,20 +5,20 @@ export const getSizeLabel = (size: string, isArabic: boolean): string => {
   if (isArabic) {
     switch (size) {
       case "small": return "صغير";
-      case "medium": return "حبة"; // تغيير من "وسط" إلى "حبة" للمنتجات الفردية
+      case "medium": return "وسط";
       case "large": return "كبير";
       case "xlarge": return "كبير جداً";
-      case "regular": return "حبة"; // تغيير من "عادي" إلى "حبة"
-      default: return "حبة";
+      case "regular": return "عادي";
+      default: return "عادي";
     }
   } else {
     switch (size) {
       case "small": return "Small";
-      case "medium": return "Piece"; // تغيير من "Medium" إلى "Piece"
+      case "medium": return "Medium";
       case "large": return "Large";
       case "xlarge": return "X-Large";
-      case "regular": return "Piece"; // تغيير من "Regular" إلى "Piece"
-      default: return "Piece";
+      case "regular": return "Regular";
+      default: return "Regular";
     }
   }
 };

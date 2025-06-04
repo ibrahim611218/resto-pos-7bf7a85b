@@ -21,13 +21,24 @@ const ProductList: React.FC<ProductListProps> = ({
   onDeleteProduct
 }) => {
   
+  // تصفية المنتجات للتأكد من وجود variants صالحة
+  const validProducts = useMemo(() => {
+    return products.filter(product => {
+      if (!product.variants || product.variants.length === 0) {
+        console.warn(`Product ${product.name} has no variants, skipping display`);
+        return false;
+      }
+      return true;
+    });
+  }, [products]);
+
   // حساب عدد الأعمدة وحجم المنتجات بناءً على نوع العرض
   const getOptimizedGridClass = useMemo(() => {
     if (viewMode === "list") {
       return "flex flex-col gap-2 p-2";
     }
 
-    const productCount = products.length;
+    const productCount = validProducts.length;
     let gridClass = "";
     let gapClass = "gap-2";
 
@@ -54,12 +65,23 @@ const ProductList: React.FC<ProductListProps> = ({
     }
 
     return `grid ${gridClass} ${gapClass} auto-rows-max p-2`;
-  }, [viewMode, products.length]);
+  }, [viewMode, validProducts.length]);
+
+  if (validProducts.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-muted-foreground">لا توجد منتجات صالحة للعرض</p>
+          <p className="text-sm text-muted-foreground mt-2">تأكد من إضافة مقاسات للمنتجات</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full overflow-auto">
       <div className={getOptimizedGridClass}>
-        {products.map((product) =>
+        {validProducts.map((product) =>
           viewMode === "list" ? (
             <ProductListItem
               key={`${product.id}-${refreshKey}`}
