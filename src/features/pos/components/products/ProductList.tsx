@@ -24,13 +24,14 @@ const ProductList: React.FC<ProductListProps> = ({
   // تصفية المنتجات للتأكد من وجود بيانات صالحة
   const validProducts = useMemo(() => {
     const filtered = products.filter(product => {
-      // قبول جميع المنتجات التي لها اسم
-      if (!product.name && !product.nameAr) {
-        console.warn(`Product ${product.id} has no name, skipping display`);
+      // يجب أن يكون للمنتج اسم في أي من اللغتين على الأقل
+      const hasValidName = product.name || product.nameAr;
+      if (!hasValidName) {
+        console.warn(`Product ${product.id} has no name in any language, skipping display`);
         return false;
       }
       
-      // المنتجات الفردية مقبولة دائماً
+      // المنتجات الفردية مقبولة دائماً إذا كان لها اسم
       if (product.type === "single") {
         return true;
       }
