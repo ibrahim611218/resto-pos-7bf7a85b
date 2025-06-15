@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, Size } from "@/types";
@@ -54,8 +53,7 @@ export const useProductForm = () => {
     if (isEditing && id) {
       const fetchProduct = async () => {
         try {
-          const products = await productService.getProducts();
-          const existingProduct = products.find(p => p.id === id);
+          const existingProduct = await productService.getProductById(id);
           
           if (existingProduct) {
             setProduct(existingProduct);

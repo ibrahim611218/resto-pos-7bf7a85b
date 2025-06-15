@@ -6,20 +6,42 @@ import { BaseService } from '../base/BaseService';
 class ProductService extends BaseService {
   private storageKey = 'stored-products';
 
+  private async getAllProducts(): Promise<Product[]> {
+    try {
+      const storedProducts = localStorage.getItem(this.storageKey);
+      if (storedProducts) {
+        return JSON.parse(storedProducts);
+      }
+      return [];
+    } catch (error) {
+      console.error("Error getting all products from storage:", error);
+      return [];
+    }
+  }
+
+  private async saveAllProducts(products: Product[]): Promise<void> {
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(products));
+    } catch (error) {
+      console.error("Error saving all products to storage:", error);
+    }
+  }
+
   async getProducts(): Promise<Product[]> {
     try {
-      // Get the current company ID
+      const allProducts = await this.getAllProducts();
       const currentCompanyId = localStorage.getItem('currentCompanyId');
       
-      const storedProducts = localStorage.getItem(this.storageKey);
-      let products: Product[] = [];
-      
-      if (storedProducts) {
-        products = JSON.parse(storedProducts);
-        console.log(`Retrieved ${products.length} products from localStorage`);
+      if (currentCompanyId) {
+        const companyProducts = allProducts.filter(p => p.companyId === currentCompanyId);
+        console.log(`Retrieved ${companyProducts.length} products for company ${currentCompanyId} from a total of ${allProducts.length}`);
+        return companyProducts;
       }
       
-      return products;
+      const nonCompanyProducts = allProducts.filter(p => !p.companyId);
+      console.log(`No company selected. Retrieved ${nonCompanyProducts.length} products without a companyId.`);
+      return nonCompanyProducts;
+      
     } catch (error) {
       console.error("Error getting products:", error);
       return [];
@@ -28,8 +50,8 @@ class ProductService extends BaseService {
   
   async getProductById(id: string): Promise<Product | null> {
     try {
-      const products = await this.getProducts();
-      return products.find(product => product.id === id) || null;
+      const allProducts = await this.getAllProducts();
+      return allProducts.find(product => product.id === id) || null;
     } catch (error) {
       console.error("Error getting product:", error);
       return null;
@@ -38,35 +60,27 @@ class ProductService extends BaseService {
   
   async saveProduct(product: Product): Promise<{success: boolean, id?: string, error?: string}> {
     try {
-      // Ensure product has an ID
       if (!product.id) {
         product.id = uuidv4();
       }
       
-      // Get the current company ID and associate it with the product
       const currentCompanyId = localStorage.getItem('currentCompanyId');
-      if (currentCompanyId) {
+      if (currentCompanyId && !product.companyId) {
         product.companyId = currentCompanyId;
       }
       
-      // Get existing products
-      const products = await this.getProducts();
+      const allProducts = await this.getAllProducts();
       
-      // Check if product already exists (update) or is new (add)
-      const index = products.findIndex(p => p.id === product.id);
+      const index = allProducts.findIndex(p => p.id === product.id);
       
       if (index !== -1) {
-        // Update existing product
-        products[index] = product;
+        allProducts[index] = product;
       } else {
-        // Add new product
-        products.push(product);
+        allProducts.push(product);
       }
       
-      // Save back to localStorage
-      localStorage.setItem(this.storageKey, JSON.stringify(products));
+      await this.saveAllProducts(allProducts);
       
-      // Dispatch event to notify components
       window.dispatchEvent(new CustomEvent('product-updated'));
       
       return { success: true, id: product.id };
@@ -78,12 +92,11 @@ class ProductService extends BaseService {
   
   async deleteProduct(id: string): Promise<boolean> {
     try {
-      let products = await this.getProducts();
-      products = products.filter(product => product.id !== id);
+      let allProducts = await this.getAllProducts();
+      allProducts = allProducts.filter(product => product.id !== id);
       
-      localStorage.setItem(this.storageKey, JSON.stringify(products));
+      await this.saveAllProducts(allProducts);
       
-      // Dispatch event to notify components
       window.dispatchEvent(new CustomEvent('product-updated'));
       
       return true;
