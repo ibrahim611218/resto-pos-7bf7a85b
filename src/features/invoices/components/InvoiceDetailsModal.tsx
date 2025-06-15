@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -92,7 +91,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
                 productId: item.productId || "",
                 variantId: item.variantId || "",
                 categoryId: "",
-                size: (item.size || "regular") as Size,
+                size: (item.size || "regular") as Size | "regular",
                 taxable: !!item.taxable
               }))} />
 

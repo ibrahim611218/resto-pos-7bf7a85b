@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Card } from "@/components/ui/card";
@@ -44,6 +43,7 @@ const CartItemsList: React.FC<CartItemsListProps> = ({ cartItems, isArabic }) =>
               quantity={item.quantity}
               isArabic={isArabic}
               sizeLabel={getSizeLabel(item.size as string, isArabic)}
+              type={item.type}
             />
             
             <div className="flex items-center ml-2">
