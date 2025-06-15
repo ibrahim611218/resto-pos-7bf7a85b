@@ -1,38 +1,22 @@
 
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import productService from "@/services/products/ProductService";
 import { toast } from "@/hooks/use-toast";
 
 const Products = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    const handleUpdate = () => {
-      console.log("Products page detected update, refreshing...");
-      setRefreshTrigger(prev => prev + 1);
-    };
-
-    window.addEventListener('product-updated', handleUpdate);
-    window.addEventListener('category-updated', handleUpdate);
-    window.addEventListener('data-updated', handleUpdate);
-
-    return () => {
-      window.removeEventListener('product-updated', handleUpdate);
-      window.removeEventListener('category-updated', handleUpdate);
-      window.removeEventListener('data-updated', handleUpdate);
-    };
-  }, []);
+  // The refresh logic is now handled within ProductsGrid via event listeners.
+  // This component no longer needs to manage a refresh trigger.
 
   const handleAddProduct = () => {
     console.log("Navigating to /products/add");
@@ -56,13 +40,13 @@ const Products = () => {
             title: isArabic ? "تم حذف المنتج بنجاح" : "Product deleted successfully",
             variant: "default"
           });
+          // ProductsGrid will refresh itself upon receiving the 'product-updated' event.
         } else {
           toast({ 
             title: isArabic ? "تعذر حذف المنتج" : "Failed to delete product",
             variant: "destructive"
           });
         }
-        setRefreshTrigger(v => v + 1);
       } catch (e) {
         toast({ 
           title: isArabic ? "حدث خطأ أثناء حذف المنتج" : "Error deleting product",
@@ -90,7 +74,6 @@ const Products = () => {
           onViewModeChange={setViewMode} 
           onEditProduct={handleEditProduct}
           onDeleteProduct={handleDeleteProduct}
-          key={`products-grid-${refreshTrigger}`}  
         />
       </div>
     </div>
