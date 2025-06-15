@@ -22,7 +22,9 @@ const ProductTaxSwitch: React.FC<ProductTaxSwitchProps> = ({
           checked={taxable}
           onCheckedChange={handleSwitchChange}
         />
-        <Label htmlFor="taxable">خاضع للضريبة</Label>
+        <Label htmlFor="taxable" className="font-normal cursor-pointer">
+          {isArabic ? "خاضع للضريبة" : "Taxable"}
+        </Label>
       </div>
     </div>
   );

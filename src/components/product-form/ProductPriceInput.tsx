@@ -16,7 +16,7 @@ const ProductPriceInput: React.FC<ProductPriceInputProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor="price">السعر</Label>
+      <Label htmlFor="price">{isArabic ? "السعر" : "Price"}</Label>
       <div className="flex items-center space-x-2 space-x-reverse">
         <Input 
           id="price"
@@ -25,10 +25,10 @@ const ProductPriceInput: React.FC<ProductPriceInputProps> = ({
           step="0.01"
           value={price || ""}
           onChange={handlePriceChange}
-          placeholder="أدخل سعر المنتج"
-          className="w-32"
+          placeholder={isArabic ? "أدخل سعر المنتج" : "Enter product price"}
+          className="w-full"
         />
-        <span>ريال</span>
+        <span>{isArabic ? "ريال" : "SAR"}</span>
       </div>
     </div>
   );

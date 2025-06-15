@@ -51,7 +51,7 @@ const ProductForm = () => {
                 <CardHeader>
                   <CardTitle>{isArabic ? "معلومات المنتج" : "Product Information"}</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
                   <ProductBasicInfo 
                     product={product}
                     handleInputChange={handleInputChange}
@@ -61,18 +61,12 @@ const ProductForm = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>{product.type === "single" ? (isArabic ? "السعر" : "Price") : (isArabic ? "المقاسات والأسعار" : "Sizes & Prices")}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {product.type === "single" ? (
-                    <ProductPriceInput 
-                      price={product.price}
-                      handlePriceChange={handlePriceChange}
-                      isArabic={isArabic}
-                    />
-                  ) : (
+              {product.type === "sized" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{isArabic ? "المقاسات والأسعار" : "Sizes & Prices"}</CardTitle>
+                  </Header>
+                  <CardContent>
                     <ProductVariantsManager 
                       variants={variants}
                       addVariant={addVariant}
@@ -80,15 +74,15 @@ const ProductForm = () => {
                       removeVariant={removeVariant}
                       isArabic={isArabic}
                     />
-                  )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </div>
             
             <div className="lg:col-span-1 space-y-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>{isArabic ? "التنظيم" : "Organization"}</CardTitle>
+                  <CardTitle>{isArabic ? "التنظيم والإعدادات" : "Organization & Settings"}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <ProductCategorySelect 
@@ -101,14 +95,13 @@ const ProductForm = () => {
                     handleTypeChange={handleTypeChange}
                     isArabic={isArabic}
                   />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>{isArabic ? "الإعدادات" : "Settings"}</CardTitle>
-                </CardHeader>
-                <CardContent>
+                  {product.type === "single" && (
+                    <ProductPriceInput 
+                      price={product.price}
+                      handlePriceChange={handlePriceChange}
+                      isArabic={isArabic}
+                    />
+                  )}
                   <ProductTaxSwitch 
                     taxable={product.taxable}
                     handleSwitchChange={handleSwitchChange}
