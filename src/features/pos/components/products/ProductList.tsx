@@ -2,6 +2,7 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
+import ProductTable from "./ProductTable";
 import { Product } from "@/types";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 
@@ -33,35 +34,13 @@ const ProductList: React.FC<ProductListProps> = ({
     );
   }
 
-  const gridClass = viewMode === "list"
-    ? "flex flex-col gap-2 p-2"
-    : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 p-2";
-
+  // استخدام الجدول البسيط دائماً لضمان ظهور المنتجات
   return (
-    <div className="w-full h-full overflow-auto">
-      <div className={gridClass}>
-        {products.map((product) => {
-          const key = `${viewMode}-${product.id}-${refreshKey}`;
-          
-          return viewMode === "list" ? (
-            <ProductListItem
-              key={key}
-              product={product}
-              onEdit={onEditProduct}
-              onDelete={onDeleteProduct}
-            />
-          ) : (
-            <ProductCard
-              key={key}
-              product={product}
-              onEdit={onEditProduct}
-              onDelete={onDeleteProduct}
-              viewMode={viewMode}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <ProductTable
+      products={products}
+      onEditProduct={onEditProduct}
+      onDeleteProduct={onDeleteProduct}
+    />
   );
 };
 
