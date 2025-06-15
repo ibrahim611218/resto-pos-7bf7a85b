@@ -87,10 +87,11 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
 
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(term) ||
-        (product.nameAr && product.nameAr.toLowerCase().includes(term))
-      );
+      filtered = filtered.filter(product => {
+        const name = product.name?.toLowerCase() || "";
+        const nameAr = product.nameAr?.toLowerCase() || "";
+        return name.includes(term) || nameAr.includes(term);
+      });
     }
 
     console.log(`ProductsGrid: Filtering complete. Displaying ${filtered.length} of ${products.length} products.`);

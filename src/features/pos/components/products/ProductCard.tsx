@@ -187,11 +187,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </h3>
             {product.variants.length > 1 ? (
               <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)}
+                {" - "}
+                {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             ) : (
               <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
               </p>
             )}
           </div>

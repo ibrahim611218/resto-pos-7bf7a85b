@@ -130,7 +130,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
     if (product.type === "single") {
       return (
         <p className="text-sm text-muted-foreground">
-          {product.price?.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+          {getSizeLabel("regular", isArabic)}: {product.price?.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
         </p>
       );
     }
@@ -139,13 +139,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
       if (product.variants.length > 1) {
         return (
           <p className="text-sm text-muted-foreground">
-            {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} - {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         );
       } else {
         return (
           <p className="text-sm text-muted-foreground">
-            {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+            {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         );
       }
