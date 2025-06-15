@@ -1,89 +1,155 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { Product, Category } from "@/types";
+import { toast } from "sonner";
+import { mockProducts, mockCategories } from "../../data/mockData";
+import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
-import { ViewMode } from "@/components/ui-custom/ViewToggle";
-import ViewToggle from "@/components/ui-custom/ViewToggle";
-import { useLanguage } from "@/context/LanguageContext";
-import { useProductsData } from "@/features/pos/hooks/useProductsData";
-import { useFilterProducts } from "@/features/pos/hooks/useFilterProducts";
-import { Product, Category } from "@/types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface ProductsGridProps {
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
   onEditProduct?: (id: string) => void;
   onDeleteProduct?: (id: string) => void;
-  key?: string;
 }
 
 const ProductsGrid: React.FC<ProductsGridProps> = ({
-  viewMode,
+  viewMode = "grid-small",
   onViewModeChange,
   onEditProduct,
-  onDeleteProduct,
-  key,
+  onDeleteProduct
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { products, categories, isLoading } = useProductsData();
-
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const { user } = useAuth();
+  const companyId = user?.companyId || localStorage.getItem('currentCompanyId');
+  
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // 👇 طباعة القيم المستخدمة للفلترة
-  console.log("[ProductsGrid] selectedCategory:", selectedCategory, "searchTerm:", searchTerm);
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+      console.log('Loading mock products and categories data');
+      
+      // استخدام البيانات المحدثة من ملف mockData
+      setCategories(mockCategories);
+      setProducts(mockProducts);
+      
+      console.log(`Loaded ${mockCategories.length} categories`);
+      console.log(`Loaded ${mockProducts.length} products`);
+    } catch (error) {
+      console.error('Error loading data:', error);
+      toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");
+    } finally {
+      setLoading(false);
+    }
+  }, [isArabic, companyId]);
 
-  const filteredProducts = useFilterProducts({
-    products,
-    selectedCategory,
-    searchTerm,
-  });
+  useEffect(() => {
+    loadData();
 
-  // 👇 طباعة المنتجات قبل وبعد الفلترة
-  console.log("[ProductsGrid] Products from hook:", products);
-  console.log("[ProductsGrid] Filtered products:", filteredProducts);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Page is now visible, refreshing products and categories');
+        loadData();
+      }
+    };
 
-  if (isLoading) {
+    const handleDataUpdate = () => {
+      console.log('Data update event detected, refreshing products and categories');
+      loadData();
+      setRefreshKey(prev => prev + 1);
+    };
+
+    window.addEventListener('data-updated', handleDataUpdate);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('product-updated', handleDataUpdate);
+    window.addEventListener('category-updated', handleDataUpdate);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('data-updated', handleDataUpdate);
+      window.removeEventListener('product-updated', handleDataUpdate);
+      window.removeEventListener('category-updated', handleDataUpdate);
+    };
+  }, [loadData]);
+
+  useEffect(() => {
+    if (selectedCategory !== "all") {
+      const categoryExists = categories.some(cat => cat.id === selectedCategory);
+      if (!categoryExists) {
+        console.log('Selected category no longer exists, resetting to all');
+        setSelectedCategory("all");
+      }
+    }
+
+    let result = [...products];
+
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(term) ||
+        (product.nameAr && product.nameAr.toLowerCase().includes(term))
+      );
+    }
+
+    if (selectedCategory !== "all") {
+      result = result.filter(product => product.categoryId === selectedCategory);
+    }
+
+    console.log(`Filtering products: ${result.length} results from ${products.length} products`);
+    setFilteredProducts(result);
+  }, [searchTerm, selectedCategory, products, categories, refreshKey]);
+
+  if (loading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground">
-            {isArabic ? "جاري تحميل البيانات..." : "Loading data..."}
-          </p>
-        </div>
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  // عداد تشخيصي يظهر أعلى الصفحة (كم عدد المنتجات بعد الفلترة)
-  const filterCountBanner = (
-    <div className="w-full bg-yellow-100 text-yellow-700 font-bold text-center py-1 rounded mb-2">
-      المنتجات بعد الفلترة: {filteredProducts.length} من أصل {products.length}
-    </div>
-  );
-
   return (
-    <div className="h-full flex flex-col">
-      <ProductSearchAndCategories
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        searchTerm={searchTerm}
-        onSearchTermChange={setSearchTerm}
-        viewMode={<ViewToggle value={viewMode} onValueChange={onViewModeChange} />}
-        isArabic={isArabic}
-      />
-
-      {filterCountBanner}
-      <div className="flex-1 overflow-hidden">
-        <ProductList
-          products={filteredProducts}
-          viewMode={viewMode}
-          refreshKey={0}
-          onEditProduct={onEditProduct}
-          onDeleteProduct={onDeleteProduct}
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-shrink-0">
+        <ProductSearchAndCategories
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          categories={categories}
+          isArabic={isArabic}
+          viewMode={
+            onViewModeChange ? (
+              <ViewToggle value={viewMode} onValueChange={onViewModeChange} />
+            ) : null
+          }
         />
+      </div>
+
+      <div className="flex-1 overflow-hidden">
+        {filteredProducts.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            {isArabic ? "لا توجد منتجات متطابقة مع البحث" : "No products found"}
+          </div>
+        ) : (
+          <ProductList
+            products={filteredProducts}
+            viewMode={viewMode}
+            refreshKey={refreshKey}
+            onEditProduct={onEditProduct}
+            onDeleteProduct={onDeleteProduct}
+          />
+        )}
       </div>
     </div>
   );

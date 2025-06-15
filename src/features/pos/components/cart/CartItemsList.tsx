@@ -21,7 +21,6 @@ interface CartItem {
   variantId: string;
   categoryId: string;
   taxable: boolean;
-  type?: string;
 }
 
 interface CartItemsListProps {
@@ -45,7 +44,6 @@ const CartItemsList: React.FC<CartItemsListProps> = ({ cartItems, isArabic }) =>
               quantity={item.quantity}
               isArabic={isArabic}
               sizeLabel={getSizeLabel(item.size as string, isArabic)}
-              type={item.type || "sized"}
             />
             
             <div className="flex items-center ml-2">

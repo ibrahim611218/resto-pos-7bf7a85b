@@ -54,7 +54,8 @@ export const useProductForm = () => {
     if (isEditing && id) {
       const fetchProduct = async () => {
         try {
-          const existingProduct = await productService.getProductById(id);
+          const products = await productService.getProducts();
+          const existingProduct = products.find(p => p.id === id);
           
           if (existingProduct) {
             setProduct(existingProduct);
@@ -135,10 +136,8 @@ export const useProductForm = () => {
           variant: "default"
         });
         
-        // The 'product-updated' event is dispatched by the service itself after a successful save.
-        // Dispatching it here is redundant. The list will refresh upon navigation and remount.
-        // window.dispatchEvent(new CustomEvent('product-updated'));
-        // window.dispatchEvent(new CustomEvent('data-updated'));
+        window.dispatchEvent(new CustomEvent('product-updated'));
+        window.dispatchEvent(new CustomEvent('data-updated'));
         
         setTimeout(() => {
           navigate("/products");
