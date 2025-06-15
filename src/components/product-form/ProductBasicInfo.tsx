@@ -30,29 +30,15 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">{isArabic ? "اسم المنتج" : "Product Name"}</Label>
-          <Input 
-            id="name"
-            name="name"
-            value={product.name}
-            onChange={handleInputChange}
-            placeholder={isArabic ? "أدخل اسم المنتج" : "Enter product name"}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="nameAr">{isArabic ? "اسم المنتج (عربي)" : "Product Name (Arabic)"}</Label>
-          <Input 
-            id="nameAr"
-            name="nameAr"
-            value={product.nameAr || ""}
-            onChange={handleInputChange}
-            placeholder={isArabic ? "أدخل اسم المنتج بالعربية" : "Enter product name in Arabic"}
-            dir="rtl"
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="name">{isArabic ? "اسم المنتج" : "Product Name"}</Label>
+        <Input 
+          id="name"
+          name="name"
+          value={product.name}
+          onChange={handleInputChange}
+          placeholder={isArabic ? "أدخل اسم المنتج" : "Enter product name"}
+        />
       </div>
 
       <div className="space-y-2">
@@ -82,19 +68,6 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
               onChange={handleInputChange}
               placeholder={isArabic ? "أدخل وصف المنتج" : "Enter product description"}
               rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="descriptionAr">{isArabic ? "وصف المنتج (عربي)" : "Product Description (Arabic)"}</Label>
-            <Textarea 
-              id="descriptionAr"
-              name="descriptionAr"
-              value={product.descriptionAr || ""}
-              onChange={handleInputChange}
-              placeholder={isArabic ? "أدخل وصف المنتج بالعربية" : "Enter product description in Arabic"}
-              rows={3}
-              dir="rtl"
             />
           </div>
         </CollapsibleContent>

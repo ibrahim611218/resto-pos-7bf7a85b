@@ -6,7 +6,7 @@ export const validateProduct = (product: Product, isArabic: boolean) => {
   console.log("Validating product:", product);
   
   // Check if name is empty
-  if (!product.name && !product.nameAr) {
+  if (!product.name) {
     return {
       isValid: false,
       error: isArabic ? "يرجى إدخال اسم المنتج" : "Please enter a product name"
