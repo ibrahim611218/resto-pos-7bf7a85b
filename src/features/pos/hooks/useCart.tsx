@@ -1,21 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { PaymentMethod, CartItem as InvoiceCartItem, Size } from "@/types";
+import { PaymentMethod, CartItem, Size, Product } from "@/types";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
-
-interface CartItem {
-  id: string;
-  productId: string;
-  name: string;
-  nameAr?: string;
-  price: number;
-  quantity: number;
-  image?: string;
-  size: Size | "regular";
-  variantId: string;
-  categoryId: string;
-  taxable: boolean;
-}
+import productService from "@/services/products/ProductService";
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -47,6 +34,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
   const [orderType, setOrderType] = useState<"takeaway" | "dineIn">("takeaway");
@@ -54,6 +42,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
   const [paidAmount, setPaidAmount] = useState<number>();
   
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetchedProducts = await productService.getProducts();
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error("Failed to fetch products in CartProvider:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   // استخدام إعدادات العمل التجاري للحصول على إعداد تضمين الضريبة
   const { settings } = useBusinessSettings();
   const taxIncluded = settings?.taxIncluded || false;
@@ -95,7 +95,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedItems[existingItemIndex].quantity += newItem.quantity;
         return updatedItems;
       } else {
-        return [...prevItems, newItem];
+        const product = products.find(p => p.id === newItem.productId);
+        const itemToAdd: CartItem = {
+          ...newItem,
+          type: product?.type || 'single',
+        };
+        return [...prevItems, itemToAdd];
       }
     });
   };

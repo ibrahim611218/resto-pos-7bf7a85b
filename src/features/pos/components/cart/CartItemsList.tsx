@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useCart } from "@/features/pos/hooks/useCart";
 import { Card } from "@/components/ui/card";
@@ -6,21 +7,7 @@ import ItemDetails from "./ItemDetails";
 import QuantityControls from "./QuantityControls";
 import RemoveItemButton from "./RemoveItemButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Size } from "@/types";
-
-interface CartItem {
-  id: string;
-  productId: string;
-  name: string;
-  nameAr?: string;
-  price: number;
-  quantity: number;
-  image?: string;
-  size: Size | "regular";
-  variantId: string;
-  categoryId: string;
-  taxable: boolean;
-}
+import { CartItem } from "@/types";
 
 interface CartItemsListProps {
   cartItems: CartItem[];
