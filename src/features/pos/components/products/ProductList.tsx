@@ -92,6 +92,13 @@ const ProductList: React.FC<ProductListProps> = ({
     </div>
   );
 
+  // Banner أقوى: حتى بعد المرور بالفلترة، النتيجة قبل الماب للعرض
+  const debugRenderBanner = (
+    <div className="w-full bg-green-100 text-green-900 font-bold text-center py-1 mb-2 mt-2 rounded">
+      👀 سيتم رسم {validProducts.length} كرت منتج في هذا العرض. ViewMode = "{viewMode}"
+    </div>
+  );
+
   if (validProducts.length === 0) {
     return (
       <>
@@ -153,25 +160,34 @@ const ProductList: React.FC<ProductListProps> = ({
   return (
     <div className="w-full h-full overflow-auto">
       {debugBanner}
+      {debugRenderBanner}
       <div className={getOptimizedGridClass}>
-        {validProducts.map((product) =>
-          viewMode === "list" ? (
-            <ProductListItem
-              key={`${product.id}-${refreshKey}`}
-              product={product}
-              onEdit={onEditProduct}
-              onDelete={onDeleteProduct}
-            />
-          ) : (
-            <ProductCard
-              key={`${product.id}-${refreshKey}`}
-              product={product}
-              onEdit={onEditProduct}
-              onDelete={onDeleteProduct}
-              viewMode={viewMode}
-            />
-          )
-        )}
+        {validProducts.map((product, idx) => (
+          <div key={`${product.id}-${refreshKey}`} className="relative">
+            {viewMode === "list" ? (
+              <ProductListItem
+                product={product}
+                onEdit={onEditProduct}
+                onDelete={onDeleteProduct}
+              />
+            ) : (
+              <ProductCard
+                product={product}
+                onEdit={onEditProduct}
+                onDelete={onDeleteProduct}
+                viewMode={viewMode}
+              />
+            )}
+            <div className="absolute bottom-1 left-1 bg-black/80 text-[10px] text-white rounded px-1 z-50">
+              <div>id: {product.id}</div>
+              <div>name: {product.name || "?"}</div>
+              <div>nameAr: {product.nameAr || "?"}</div>
+              <div>type: {product.type || "?"}</div>
+              <div>variants#: {product.variants?.length ?? "(none)"}</div>
+              <div>categoryId: {product.categoryId}</div>
+            </div>
+          </div>
+        ))}
       </div>
       {debugDetails}
     </div>
