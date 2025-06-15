@@ -16,11 +16,11 @@ export const useProductsData = () => {
         productService.getProducts(),
         categoryService.getCategories(),
       ]);
+      console.log("[useProductsData] Fetched products from ProductService:", productsData);
       const activeCategories = categoriesData.filter((cat) => !cat.isDeleted);
       setProducts(productsData);
       setCategories(activeCategories);
     } catch (err) {
-      // يمكن تحسين التعامل مع الأخطاء لاحقًا حسب الحاجة
       setProducts([]);
       setCategories([]);
     }
@@ -30,7 +30,6 @@ export const useProductsData = () => {
   useEffect(() => {
     loadData();
     const updateHandler = () => loadData();
-
     window.addEventListener("product-updated", updateHandler);
     window.addEventListener("category-updated", updateHandler);
     window.addEventListener("data-updated", updateHandler);

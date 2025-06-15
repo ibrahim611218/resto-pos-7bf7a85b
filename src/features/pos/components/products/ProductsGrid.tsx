@@ -37,6 +37,10 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     searchTerm,
   });
 
+  // إضافة طباعة للمنتجات والفلاتر لمزيد من التشخيص
+  console.log("[ProductsGrid] Products from hook:", products);
+  console.log("[ProductsGrid] Filtered products:", filteredProducts);
+
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
