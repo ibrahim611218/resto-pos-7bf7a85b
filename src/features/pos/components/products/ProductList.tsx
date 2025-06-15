@@ -19,6 +19,9 @@ const ProductList: React.FC<ProductListProps> = ({
   onEditProduct,
   onDeleteProduct
 }) => {
+  // 👇 طباعة المنتجات المستلمة من ProductsGrid
+  console.log("[ProductList] تم استلام المنتجات من ProductsGrid:", products);
+
   // لوج قوي على المنتجات التي ستُعرض بعد الفلترة
   const validProducts = useMemo(() => {
     const filtered = products.filter(product => {
@@ -29,7 +32,7 @@ const ProductList: React.FC<ProductListProps> = ({
         return false;
       }
 
-      // المنتجات الفردية مقبولة دائماً إذا كان لها اسم
+      // المنتجات الفردية مقبولة دائماً إذا كان له اسم
       if (product.type === "single") {
         return true;
       }
@@ -105,6 +108,15 @@ const ProductList: React.FC<ProductListProps> = ({
       إجمالي المنتجات التي ستظهر: {validProducts.length}
     </div>
   );
+  
+  // 👇 Banner إضافي أسفل الصفحة بمعلومات عن المنتجات
+  const debugDetails = (
+    <div className="w-full bg-blue-100 text-blue-700 text-xs max-h-32 overflow-auto mt-4 rounded font-mono px-2">
+      products: {JSON.stringify(products, null, 2)}
+      <br />
+      validProducts: {JSON.stringify(validProducts, null, 2)}
+    </div>
+  );
 
   if (validProducts.length === 0) {
     return (
@@ -120,6 +132,7 @@ const ProductList: React.FC<ProductListProps> = ({
             </p>
           </div>
         </div>
+        {debugDetails}
       </>
     );
   }
@@ -147,6 +160,7 @@ const ProductList: React.FC<ProductListProps> = ({
           )
         )}
       </div>
+      {debugDetails}
     </div>
   );
 };

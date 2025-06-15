@@ -16,7 +16,8 @@ export const useProductsData = () => {
         productService.getProducts(),
         categoryService.getCategories(),
       ]);
-      console.log("[useProductsData] Fetched products from ProductService:", productsData);
+      // 👇 إضافة طباعة تفاصيل المنتجات الأصلية
+      console.log("[useProductsData] productsData (from service):", productsData);
       const activeCategories = categoriesData.filter((cat) => !cat.isDeleted);
       setProducts(productsData);
       setCategories(activeCategories);
@@ -40,6 +41,11 @@ export const useProductsData = () => {
       window.removeEventListener("data-updated", updateHandler);
     };
   }, [loadData]);
+
+  // 👇 عداد لإظهار المنتجات المتوفرة (تحت الفنكشن)
+  if (!isLoading) {
+    console.log(`[useProductsData] (debug): يوجد ${products.length} منتج مقروء من الخدمة:`, products.map((p) => ({id: p.id, name: p.name, nameAr: p.nameAr})));
+  }
 
   return { products, categories, isLoading };
 };

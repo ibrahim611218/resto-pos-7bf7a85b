@@ -31,13 +31,16 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // 👇 طباعة القيم المستخدمة للفلترة
+  console.log("[ProductsGrid] selectedCategory:", selectedCategory, "searchTerm:", searchTerm);
+
   const filteredProducts = useFilterProducts({
     products,
     selectedCategory,
     searchTerm,
   });
 
-  // إضافة طباعة للمنتجات والفلاتر لمزيد من التشخيص
+  // 👇 طباعة المنتجات قبل وبعد الفلترة
   console.log("[ProductsGrid] Products from hook:", products);
   console.log("[ProductsGrid] Filtered products:", filteredProducts);
 
@@ -53,6 +56,13 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     );
   }
 
+  // عداد تشخيصي يظهر أعلى الصفحة (كم عدد المنتجات بعد الفلترة)
+  const filterCountBanner = (
+    <div className="w-full bg-yellow-100 text-yellow-700 font-bold text-center py-1 rounded mb-2">
+      المنتجات بعد الفلترة: {filteredProducts.length} من أصل {products.length}
+    </div>
+  );
+
   return (
     <div className="h-full flex flex-col">
       <ProductSearchAndCategories
@@ -65,6 +75,7 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
         isArabic={isArabic}
       />
 
+      {filterCountBanner}
       <div className="flex-1 overflow-hidden">
         <ProductList
           products={filteredProducts}
