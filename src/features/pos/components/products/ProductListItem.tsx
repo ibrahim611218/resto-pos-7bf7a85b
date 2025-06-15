@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,14 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   
   // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
+
+  // *** هام: يُحسب المنتج "غير صالح" إذا:
+  // - ليس له اسم أبداً
+  // - أو إذا كان type = "sized" وليس له variants أو هي فارغة
+  const isInvalid =
+    !product ||
+    (!product.name && !product.nameAr) ||
+    (product.type === "sized" && (!product.variants || product.variants.length === 0));
 
   console.log("[ProductListItem] rendering product:", product);
 
@@ -162,9 +171,17 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   return (
     <>
       <Card 
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
+        className={`overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group ${isInvalid ? "border-2 border-red-600" : ""}`}
         onClick={handleAddToCart}
       >
+        {/* تحذير إذا المنتج فيه مشكلة بيانات */}
+        {isInvalid && (
+          <div className="bg-red-100 text-red-700 text-xs p-2 text-center rounded mb-2">
+            ⚠️ مشكلة في هذا المنتج:
+            {(!product.name && !product.nameAr) && " (لا يوجد اسم)"}
+            {(product.type === "sized" && (!product.variants || product.variants.length === 0)) && " (منتج مقاسات بلا أي variant)"}
+          </div>
+        )}
         <CardContent className="p-2">
           <div className="flex items-center">
             <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
