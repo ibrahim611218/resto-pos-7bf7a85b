@@ -1,4 +1,3 @@
-
 import React, { useMemo } from "react";
 import ProductCard from "./ProductCard";
 import ProductListItem from "./ProductListItem";
@@ -99,23 +98,35 @@ const ProductList: React.FC<ProductListProps> = ({
 
   console.log(`ProductList rendering ${validProducts.length} valid products`);
 
+  // --------- New: رسالة في الأعلى بعدد المنتجات المرشحة للعرض ----------
+  // ستظهر هذه الرسالة دائمًا بشكل واضح أثناء التصحيح (يمكن حذفها لاحقًا)
+  const debugCount = (
+    <div className="w-full bg-red-100 text-red-700 font-bold text-center py-1 rounded mb-2">
+      إجمالي المنتجات التي ستظهر: {validProducts.length}
+    </div>
+  );
+
   if (validProducts.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <p className="text-muted-foreground">لا توجد منتجات للعرض</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            {products.length === 0 
-              ? "لم يتم إضافة أي منتجات بعد" 
-              : "تأكد من فلترة البحث أو التصنيف"}
-          </p>
+      <>
+        {debugCount}
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <p className="text-muted-foreground">لا توجد منتجات للعرض</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              {products.length === 0 
+                ? "لم يتم إضافة أي منتجات بعد" 
+                : "تأكد من فلترة البحث أو التصنيف"}
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
     <div className="w-full h-full overflow-auto">
+      {debugCount}
       <div className={getOptimizedGridClass}>
         {validProducts.map((product) =>
           viewMode === "list" ? (

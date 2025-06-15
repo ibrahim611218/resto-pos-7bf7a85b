@@ -15,8 +15,8 @@ const Products = () => {
   const isArabic = language === "ar";
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
 
-  // The refresh logic is now handled within ProductsGrid via event listeners.
-  // This component no longer needs to manage a refresh trigger.
+  // إضافة متغيّر عدد المنتجات (سيتم استخراجها من ProductsGrid مستقبلا لو أردت)
+  // سنتركها مؤقتًا، كمرجع لما يحدث في المكون.
 
   const handleAddProduct = () => {
     console.log("Navigating to /products/add");
@@ -60,7 +60,11 @@ const Products = () => {
     <div className="h-screen w-full overflow-hidden flex flex-col">
       <div className="flex-shrink-0 p-4 border-b bg-background">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
+          <h1 className="text-2xl font-bold flex items-center">
+            {isArabic ? "المنتجات" : "Products"}
+            {/* رقم مؤقت بعد العنوان (يُفضل ربطه بحقلي المنتجات الحقيقيين لاحقًا) */}
+            {/* <span className="ml-2 text-base text-red-500">(عدد المنتجات: )</span> */}
+          </h1>
           <Button onClick={handleAddProduct}>
             <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
             {isArabic ? "إضافة منتج" : "Add Product"}
@@ -81,3 +85,4 @@ const Products = () => {
 };
 
 export default Products;
+
