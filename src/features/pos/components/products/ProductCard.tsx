@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,11 +65,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   // Log debug to console always
   console.log("[ProductCard] rendering product:", product);
 
-  // بدلاً من منع عرض الكرت (return)، سنعرض دوماً كرت بنطاق أحمر إذا المنتج فيه مشكلة
-  const isInvalid =
-    !product ||
-    !product.name && !product.nameAr ||
-    (product.type === "sized" && (!product.variants || product.variants.length === 0));
+  // *** نلغي أي شرط يمنع رسم الكارت ***
+  // بدلاً من منع عرض الكرت (return)، نعرض دوماً كرت مع ملاحظة حمراء إذا المنتج فيه مشكلة.
+  const missingName = !product.name && !product.nameAr;
+  const missingVariants = product.type === "sized" && (!product.variants || product.variants.length === 0);
+
+  const isInvalid = missingName || missingVariants;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
@@ -76,7 +78,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
       return;
     }
 
+    // التعامل مع المنتجات الفردية
+    if (product.type === "single") {
+      addToCart({
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        nameAr: product.nameAr,
+        price: product.price || 0,
+        quantity: 1,
+        image: product.image,
+        size: "regular" as Size,
+        categoryId: product.categoryId,
+        variantId: `var-${product.id}`,
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
+      });
+      return;
+    }
+
     if (!product.variants || product.variants.length === 0) {
+      // فقط تسجيل الخطأ وعدم منع رسم الكرت.
       console.error("Product has no variants:", product);
       return;
     }
@@ -97,7 +119,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         size: variant.size as Size | "regular",
         variantId: variant.id,
         categoryId: product.categoryId,
-        taxable: product.taxable !== undefined ? product.taxable : true
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
       });
     }
   };
@@ -116,12 +139,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         quantity: 1,
         image: product.image,
         size: variant.size as Size | "regular",
-        categoryId: product.categoryId,
         variantId: variant.id,
-        taxable: product.taxable !== undefined ? product.taxable : true
+        categoryId: product.categoryId,
+        taxable: product.taxable !== undefined ? product.taxable : true,
+        type: product.type
       });
     }
-    
     setShowSizeDialog(false);
   };
 
@@ -145,12 +168,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         className={`overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group ${isInvalid ? "border-2 border-red-600" : ""}`}
         onClick={handleAddToCart}
       >
-        {/* إذا المنتج فيه مشكلة، اظهر ملاحظة حمراء أعلاه */}
+        {/* تحذير إذا المنتج فيه مشكلة بيانات */}
         {isInvalid && (
           <div className="bg-red-100 text-red-700 text-xs p-2 text-center rounded mb-2">
-            ⚠️ مشكلة في هذا المنتج: 
-            {(!product.name && !product.nameAr) && " (لا يوجد اسم)"}
-            {(product.type === "sized" && (!product.variants || product.variants.length === 0)) && " (منتج مقاسات بلا أي variant)"}
+            ⚠️ مشكلة في هذا المنتج:
+            {missingName && " (لا يوجد اسم)"}
+            {missingVariants && " (منتج مقاسات بلا أي variant)"}
           </div>
         )}
 
@@ -196,26 +219,39 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <div className={`${sizes.padding} text-right`}>
             <h3 className={sizes.titleSize}>
-              {isArabic ? product.nameAr || product.name : product.name}
+              {isArabic ? product.nameAr || product.name : product.name || <span className="text-red-500">بدون اسم</span>}
             </h3>
             {/* show prices or warning */}
-            {product.variants && product.variants.length > 0 ? (
-              product.variants.length > 1 ? (
-                <p className={`${sizes.priceSize} text-muted-foreground`}>
-                  {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)}
-                  {" - "}
-                  {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-                </p>
-              ) : (
-                <p className={`${sizes.priceSize} text-muted-foreground`}>
-                  {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-                </p>
-              )
+            {product.type === "single" ? (
+              <p className={`${sizes.priceSize} text-muted-foreground`}>
+                {getSizeLabel("regular", isArabic)}: {(product.price ?? 0).toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+              </p>
+            ) : product.variants && product.variants.length > 0 ? (
+                product.variants.length > 1 ? (
+                  <p className={`${sizes.priceSize} text-muted-foreground`}>
+                    {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)}
+                    {" - "}
+                    {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                ) : (
+                  <p className={`${sizes.priceSize} text-muted-foreground`}>
+                    {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                )
             ) : (
               <span className="text-xs text-red-500">{isArabic ? "لم يتم تحديد سعر أو مقاس لهذا المنتج" : "No size/price set"}</span>
             )}
           </div>
         </CardContent>
+        {/* بيانات تشخيصية أسفل كل كرت */}
+        <div className="absolute bottom-1 left-1 bg-black/80 text-[10px] text-white rounded px-1 z-50">
+          <div>id: {product.id}</div>
+          <div>name: {product.name || "?"}</div>
+          <div>nameAr: {product.nameAr || "?"}</div>
+          <div>type: {product.type || "?"}</div>
+          <div>variants#: {product.variants?.length ?? "(none)"}</div>
+          <div>categoryId: {product.categoryId}</div>
+        </div>
       </Card>
       
       {/* مربع حوار الأحجام يبقى كما هو */}
@@ -230,7 +266,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             onValueChange={setSelectedSize}
             className="grid gap-3 pt-3"
           >
-            {product.variants.map((variant) => (
+            {product.variants && product.variants.map((variant) => (
               <div 
                 key={variant.id} 
                 className="flex items-center justify-between border rounded-md p-3 cursor-pointer"
@@ -264,3 +300,4 @@ const ProductCard: React.FC<ProductCardProps> = ({
 };
 
 export default ProductCard;
+
