@@ -45,11 +45,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
   };
 
+  const finalClassName = className || "h-48";
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${finalClassName}`}>
       <div 
-        className="border-2 border-dashed rounded-lg flex flex-col items-center justify-center overflow-hidden"
-        style={{ height: className ? 'auto' : '200px' }}
+        className="border-2 border-dashed rounded-lg flex flex-col items-center justify-center overflow-hidden h-full w-full"
       >
         {imagePreview !== "/placeholder.svg" ? (
           <div className="relative h-full w-full">

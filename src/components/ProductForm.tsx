@@ -28,6 +28,7 @@ const ProductForm = () => {
     addVariant,
     updateVariant,
     removeVariant,
+    reorderVariant,
     handleSubmit,
     navigate
   } = useProductForm();
@@ -72,6 +73,7 @@ const ProductForm = () => {
                       addVariant={addVariant}
                       updateVariant={updateVariant}
                       removeVariant={removeVariant}
+                      reorderVariant={reorderVariant}
                       isArabic={isArabic}
                     />
                   </CardContent>

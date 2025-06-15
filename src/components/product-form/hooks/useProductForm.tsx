@@ -47,7 +47,8 @@ export const useProductForm = () => {
     setVariants,
     addVariant,
     updateVariant,
-    removeVariant
+    removeVariant,
+    reorderVariant
   } = useProductVariants();
 
   useEffect(() => {
@@ -171,6 +172,7 @@ export const useProductForm = () => {
     addVariant,
     updateVariant,
     removeVariant,
+    reorderVariant,
     handleSubmit,
     navigate
   };

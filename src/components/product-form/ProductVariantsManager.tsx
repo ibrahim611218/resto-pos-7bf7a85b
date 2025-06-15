@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProductVariant } from "@/types";
-import { Plus, X } from "lucide-react";
+import { Plus, X, ArrowUp, ArrowDown } from "lucide-react";
 
 interface ProductVariantsManagerProps {
   variants: ProductVariant[];
   addVariant: () => void;
   updateVariant: (id: string, field: keyof ProductVariant, value: any) => void;
   removeVariant: (id: string) => void;
+  reorderVariant: (index: number, direction: 'up' | 'down') => void;
   isArabic: boolean;
 }
 
@@ -20,6 +21,7 @@ const ProductVariantsManager: React.FC<ProductVariantsManagerProps> = ({
   addVariant,
   updateVariant,
   removeVariant,
+  reorderVariant,
   isArabic,
 }) => {
   return (
@@ -42,8 +44,30 @@ const ProductVariantsManager: React.FC<ProductVariantsManagerProps> = ({
         </div>
       ) : (
         <div className="space-y-2">
-          {variants.map(variant => (
+          {variants.map((variant, index) => (
             <div key={variant.id} className="flex items-center space-x-2 space-x-reverse border p-2 rounded-md">
+              <div className="flex flex-col gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5"
+                  onClick={() => reorderVariant(index, 'up')}
+                  disabled={index === 0}
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5"
+                  onClick={() => reorderVariant(index, 'down')}
+                  disabled={index === variants.length - 1}
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </Button>
+              </div>
               <Select 
                 value={variant.size} 
                 onValueChange={(value) => updateVariant(variant.id, 'size', value)}

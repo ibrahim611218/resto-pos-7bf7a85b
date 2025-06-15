@@ -45,11 +45,28 @@ export const useProductVariants = (initialVariants: ProductVariant[] = []) => {
     setVariants(prev => prev.filter(variant => variant.id !== id));
   };
 
+  const reorderVariant = (index: number, direction: 'up' | 'down') => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+      if (targetIndex < 0 || targetIndex >= newVariants.length) {
+        return newVariants;
+      }
+
+      const [movedItem] = newVariants.splice(index, 1);
+      newVariants.splice(targetIndex, 0, movedItem);
+      
+      return newVariants;
+    });
+  };
+
   return {
     variants,
     setVariants,
     addVariant,
     updateVariant,
-    removeVariant
+    removeVariant,
+    reorderVariant
   };
 };
