@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,6 +60,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const sizes = getCardSizes();
+
+  // Log هنا لمعرفة هل الكرت سيظهر أم لا
+  console.log("[ProductCard] rendering product:", product);
+
+  // بدلاً من إعادة null إذا لم يوجد variants، سنعرض رسالة واضحة لمطوري النظام:
+  if (!product.variants || product.variants.length === 0) {
+    return (
+      <div className="text-red-500 text-center p-2 bg-red-100 rounded m-2">
+        [ProductCard] {product.nameAr || product.name || "No Name"} - لا يوجد مقاسات لهذا المنتج (variants).
+      </div>
+    );
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
@@ -130,10 +141,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onDelete(product.id);
     }
   };
-
-  if (!product.variants || product.variants.length === 0) {
-    return null;
-  }
 
   return (
     <>

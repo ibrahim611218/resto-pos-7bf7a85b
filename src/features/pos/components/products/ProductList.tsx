@@ -20,44 +20,45 @@ const ProductList: React.FC<ProductListProps> = ({
   onEditProduct,
   onDeleteProduct
 }) => {
-  
-  // تصفية المنتجات للتأكد من وجود بيانات صالحة
+  // لوج قوي على المنتجات التي ستُعرض بعد الفلترة
   const validProducts = useMemo(() => {
     const filtered = products.filter(product => {
-      // يجب أن يكون للمنتج اسم في أي من اللغتين على الأقل
+      // سنعرض المنتج دائماً إذا له أي اسم بالعربي أو الإنجليزي
       const hasValidName = product.name || product.nameAr;
       if (!hasValidName) {
-        console.warn(`Product ${product.id} has no name in any language, skipping display`);
+        console.warn(`[ProductList] Product ${product.id} has no name in any language, skipping display`);
         return false;
       }
-      
+
       // المنتجات الفردية مقبولة دائماً إذا كان لها اسم
       if (product.type === "single") {
         return true;
       }
-      
+
       // المنتجات ذات المقاسات يجب أن تحتوي على variants
       if (product.type === "sized") {
         if (!product.variants || product.variants.length === 0) {
-          console.warn(`Sized product ${product.nameAr || product.name} has no variants, skipping display`);
+          console.warn(`[ProductList] Sized product ${product.nameAr || product.name} has no variants, skipping display`);
           return false;
         }
         return true;
       }
-      
+
       // المنتجات الافتراضية (بدون type محدد) نتعامل معها كمنتجات ذات مقاسات
       if (!product.type) {
         if (!product.variants || product.variants.length === 0) {
-          console.warn(`Product ${product.nameAr || product.name} has no type and no variants, skipping display`);
+          console.warn(`[ProductList] Product ${product.nameAr || product.name} has no type and no variants, skipping display`);
           return false;
         }
         return true;
       }
-      
+
       return true;
     });
     
-    console.log(`ProductList: Filtered ${filtered.length} valid products from ${products.length} total`);
+    // طباعة كل المنتجات
+    console.log("[ProductList] validProducts after filtering:", filtered);
+
     return filtered;
   }, [products]);
 

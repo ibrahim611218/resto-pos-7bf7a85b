@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +32,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   
   // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
+
+  console.log("[ProductListItem] rendering product:", product);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
@@ -170,7 +171,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
               {product.image ? (
                 <img 
                   src={product.image} 
-                  alt={isArabic ? product.nameAr || product.name : product.name}
+                  alt={product.nameAr || product.name || "No name"}
                   className="w-full h-full object-cover rounded-md" 
                 />
               ) : (
@@ -181,7 +182,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
             </div>
             <div className="flex-1 text-right">
               <h3 className="font-medium">
-                {isArabic ? product.nameAr || product.name : product.name}
+                {product.nameAr || product.name || "No name"}
               </h3>
               {renderPrice()}
             </div>
