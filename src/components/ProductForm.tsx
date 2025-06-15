@@ -65,7 +65,7 @@ const ProductForm = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle>{isArabic ? "المقاسات والأسعار" : "Sizes & Prices"}</CardTitle>
-                  </Header>
+                  </CardHeader>
                   <CardContent>
                     <ProductVariantsManager 
                       variants={variants}
