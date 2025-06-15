@@ -61,17 +61,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const sizes = getCardSizes();
 
-  // Log هنا لمعرفة هل الكرت سيظهر أم لا
+  // Log debug to console always
   console.log("[ProductCard] rendering product:", product);
 
-  // بدلاً من إعادة null إذا لم يوجد variants، سنعرض رسالة واضحة لمطوري النظام:
-  if (!product.variants || product.variants.length === 0) {
-    return (
-      <div className="text-red-500 text-center p-2 bg-red-100 rounded m-2">
-        [ProductCard] {product.nameAr || product.name || "No Name"} - لا يوجد مقاسات لهذا المنتج (variants).
-      </div>
-    );
-  }
+  // بدلاً من منع عرض الكرت (return)، سنعرض دوماً كرت بنطاق أحمر إذا المنتج فيه مشكلة
+  const isInvalid =
+    !product ||
+    !product.name && !product.nameAr ||
+    (product.type === "sized" && (!product.variants || product.variants.length === 0));
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
@@ -145,9 +142,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Card 
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
+        className={`overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group ${isInvalid ? "border-2 border-red-600" : ""}`}
         onClick={handleAddToCart}
       >
+        {/* إذا المنتج فيه مشكلة، اظهر ملاحظة حمراء أعلاه */}
+        {isInvalid && (
+          <div className="bg-red-100 text-red-700 text-xs p-2 text-center rounded mb-2">
+            ⚠️ مشكلة في هذا المنتج: 
+            {(!product.name && !product.nameAr) && " (لا يوجد اسم)"}
+            {(product.type === "sized" && (!product.variants || product.variants.length === 0)) && " (منتج مقاسات بلا أي variant)"}
+          </div>
+        )}
+
         {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
         {isProductsPage && (onEdit || onDelete) && (
           <div className="action-buttons absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1 z-10">
@@ -192,21 +198,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <h3 className={sizes.titleSize}>
               {isArabic ? product.nameAr || product.name : product.name}
             </h3>
-            {product.variants.length > 1 ? (
-              <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)}
-                {" - "}
-                {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-              </p>
+            {/* show prices or warning */}
+            {product.variants && product.variants.length > 0 ? (
+              product.variants.length > 1 ? (
+                <p className={`${sizes.priceSize} text-muted-foreground`}>
+                  {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)}
+                  {" - "}
+                  {getSizeLabel(product.variants[product.variants.length - 1]?.size, isArabic)}: {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                </p>
+              ) : (
+                <p className={`${sizes.priceSize} text-muted-foreground`}>
+                  {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                </p>
+              )
             ) : (
-              <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {getSizeLabel(product.variants[0]?.size, isArabic)}: {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-              </p>
+              <span className="text-xs text-red-500">{isArabic ? "لم يتم تحديد سعر أو مقاس لهذا المنتج" : "No size/price set"}</span>
             )}
           </div>
         </CardContent>
       </Card>
       
+      {/* مربع حوار الأحجام يبقى كما هو */}
       <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
         <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
           <DialogTitle className="text-center">
