@@ -3,11 +3,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product, Category } from "@/types";
 import { toast } from "sonner";
-import { mockProducts, mockCategories } from "../../data/mockData";
 import ViewToggle, { ViewMode } from "@/components/ui-custom/ViewToggle";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import productService from "@/services/products/ProductService";
+import categoryService from "@/services/categories/CategoryService";
 
 interface ProductsGridProps {
   viewMode?: ViewMode;
@@ -38,14 +39,21 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('Loading mock products and categories data');
+      console.log('Loading products and categories from services...');
       
-      // استخدام البيانات المحدثة من ملف mockData
-      setCategories(mockCategories);
-      setProducts(mockProducts);
+      const [loadedProducts, allCategories] = await Promise.all([
+        productService.getProducts(),
+        categoryService.getCategories(),
+      ]);
       
-      console.log(`Loaded ${mockCategories.length} categories`);
-      console.log(`Loaded ${mockProducts.length} products`);
+      const activeCategories = allCategories.filter(cat => !cat.isDeleted);
+      
+      setProducts(loadedProducts);
+      setCategories(activeCategories);
+
+      console.log(`Loaded ${loadedProducts.length} products.`);
+      console.log(`Loaded ${activeCategories.length} active categories.`);
+
     } catch (error) {
       console.error('Error loading data:', error);
       toast.error(isArabic ? "حدث خطأ أثناء تحميل البيانات" : "Error loading data");

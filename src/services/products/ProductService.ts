@@ -16,7 +16,15 @@ class ProductService extends BaseService {
       
       if (storedProducts) {
         products = JSON.parse(storedProducts);
-        console.log(`Retrieved ${products.length} products from localStorage`);
+        
+        // If we have a company ID, filter products by company
+        if (currentCompanyId) {
+          products = products.filter(product => 
+            !product.companyId || product.companyId === currentCompanyId
+          );
+        }
+        
+        console.log(`ProductService: Retrieved ${products.length} products for the current company.`);
       }
       
       return products;
