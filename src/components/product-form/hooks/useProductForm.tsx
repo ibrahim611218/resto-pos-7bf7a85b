@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, Size } from "@/types";
@@ -112,7 +113,7 @@ export const useProductForm = () => {
         ? variants 
         : [{
             id: `var-${uuidv4()}`,
-            size: "medium" as Size,
+            size: "regular" as Size, // Changed from "medium" to "regular"
             price: product.price || 0
           }];
 
