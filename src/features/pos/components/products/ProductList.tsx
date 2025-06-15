@@ -21,26 +21,28 @@ const ProductList: React.FC<ProductListProps> = ({
   onEditProduct,
   onDeleteProduct
 }) => {
-  console.log("[ProductList] Rendering with products:", products?.length || 0);
-  
-  // إذا لم توجد منتجات
-  if (!products || products.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center text-lg text-muted-foreground">
-          لا توجد منتجات
-        </div>
-      </div>
-    );
-  }
+  console.log("🔥 [ProductList] DIAGNOSTIC:");
+  console.log("🔥 [ProductList] Products received:", products);
+  console.log("🔥 [ProductList] Products count:", products?.length || 0);
+  console.log("🔥 [ProductList] ViewMode:", viewMode);
+  console.log("🔥 [ProductList] RefreshKey:", refreshKey);
 
-  // استخدام الجدول البسيط دائماً لضمان ظهور المنتجات
+  // FORCE RENDER ProductTable ALWAYS - Remove all blocking conditions
+  console.log("🔥 [ProductList] FORCING ProductTable render...");
+  
   return (
-    <ProductTable
-      products={products}
-      onEditProduct={onEditProduct}
-      onDeleteProduct={onDeleteProduct}
-    />
+    <div className="w-full h-full">
+      {/* DIAGNOSTIC BANNER */}
+      <div className="bg-yellow-100 border-2 border-yellow-500 p-2 mb-4 text-yellow-800 font-bold text-center">
+        🔥 ProductList: Passing {products?.length || 0} products to ProductTable
+      </div>
+      
+      <ProductTable
+        products={products || []}
+        onEditProduct={onEditProduct}
+        onDeleteProduct={onDeleteProduct}
+      />
+    </div>
   );
 };
 

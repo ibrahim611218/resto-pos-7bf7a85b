@@ -10,27 +10,42 @@ export const useProductsData = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const loadData = useCallback(async () => {
+    console.log("🔥 [useProductsData] loadData() called");
     setIsLoading(true);
     try {
       const [productsData, categoriesData] = await Promise.all([
         productService.getProducts(),
         categoryService.getCategories(),
       ]);
-      // 👇 إضافة طباعة تفاصيل المنتجات الأصلية
-      console.log("[useProductsData] productsData (from service):", productsData);
+      
+      console.log("🔥 [useProductsData] RAW productsData from service:", productsData);
+      console.log("🔥 [useProductsData] productsData type:", typeof productsData);
+      console.log("🔥 [useProductsData] productsData length:", productsData?.length);
+      console.log("🔥 [useProductsData] productsData is array:", Array.isArray(productsData));
+      
       const activeCategories = categoriesData.filter((cat) => !cat.isDeleted);
-      setProducts(productsData);
+      
+      console.log("🔥 [useProductsData] Setting products to:", productsData);
+      setProducts(productsData || []);
       setCategories(activeCategories);
+      
+      console.log("🔥 [useProductsData] Products state after setting:", productsData);
     } catch (err) {
+      console.error("🔥 [useProductsData] Error loading data:", err);
       setProducts([]);
       setCategories([]);
     }
     setIsLoading(false);
+    console.log("🔥 [useProductsData] loadData() completed");
   }, []);
 
   useEffect(() => {
+    console.log("🔥 [useProductsData] useEffect triggered");
     loadData();
-    const updateHandler = () => loadData();
+    const updateHandler = () => {
+      console.log("🔥 [useProductsData] Event listener triggered, reloading data");
+      loadData();
+    };
     window.addEventListener("product-updated", updateHandler);
     window.addEventListener("category-updated", updateHandler);
     window.addEventListener("data-updated", updateHandler);
@@ -42,10 +57,7 @@ export const useProductsData = () => {
     };
   }, [loadData]);
 
-  // 👇 عداد لإظهار المنتجات المتوفرة (تحت الفنكشن)
-  if (!isLoading) {
-    console.log(`[useProductsData] (debug): يوجد ${products.length} منتج مقروء من الخدمة:`, products.map((p) => ({id: p.id, name: p.name, nameAr: p.nameAr})));
-  }
+  console.log("🔥 [useProductsData] Current state - products:", products, "loading:", isLoading);
 
   return { products, categories, isLoading };
 };
