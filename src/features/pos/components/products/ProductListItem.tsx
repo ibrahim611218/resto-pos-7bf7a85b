@@ -31,26 +31,13 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const location = useLocation();
   
-  // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
 
-  // *** هام: يُحسب المنتج "غير صالح" إذا:
-  // - ليس له اسم أبداً
-  // - أو إذا كان type = "sized" وليس له variants أو هي فارغة
-  const isInvalid =
-    !product ||
-    (!product.name && !product.nameAr) ||
-    (product.type === "sized" && (!product.variants || product.variants.length === 0));
-
-  console.log("[ProductListItem] rendering product:", product);
-
   const handleAddToCart = (e: React.MouseEvent) => {
-    // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
     if ((e.target as HTMLElement).closest('.action-buttons')) {
       return;
     }
 
-    // التعامل مع المنتجات الفردية
     if (product.type === "single") {
       addToCart({
         id: product.id,
@@ -69,7 +56,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
       return;
     }
 
-    // التعامل مع المنتجات ذات المقاسات
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
       return;
@@ -135,7 +121,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
     }
   };
 
-  // عرض السعر حسب نوع المنتج
+  const displayName = product.nameAr || product.name || "منتج بدون اسم";
+
   const renderPrice = () => {
     if (product.type === "single") {
       return (
@@ -171,24 +158,16 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   return (
     <>
       <Card 
-        className={`overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group ${isInvalid ? "border-2 border-red-600" : ""}`}
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
         onClick={handleAddToCart}
       >
-        {/* تحذير إذا المنتج فيه مشكلة بيانات */}
-        {isInvalid && (
-          <div className="bg-red-100 text-red-700 text-xs p-2 text-center rounded mb-2">
-            ⚠️ مشكلة في هذا المنتج:
-            {(!product.name && !product.nameAr) && " (لا يوجد اسم)"}
-            {(product.type === "sized" && (!product.variants || product.variants.length === 0)) && " (منتج مقاسات بلا أي variant)"}
-          </div>
-        )}
         <CardContent className="p-2">
           <div className="flex items-center">
             <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
               {product.image ? (
                 <img 
                   src={product.image} 
-                  alt={product.nameAr || product.name || "No name"}
+                  alt={displayName}
                   className="w-full h-full object-cover rounded-md" 
                 />
               ) : (
@@ -199,12 +178,11 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
             </div>
             <div className="flex-1 text-right">
               <h3 className="font-medium">
-                {product.nameAr || product.name || "No name"}
+                {displayName}
               </h3>
               {renderPrice()}
             </div>
             
-            {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
             {isProductsPage && (onEdit || onDelete) && (
               <div className="action-buttons flex gap-1 ml-2">
                 {onEdit && (
@@ -233,7 +211,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
         </CardContent>
       </Card>
       
-      {/* مربع حوار اختيار المقاس للمنتجات ذات المقاسات المتعددة */}
       {product.type === "sized" && product.variants && product.variants.length > 1 && (
         <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
           <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>

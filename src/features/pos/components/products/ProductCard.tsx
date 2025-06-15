@@ -38,10 +38,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const location = useLocation();
   
-  // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
 
-  // تحديد أحجام العناصر بناءً على نوع العرض
   const getCardSizes = () => {
     if (viewMode === "grid-large") {
       return {
@@ -62,23 +60,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const sizes = getCardSizes();
 
-  // Log debug to console always
-  console.log("[ProductCard] rendering product:", product);
-
-  // *** نلغي أي شرط يمنع رسم الكارت ***
-  // بدلاً من منع عرض الكرت (return)، نعرض دوماً كرت مع ملاحظة حمراء إذا المنتج فيه مشكلة.
-  const missingName = !product.name && !product.nameAr;
-  const missingVariants = product.type === "sized" && (!product.variants || product.variants.length === 0);
-
-  const isInvalid = missingName || missingVariants;
-
   const handleAddToCart = (e: React.MouseEvent) => {
-    // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
     if ((e.target as HTMLElement).closest('.action-buttons')) {
       return;
     }
 
-    // التعامل مع المنتجات الفردية
     if (product.type === "single") {
       addToCart({
         id: product.id,
@@ -98,7 +84,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
 
     if (!product.variants || product.variants.length === 0) {
-      // فقط تسجيل الخطأ وعدم منع رسم الكرت.
       console.error("Product has no variants:", product);
       return;
     }
@@ -162,22 +147,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
+  // اسم المنتج - استخدم العربي أولاً أو الإنجليزي كبديل
+  const displayName = product.nameAr || product.name || "منتج بدون اسم";
+
   return (
     <>
       <Card 
-        className={`overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group ${isInvalid ? "border-2 border-red-600" : ""}`}
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
         onClick={handleAddToCart}
       >
-        {/* تحذير إذا المنتج فيه مشكلة بيانات */}
-        {isInvalid && (
-          <div className="bg-red-100 text-red-700 text-xs p-2 text-center rounded mb-2">
-            ⚠️ مشكلة في هذا المنتج:
-            {missingName && " (لا يوجد اسم)"}
-            {missingVariants && " (منتج مقاسات بلا أي variant)"}
-          </div>
-        )}
-
-        {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
         {isProductsPage && (onEdit || onDelete) && (
           <div className="action-buttons absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1 z-10">
             {onEdit && (
@@ -208,7 +186,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {product.image ? (
               <img 
                 src={product.image} 
-                alt={isArabic ? product.nameAr || product.name : product.name}
+                alt={displayName}
                 className="w-full h-full object-cover" 
               />
             ) : (
@@ -219,9 +197,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <div className={`${sizes.padding} text-right`}>
             <h3 className={sizes.titleSize}>
-              {isArabic ? product.nameAr || product.name : product.name || <span className="text-red-500">بدون اسم</span>}
+              {displayName}
             </h3>
-            {/* show prices or warning */}
             {product.type === "single" ? (
               <p className={`${sizes.priceSize} text-muted-foreground`}>
                 {getSizeLabel("regular", isArabic)}: {(product.price ?? 0).toFixed(2)} {isArabic ? "ر.س" : "SAR"}
@@ -243,18 +220,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </CardContent>
-        {/* بيانات تشخيصية أسفل كل كرت */}
-        <div className="absolute bottom-1 left-1 bg-black/80 text-[10px] text-white rounded px-1 z-50">
-          <div>id: {product.id}</div>
-          <div>name: {product.name || "?"}</div>
-          <div>nameAr: {product.nameAr || "?"}</div>
-          <div>type: {product.type || "?"}</div>
-          <div>variants#: {product.variants?.length ?? "(none)"}</div>
-          <div>categoryId: {product.categoryId}</div>
-        </div>
       </Card>
       
-      {/* مربع حوار الأحجام يبقى كما هو */}
       <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
         <DialogContent className="sm:max-w-[425px]" dir={isArabic ? "rtl" : "ltr"}>
           <DialogTitle className="text-center">
@@ -300,4 +267,3 @@ const ProductCard: React.FC<ProductCardProps> = ({
 };
 
 export default ProductCard;
-
