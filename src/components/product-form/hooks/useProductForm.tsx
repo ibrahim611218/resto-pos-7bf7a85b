@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, Size } from "@/types";
@@ -19,7 +18,7 @@ const emptyProduct: Product = {
   image: "/placeholder.svg",
   categoryId: "",
   taxable: true,
-  type: "sized",
+  type: "single",
   variants: [],
 };
 
