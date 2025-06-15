@@ -1,3 +1,4 @@
+
 import { v4 as uuidv4 } from 'uuid';
 import { Product } from '@/types';
 import { BaseService } from '../base/BaseService';
@@ -25,20 +26,23 @@ class ProductService extends BaseService {
   async getProducts(): Promise<Product[]> {
     try {
       const allProducts = await this.getAllProducts();
+      console.log(`ProductService.getProducts: Retrieved ${allProducts.length} total products from storage.`);
+      
       const currentCompanyId = localStorage.getItem('currentCompanyId');
+      console.log(`ProductService.getProducts: Current companyId from localStorage is '${currentCompanyId}'.`);
       
       if (currentCompanyId) {
         const companyProducts = allProducts.filter(p => p.companyId === currentCompanyId);
-        console.log(`Retrieved ${companyProducts.length} products for company ${currentCompanyId} from a total of ${allProducts.length}`);
+        console.log(`ProductService.getProducts: Filtering for companyId '${currentCompanyId}'. Found ${companyProducts.length} products.`);
         return companyProducts;
       }
       
       const nonCompanyProducts = allProducts.filter(p => !p.companyId);
-      console.log(`No company selected. Retrieved ${nonCompanyProducts.length} products without a companyId.`);
+      console.log(`ProductService.getProducts: No companyId. Filtering for products without a companyId. Found ${nonCompanyProducts.length} products.`);
       return nonCompanyProducts;
       
     } catch (error) {
-      console.error("Error getting products:", error);
+      console.error("ProductService.getProducts: Error getting products:", error);
       return [];
     }
   }
@@ -55,6 +59,7 @@ class ProductService extends BaseService {
   
   async saveProduct(product: Product): Promise<{success: boolean, id?: string, error?: string}> {
     try {
+      console.log("ProductService: Attempting to save product:", JSON.parse(JSON.stringify(product)));
       if (!product.id) {
         product.id = uuidv4();
       }
@@ -62,25 +67,31 @@ class ProductService extends BaseService {
       const currentCompanyId = localStorage.getItem('currentCompanyId');
       if (currentCompanyId && !product.companyId) {
         product.companyId = currentCompanyId;
+        console.log(`ProductService: Assigned companyId ${currentCompanyId} to product.`);
       }
       
       const allProducts = await this.getAllProducts();
+      console.log(`ProductService: Found ${allProducts.length} existing products in total.`);
       
       const index = allProducts.findIndex(p => p.id === product.id);
       
       if (index !== -1) {
+        console.log(`ProductService: Updating existing product at index ${index}.`);
         allProducts[index] = product;
       } else {
+        console.log("ProductService: Adding new product.");
         allProducts.push(product);
       }
       
+      console.log(`ProductService: Total products now: ${allProducts.length}. Saving all products.`);
       await this.saveAllProducts(allProducts);
+      console.log("ProductService: All products saved successfully. Dispatching 'product-updated' event.");
       
       window.dispatchEvent(new CustomEvent('product-updated'));
       
       return { success: true, id: product.id };
     } catch (error) {
-      console.error("Error saving product:", error);
+      console.error("ProductService: Error saving product:", error);
       return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   }

@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ProductSearchAndCategories from "./ProductSearchAndCategories";
 import ProductList from "./ProductList";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
@@ -34,9 +33,9 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   const [refreshKey, setRefreshKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
-      console.log("Loading products and categories data...");
+      console.log("ProductsGrid: Loading products and categories data...");
       setIsLoading(true);
       
       const [productsData, categoriesData] = await Promise.all([
@@ -44,33 +43,25 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
         categoryService.getCategories()
       ]);
       
-      console.log(`Loaded ${categoriesData.length} categories:`, categoriesData);
-      console.log(`Loaded ${productsData.length} products:`, productsData);
+      console.log(`ProductsGrid: Loaded ${categoriesData.length} categories.`);
+      console.log(`ProductsGrid: Loaded ${productsData.length} products.`);
       
-      // تصفية التصنيفات المحذوفة
       const activeCategories = categoriesData.filter(cat => !cat.isDeleted);
-      console.log(`Active categories: ${activeCategories.length}`);
       
-      // تحديث البيانات فوراً
       setCategories(activeCategories);
       setProducts(productsData);
-      setFilteredProducts(productsData); // تعيين المنتجات المفلترة مباشرة
       
       setRefreshKey(prev => prev + 1);
     } catch (error) {
-      console.error("Error loading data:", error);
+      console.error("ProductsGrid: Error loading data:", error);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // تحميل البيانات عند تحميل المكون لأول مرة
-  useEffect(() => {
-    loadData();
   }, []);
 
-  // الاستماع لتحديثات البيانات
   useEffect(() => {
+    loadData();
+
     const handleUpdate = () => {
       console.log("ProductsGrid detected update, refreshing...");
       loadData();
@@ -85,34 +76,24 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
       window.removeEventListener('category-updated', handleUpdate);
       window.removeEventListener('data-updated', handleUpdate);
     };
-  }, []);
+  }, [loadData]);
 
-  // تطبيق الفلاتر عند تغيير المنتجات أو الفلاتر
   useEffect(() => {
-    if (products.length === 0) {
-      setFilteredProducts([]);
-      return;
-    }
-
     let filtered = [...products];
 
-    // تصفية حسب التصنيف
     if (selectedCategory !== "all") {
       filtered = filtered.filter(product => product.categoryId === selectedCategory);
-      console.log(`Filtered by category ${selectedCategory}: ${filtered.length} products`);
     }
 
-    // تصفية حسب البحث
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(term) ||
         (product.nameAr && product.nameAr.toLowerCase().includes(term))
       );
-      console.log(`Filtered by search "${searchTerm}": ${filtered.length} products`);
     }
 
-    console.log(`Final filtered products: ${filtered.length} from ${products.length} total`);
+    console.log(`ProductsGrid: Filtering complete. Displaying ${filtered.length} of ${products.length} products.`);
     setFilteredProducts(filtered);
   }, [products, selectedCategory, searchTerm]);
 
