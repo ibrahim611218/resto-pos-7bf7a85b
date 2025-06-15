@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProductFormHeader from "./product-form/ProductFormHeader";
 import ProductBasicInfo from "./product-form/ProductBasicInfo";
 import ProductCategorySelect from "./product-form/ProductCategorySelect";
@@ -11,7 +11,6 @@ import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
 import { useProductForm } from "./product-form/hooks/useProductForm";
 import { Toaster } from "@/components/ui/toaster";
-import { Separator } from "@/components/ui/separator";
 
 const ProductForm = () => {
   const {
@@ -42,20 +41,56 @@ const ProductForm = () => {
     <>
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <form onSubmit={onFormSubmit}>
-          <Card>
+          <div className="mb-6">
             <ProductFormHeader isEditing={isEditing} isArabic={isArabic} />
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{isArabic ? "معلومات المنتج" : "Product Information"}</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <ProductBasicInfo 
                     product={product}
                     handleInputChange={handleInputChange}
                     handleImageChange={handleImageChange}
                     isArabic={isArabic}
                   />
-                </div>
-                
-                <div className="lg:col-span-1 space-y-6">
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{product.type === "single" ? (isArabic ? "السعر" : "Price") : (isArabic ? "المقاسات والأسعار" : "Sizes & Prices")}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {product.type === "single" ? (
+                    <ProductPriceInput 
+                      price={product.price}
+                      handlePriceChange={handlePriceChange}
+                      isArabic={isArabic}
+                    />
+                  ) : (
+                    <ProductVariantsManager 
+                      variants={variants}
+                      addVariant={addVariant}
+                      updateVariant={updateVariant}
+                      removeVariant={removeVariant}
+                      isArabic={isArabic}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="lg:col-span-1 space-y-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{isArabic ? "التنظيم" : "Organization"}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
                   <ProductCategorySelect 
                     categoryId={product.categoryId}
                     handleCategoryChange={handleCategoryChange}
@@ -66,42 +101,32 @@ const ProductForm = () => {
                     handleTypeChange={handleTypeChange}
                     isArabic={isArabic}
                   />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>{isArabic ? "الإعدادات" : "Settings"}</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <ProductTaxSwitch 
                     taxable={product.taxable}
                     handleSwitchChange={handleSwitchChange}
                     isArabic={isArabic}
                   />
-                </div>
-              </div>
-              
-              <Separator className="my-8" />
-
-              <div>
-                {product.type === "single" ? (
-                  <ProductPriceInput 
-                    price={product.price}
-                    handlePriceChange={handlePriceChange}
-                    isArabic={isArabic}
-                  />
-                ) : (
-                  <ProductVariantsManager 
-                    variants={variants}
-                    addVariant={addVariant}
-                    updateVariant={updateVariant}
-                    removeVariant={removeVariant}
-                    isArabic={isArabic}
-                  />
-                )}
-              </div>
-            </CardContent>
-            
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+          
+          <div className="mt-8">
             <ProductFormFooter 
               isEditing={isEditing}
               isArabic={isArabic}
               isSubmitting={isSubmitting}
               onCancel={() => navigate("/products")}
             />
-          </Card>
+          </div>
         </form>
       </div>
       <Toaster />

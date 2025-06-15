@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { CardFooter } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 interface ProductFormFooterProps {
@@ -18,7 +17,7 @@ const ProductFormFooter: React.FC<ProductFormFooterProps> = ({
   onCancel,
 }) => {
   return (
-    <CardFooter className="flex justify-between">
+    <div className="flex justify-between border-t pt-6">
       <Button 
         type="button" 
         variant="outline" 
@@ -39,7 +38,7 @@ const ProductFormFooter: React.FC<ProductFormFooterProps> = ({
           isArabic ? "إضافة المنتج" : "Add Product"
         )}
       </Button>
-    </CardFooter>
+    </div>
   );
 };
 
