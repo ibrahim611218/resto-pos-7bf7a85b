@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Product, Size } from "@/types";
@@ -134,8 +135,10 @@ export const useProductForm = () => {
           variant: "default"
         });
         
-        window.dispatchEvent(new CustomEvent('product-updated'));
-        window.dispatchEvent(new CustomEvent('data-updated'));
+        // The 'product-updated' event is dispatched by the service itself after a successful save.
+        // Dispatching it here is redundant. The list will refresh upon navigation and remount.
+        // window.dispatchEvent(new CustomEvent('product-updated'));
+        // window.dispatchEvent(new CustomEvent('data-updated'));
         
         setTimeout(() => {
           navigate("/products");

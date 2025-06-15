@@ -1,4 +1,3 @@
-
 import { v4 as uuidv4 } from 'uuid';
 import { Product } from '@/types';
 import { BaseService } from '../base/BaseService';
@@ -20,11 +19,7 @@ class ProductService extends BaseService {
   }
 
   private async saveAllProducts(products: Product[]): Promise<void> {
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify(products));
-    } catch (error) {
-      console.error("Error saving all products to storage:", error);
-    }
+    localStorage.setItem(this.storageKey, JSON.stringify(products));
   }
 
   async getProducts(): Promise<Product[]> {
