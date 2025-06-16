@@ -46,7 +46,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
         <ImageUploader 
           initialImage={product.image} 
           onImageChange={handleImageChange}
-          className="h-32"
+          className="h-24"
         />
       </div>
 
