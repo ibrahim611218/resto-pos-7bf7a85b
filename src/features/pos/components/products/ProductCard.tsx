@@ -40,6 +40,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   
   // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
+  
+  // تحديد ما إذا كان المنتج يحتوي على صورة
+  const hasImage = product.image && product.image !== "/placeholder.svg";
 
   // تحديد أحجام العناصر بناءً على نوع العرض
   const getCardSizes = () => {
@@ -168,33 +171,48 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         <CardContent className="p-0">
-          <div className={`${sizes.imageHeight} bg-gray-100 relative`}>
-            {product.image ? (
-              <img 
-                src={product.image} 
-                alt={isArabic ? product.nameAr || product.name : product.name}
-                className="w-full h-full object-cover" 
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                No Image
+          {hasImage ? (
+            <>
+              <div className={`${sizes.imageHeight} bg-gray-100 relative`}>
+                <img 
+                  src={product.image} 
+                  alt={isArabic ? product.nameAr || product.name : product.name}
+                  className="w-full h-full object-cover" 
+                />
               </div>
-            )}
-          </div>
-          <div className={`${sizes.padding} text-right`}>
-            <h3 className={sizes.titleSize}>
-              {isArabic ? product.nameAr || product.name : product.name}
-            </h3>
-            {product.variants.length > 1 ? (
-              <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-              </p>
-            ) : (
-              <p className={`${sizes.priceSize} text-muted-foreground`}>
-                {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
-              </p>
-            )}
-          </div>
+              <div className={`${sizes.padding} text-right`}>
+                <h3 className={sizes.titleSize}>
+                  {isArabic ? product.nameAr || product.name : product.name}
+                </h3>
+                {product.variants.length > 1 ? (
+                  <p className={`${sizes.priceSize} text-muted-foreground`}>
+                    {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                ) : (
+                  <p className={`${sizes.priceSize} text-muted-foreground`}>
+                    {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className={`${sizes.imageHeight} bg-gray-100 relative flex flex-col items-center justify-center p-4`}>
+              <div className="text-center">
+                <h3 className={`${viewMode === "grid-large" ? "text-lg" : "text-base"} font-bold mb-2`}>
+                  {isArabic ? product.nameAr || product.name : product.name}
+                </h3>
+                {product.variants.length > 1 ? (
+                  <p className={`${viewMode === "grid-large" ? "text-sm" : "text-xs"} text-muted-foreground`}>
+                    {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                ) : (
+                  <p className={`${viewMode === "grid-large" ? "text-sm" : "text-xs"} text-muted-foreground`}>
+                    {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
       

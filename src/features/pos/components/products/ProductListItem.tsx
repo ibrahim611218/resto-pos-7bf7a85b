@@ -33,6 +33,9 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   
   // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
+  
+  // تحديد ما إذا كان المنتج يحتوي على صورة
+  const hasImage = product.image && product.image !== "/placeholder.svg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
@@ -115,19 +118,21 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
       >
         <CardContent className="p-2">
           <div className="flex items-center">
-            <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
-              {product.image ? (
+            {hasImage ? (
+              <div className="h-12 w-12 bg-gray-100 rounded-md mr-3 flex-shrink-0">
                 <img 
                   src={product.image} 
                   alt={isArabic ? product.nameAr || product.name : product.name}
                   className="w-full h-full object-cover rounded-md" 
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                  No Image
+              </div>
+            ) : (
+              <div className="h-12 w-16 bg-gray-100 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
+                <div className="text-xs font-medium text-center px-1">
+                  {(isArabic ? product.nameAr || product.name : product.name).substring(0, 8)}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             <div className="flex-1 text-right">
               <h3 className="font-medium">
                 {isArabic ? product.nameAr || product.name : product.name}
