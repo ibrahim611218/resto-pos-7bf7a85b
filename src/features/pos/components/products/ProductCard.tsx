@@ -181,7 +181,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 />
               </div>
               <div className={`${sizes.padding} text-right`}>
-                <h3 className={sizes.titleSize}>
+                <h3 className={`${sizes.titleSize} text-foreground`}>
                   {isArabic ? product.nameAr || product.name : product.name}
                 </h3>
                 {product.variants.length > 1 ? (
@@ -196,9 +196,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </div>
             </>
           ) : (
-            <div className={`${sizes.imageHeight} bg-gray-100 relative flex flex-col items-center justify-center p-4`}>
+            <div className={`${sizes.imageHeight} bg-gray-100 dark:bg-gray-800 relative flex flex-col items-center justify-center p-4`}>
               <div className="text-center">
-                <h3 className={`${viewMode === "grid-large" ? "text-lg" : "text-base"} font-bold mb-2`}>
+                <h3 className={`${viewMode === "grid-large" ? "text-lg" : "text-base"} font-bold mb-2 text-foreground`}>
                   {isArabic ? product.nameAr || product.name : product.name}
                 </h3>
                 {product.variants.length > 1 ? (

@@ -127,14 +127,14 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
                 />
               </div>
             ) : (
-              <div className="h-12 w-16 bg-gray-100 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
-                <div className="text-xs font-medium text-center px-1">
+              <div className="h-12 w-16 bg-gray-100 dark:bg-gray-800 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
+                <div className="text-xs font-medium text-center px-1 text-foreground">
                   {(isArabic ? product.nameAr || product.name : product.name).substring(0, 8)}
                 </div>
               </div>
             )}
             <div className="flex-1 text-right">
-              <h3 className="font-medium">
+              <h3 className="font-medium text-foreground">
                 {isArabic ? product.nameAr || product.name : product.name}
               </h3>
               {product.variants.length > 1 ? (
