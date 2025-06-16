@@ -48,37 +48,39 @@ const ProductForm = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{isArabic ? "معلومات المنتج" : "Product Information"}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <ProductBasicInfo 
-                    product={product}
-                    handleInputChange={handleInputChange}
-                    handleImageChange={handleImageChange}
-                    isArabic={isArabic}
-                  />
-                </CardContent>
-              </Card>
-
-              {product.type === "sized" && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>{isArabic ? "المقاسات والأسعار" : "Sizes & Prices"}</CardTitle>
+                    <CardTitle>{isArabic ? "معلومات المنتج" : "Product Information"}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <ProductVariantsManager 
-                      variants={variants}
-                      addVariant={addVariant}
-                      updateVariant={updateVariant}
-                      removeVariant={removeVariant}
-                      reorderVariant={reorderVariant}
+                  <CardContent className="space-y-4">
+                    <ProductBasicInfo 
+                      product={product}
+                      handleInputChange={handleInputChange}
+                      handleImageChange={handleImageChange}
                       isArabic={isArabic}
                     />
                   </CardContent>
                 </Card>
-              )}
+
+                {product.type === "sized" && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{isArabic ? "المقاسات والأسعار" : "Sizes & Prices"}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ProductVariantsManager 
+                        variants={variants}
+                        addVariant={addVariant}
+                        updateVariant={updateVariant}
+                        removeVariant={removeVariant}
+                        reorderVariant={reorderVariant}
+                        isArabic={isArabic}
+                      />
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
             
             <div className="lg:col-span-1 space-y-8">

@@ -31,6 +31,15 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
   return (
     <>
       <div className="space-y-2">
+        <Label>{isArabic ? "صورة المنتج" : "Product Image"}</Label>
+        <ImageUploader 
+          initialImage={product.image} 
+          onImageChange={handleImageChange}
+          className="h-16"
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="name">{isArabic ? "اسم المنتج" : "Product Name"}</Label>
         <Input 
           id="name"
@@ -38,15 +47,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
           value={product.name}
           onChange={handleInputChange}
           placeholder={isArabic ? "أدخل اسم المنتج" : "Enter product name"}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>{isArabic ? "صورة المنتج" : "Product Image"}</Label>
-        <ImageUploader 
-          initialImage={product.image} 
-          onImageChange={handleImageChange}
-          className="h-24"
+          className="text-sm"
         />
       </div>
 
@@ -69,6 +70,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
               onChange={handleInputChange}
               placeholder={isArabic ? "أدخل وصف المنتج" : "Enter product description"}
               rows={3}
+              className="text-sm"
             />
           </div>
         </CollapsibleContent>
