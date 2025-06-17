@@ -77,7 +77,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col border-l bg-card cart-panel rounded-sm overflow-hidden",
+        "h-full flex flex-col border-r bg-card cart-panel rounded-sm overflow-hidden",
         expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
         "max-w-full"

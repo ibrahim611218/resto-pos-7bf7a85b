@@ -2,6 +2,7 @@
 import React from "react";
 import { Product } from "@/types";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
+import { Package } from "lucide-react";
 
 interface ProductImageProps {
   product: Product;
@@ -21,13 +22,15 @@ const ProductImage: React.FC<ProductImageProps> = ({
       return {
         imageHeight: "aspect-square",
         titleSize: "text-lg",
-        priceSize: "text-sm"
+        priceSize: "text-sm",
+        iconSize: "h-12 w-12"
       };
     } else {
       return {
         imageHeight: "aspect-square",
         titleSize: "text-base",
-        priceSize: "text-xs"
+        priceSize: "text-xs",
+        iconSize: "h-8 w-8"
       };
     }
   };
@@ -47,17 +50,18 @@ const ProductImage: React.FC<ProductImageProps> = ({
   }
 
   return (
-    <div className={`${sizes.imageHeight} bg-gray-100 dark:bg-gray-800 relative flex flex-col items-center justify-center p-4`}>
+    <div className={`${sizes.imageHeight} bg-[#004d40] dark:bg-[#00695c] relative flex flex-col items-center justify-center p-4`}>
+      <Package className={`${sizes.iconSize} text-white mb-2`} />
       <div className="text-center">
-        <h3 className={`${sizes.titleSize} font-bold mb-2 text-foreground`}>
+        <h3 className={`${sizes.titleSize} font-bold mb-2 text-white`}>
           {isArabic ? product.nameAr || product.name : product.name}
         </h3>
         {product.variants.length > 1 ? (
-          <p className={`${sizes.priceSize} text-muted-foreground`}>
+          <p className={`${sizes.priceSize} text-white/80`}>
             {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         ) : (
-          <p className={`${sizes.priceSize} text-muted-foreground`}>
+          <p className={`${sizes.priceSize} text-white/80`}>
             {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         )}

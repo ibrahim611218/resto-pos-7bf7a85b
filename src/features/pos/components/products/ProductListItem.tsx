@@ -14,7 +14,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getSizeLabel } from "../../utils/sizeLabels";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Package } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 interface ProductListItemProps {
@@ -127,10 +127,8 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
                 />
               </div>
             ) : (
-              <div className="h-12 w-16 bg-gray-100 dark:bg-gray-800 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
-                <div className="text-xs font-medium text-center px-1 text-foreground">
-                  {(isArabic ? product.nameAr || product.name : product.name).substring(0, 8)}
-                </div>
+              <div className="h-12 w-12 bg-[#004d40] dark:bg-[#00695c] rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
+                <Package className="h-6 w-6 text-white" />
               </div>
             )}
             <div className="flex-1 text-right">
