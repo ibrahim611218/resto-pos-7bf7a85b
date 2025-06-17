@@ -22,15 +22,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
       return {
         imageHeight: "aspect-square",
         titleSize: "text-lg",
-        priceSize: "text-sm",
-        iconSize: "h-12 w-12"
+        priceSize: "text-sm"
       };
     } else {
       return {
         imageHeight: "aspect-square",
         titleSize: "text-base",
-        priceSize: "text-xs",
-        iconSize: "h-8 w-8"
+        priceSize: "text-xs"
       };
     }
   };
@@ -50,18 +48,18 @@ const ProductImage: React.FC<ProductImageProps> = ({
   }
 
   return (
-    <div className={`${sizes.imageHeight} bg-[#004d40] dark:bg-[#00695c] relative flex flex-col items-center justify-center p-4`}>
-      <Package className={`${sizes.iconSize} text-white mb-2`} />
+    <div className={`${sizes.imageHeight} bg-gradient-to-br from-restopos-primary to-restopos-secondary dark:from-orange-600 dark:to-orange-700 relative flex flex-col items-center justify-center p-4 text-white`}>
+      <Package size={viewMode === "grid-large" ? 48 : 32} className="mb-2 text-white/90" />
       <div className="text-center">
         <h3 className={`${sizes.titleSize} font-bold mb-2 text-white`}>
           {isArabic ? product.nameAr || product.name : product.name}
         </h3>
         {product.variants.length > 1 ? (
-          <p className={`${sizes.priceSize} text-white/80`}>
+          <p className={`${sizes.priceSize} text-white/90`}>
             {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         ) : (
-          <p className={`${sizes.priceSize} text-white/80`}>
+          <p className={`${sizes.priceSize} text-white/90`}>
             {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         )}

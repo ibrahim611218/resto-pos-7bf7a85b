@@ -108,9 +108,9 @@ const Pos = () => {
       
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Cart Panel - Fixed to Left */}
+        {/* Cart Panel - Fixed to the left */}
         <div 
-          className="flex-shrink-0"
+          className="flex-shrink-0 order-first"
           style={{ 
             width: cartExpanded ? `${cartWidth}%` : 'auto',
             transition: isDragging ? 'none' : 'width 0.3s ease'
