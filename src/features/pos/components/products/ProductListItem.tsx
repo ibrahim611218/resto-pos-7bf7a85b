@@ -123,7 +123,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
                 />
               </div>
             ) : (
-              <div className="h-12 w-16 bg-gradient-to-br from-restopos-primary to-restopos-secondary dark:from-orange-600 dark:to-orange-700 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
+              <div className="h-12 w-16 bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
                 <Package size={16} className="text-white" />
               </div>
             )}

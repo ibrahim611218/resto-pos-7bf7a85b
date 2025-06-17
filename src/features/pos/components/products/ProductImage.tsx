@@ -22,13 +22,15 @@ const ProductImage: React.FC<ProductImageProps> = ({
       return {
         imageHeight: "aspect-square",
         titleSize: "text-lg",
-        priceSize: "text-sm"
+        priceSize: "text-sm",
+        iconSize: 48
       };
     } else {
       return {
         imageHeight: "aspect-square",
         titleSize: "text-base",
-        priceSize: "text-xs"
+        priceSize: "text-xs",
+        iconSize: 32
       };
     }
   };
@@ -48,18 +50,18 @@ const ProductImage: React.FC<ProductImageProps> = ({
   }
 
   return (
-    <div className={`${sizes.imageHeight} bg-gradient-to-br from-restopos-primary to-restopos-secondary dark:from-orange-600 dark:to-orange-700 relative flex flex-col items-center justify-center p-4 text-white`}>
-      <Package size={viewMode === "grid-large" ? 48 : 32} className="mb-2 text-white/90" />
+    <div className={`${sizes.imageHeight} bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 relative flex flex-col items-center justify-center p-4 text-white overflow-hidden`}>
+      <Package size={sizes.iconSize} className="mb-2 text-white opacity-90" />
       <div className="text-center">
-        <h3 className={`${sizes.titleSize} font-bold mb-2 text-white`}>
+        <h3 className={`${sizes.titleSize} font-bold mb-2 text-white leading-tight`}>
           {isArabic ? product.nameAr || product.name : product.name}
         </h3>
         {product.variants.length > 1 ? (
-          <p className={`${sizes.priceSize} text-white/90`}>
+          <p className={`${sizes.priceSize} text-white opacity-90`}>
             {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         ) : (
-          <p className={`${sizes.priceSize} text-white/90`}>
+          <p className={`${sizes.priceSize} text-white opacity-90`}>
             {product.variants[0]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
           </p>
         )}
