@@ -49,7 +49,7 @@ const Pos = () => {
     
     const windowWidth = window.innerWidth;
     const mouseX = e.clientX;
-    const newWidth = (mouseX / windowWidth) * 100;
+    const newWidth = ((windowWidth - mouseX) / windowWidth) * 100;
     
     // Limit cart width between 15% and 50%
     const clampedWidth = Math.min(Math.max(newWidth, 15), 50);
@@ -108,33 +108,6 @@ const Pos = () => {
       
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Cart Panel - Fixed to Left */}
-        <div 
-          className="flex-shrink-0"
-          style={{ 
-            width: cartExpanded ? `${cartWidth}%` : 'auto',
-            transition: isDragging ? 'none' : 'width 0.3s ease'
-          }}
-        >
-          <CartPanel 
-            expanded={cartExpanded} 
-            onToggleExpand={() => setCartExpanded(prev => !prev)} 
-          />
-        </div>
-        
-        {/* Resize Handle */}
-        {cartExpanded && (
-          <div 
-            className="w-1 bg-border hover:bg-primary/50 cursor-col-resize flex items-center justify-center group transition-colors"
-            onMouseDown={handleMouseDown}
-          >
-            <GripVertical 
-              size={16} 
-              className="text-muted-foreground group-hover:text-primary transition-colors" 
-            />
-          </div>
-        )}
-        
         {/* Products Section */}
         <div 
           className="flex-1 flex flex-col overflow-hidden min-w-0"
@@ -151,6 +124,33 @@ const Pos = () => {
               />
             </div>
           </ScrollArea>
+        </div>
+        
+        {/* Resize Handle */}
+        {cartExpanded && (
+          <div 
+            className="w-1 bg-border hover:bg-primary/50 cursor-col-resize flex items-center justify-center group transition-colors"
+            onMouseDown={handleMouseDown}
+          >
+            <GripVertical 
+              size={16} 
+              className="text-muted-foreground group-hover:text-primary transition-colors" 
+            />
+          </div>
+        )}
+        
+        {/* Cart Panel */}
+        <div 
+          className="flex-shrink-0"
+          style={{ 
+            width: cartExpanded ? `${cartWidth}%` : 'auto',
+            transition: isDragging ? 'none' : 'width 0.3s ease'
+          }}
+        >
+          <CartPanel 
+            expanded={cartExpanded} 
+            onToggleExpand={() => setCartExpanded(prev => !prev)} 
+          />
         </div>
       </div>
     </div>
