@@ -14,7 +14,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { getSizeLabel } from "../../utils/sizeLabels";
-import { Edit2, Trash2, Package } from "lucide-react";
+import { Edit2, Trash2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 interface ProductListItemProps {
@@ -31,10 +31,14 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const location = useLocation();
   
+  // تحديد ما إذا كنا في صفحة المنتجات أم نقاط البيع
   const isProductsPage = location.pathname === "/products";
+  
+  // تحديد ما إذا كان المنتج يحتوي على صورة
   const hasImage = product.image && product.image !== "/placeholder.svg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
+    // منع إضافة المنتج للسلة إذا تم الضغط على أزرار التعديل أو الحذف
     if ((e.target as HTMLElement).closest('.action-buttons')) {
       return;
     }
@@ -123,8 +127,10 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
                 />
               </div>
             ) : (
-              <div className="h-12 w-16 bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
-                <Package size={16} className="text-white" />
+              <div className="h-12 w-16 bg-gray-100 dark:bg-gray-800 rounded-md mr-3 flex-shrink-0 flex items-center justify-center">
+                <div className="text-xs font-medium text-center px-1 text-foreground">
+                  {(isArabic ? product.nameAr || product.name : product.name).substring(0, 8)}
+                </div>
               </div>
             )}
             <div className="flex-1 text-right">
@@ -142,6 +148,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product, onEdit, onDe
               )}
             </div>
             
+            {/* أزرار التعديل والحذف - تظهر فقط في صفحة المنتجات */}
             {isProductsPage && (onEdit || onDelete) && (
               <div className="action-buttons flex gap-1 ml-2">
                 {onEdit && (
