@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { SidebarContextProvider } from "./SidebarContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 
 interface SidebarContainerProps {
   collapsed: boolean;
@@ -22,9 +22,9 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
   isMobile
 }) => {
   const { language } = useLanguage();
-  const { theme } = useTheme();
+  const { mode } = useAdvancedTheme();
   const isArabic = language === "ar";
-  const isDark = theme === "dark";
+  const isDark = mode === "dark";
   
   // Set width transition
   const sidebarTransition = collapsed ? "w-20" : "w-64";
