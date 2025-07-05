@@ -6,7 +6,7 @@ import './index.css'
 import { loadStyles } from './styles/index.ts'
 import { LanguageProvider } from './context/LanguageContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider } from './context/ThemeContext.tsx'
+import { AdvancedThemeProvider } from './context/AdvancedThemeContext.tsx'
 import { AuthProvider } from './features/auth/hooks/useAuth.tsx'
 import { CartProvider } from './features/pos/hooks/useCart.tsx'
 
@@ -16,7 +16,7 @@ loadStyles();
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ThemeProvider>
+      <AdvancedThemeProvider>
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>
-      </ThemeProvider>
+      </AdvancedThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

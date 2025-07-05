@@ -77,11 +77,12 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col border-l bg-card cart-panel rounded-sm overflow-hidden",
+        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden border-r",
         expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
-        "max-w-full"
+        "max-w-full fixed left-0 top-0 z-30 shadow-lg"
       )}
+      style={{ height: "100vh" }}
     >
       <CartHeader 
         isMobile={isMobile}
@@ -90,16 +91,16 @@ const CartPanel: React.FC<CartPanelProps> = ({
         toggleExpand={onToggleExpand}
         clearCart={clearCart}
         isArabic={isArabic}
-        className="cart-header flex-shrink-0"
+        className="cart-header flex-shrink-0 border-b"
       />
       
       {expanded ? (
         <>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden min-h-0">
             <CartContent cartItems={cartItems} isArabic={isArabic} />
           </div>
           
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 border-t">
             <CartFooter 
               isMobile={isMobile}
               cartItems={cartItems}
