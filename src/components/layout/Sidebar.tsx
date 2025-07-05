@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 
 // Sidebar component that wraps all sidebar sections
 const Sidebar: React.FC<{ 
@@ -37,7 +37,7 @@ const Sidebar: React.FC<{
   const [isInitialized, setIsInitialized] = useState(false);
   const sidebarLinks = getSidebarLinks();
   const isArabic = language === "ar";
-  const { theme } = useTheme();
+  const { currentTheme } = useAdvancedTheme();
 
   // Set initialized after a brief delay to allow for animation
   useEffect(() => {

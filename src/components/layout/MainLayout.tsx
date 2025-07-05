@@ -9,7 +9,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimensions";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -18,7 +18,7 @@ const MainLayout: React.FC = () => {
   const { isMobile, isTablet, width } = useWindowDimensions();
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { theme } = useTheme();
+  const { currentTheme } = useAdvancedTheme();
   
   useEffect(() => {
     if (isMobile || (isTablet && width < 768)) {
