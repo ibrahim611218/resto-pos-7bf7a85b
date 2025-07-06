@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 
 interface InvoiceQRCodeProps {
   qrCodeData: string;
@@ -11,8 +11,8 @@ export const InvoiceQRCode: React.FC<InvoiceQRCodeProps> = ({
   qrCodeData,
   notes
 }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { mode } = useAdvancedTheme();
+  const isDark = mode === "dark";
   
   const parsedData = React.useMemo(() => {
     try {

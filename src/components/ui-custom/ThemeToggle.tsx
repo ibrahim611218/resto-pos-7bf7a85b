@@ -2,7 +2,7 @@
 import React from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 import AnimatedTransition from "./AnimatedTransition";
 
 interface ThemeToggleProps {
@@ -11,25 +11,25 @@ interface ThemeToggleProps {
 }
 
 const ThemeToggle = ({ className, collapsed = false }: ThemeToggleProps) => {
-  const { theme, toggleTheme } = useTheme();
+  const { mode, toggleMode } = useAdvancedTheme();
 
   return (
     <Button
       variant="ghost"
       size={collapsed ? "icon" : "default"}
-      onClick={toggleTheme}
+      onClick={toggleMode}
       className={`${className} flex items-center justify-center`} // Added centering classes
-      title={theme === "light" ? "التبديل للوضع الداكن" : "التبديل للوضع الفاتح"}
+      title={mode === "light" ? "التبديل للوضع الداكن" : "التبديل للوضع الفاتح"}
     >
-      <AnimatedTransition animation="fade" show={theme === "light"}>
+      <AnimatedTransition animation="fade" show={mode === "light"}>
         <Moon size={18} className={collapsed ? "" : "mr-2"} />
       </AnimatedTransition>
-      <AnimatedTransition animation="fade" show={theme === "dark"}>
+      <AnimatedTransition animation="fade" show={mode === "dark"}>
         <Sun size={18} className={collapsed ? "" : "mr-2"} />
       </AnimatedTransition>
       {!collapsed && (
         <span>
-          {theme === "light" ? "الوضع الداكن" : "الوضع الفاتح"}
+          {mode === "light" ? "الوضع الداكن" : "الوضع الفاتح"}
         </span>
       )}
     </Button>

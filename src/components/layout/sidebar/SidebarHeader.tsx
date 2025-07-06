@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
-import { useTheme } from "@/context/ThemeContext";
+import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
 
 interface SidebarHeaderProps {
   collapsed: boolean;
@@ -14,8 +14,8 @@ interface SidebarHeaderProps {
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) => {
   const { settings } = useBusinessSettings();
-  const { theme } = useTheme();
-  const isDark = theme === "light" ? false : true;
+  const { mode } = useAdvancedTheme();
+  const isDark = mode === "dark";
   
   return (
     <div className="flex items-center justify-between p-4 h-16 border-b border-[#00695c]">
