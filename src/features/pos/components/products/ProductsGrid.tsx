@@ -127,8 +127,8 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="flex-shrink-0">
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="flex-shrink-0 sticky top-0 bg-background z-10">
         <ProductSearchAndCategories
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}

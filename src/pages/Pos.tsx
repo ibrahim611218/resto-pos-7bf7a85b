@@ -38,9 +38,9 @@ const Pos = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden">
+    <div className="h-screen w-full flex overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
+      <div className="absolute top-0 left-0 right-0 z-50 flex-shrink-0 p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b h-16">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
         <div className="flex gap-2">
           <AdvancedThemeSelector />
@@ -69,29 +69,25 @@ const Pos = () => {
       </div>
       
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Cart Panel - Fixed to left */}
-        <CartPanel 
-          expanded={cartExpanded} 
-          onToggleExpand={() => setCartExpanded(prev => !prev)} 
-        />
+      <div className="flex w-full pt-16">
+        {/* Cart Panel - Fixed to right in RTL, left in LTR */}
+        <div className={`${isArabic ? 'order-2' : 'order-1'} flex-shrink-0`}>
+          <CartPanel 
+            expanded={cartExpanded} 
+            onToggleExpand={() => setCartExpanded(prev => !prev)} 
+          />
+        </div>
         
         {/* Products Section */}
-        <div 
-          className="flex-1 flex flex-col overflow-hidden min-w-0"
-          style={{ 
-            marginLeft: cartExpanded ? '24rem' : '4rem',
-            transition: 'margin-left 0.3s ease'
-          }}
-        >
-          <ScrollArea className="flex-1">
-            <div className="p-2 h-full">
+        <div className={`${isArabic ? 'order-1' : 'order-2'} flex-1 flex flex-col overflow-hidden min-w-0 h-screen`}>
+          <div className="h-full overflow-auto">
+            <div className="p-4 h-full">
               <ProductsGrid 
                 viewMode={viewMode} 
                 onViewModeChange={setViewMode}
               />
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </div>
     </div>

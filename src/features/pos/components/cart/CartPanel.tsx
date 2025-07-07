@@ -77,12 +77,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden border-r",
-        expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
+        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden",
+        expanded ? "w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
-        "max-w-full fixed left-0 top-0 z-30 shadow-lg"
+        "shadow-lg border",
+        isArabic ? "border-l" : "border-r"
       )}
-      style={{ height: "100vh" }}
+      style={{ height: "calc(100vh - 4rem)" }}
     >
       <CartHeader 
         isMobile={isMobile}
