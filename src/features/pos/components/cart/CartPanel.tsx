@@ -77,10 +77,10 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden border-l",
+        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden border-r",
         expanded ? "w-full lg:w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
-        "max-w-full fixed right-0 top-0 z-30 shadow-lg"
+        "max-w-full fixed left-0 top-0 z-30 shadow-lg"
       )}
       style={{ height: "100vh" }}
     >

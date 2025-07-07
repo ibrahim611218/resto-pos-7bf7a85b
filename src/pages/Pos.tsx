@@ -70,7 +70,7 @@ const Pos = () => {
       
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Cart Panel - Fixed to right */}
+        {/* Cart Panel - Fixed to left */}
         <CartPanel 
           expanded={cartExpanded} 
           onToggleExpand={() => setCartExpanded(prev => !prev)} 
@@ -80,8 +80,8 @@ const Pos = () => {
         <div 
           className="flex-1 flex flex-col overflow-hidden min-w-0"
           style={{ 
-            marginRight: cartExpanded ? '24rem' : '4rem',
-            transition: 'margin-right 0.3s ease'
+            marginLeft: cartExpanded ? '24rem' : '4rem',
+            transition: 'margin-left 0.3s ease'
           }}
         >
           <ScrollArea className="flex-1">
