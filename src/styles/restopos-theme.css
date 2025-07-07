@@ -14,7 +14,16 @@
 
 /* Sidebar styles with improved light/dark mode handling */
 .restopos-sidebar {
-  @apply bg-[#004d40] text-white border-r border-[#00695c] dark:border-orange-500/40;
+  @apply bg-[#004d40] text-white border-r border-[#00695c];
+}
+
+/* Apply theme colors to sidebar in all modes */
+.restopos-sidebar,
+.light .restopos-sidebar,
+.dark .restopos-sidebar {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 /* Light mode sidebar text */
@@ -34,27 +43,37 @@
 
 /* Improved sidebar visibility */
 .sidebar-text {
-  @apply text-white font-medium;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 500;
 }
 
 .sidebar-subtext {
-  @apply text-gray-200;
+  color: hsl(var(--muted-foreground)) !important;
 }
 
 /* Improved sidebar item visibility */
 .sidebar-item-active {
-  @apply bg-[#00695c] text-white font-medium;
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  font-weight: 500;
 }
 
 .sidebar-item-hover {
-  @apply hover:bg-[#00695c] hover:text-white transition-colors;
+  @apply hover:bg-accent hover:text-accent-foreground transition-colors;
 }
 
-/* Sidebar light mode improvements */
-.light .restopos-sidebar {
-  @apply bg-[#004d40] text-white;
+/* Cart panel theming */
+.cart-panel {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
 }
 
-.light .sidebar-item-active {
-  @apply bg-[#00695c] text-white;
+/* Apply theme to all menus and dropdown */
+.dropdown-menu-content,
+.select-content,
+.popover-content {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
 }

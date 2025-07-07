@@ -40,14 +40,16 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
-          "bg-[#004d40] text-white restopos-sidebar"
+          "restopos-sidebar"
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",
           pointerEvents: "auto", 
           touchAction: "auto", 
           userSelect: "none",
-          backgroundColor: "#004d40"
+          backgroundColor: 'hsl(var(--primary))',
+          color: 'hsl(var(--primary-foreground))',
+          borderColor: 'hsl(var(--border))'
         }}
         data-sidebar="sidebar"
       >

@@ -18,17 +18,17 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, onToggle }) =>
   const isDark = mode === "dark";
   
   return (
-    <div className="flex items-center justify-between p-4 h-16 border-b border-[#00695c]">
+    <div className="flex items-center justify-between p-4 h-16 border-b" style={{ borderColor: 'hsl(var(--border))' }}>
       {!collapsed ? (
         <AnimatedTransition animation="fade">
           <div className="flex items-center">
             <img src="/lovable-uploads/b8da0625-ebda-4a08-8f51-5ebf33b24b30.png" alt="RestoPOS" className="h-10 w-10 ml-2" />
             <div className="flex flex-col">
-              <h2 className="text-xl font-bold">
+              <h2 className="text-xl font-bold sidebar-text">
                 <span className="text-[#00825A]">Resto</span>
                 <span className="text-[#FF6B00]">POS</span>
               </h2>
-              <span className="text-xs text-gray-200">نظام المطاعم</span>
+              <span className="text-xs sidebar-subtext">نظام المطاعم</span>
             </div>
           </div>
         </AnimatedTransition>
