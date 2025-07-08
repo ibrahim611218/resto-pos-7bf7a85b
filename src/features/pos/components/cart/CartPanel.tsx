@@ -97,7 +97,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
       
       {expanded ? (
         <>
-          <div className="flex-1 overflow-hidden min-h-0">
+          <div className="flex-1 min-h-0 overflow-hidden">
             <CartContent cartItems={cartItems} isArabic={isArabic} />
           </div>
           

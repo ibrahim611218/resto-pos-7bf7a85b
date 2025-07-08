@@ -11,15 +11,13 @@ interface CartContentProps {
 
 const CartContent: React.FC<CartContentProps> = ({ cartItems, isArabic }) => {
   return (
-    <div className="flex-1 overflow-hidden flex flex-col cart-content min-h-0">
+    <div className="flex-1 min-h-0">
       {cartItems.length > 0 ? (
-        <div className="flex-1 overflow-auto">
-          <ScrollArea className="h-full max-h-full">
-            <div className="p-2">
-              <CartItemsList cartItems={cartItems} isArabic={isArabic} />
-            </div>
-          </ScrollArea>
-        </div>
+        <ScrollArea className="h-full">
+          <div className="p-2">
+            <CartItemsList cartItems={cartItems} isArabic={isArabic} />
+          </div>
+        </ScrollArea>
       ) : (
         <EmptyCart />
       )}
