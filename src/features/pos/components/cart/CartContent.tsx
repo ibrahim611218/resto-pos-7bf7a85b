@@ -11,15 +11,17 @@ interface CartContentProps {
 
 const CartContent: React.FC<CartContentProps> = ({ cartItems, isArabic }) => {
   return (
-    <div className="flex-1 min-h-0">
+    <div className="flex-1 flex flex-col min-h-0" style={{ height: 'calc(100vh - 200px)' }}>
       {cartItems.length > 0 ? (
-        <ScrollArea className="h-full">
-          <div className="p-2">
+        <ScrollArea className="flex-1 w-full">
+          <div className="p-2 space-y-2">
             <CartItemsList cartItems={cartItems} isArabic={isArabic} />
           </div>
         </ScrollArea>
       ) : (
-        <EmptyCart />
+        <div className="flex-1 flex items-center justify-center">
+          <EmptyCart />
+        </div>
       )}
     </div>
   );
