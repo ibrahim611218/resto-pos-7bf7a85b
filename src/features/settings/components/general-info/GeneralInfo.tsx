@@ -5,16 +5,31 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Building2, FileText } from "lucide-react";
 import { BusinessSettings } from "@/types";
+import LogoUploader from "../LogoUploader";
 
 interface GeneralInfoProps {
   settings: BusinessSettings;
   isArabic: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onLogoChange?: (logo: string) => void;
 }
 
-const GeneralInfo: React.FC<GeneralInfoProps> = ({ settings, isArabic, onChange }) => {
+const GeneralInfo: React.FC<GeneralInfoProps> = ({ settings, isArabic, onChange, onLogoChange }) => {
+  const handleLogoChange = (logo: string) => {
+    if (onLogoChange) {
+      onLogoChange(logo);
+    }
+  };
   return (
     <>
+      <div className="mb-6">
+        <LogoUploader 
+          logo={settings.logo || null} 
+          isArabic={isArabic} 
+          onLogoChange={handleLogoChange}
+        />
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name">{isArabic ? "اسم المطعم" : "Restaurant Name"}</Label>

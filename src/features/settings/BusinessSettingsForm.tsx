@@ -51,6 +51,13 @@ const BusinessSettingsForm: React.FC = () => {
     }));
   };
 
+  const handleLogoChange = (logo: string) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      logo: logo
+    }));
+  };
+
   const handleSave = async () => {
     try {
       await updateSettings(localSettings);
@@ -65,7 +72,7 @@ const BusinessSettingsForm: React.FC = () => {
     {
       id: 'general',
       label: isArabic ? 'المعلومات العامة' : 'General Info',
-      component: <GeneralInfo settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} />
+      component: <GeneralInfo settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} onLogoChange={handleLogoChange} />
     },
     {
       id: 'contact',

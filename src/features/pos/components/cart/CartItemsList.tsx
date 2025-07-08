@@ -18,36 +18,34 @@ const CartItemsList: React.FC<CartItemsListProps> = ({ cartItems, isArabic }) =>
   const { increaseQuantity, decreaseQuantity, setItemQuantity, removeItem } = useCart();
   
   return (
-    <ScrollArea className="h-full max-h-[60vh]">
-      <div className="p-2 space-y-2">
-        {cartItems.map((item) => (
-          <Card key={`${item.id}-${item.size}`} className="p-3 flex items-center">
-            <ItemDetails
-              name={item.name}
-              nameAr={item.nameAr}
-              size={item.size as string}
-              price={item.price}
+    <div className="space-y-2">
+      {cartItems.map((item) => (
+        <Card key={`${item.id}-${item.size}`} className="p-3 flex items-center">
+          <ItemDetails
+            name={item.name}
+            nameAr={item.nameAr}
+            size={item.size as string}
+            price={item.price}
+            quantity={item.quantity}
+            isArabic={isArabic}
+            sizeLabel={getSizeLabel(item.size as string, isArabic)}
+            type={item.type}
+          />
+          
+          <div className="flex items-center ml-2">
+            <QuantityControls
               quantity={item.quantity}
-              isArabic={isArabic}
-              sizeLabel={getSizeLabel(item.size as string, isArabic)}
-              type={item.type}
+              onIncrease={() => increaseQuantity(item.id, item.size as string)}
+              onDecrease={() => decreaseQuantity(item.id, item.size as string)}
+              onSetQuantity={(value) => setItemQuantity(item.id, item.size as string, value)}
             />
-            
-            <div className="flex items-center ml-2">
-              <QuantityControls
-                quantity={item.quantity}
-                onIncrease={() => increaseQuantity(item.id, item.size as string)}
-                onDecrease={() => decreaseQuantity(item.id, item.size as string)}
-                onSetQuantity={(value) => setItemQuantity(item.id, item.size as string, value)}
-              />
-              <RemoveItemButton
-                onRemove={() => removeItem(item.id, item.size as string)}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
-    </ScrollArea>
+            <RemoveItemButton
+              onRemove={() => removeItem(item.id, item.size as string)}
+            />
+          </div>
+        </Card>
+      ))}
+    </div>
   );
 };
 
