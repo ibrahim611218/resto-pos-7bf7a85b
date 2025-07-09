@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Palette, Moon, Sun, Settings } from "lucide-react";
+import { Palette, Moon, Sun, Settings, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CustomThemeCreator } from "./CustomThemeCreator";
+import { toast } from "sonner";
 
 interface AdvancedThemeSelectorProps {
   className?: string;
@@ -21,7 +23,8 @@ const AdvancedThemeSelector = ({ className }: AdvancedThemeSelectorProps) => {
     mode, 
     availableThemes, 
     setTheme, 
-    toggleMode 
+    toggleMode,
+    removeCustomTheme 
   } = useAdvancedTheme();
   
   const [open, setOpen] = useState(false);
@@ -100,10 +103,13 @@ const AdvancedThemeSelector = ({ className }: AdvancedThemeSelectorProps) => {
           {/* Theme Selection */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Settings size={16} />
-                {isArabic ? "اختيار الثيم" : "Select Theme"}
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Settings size={16} />
+                  {isArabic ? "اختيار الثيم" : "Select Theme"}
+                </CardTitle>
+                <CustomThemeCreator />
+              </div>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-96">
@@ -121,11 +127,27 @@ const AdvancedThemeSelector = ({ className }: AdvancedThemeSelectorProps) => {
                           <CardTitle className="text-sm">
                             {isArabic ? theme.nameAr : theme.name}
                           </CardTitle>
-                          {currentTheme.id === theme.id && (
-                            <Badge variant="default" className="text-xs">
-                              {isArabic ? "مُحدد" : "Active"}
-                            </Badge>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {currentTheme.id === theme.id && (
+                              <Badge variant="default" className="text-xs">
+                                {isArabic ? "مُحدد" : "Active"}
+                              </Badge>
+                            )}
+                            {theme.id.startsWith('custom-') && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeCustomTheme(theme.id);
+                                  toast.success(isArabic ? "تم حذف الثيم" : "Theme deleted");
+                                }}
+                                className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                              >
+                                <Trash2 size={12} />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <p className="text-xs text-muted-foreground">
                           {isArabic ? theme.descriptionAr : theme.description}

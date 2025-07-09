@@ -1,0 +1,146 @@
+/* RTL Support Styles */
+
+/* Global RTL direction */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+/* Sidebar RTL support */
+html[dir="rtl"] .sidebar-container {
+  right: 0;
+  left: auto;
+  border-left: 1px solid hsl(var(--border));
+  border-right: none;
+}
+
+/* Button and form elements RTL */
+html[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Input and form RTL */
+html[dir="rtl"] input:not([dir="ltr"]),
+html[dir="rtl"] textarea:not([dir="ltr"]),
+html[dir="rtl"] select:not([dir="ltr"]) {
+  text-align: right;
+}
+
+/* Dropdown and popover RTL */
+html[dir="rtl"] .dropdown-menu,
+html[dir="rtl"] .popover-content,
+html[dir="rtl"] .select-content {
+  text-align: right;
+}
+
+/* Card and content RTL */
+html[dir="rtl"] .card {
+  text-align: right;
+}
+
+/* Navigation RTL */
+html[dir="rtl"] .nav-item {
+  text-align: right;
+}
+
+/* Margin and padding RTL adjustments */
+html[dir="rtl"] .ml-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Icon positioning RTL */
+html[dir="rtl"] .icon-left {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .icon-right {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Table RTL */
+html[dir="rtl"] table,
+html[dir="rtl"] th,
+html[dir="rtl"] td {
+  text-align: right;
+}
+
+/* Flexbox RTL */
+html[dir="rtl"] .flex-reverse {
+  flex-direction: row-reverse;
+}
+
+/* Grid RTL */
+html[dir="rtl"] .grid-rtl {
+  direction: rtl;
+}
+
+/* Dialog and modal RTL */
+html[dir="rtl"] .dialog-content,
+html[dir="rtl"] .modal-content {
+  text-align: right;
+}
+
+/* Cart specific RTL */
+html[dir="rtl"] .cart-panel {
+  right: 0;
+  left: auto;
+  border-left: 1px solid hsl(var(--border));
+  border-right: none;
+}
+
+/* POS layout RTL */
+html[dir="rtl"] .pos-layout {
+  flex-direction: row-reverse;
+}
+
+/* Sidebar trigger RTL positioning */
+html[dir="rtl"] .sidebar-trigger {
+  right: 1rem;
+  left: auto;
+}
+
+/* Menu items RTL */
+html[dir="rtl"] .menu-item {
+  text-align: right;
+  padding-right: 1rem;
+  padding-left: 0.5rem;
+}
+
+/* Breadcrumb RTL */
+html[dir="rtl"] .breadcrumb {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* Toast notifications RTL */
+html[dir="rtl"] .toast {
+  right: 1rem;
+  left: auto;
+  text-align: right;
+}
+
+/* Search input RTL */
+html[dir="rtl"] .search-input {
+  text-align: right;
+  padding-right: 2.5rem;
+  padding-left: 1rem;
+}
+
+html[dir="rtl"] .search-icon {
+  right: 0.75rem;
+  left: auto;
+}
