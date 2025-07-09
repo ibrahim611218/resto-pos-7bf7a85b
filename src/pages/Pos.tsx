@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import AdvancedThemeSelector from "@/components/ui-custom/AdvancedThemeSelector";
+import { cn } from "@/lib/utils";
 
 const Pos = () => {
   const { language } = useLanguage();
@@ -69,9 +70,9 @@ const Pos = () => {
       </div>
       
       {/* Main Content */}
-      <div className="flex w-full pt-16">
+      <div className={cn("flex w-full pt-16", isArabic ? "flex-row-reverse" : "")}>
         {/* Cart Panel - Fixed to right in RTL, left in LTR */}
-        <div className={`${isArabic ? 'order-2' : 'order-1'} flex-shrink-0`}>
+        <div className="flex-shrink-0">
           <CartPanel 
             expanded={cartExpanded} 
             onToggleExpand={() => setCartExpanded(prev => !prev)} 
@@ -79,7 +80,7 @@ const Pos = () => {
         </div>
         
         {/* Products Section */}
-        <div className={`${isArabic ? 'order-1' : 'order-2'} flex-1 flex flex-col overflow-hidden min-w-0 h-screen`}>
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0 h-screen">
           <div className="h-full overflow-auto">
             <div className="p-4 h-full">
               <ProductsGrid 

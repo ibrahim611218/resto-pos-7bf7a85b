@@ -8,6 +8,7 @@ import QuantityControls from "./QuantityControls";
 import RemoveItemButton from "./RemoveItemButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CartItem } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface CartItemsListProps {
   cartItems: CartItem[];
@@ -18,21 +19,29 @@ const CartItemsList: React.FC<CartItemsListProps> = ({ cartItems, isArabic }) =>
   const { increaseQuantity, decreaseQuantity, setItemQuantity, removeItem } = useCart();
   
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 h-full">
       {cartItems.map((item) => (
-        <Card key={`${item.id}-${item.size}`} className="p-3 flex items-center">
-          <ItemDetails
-            name={item.name}
-            nameAr={item.nameAr}
-            size={item.size as string}
-            price={item.price}
-            quantity={item.quantity}
-            isArabic={isArabic}
-            sizeLabel={getSizeLabel(item.size as string, isArabic)}
-            type={item.type}
-          />
+        <Card key={`${item.id}-${item.size}`} className={cn(
+          "p-3 flex items-center gap-2",
+          isArabic ? "flex-row-reverse" : ""
+        )}>
+          <div className="flex-1 min-w-0">
+            <ItemDetails
+              name={item.name}
+              nameAr={item.nameAr}
+              size={item.size as string}
+              price={item.price}
+              quantity={item.quantity}
+              isArabic={isArabic}
+              sizeLabel={getSizeLabel(item.size as string, isArabic)}
+              type={item.type}
+            />
+          </div>
           
-          <div className="flex items-center ml-2">
+          <div className={cn(
+            "flex items-center gap-1 flex-shrink-0",
+            isArabic ? "flex-row-reverse" : ""
+          )}>
             <QuantityControls
               quantity={item.quantity}
               onIncrease={() => increaseQuantity(item.id, item.size as string)}

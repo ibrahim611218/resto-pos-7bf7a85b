@@ -16,8 +16,19 @@ const MainLayout: React.FC = () => {
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
+  
+  // Use a fallback for language in case provider is not available
+  let language = "ar";
+  let isArabic = true;
+  
+  try {
+    const languageContext = useLanguage();
+    language = languageContext.language;
+    isArabic = language === "ar";
+  } catch (error) {
+    console.warn("LanguageProvider not available, using Arabic as default");
+  }
+  
   const { currentTheme } = useAdvancedTheme();
   
   useEffect(() => {
@@ -83,8 +94,21 @@ const MainLayout: React.FC = () => {
     }
   };
 
+  // Apply RTL direction to body
+  useEffect(() => {
+    if (isArabic) {
+      document.body.setAttribute('dir', 'rtl');
+      document.documentElement.setAttribute('dir', 'rtl');
+      document.documentElement.setAttribute('lang', 'ar');
+    } else {
+      document.body.setAttribute('dir', 'ltr');
+      document.documentElement.setAttribute('dir', 'ltr');
+      document.documentElement.setAttribute('lang', 'en');
+    }
+  }, [isArabic]);
+
   return (
-    <div className="flex min-h-screen h-screen bg-background w-full overflow-hidden">
+    <div className={cn("flex min-h-screen h-screen bg-background w-full overflow-hidden", isArabic ? "rtl" : "ltr")} dir={isArabic ? "rtl" : "ltr"}>
       {!sidebarHidden && (
         <div 
           onMouseEnter={handleMouseEnter}
@@ -104,7 +128,10 @@ const MainLayout: React.FC = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            className={`fixed top-4 ${isArabic ? "right-4" : "left-4"} z-50 bg-background/80 backdrop-blur-sm shadow-sm`}
+            className={cn(
+              "fixed top-4 z-50 bg-background/80 backdrop-blur-sm shadow-sm",
+              isArabic ? "right-4" : "left-4"
+            )}
             onClick={showSidebar}
             title={isArabic ? "إظهار القائمة الرئيسية" : "Show Menu"}
           >

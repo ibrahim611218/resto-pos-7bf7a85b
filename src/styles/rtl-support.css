@@ -1,16 +1,26 @@
 /* RTL Support Styles */
 
 /* Global RTL direction */
-html[dir="rtl"] {
+html[dir="rtl"],
+.rtl {
   direction: rtl;
-}
-
-html[dir="rtl"] body {
   text-align: right;
 }
 
+html[dir="rtl"] body,
+.rtl body {
+  text-align: right;
+}
+
+/* Fix flexbox direction for RTL */
+html[dir="rtl"] .flex-row-reverse,
+.rtl .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
 /* Sidebar RTL support */
-html[dir="rtl"] .sidebar-container {
+html[dir="rtl"] .sidebar-container,
+.rtl .sidebar-container {
   right: 0;
   left: auto;
   border-left: 1px solid hsl(var(--border));
@@ -18,36 +28,46 @@ html[dir="rtl"] .sidebar-container {
 }
 
 /* Button and form elements RTL */
-html[dir="rtl"] .flex-row-reverse {
+html[dir="rtl"] .flex-row-reverse,
+.rtl .flex-row-reverse {
   flex-direction: row-reverse;
 }
 
 /* Input and form RTL */
 html[dir="rtl"] input:not([dir="ltr"]),
 html[dir="rtl"] textarea:not([dir="ltr"]),
-html[dir="rtl"] select:not([dir="ltr"]) {
+html[dir="rtl"] select:not([dir="ltr"]),
+.rtl input:not([dir="ltr"]),
+.rtl textarea:not([dir="ltr"]),
+.rtl select:not([dir="ltr"]) {
   text-align: right;
 }
 
 /* Dropdown and popover RTL */
 html[dir="rtl"] .dropdown-menu,
 html[dir="rtl"] .popover-content,
-html[dir="rtl"] .select-content {
+html[dir="rtl"] .select-content,
+.rtl .dropdown-menu,
+.rtl .popover-content,
+.rtl .select-content {
   text-align: right;
 }
 
 /* Card and content RTL */
-html[dir="rtl"] .card {
+html[dir="rtl"] .card,
+.rtl .card {
   text-align: right;
 }
 
 /* Navigation RTL */
-html[dir="rtl"] .nav-item {
+html[dir="rtl"] .nav-item,
+.rtl .nav-item {
   text-align: right;
 }
 
 /* Margin and padding RTL adjustments */
-html[dir="rtl"] .ml-auto {
+html[dir="rtl"] .ml-auto,
+.rtl .ml-auto {
   margin-left: auto;
   margin-right: 0;
 }

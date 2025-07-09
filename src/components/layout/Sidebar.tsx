@@ -32,11 +32,22 @@ const Sidebar: React.FC<{
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  
+  // Use a fallback for language in case provider is not available
+  let language = "ar";
+  let isArabic = true;
+  
+  try {
+    const languageContext = useLanguage();
+    language = languageContext.language;
+    isArabic = language === "ar";
+  } catch (error) {
+    console.warn("LanguageProvider not available in Sidebar, using Arabic as default");
+  }
+  
   const isMobile = useIsMobile();
   const [isInitialized, setIsInitialized] = useState(false);
   const sidebarLinks = getSidebarLinks();
-  const isArabic = language === "ar";
   const { currentTheme } = useAdvancedTheme();
 
   // Set initialized after a brief delay to allow for animation
@@ -96,7 +107,7 @@ const Sidebar: React.FC<{
             />
             <SidebarFooter 
               collapsed={collapsed} 
-              language={language} 
+              language={language as any} 
               onLogout={logout} 
             />
             

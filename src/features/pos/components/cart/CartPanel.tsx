@@ -83,7 +83,11 @@ const CartPanel: React.FC<CartPanelProps> = ({
         "shadow-lg border",
         isArabic ? "border-l" : "border-r"
       )}
-      style={{ height: "calc(100vh - 4rem)" }}
+      style={{ 
+        height: "calc(100vh - 4rem)",
+        direction: isArabic ? "rtl" : "ltr"
+      }}
+      dir={isArabic ? "rtl" : "ltr"}
     >
       <CartHeader 
         isMobile={isMobile}
