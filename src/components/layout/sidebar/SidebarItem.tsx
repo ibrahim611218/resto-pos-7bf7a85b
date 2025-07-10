@@ -82,7 +82,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             ? "bg-[#00695c] text-white sidebar-item-active"
             : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
           collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between",
-          "text-white sidebar-text" 
+          "text-white sidebar-text",
+          isArabic ? "text-right" : "text-left"
         )}
         style={{ 
           pointerEvents: "auto", 
@@ -136,7 +137,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                   isSubItemActive
                     ? "bg-[#00695c] text-white sidebar-item-active"
                     : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
-                  isArabic ? "flex-row-reverse justify-end" : "",
+                  isArabic ? "flex-row-reverse justify-end text-right" : "text-left",
                   "text-white sidebar-text"
                 )}
                 style={{ 

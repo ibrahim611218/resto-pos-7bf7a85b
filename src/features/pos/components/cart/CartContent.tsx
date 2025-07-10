@@ -17,11 +17,11 @@ const CartContent: React.FC<CartContentProps> = ({ cartItems, isArabic }) => {
           <ScrollArea 
             className="h-full w-full" 
             style={{ 
-              height: 'calc(100vh - 280px)',
-              maxHeight: 'calc(100vh - 280px)'
+              height: 'calc(100vh - 400px)', // Increased to accommodate larger footer
+              maxHeight: 'calc(100vh - 400px)'
             }}
           >
-            <div className="p-2 space-y-2 pb-4">
+            <div className="p-3 space-y-3 pb-4" dir={isArabic ? "rtl" : "ltr"}>
               <CartItemsList cartItems={cartItems} isArabic={isArabic} />
             </div>
           </ScrollArea>
