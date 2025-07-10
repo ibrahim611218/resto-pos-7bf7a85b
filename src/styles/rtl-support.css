@@ -27,6 +27,16 @@ html[dir="rtl"] .sidebar-container,
   border-right: none;
 }
 
+html[dir="rtl"] .restopos-sidebar,
+.rtl .restopos-sidebar {
+  text-align: right;
+}
+
+html[dir="rtl"] .restopos-sidebar *,
+.rtl .restopos-sidebar * {
+  text-align: right;
+}
+
 /* Button and form elements RTL */
 html[dir="rtl"] .flex-row-reverse,
 .rtl .flex-row-reverse {

@@ -40,7 +40,8 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
-          "restopos-sidebar"
+          "restopos-sidebar",
+          isArabic ? "text-right" : "text-left"
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",
@@ -51,6 +52,7 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           color: 'hsl(var(--primary-foreground))',
           borderColor: 'hsl(var(--border))'
         }}
+        dir={isArabic ? "rtl" : "ltr"}
         data-sidebar="sidebar"
       >
         <SidebarContextProvider collapsed={collapsed} onToggle={onToggle}>
