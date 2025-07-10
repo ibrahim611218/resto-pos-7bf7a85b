@@ -30,11 +30,30 @@ html[dir="rtl"] .sidebar-container,
 html[dir="rtl"] .restopos-sidebar,
 .rtl .restopos-sidebar {
   text-align: right;
+  direction: rtl;
 }
 
 html[dir="rtl"] .restopos-sidebar *,
 .rtl .restopos-sidebar * {
   text-align: right;
+}
+
+/* Sidebar item text alignment */
+html[dir="rtl"] .sidebar-text,
+.rtl .sidebar-text {
+  text-align: right !important;
+}
+
+/* Cart specific scrolling improvements */
+html[dir="rtl"] .cart-content,
+.rtl .cart-content {
+  direction: rtl;
+}
+
+/* ScrollArea RTL support */
+html[dir="rtl"] .scroll-area,
+.rtl .scroll-area {
+  direction: rtl;
 }
 
 /* Button and form elements RTL */

@@ -60,6 +60,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 
   // Apply RTL-specific submenu padding
   const submenuPaddingClass = isArabic ? "pr-8" : "pl-8";
+  
+  // Apply RTL-specific text alignment
+  const textAlignClass = isArabic ? "text-right" : "text-left";
 
   return (
     <div 
@@ -94,7 +97,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <Icon className={cn("h-5 w-5 text-white", iconMarginClass())} />
           {!collapsed && (
             <span 
-              className={`text-white ${isArabic ? 'mr-2 text-right' : 'ml-2 text-left'}`}
+              className={cn("text-white", textAlignClass, isArabic ? 'mr-2' : 'ml-2')}
             >
               {name}
             </span>
@@ -148,7 +151,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 {subItem.icon && typeof SubIcon === 'function' && 
                   <SubIcon className={cn("h-4 w-4 text-white", isArabic ? "ml-2" : "mr-2")} />
                 }
-                <span className={`text-white ${isArabic ? 'text-right mr-2' : 'text-left ml-2'}`}>
+                <span className={cn("text-white", textAlignClass, isArabic ? 'mr-2' : 'ml-2')}>
                   {subItem.name}
                 </span>
               </button>
