@@ -94,11 +94,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           position: "relative"
         }}
       >
-        <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse" : "")}>
+        <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse w-full" : "")}>
           <Icon className={cn("h-5 w-5 text-white", iconMarginClass())} />
           {!collapsed && (
             <span 
-              className={cn("text-white", textAlignClass, isArabic ? 'mr-2' : 'ml-2')}
+              className={cn("text-white flex-1", isArabic ? 'text-right mr-2' : 'text-left ml-2')}
             >
               {name}
             </span>
@@ -152,7 +152,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 {subItem.icon && typeof SubIcon === 'function' && 
                   <SubIcon className={cn("h-4 w-4 text-white", isArabic ? "ml-2" : "mr-2")} />
                 }
-                <span className={cn("text-white", textAlignClass, isArabic ? 'mr-2' : 'ml-2')}>
+                <span className={cn("text-white flex-1", isArabic ? 'text-right mr-2' : 'text-left ml-2')}>
                   {subItem.name}
                 </span>
               </button>
