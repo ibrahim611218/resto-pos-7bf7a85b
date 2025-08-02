@@ -10,11 +10,13 @@ import ProductImage from "./ProductImage";
 import ProductInfo from "./ProductInfo";
 import ProductActionButtons from "./ProductActionButtons";
 import ProductSizeDialog from "./ProductSizeDialog";
+import ProductPriceEditDialog from "./ProductPriceEditDialog";
 
 interface ProductCardProps {
   product: Product;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onPriceUpdate?: (product: Product) => void;
   viewMode?: ViewMode;
 }
 
@@ -22,16 +24,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product, 
   onEdit,
   onDelete,
+  onPriceUpdate,
   viewMode = "grid-small"
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
+  const [showPriceEditDialog, setShowPriceEditDialog] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const location = useLocation();
   
   const isProductsPage = location.pathname === "/products";
+  const isPosPage = location.pathname === "/pos";
   const hasImage = product.image && product.image !== "/placeholder.svg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -88,6 +93,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setShowSizeDialog(false);
   };
 
+  const handlePriceEdit = (productId: string) => {
+    setShowPriceEditDialog(true);
+  };
+
+  const handlePriceUpdate = (updatedProduct: Product) => {
+    if (onPriceUpdate) {
+      onPriceUpdate(updatedProduct);
+    }
+  };
+
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -101,8 +116,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <ProductActionButtons 
           onEdit={onEdit}
           onDelete={onDelete}
+          onPriceEdit={handlePriceEdit}
           productId={product.id}
           isProductsPage={isProductsPage}
+          isPosPage={isPosPage}
         />
 
         <CardContent className="p-0">
@@ -130,6 +147,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onSizeChange={setSelectedSize}
         onSizeSelected={handleSizeSelected}
         isArabic={isArabic}
+      />
+      
+      <ProductPriceEditDialog
+        product={product}
+        isOpen={showPriceEditDialog}
+        onClose={() => setShowPriceEditDialog(false)}
+        onPriceUpdate={handlePriceUpdate}
       />
     </>
   );
