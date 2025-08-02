@@ -10,13 +10,12 @@ import ProductImage from "./ProductImage";
 import ProductInfo from "./ProductInfo";
 import ProductActionButtons from "./ProductActionButtons";
 import ProductSizeDialog from "./ProductSizeDialog";
-import ProductPriceEditDialog from "./ProductPriceEditDialog";
+import VariablePriceDialog from "./VariablePriceDialog";
 
 interface ProductCardProps {
   product: Product;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
-  onPriceUpdate?: (product: Product) => void;
   viewMode?: ViewMode;
 }
 
@@ -24,19 +23,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product, 
   onEdit,
   onDelete,
-  onPriceUpdate,
   viewMode = "grid-small"
 }) => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const { addToCart } = useCart();
   const [showSizeDialog, setShowSizeDialog] = useState(false);
-  const [showPriceEditDialog, setShowPriceEditDialog] = useState(false);
+  const [showVariablePriceDialog, setShowVariablePriceDialog] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const location = useLocation();
   
   const isProductsPage = location.pathname === "/products";
-  const isPosPage = location.pathname === "/pos";
   const hasImage = product.image && product.image !== "/placeholder.svg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -46,6 +43,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     if (!product.variants || product.variants.length === 0) {
       console.error("Product has no variants:", product);
+      return;
+    }
+    
+    // إذا كان المنتج بسعر متغير، فتح حوار إدخال السعر
+    if (product.variablePrice) {
+      if (product.variants.length > 1) {
+        setSelectedSize(product.variants[0].size);
+        setShowSizeDialog(true);
+      } else {
+        setSelectedSize(product.variants[0].size);
+        setShowVariablePriceDialog(true);
+      }
       return;
     }
     
@@ -73,6 +82,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const handleSizeSelected = () => {
     if (!selectedSize) return;
     
+    // إذا كان المنتج بسعر متغير، فتح حوار إدخال السعر بعد اختيار المقاس
+    if (product.variablePrice) {
+      setShowSizeDialog(false);
+      setShowVariablePriceDialog(true);
+      return;
+    }
+    
     const variant = product.variants.find(v => v.size === selectedSize);
     if (variant) {
       addToCart({
@@ -93,14 +109,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setShowSizeDialog(false);
   };
 
-  const handlePriceEdit = (productId: string) => {
-    setShowPriceEditDialog(true);
-  };
-
-  const handlePriceUpdate = (updatedProduct: Product) => {
-    if (onPriceUpdate) {
-      onPriceUpdate(updatedProduct);
-    }
+  const handleVariablePriceConfirm = (price: number) => {
+    const variant = product.variants.find(v => v.size === selectedSize) || product.variants[0];
+    
+    addToCart({
+      id: product.id,
+      productId: product.id,
+      name: product.name,
+      nameAr: product.nameAr,
+      price: price, // استخدام السعر المدخل من المستخدم
+      quantity: 1,
+      image: product.image,
+      size: variant.size as Size | "regular",
+      categoryId: product.categoryId,
+      variantId: variant.id,
+      taxable: product.taxable !== undefined ? product.taxable : true
+    });
+    
+    setShowVariablePriceDialog(false);
+    setSelectedSize(null);
   };
 
   if (!product.variants || product.variants.length === 0) {
@@ -116,10 +143,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <ProductActionButtons 
           onEdit={onEdit}
           onDelete={onDelete}
-          onPriceEdit={handlePriceEdit}
           productId={product.id}
           isProductsPage={isProductsPage}
-          isPosPage={isPosPage}
         />
 
         <CardContent className="p-0">
@@ -149,11 +174,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         isArabic={isArabic}
       />
       
-      <ProductPriceEditDialog
+      <VariablePriceDialog
         product={product}
-        isOpen={showPriceEditDialog}
-        onClose={() => setShowPriceEditDialog(false)}
-        onPriceUpdate={handlePriceUpdate}
+        selectedSize={selectedSize}
+        isOpen={showVariablePriceDialog}
+        onClose={() => {
+          setShowVariablePriceDialog(false);
+          setSelectedSize(null);
+        }}
+        onPriceConfirm={handleVariablePriceConfirm}
       />
     </>
   );

@@ -2,6 +2,7 @@
 import React from "react";
 import { Product } from "@/types";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductInfoProps {
   product: Product;
@@ -37,7 +38,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       <h3 className={`${sizes.titleSize} text-foreground`}>
         {isArabic ? product.nameAr || product.name : product.name}
       </h3>
-      {product.variants.length > 1 ? (
+      {product.variablePrice ? (
+        <p className={`${sizes.priceSize} text-primary font-medium`}>
+          {isArabic ? "سعر متغير" : "Variable Price"}
+        </p>
+      ) : product.variants.length > 1 ? (
         <p className={`${sizes.priceSize} text-muted-foreground`}>
           {product.variants[0]?.price.toFixed(2)} - {product.variants[product.variants.length - 1]?.price.toFixed(2)} {isArabic ? "ر.س" : "SAR"}
         </p>

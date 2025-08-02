@@ -6,6 +6,7 @@ import ProductBasicInfo from "./product-form/ProductBasicInfo";
 import ProductCategorySelect from "./product-form/ProductCategorySelect";
 import ProductTypeRadio from "./product-form/ProductTypeRadio";
 import ProductTaxSwitch from "./product-form/ProductTaxSwitch";
+import ProductVariablePriceSwitch from "./product-form/ProductVariablePriceSwitch";
 import ProductPriceInput from "./product-form/ProductPriceInput";
 import ProductVariantsManager from "./product-form/ProductVariantsManager";
 import ProductFormFooter from "./product-form/ProductFormFooter";
@@ -99,16 +100,23 @@ const ProductForm = () => {
                     handleTypeChange={handleTypeChange}
                     isArabic={isArabic}
                   />
-                  {product.type === "single" && (
+                  {product.type === "single" && !product.variablePrice && (
                     <ProductPriceInput 
                       price={product.price}
                       handlePriceChange={handlePriceChange}
                       isArabic={isArabic}
                     />
                   )}
+                  {product.type === "single" && (
+                    <ProductVariablePriceSwitch 
+                      variablePrice={product.variablePrice}
+                      handleSwitchChange={handleSwitchChange("variablePrice")}
+                      isArabic={isArabic}
+                    />
+                  )}
                   <ProductTaxSwitch 
                     taxable={product.taxable}
-                    handleSwitchChange={handleSwitchChange}
+                    handleSwitchChange={handleSwitchChange("taxable")}
                     isArabic={isArabic}
                   />
                 </CardContent>

@@ -91,21 +91,6 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
     };
   }, [loadData]);
 
-  const handlePriceUpdate = async (updatedProduct: Product) => {
-    try {
-      const result = await productService.saveProduct(updatedProduct);
-      if (result.success) {
-        toast.success(isArabic ? "تم تحديث السعر بنجاح" : "Price updated successfully");
-        loadData(); // Reload data to reflect changes
-      } else {
-        throw new Error(result.error || "Failed to update price");
-      }
-    } catch (error) {
-      console.error("Error updating price:", error);
-      toast.error(isArabic ? "حدث خطأ أثناء تحديث السعر" : "Error updating price");
-    }
-  };
-
   useEffect(() => {
     if (selectedCategory !== "all") {
       const categoryExists = categories.some(cat => cat.id === selectedCategory);
@@ -171,7 +156,6 @@ const ProductsGrid: React.FC<ProductsGridProps> = ({
             refreshKey={refreshKey}
             onEditProduct={onEditProduct}
             onDeleteProduct={onDeleteProduct}
-            onPriceUpdate={handlePriceUpdate}
           />
         )}
       </div>

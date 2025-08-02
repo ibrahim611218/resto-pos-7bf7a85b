@@ -13,10 +13,10 @@ export const useProductChanges = (initialProduct: Product) => {
     }));
   };
 
-  const handleSwitchChange = (checked: boolean) => {
+  const handleSwitchChange = (field: string) => (checked: boolean) => {
     setProduct(prev => ({
       ...prev,
-      taxable: checked
+      [field]: checked
     }));
   };
 

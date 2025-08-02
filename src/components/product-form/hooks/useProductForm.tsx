@@ -19,6 +19,7 @@ const emptyProduct: Product = {
   image: "/placeholder.svg",
   categoryId: "",
   taxable: true,
+  variablePrice: false, // إضافة القيمة الافتراضية للسعر المتغير
   type: "single",
   variants: [],
 };

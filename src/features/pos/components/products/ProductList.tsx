@@ -11,7 +11,6 @@ interface ProductListProps {
   refreshKey: number;
   onEditProduct?: (id: string) => void;
   onDeleteProduct?: (id: string) => void;
-  onPriceUpdate?: (product: Product) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({ 
@@ -19,8 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({
   viewMode, 
   refreshKey,
   onEditProduct, 
-  onDeleteProduct,
-  onPriceUpdate
+  onDeleteProduct 
 }) => {
   
   // حساب عدد الأعمدة وحجم المنتجات بناءً على نوع العرض
@@ -75,7 +73,6 @@ const ProductList: React.FC<ProductListProps> = ({
               product={product}
               onEdit={onEditProduct}
               onDelete={onDeleteProduct}
-              onPriceUpdate={onPriceUpdate}
               viewMode={viewMode}
             />
           )

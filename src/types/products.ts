@@ -14,6 +14,7 @@ export interface Product {
   image?: string;
   type: ProductType;
   taxable: boolean;
+  variablePrice?: boolean; // إضافة خاصية السعر المتغير
   variants: ProductVariant[];  // This should never be undefined
   sizes?: string[];
   companyId?: string; // Added companyId property
