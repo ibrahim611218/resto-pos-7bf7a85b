@@ -66,11 +66,15 @@ const UserForm: React.FC<UserFormProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="cashier">{isArabic ? "كاشير" : "Cashier"}</SelectItem>
-            <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
+            <SelectItem value="waiter">{isArabic ? "نادل" : "Waiter"}</SelectItem>
             <SelectItem value="kitchen">{isArabic ? "مطبخ" : "Kitchen"}</SelectItem>
+            <SelectItem value="delivery">{isArabic ? "توصيل" : "Delivery"}</SelectItem>
+            <SelectItem value="supervisor">{isArabic ? "مشرف" : "Supervisor"}</SelectItem>
+            <SelectItem value="manager">{isArabic ? "مدير فرع" : "Branch Manager"}</SelectItem>
+            <SelectItem value="accountant">{isArabic ? "محاسب" : "Accountant"}</SelectItem>
             {canManageAdmins && (
               <>
-                <SelectItem value="admin">{isArabic ? "مدير" : "Admin"}</SelectItem>
+                <SelectItem value="admin">{isArabic ? "مدير عام" : "Admin"}</SelectItem>
                 <SelectItem value="owner">{isArabic ? "مالك" : "Owner"}</SelectItem>
               </>
             )}

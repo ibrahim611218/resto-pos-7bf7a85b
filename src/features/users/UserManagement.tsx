@@ -6,8 +6,10 @@ import { useUsers } from "./hooks/useUsers";
 import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 import UsersContent from "./components/UsersContent";
 import UserDialogs from "./components/UserDialogs";
+import RolePermissionsManager from "./components/RolePermissionsManager";
 import ConnectionError from "./components/ConnectionError";
 import LoadingState from "./components/LoadingState";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const UserManagement: React.FC = () => {
   const { language } = useLanguage();
@@ -93,29 +95,44 @@ const UserManagement: React.FC = () => {
       {isLoading ? (
         <LoadingState />
       ) : (
-        <>
-          <UsersContent 
-            users={users}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-            onEditUser={(user) => {
-              setSelectedUser(user);
-              setIsEditDialogOpen(true);
-            }}
-            onChangePassword={(user) => {
-              setSelectedUser(user);
-              setIsPasswordDialogOpen(true);
-            }}
-            onDeleteUser={(user) => {
-              setSelectedUser(user);
-              setIsDeleteDialogOpen(true);
-            }}
-            onEditPermissions={(user) => {
-              if (handleEditPermissions(user)) {
-                setIsPermissionsDialogOpen(true);
-              }
-            }}
-            isArabic={isArabic}
-          />
+        <Tabs defaultValue="users" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              {isArabic ? "إدارة المستخدمين" : "User Management"}
+            </TabsTrigger>
+            <TabsTrigger value="permissions" className="flex items-center gap-2">
+              {isArabic ? "قوالب الصلاحيات" : "Permission Templates"}
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="users" className="mt-4">
+            <UsersContent 
+              users={users}
+              setIsAddDialogOpen={setIsAddDialogOpen}
+              onEditUser={(user) => {
+                setSelectedUser(user);
+                setIsEditDialogOpen(true);
+              }}
+              onChangePassword={(user) => {
+                setSelectedUser(user);
+                setIsPasswordDialogOpen(true);
+              }}
+              onDeleteUser={(user) => {
+                setSelectedUser(user);
+                setIsDeleteDialogOpen(true);
+              }}
+              onEditPermissions={(user) => {
+                if (handleEditPermissions(user)) {
+                  setIsPermissionsDialogOpen(true);
+                }
+              }}
+              isArabic={isArabic}
+            />
+          </TabsContent>
+          
+          <TabsContent value="permissions" className="mt-4">
+            <RolePermissionsManager isArabic={isArabic} />
+          </TabsContent>
           
           <UserDialogs 
             isAddDialogOpen={isAddDialogOpen}
@@ -147,7 +164,7 @@ const UserManagement: React.FC = () => {
             canManageAdmins={canManageAdmins}
             isArabic={isArabic}
           />
-        </>
+        </Tabs>
       )}
     </div>
   );

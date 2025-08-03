@@ -56,14 +56,23 @@ export const usePermissionsManagement = () => {
   const getDefaultPermissionsForRole = (role: string): string[] => {
     switch(role) {
       case 'owner':
-      case 'admin':
         return allPermissions;
+      case 'admin':
+        return allPermissions.filter(p => !['backup_data'].includes(p));
+      case 'manager':
+        return ['manage_products', 'manage_inventory', 'create_invoices', 'cancel_invoices', 'refund_invoices', 'view_reports', 'manage_tables', 'manage_discounts', 'manage_customers', 'export_data'];
       case 'supervisor':
-        return allPermissions.filter(p => !p.includes('manage_users'));
+        return ['manage_products', 'manage_inventory', 'create_invoices', 'view_reports', 'manage_tables', 'manage_customers'];
+      case 'accountant':
+        return ['view_reports', 'export_data', 'create_invoices', 'refund_invoices'];
       case 'cashier':
-        return ['create_invoices', 'view_reports'];
+        return ['create_invoices', 'view_reports', 'manage_customers'];
+      case 'waiter':
+        return ['create_invoices', 'manage_tables', 'manage_customers'];
       case 'kitchen':
         return ['manage_kitchen'];
+      case 'delivery':
+        return ['manage_delivery', 'view_reports'];
       default:
         return [];
     }

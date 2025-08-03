@@ -2,7 +2,7 @@
 import { User } from "@/types";
 
 // Define UserRole type
-export type UserRole = "admin" | "owner" | "supervisor" | "cashier" | "kitchen";
+export type UserRole = "admin" | "owner" | "supervisor" | "cashier" | "kitchen" | "waiter" | "manager" | "accountant" | "delivery";
 
 // Extend User type to include password for the form
 export interface UserWithPassword extends User {

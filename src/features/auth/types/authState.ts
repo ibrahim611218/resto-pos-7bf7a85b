@@ -20,6 +20,7 @@ export interface UserPermission {
   name: string;
   value: string;
   description: string;
+  category?: string;
   adminOnly?: boolean;
   cashierAllowed?: boolean;
   kitchenAllowed?: boolean;
