@@ -36,10 +36,11 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "relative inset-y-0 z-40 flex h-screen flex-col shadow-md",
+          "relative inset-y-0 z-40 flex h-screen flex-col shadow-lg",
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",
+          "sidebar-enhanced themed-scrollbar",
           "restopos-sidebar",
           isArabic ? "text-right" : "text-left"
         )}
@@ -47,10 +48,7 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
           direction: isArabic ? "rtl" : "ltr",
           pointerEvents: "auto", 
           touchAction: "auto", 
-          userSelect: "none",
-          backgroundColor: 'hsl(var(--primary))',
-          color: 'hsl(var(--primary-foreground))',
-          borderColor: 'hsl(var(--border))'
+          userSelect: "none"
         }}
         dir={isArabic ? "rtl" : "ltr"}
         data-sidebar="sidebar"

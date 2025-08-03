@@ -57,7 +57,7 @@ const ProductList: React.FC<ProductListProps> = ({
   }, [viewMode, products.length]);
 
   return (
-    <div className="w-full h-full overflow-auto">
+    <div className="w-full h-full overflow-auto pb-4">
       <div className={getOptimizedGridClass}>
         {products.map((product) =>
           viewMode === "list" ? (

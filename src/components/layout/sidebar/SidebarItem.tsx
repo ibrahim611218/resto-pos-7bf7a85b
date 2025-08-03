@@ -77,12 +77,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <button
         onClick={handleItemClick}
         className={cn(
-          "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
+          "flex items-center w-full px-3 py-2 text-sidebar font-sidebar rounded-md transition-colors duration-200",
           isActive
-            ? "bg-[#00695c] text-white sidebar-item-active"
-            : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
+            ? "bg-primary/20 text-primary border border-primary/30 sidebar-item-active"
+            : "hover:bg-primary/10 hover:text-primary text-muted-foreground sidebar-item-hover",
           collapsed ? "justify-center" : isArabic ? "justify-between flex-row-reverse" : "justify-between",
-          "text-white sidebar-text",
+          "sidebar-text font-medium",
           isArabic ? "text-right" : "text-left"
         )}
         style={{ 
@@ -95,10 +95,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         }}
       >
         <div className={cn("flex items-center", isArabic && !collapsed ? "flex-row-reverse w-full" : "")}>
-          <Icon className={cn("h-5 w-5 text-white", iconMarginClass())} />
+          <Icon className={cn("h-5 w-5", iconMarginClass())} />
           {!collapsed && (
             <span 
-              className={cn("text-white flex-1", isArabic ? 'text-right mr-2' : 'text-left ml-2')}
+              className={cn("flex-1 font-sidebar", isArabic ? 'text-right mr-2' : 'text-left ml-2')}
             >
               {name}
             </span>
@@ -107,7 +107,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         {hasSubMenu && !collapsed && (
           <ChevronDown
             className={cn(
-              "h-4 w-4 transition-transform text-white",
+              "h-4 w-4 transition-transform",
               isOpen ? "transform rotate-180" : "",
               isArabic ? "transform rotate-180" : ""
             )}
@@ -133,12 +133,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 key={subItem.name}
                 onClick={(e) => handleSubItemClick(e, subItem.path)}
                 className={cn(
-                  "flex items-center w-full px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                  "flex items-center w-full px-3 py-2 text-sm font-sidebar rounded-md transition-colors duration-200",
                   isSubItemActive
-                    ? "bg-[#00695c] text-white sidebar-item-active"
-                    : "hover:bg-[#00695c] hover:text-white sidebar-item-hover",
+                    ? "bg-primary/15 text-primary border border-primary/20 sidebar-item-active"
+                    : "hover:bg-primary/8 hover:text-primary text-muted-foreground sidebar-item-hover",
                   isArabic ? "flex-row-reverse justify-end text-right" : "text-left",
-                  "text-white sidebar-text"
+                  "sidebar-text font-medium"
                 )}
                 style={{ 
                   pointerEvents: "auto", 
@@ -150,9 +150,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 }}
               >
                 {subItem.icon && typeof SubIcon === 'function' && 
-                  <SubIcon className={cn("h-4 w-4 text-white", isArabic ? "ml-2" : "mr-2")} />
+                  <SubIcon className={cn("h-4 w-4", isArabic ? "ml-2" : "mr-2")} />
                 }
-                <span className={cn("text-white flex-1", isArabic ? 'text-right mr-2' : 'text-left ml-2')}>
+                <span className={cn("flex-1 font-sidebar", isArabic ? 'text-right mr-2' : 'text-left ml-2')}>
                   {subItem.name}
                 </span>
               </button>

@@ -137,7 +137,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Card 
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative group"
+        className="product-card-enhanced overflow-hidden cursor-pointer relative group"
         onClick={handleAddToCart}
       >
         <ProductActionButtons 

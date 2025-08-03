@@ -18,7 +18,10 @@ export const usePermissionsManagement = () => {
         return true;
       } catch (error) {
         console.error("Error fetching user permissions:", error);
-        return false;
+        // Set default permissions based on role if fetch fails
+        const defaultPermissions = getDefaultPermissionsForRole(user.role);
+        setSelectedPermissions(defaultPermissions);
+        return true;
       }
     }
     return false;

@@ -1,0 +1,171 @@
+/* Enhanced Theme System Styles */
+
+/* Improved theme interaction and visual feedback */
+.theme-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Better hover states for theme elements */
+.theme-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced theme preview */
+.theme-preview {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: calc(var(--radius) - 2px);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.theme-preview:hover::before {
+  opacity: 1;
+}
+
+/* Enhanced sidebar theming */
+.sidebar-enhanced {
+  background: linear-gradient(180deg, 
+    hsl(var(--card)) 0%, 
+    hsl(var(--card)/0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+  border-right: 1px solid hsl(var(--border)/0.5);
+}
+
+/* Better product card backgrounds */
+.product-card-enhanced {
+  background: linear-gradient(135deg,
+    hsl(var(--card)/0.9) 0%,
+    hsl(var(--card)/0.95) 100%
+  );
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border)/0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-enhanced:hover {
+  background: linear-gradient(135deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--accent)/0.05) 100%
+  );
+  border-color: hsl(var(--primary)/0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px -8px hsl(var(--primary)/0.15);
+}
+
+/* Improved button interactions */
+.btn-enhanced {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-enhanced:hover::before {
+  left: 100%;
+}
+
+/* Enhanced dialog and modal backgrounds */
+.dialog-enhanced {
+  background: linear-gradient(135deg,
+    hsl(var(--background)/0.95) 0%,
+    hsl(var(--card)/0.98) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border)/0.5);
+}
+
+/* Responsive theme adjustments */
+@media (max-width: 768px) {
+  .theme-card {
+    padding: 0.75rem;
+  }
+  
+  .product-card-enhanced {
+    backdrop-filter: blur(6px);
+  }
+  
+  .sidebar-enhanced {
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Dark mode enhancements */
+.dark .theme-preview {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.dark .product-card-enhanced {
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.3);
+}
+
+.dark .product-card-enhanced:hover {
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* RTL support for enhanced themes */
+[dir="rtl"] .theme-preview::before {
+  background: linear-gradient(-45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+}
+
+[dir="rtl"] .btn-enhanced::before {
+  background: linear-gradient(-90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+/* Animation keyframes for enhanced effects */
+@keyframes theme-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary)/0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px hsl(var(--primary)/0);
+  }
+}
+
+.theme-active {
+  animation: theme-pulse 2s infinite;
+}
+
+/* Enhanced scrollbars for themed elements */
+.themed-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--muted)/0.3);
+  border-radius: 3px;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary)/0.5);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary)/0.7);
+}

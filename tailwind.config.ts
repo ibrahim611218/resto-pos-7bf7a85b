@@ -25,6 +25,10 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Cairo", "Inter", "sans-serif"],
+        sidebar: ["Cairo", "Inter", "sans-serif"],
+      },
+      fontSize: {
+        'sidebar': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
       },
       colors: {
         border: "hsl(var(--border))",
