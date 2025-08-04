@@ -7,6 +7,7 @@ import { useDatabaseConnection } from "@/hooks/useDatabaseConnection";
 import UsersContent from "./components/UsersContent";
 import UserDialogs from "./components/UserDialogs";
 import RolePermissionsManager from "./components/RolePermissionsManager";
+import UserPermissionsManagement from "./components/UserPermissionsManagement";
 import ConnectionError from "./components/ConnectionError";
 import LoadingState from "./components/LoadingState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -96,12 +97,15 @@ const UserManagement: React.FC = () => {
         <LoadingState />
       ) : (
         <Tabs defaultValue="users" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="users" className="flex items-center gap-2">
               {isArabic ? "إدارة المستخدمين" : "User Management"}
             </TabsTrigger>
             <TabsTrigger value="permissions" className="flex items-center gap-2">
               {isArabic ? "قوالب الصلاحيات" : "Permission Templates"}
+            </TabsTrigger>
+            <TabsTrigger value="employee-permissions" className="flex items-center gap-2">
+              {isArabic ? "صلاحيات الموظفين" : "Employee Permissions"}
             </TabsTrigger>
           </TabsList>
           
@@ -132,6 +136,18 @@ const UserManagement: React.FC = () => {
           
           <TabsContent value="permissions" className="mt-4">
             <RolePermissionsManager isArabic={isArabic} />
+          </TabsContent>
+          
+          <TabsContent value="employee-permissions" className="mt-4">
+            <UserPermissionsManagement 
+              users={users}
+              onEditPermissions={(user) => {
+                if (handleEditPermissions(user)) {
+                  setIsPermissionsDialogOpen(true);
+                }
+              }}
+              isArabic={isArabic}
+            />
           </TabsContent>
           
           <UserDialogs 
