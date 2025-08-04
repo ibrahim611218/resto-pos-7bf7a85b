@@ -10,7 +10,8 @@ import {
   ShoppingCart, 
   FileSpreadsheet, 
   Receipt,
-  Building
+  Building,
+  Calculator
 } from "lucide-react";
 import { SidebarLink } from "./types";
 import { UserRole } from "@/types";
@@ -73,6 +74,13 @@ export const getSidebarLinks = (): SidebarLink[] => {
       path: "/kitchen",
       icon: ChefHat,
       roles: ["kitchen", "supervisor", "admin", "owner"]
+    },
+    {
+      name: "تقفيل اليومية",
+      name_en: "Daily Closing",
+      path: "/daily-closing",
+      icon: Calculator,
+      roles: ["cashier", "supervisor", "admin", "owner"]
     },
     {
       name: "التقارير",

@@ -27,6 +27,7 @@ import Pos from "./pages/Pos";
 import CompanyManagementPage from './pages/CompanyManagement';
 import UserManagementPage from './pages/UserManagement';
 import BusinessSettingsPage from './pages/BusinessSettings';
+import DailyClosingPage from './pages/DailyClosing';
 
 function App() {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -66,6 +67,7 @@ function App() {
         <Route path="/kitchen" element={<Kitchen />} />
         <Route path="/company-management" element={<CompanyManagementPage />} />
         <Route path="/user-management" element={<UserManagementPage />} />
+        <Route path="/daily-closing" element={<DailyClosingPage />} />
         
         <Route path="/reports" element={<Reports />} />
         <Route path="/sales-report" element={<SalesReport />} />
