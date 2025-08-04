@@ -1,7 +1,7 @@
 
 /* Saudi-themed variables and colors */
 :root {
-  --background: 0 0% 98%;
+  --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
   
   --card: 0 0% 100%;
@@ -42,7 +42,7 @@
 }
 
 .dark {
-  --background: 167 100% 6%;
+  --background: 167 100% 4%;
   --foreground: 0 0% 98%;
   
   --card: 167 100% 6%;

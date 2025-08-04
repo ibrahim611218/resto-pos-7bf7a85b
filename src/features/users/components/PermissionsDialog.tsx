@@ -85,7 +85,7 @@ const PermissionsDialog: React.FC<PermissionsDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg" dir={isArabic ? "rtl" : "ltr"}>
+      <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto z-50 permissions-dialog-content" dir={isArabic ? "rtl" : "ltr"}>
         <DialogHeader>
           <DialogTitle>
             {isArabic ? "إدارة صلاحيات المستخدم" : "Manage User Permissions"}
@@ -135,13 +135,15 @@ const PermissionsDialog: React.FC<PermissionsDialogProps> = ({
                           checked={selectedPermissions.includes(permission.value)}
                           onCheckedChange={(checked) => handleCheckboxChange(checked, permission.value)}
                         />
-                        <Label 
+                         <Label 
                           htmlFor={permission.value}
-                          className="flex-1 cursor-pointer"
+                          className="flex-1 cursor-pointer text-foreground"
                         >
-                          {isArabic ? permission.labelAr : permission.label}
+                          <div className="font-medium text-foreground">
+                            {isArabic ? permission.labelAr : permission.label}
+                          </div>
                           {permission.description && (
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-muted-foreground mt-1">
                               {isArabic && permission.descriptionAr 
                                 ? permission.descriptionAr 
                                 : permission.description}

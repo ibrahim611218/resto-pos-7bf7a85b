@@ -1,0 +1,74 @@
+/* Dialog and modal fixes for z-index and visibility */
+
+/* Ensure dialogs appear above all other content */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+[data-radix-dialog-overlay] {
+  z-index: 9998 !important;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+[data-radix-dialog-content] {
+  z-index: 9999 !important;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Fix for permission dialog content visibility */
+.permissions-dialog-content {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.permissions-dialog-content .text-muted-foreground {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.permissions-dialog-content .text-foreground {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Ensure text contrast in all modes */
+.dark .permissions-dialog-content {
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+/* Tab content visibility fix */
+[data-state="active"] {
+  display: block !important;
+}
+
+[data-state="inactive"] {
+  display: none !important;
+}
+
+/* Checkbox and label visibility */
+.checkbox-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .checkbox-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Button text visibility */
+button {
+  color: inherit;
+}
+
+.dark button {
+  color: inherit;
+}
+
+/* Ensure proper contrast for all text elements */
+.text-contrast {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .text-contrast {
+  color: hsl(var(--foreground)) !important;
+}

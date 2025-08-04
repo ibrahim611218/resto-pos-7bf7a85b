@@ -159,10 +159,10 @@ const RolePermissionsManager: React.FC<RolePermissionsManagerProps> = ({ isArabi
                           handlePermissionChange(permission.value, checked as boolean)
                         }
                       />
-                      <Label htmlFor={permission.value} className="flex-1 cursor-pointer">
+                      <Label htmlFor={permission.value} className="flex-1 cursor-pointer text-foreground">
                         <div>
-                          <div className="font-medium">{permission.name}</div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="font-medium text-foreground">{permission.name}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
                             {permission.description}
                           </div>
                         </div>
