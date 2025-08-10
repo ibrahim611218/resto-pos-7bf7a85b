@@ -31,6 +31,14 @@
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 167 100% 15%;
+
+  /* Sidebar semantic tokens (light) */
+  --sidebar: var(--primary);
+  --sidebar-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
   
   --radius: 0.75rem;
   
@@ -72,4 +80,12 @@
   --border: 167 30% 15%;
   --input: 167 30% 15%;
   --ring: 240 4.9% 83.9%;
+
+  /* Sidebar semantic tokens (dark) */
+  --sidebar: var(--primary);
+  --sidebar-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }

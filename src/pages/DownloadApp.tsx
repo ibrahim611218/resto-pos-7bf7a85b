@@ -18,21 +18,19 @@ const DownloadApp: React.FC = () => {
         <section className="rounded-lg border p-4 bg-card text-card-foreground">
           <h2 className="text-lg font-medium mb-2">الخيار الموصى به</h2>
           <p className="text-sm text-muted-foreground mb-3">
-            سنجهز لك حزمة تثبيت جاهزة للويندوز/ماك. حتى ذلك الحين، يمكنك إنشاء النسخة لديك محليًا باتباع الخطوات أدناه.
+            بإمكانك إنشاء النسخة فورًا على جهازك بالخطوات التالية.
           </p>
           <div className="flex gap-2">
             <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2 opacity-70 cursor-not-allowed"
-              aria-disabled
+              href="#local-build"
+              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-4 py-2"
             >
-              تحميل الحزمة (قريبًا)
+              إنشاء النسخة الآن (خطوة بخطوة)
             </a>
           </div>
         </section>
 
-        <section className="rounded-lg border p-4 bg-card text-card-foreground">
+        <section id="local-build" className="rounded-lg border p-4 bg-card text-card-foreground">
           <h2 className="text-lg font-medium mb-2">إنشاء نسخة سطح المكتب محليًا (Electron)</h2>
           <ol className="list-decimal mr-6 space-y-2 text-sm text-muted-foreground">
             <li>انقل المشروع إلى مستودعك في Github عبر "Export to Github".</li>
