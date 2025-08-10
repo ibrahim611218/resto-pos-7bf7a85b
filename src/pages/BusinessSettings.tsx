@@ -32,7 +32,7 @@ const BusinessSettings = () => {
       <div className="flex-1 overflow-hidden p-4">
         <div className="h-full max-w-6xl mx-auto">
           <Tabs defaultValue="business" className="h-full flex flex-col">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-4 flex-shrink-0">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-4 flex-shrink-0 overflow-x-auto whitespace-nowrap gap-2">
               <TabsTrigger value="business">
                 {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
               </TabsTrigger>

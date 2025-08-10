@@ -1,0 +1,32 @@
+/* Sidebar readability fixes for light and dark modes */
+
+/* Ensure base color for all textual elements in the sidebar */
+.restopos-sidebar {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Links, buttons, and interactive elements inherit readable color */
+.restopos-sidebar a,
+.restopos-sidebar button,
+.restopos-sidebar [role="button"],
+.restopos-sidebar .sidebar-text,
+.restopos-sidebar .sidebar-subtext {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Icons use currentColor for consistent contrast */
+.restopos-sidebar svg {
+  color: hsl(var(--primary-foreground)) !important;
+  stroke: currentColor !important;
+}
+
+/* Active/hover states rely on semantic tokens */
+.restopos-sidebar .sidebar-item-active {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+.restopos-sidebar .sidebar-item-hover {
+  /* Use existing utility if present; otherwise keep semantic fallback */
+  /* Tailwind utilities are applied elsewhere; this ensures tokens are used */
+}

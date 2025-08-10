@@ -120,6 +120,13 @@ export const getSidebarLinks = (): SidebarLink[] => {
       ],
     },
     {
+      name: "تحميل البرنامج",
+      name_en: "Download App",
+      path: "/download-app",
+      icon: FileText,
+      roles: ["cashier", "supervisor", "admin", "owner"],
+    },
+    {
       name: "إدارة الشركات",
       name_en: "Company Management",
       path: "/company-management",
