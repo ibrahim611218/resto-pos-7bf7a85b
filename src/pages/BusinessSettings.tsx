@@ -4,6 +4,7 @@ import BusinessSettingsForm from "@/features/settings/BusinessSettingsForm";
 import { useLanguage } from "@/context/LanguageContext";
 import DataManagement from "@/features/settings/components/DataManagement";
 import DisplaySettings from "@/features/settings/components/DisplaySettings";
+import SidebarCustomization from "@/features/settings/components/SidebarCustomization";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -59,6 +60,7 @@ const BusinessSettings = () => {
                     </CardHeader>
                     <CardContent>
                       <DisplaySettings />
+                      <SidebarCustomization />
                     </CardContent>
                   </Card>
                 </ScrollArea>
