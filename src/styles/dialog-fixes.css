@@ -39,14 +39,7 @@
   color: hsl(var(--card-foreground)) !important;
 }
 
-/* Tab content visibility fix */
-[data-state="active"] {
-  display: block !important;
-}
-
-[data-state="inactive"] {
-  display: none !important;
-}
+/* Removed global data-state visibility rules to avoid hiding tab triggers and menus */
 
 /* Checkbox and label visibility */
 .checkbox-label {
