@@ -1,48 +1,55 @@
-/* Sidebar readability fixes for light and dark modes */
 
-/* Ensure base color for all textual elements in the sidebar */
+/* Unified sidebar styling for both light and dark modes */
+
+/* Force consistent sidebar colors using CSS custom properties */
 .restopos-sidebar {
-  color: hsl(var(--primary-foreground)) !important;
+  background-color: hsl(167 100% 15%) !important;
+  color: hsl(0 0% 98%) !important;
+  border-color: hsl(167 30% 20%) !important;
 }
 
-/* Links, buttons, and interactive elements inherit readable color */
+/* All text elements in sidebar inherit white color */
+.restopos-sidebar,
+.restopos-sidebar *,
 .restopos-sidebar a,
 .restopos-sidebar button,
 .restopos-sidebar [role="button"],
 .restopos-sidebar .sidebar-text,
-.restopos-sidebar .sidebar-subtext {
-  color: hsl(var(--primary-foreground)) !important;
-}
-
-/* Ensure muted text is still readable inside sidebar */
-.restopos-sidebar .text-muted-foreground {
-  color: hsl(var(--primary-foreground)) !important;
-  opacity: 1;
-}
-
-/* Override brand hard-coded green to remain visible on dark bg */
-.restopos-sidebar .text-\[\#00825A\] {
-  color: hsl(var(--primary-foreground)) !important;
-}
-
-/* Ensure any 'text-primary' or generic 'text-foreground' inside sidebar inherits high-contrast color */
+.restopos-sidebar .sidebar-subtext,
+.restopos-sidebar .text-muted-foreground,
 .restopos-sidebar .text-primary,
 .restopos-sidebar .text-foreground {
-  color: hsl(var(--primary-foreground)) !important;
+  color: hsl(0 0% 98%) !important;
 }
 
-/* Icons use currentColor for consistent contrast */
+/* Override any brand colors that might interfere */
+.restopos-sidebar .text-\[\#00825A\],
+.restopos-sidebar .text-\[\#FF6B00\] {
+  color: hsl(0 0% 98%) !important;
+}
+
+/* Icons inherit text color for consistency */
 .restopos-sidebar svg {
-  color: hsl(var(--primary-foreground)) !important;
+  color: currentColor !important;
   stroke: currentColor !important;
 }
 
-/* Active/hover states rely on semantic tokens */
+/* Active and hover states with better contrast */
 .restopos-sidebar .sidebar-item-active {
-  background-color: hsl(var(--accent)) !important;
-  color: hsl(var(--accent-foreground)) !important;
+  background-color: hsl(167 30% 20%) !important;
+  color: hsl(0 0% 98%) !important;
+  font-weight: 500 !important;
 }
 
-.restopos-sidebar .sidebar-item-hover {
-  /* Tailwind utilities are applied elsewhere; this ensures tokens are used */
+.restopos-sidebar .sidebar-item-hover:hover {
+  background-color: hsl(167 30% 20%) !important;
+  color: hsl(0 0% 98%) !important;
+}
+
+/* Ensure borders use consistent color */
+.restopos-sidebar .border-b,
+.restopos-sidebar .border-t,
+.restopos-sidebar .border-r,
+.restopos-sidebar .border-l {
+  border-color: hsl(167 30% 20%) !important;
 }

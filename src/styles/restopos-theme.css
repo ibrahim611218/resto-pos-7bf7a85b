@@ -12,23 +12,34 @@
   @apply bg-[#ff5722] hover:bg-[#e64a19] text-white;
 }
 
-/* Sidebar styles with improved light/dark mode handling */
-.restopos-sidebar {
-  @apply bg-[#004d40] text-white border-r border-[#00695c];
-}
-
-/* Apply theme colors to sidebar in all modes */
+/* Unified sidebar styles for both light and dark modes */
 .restopos-sidebar,
 .light .restopos-sidebar,
 .dark .restopos-sidebar {
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border-color: hsl(var(--border)) !important;
+  background-color: hsl(var(--sidebar)) !important;
+  color: hsl(var(--sidebar-foreground)) !important;
+  border-color: hsl(var(--sidebar-border)) !important;
 }
 
-/* Light mode sidebar text */
-.restopos-sidebar-item {
-  @apply text-white hover:text-white;
+/* Ensure all text elements in sidebar use consistent colors */
+.restopos-sidebar * {
+  color: hsl(var(--sidebar-foreground)) !important;
+}
+
+/* Sidebar navigation items */
+.restopos-sidebar .sidebar-item-active {
+  background-color: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
+  font-weight: 500;
+}
+
+.restopos-sidebar .sidebar-item-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.restopos-sidebar .sidebar-item-hover:hover {
+  background-color: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
 }
 
 /* Dark mode orange border highlights */
@@ -39,27 +50,6 @@
 .dark .card,
 .dark .dialog-content {
   @apply border-orange-500/40;
-}
-
-/* Improved sidebar visibility */
-.sidebar-text {
-  color: hsl(var(--primary-foreground)) !important;
-  font-weight: 500;
-}
-
-.sidebar-subtext {
-  color: hsl(var(--muted-foreground)) !important;
-}
-
-/* Improved sidebar item visibility */
-.sidebar-item-active {
-  background-color: hsl(var(--accent)) !important;
-  color: hsl(var(--accent-foreground)) !important;
-  font-weight: 500;
-}
-
-.sidebar-item-hover {
-  @apply hover:bg-accent hover:text-accent-foreground transition-colors;
 }
 
 /* Cart panel theming */
