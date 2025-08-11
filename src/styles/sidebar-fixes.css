@@ -2,7 +2,9 @@
 /* Unified sidebar styling for both light and dark modes */
 
 /* Force consistent sidebar colors using CSS custom properties */
-.restopos-sidebar {
+.restopos-sidebar,
+[data-sidebar="sidebar"],
+.bg-sidebar {
   background-color: hsl(167 100% 15%) !important;
   color: hsl(0 0% 98%) !important;
   border-color: hsl(167 30% 20%) !important;
@@ -18,30 +20,58 @@
 .restopos-sidebar .sidebar-subtext,
 .restopos-sidebar .text-muted-foreground,
 .restopos-sidebar .text-primary,
-.restopos-sidebar .text-foreground {
+.restopos-sidebar .text-foreground,
+[data-sidebar="sidebar"],
+[data-sidebar="sidebar"] *,
+[data-sidebar="sidebar"] a,
+[data-sidebar="sidebar"] button,
+[data-sidebar="sidebar"] [role="button"],
+[data-sidebar="sidebar"] .sidebar-text,
+[data-sidebar="sidebar"] .sidebar-subtext,
+[data-sidebar="sidebar"] .text-muted-foreground,
+[data-sidebar="sidebar"] .text-primary,
+[data-sidebar="sidebar"] .text-foreground,
+.bg-sidebar,
+.bg-sidebar *,
+.bg-sidebar a,
+.bg-sidebar button,
+.bg-sidebar [role="button"],
+.bg-sidebar .sidebar-text,
+.bg-sidebar .sidebar-subtext,
+.bg-sidebar .text-muted-foreground,
+.bg-sidebar .text-primary,
+.bg-sidebar .text-foreground {
   color: hsl(0 0% 98%) !important;
 }
 
 /* Override any brand colors that might interfere */
 .restopos-sidebar .text-\[\#00825A\],
-.restopos-sidebar .text-\[\#FF6B00\] {
+.restopos-sidebar .text-\[\#FF6B00\],
+[data-sidebar="sidebar"] .text-\[\#00825A\],
+[data-sidebar="sidebar"] .text-\[\#FF6B00\],
+.bg-sidebar .text-\[\#00825A\],
+.bg-sidebar .text-\[\#FF6B00\] {
   color: hsl(0 0% 98%) !important;
 }
 
 /* Icons inherit text color for consistency */
-.restopos-sidebar svg {
+.restopos-sidebar svg,
+[data-sidebar="sidebar"] svg,
+.bg-sidebar svg {
   color: currentColor !important;
   stroke: currentColor !important;
 }
 
 /* Active and hover states with better contrast */
-.restopos-sidebar .sidebar-item-active {
+.restopos-sidebar .sidebar-item-active,
+.bg-sidebar .sidebar-item-active {
   background-color: hsl(167 30% 20%) !important;
   color: hsl(0 0% 98%) !important;
   font-weight: 500 !important;
 }
 
-.restopos-sidebar .sidebar-item-hover:hover {
+.restopos-sidebar .sidebar-item-hover:hover,
+.bg-sidebar .sidebar-item-hover:hover {
   background-color: hsl(167 30% 20%) !important;
   color: hsl(0 0% 98%) !important;
 }
@@ -50,6 +80,14 @@
 .restopos-sidebar .border-b,
 .restopos-sidebar .border-t,
 .restopos-sidebar .border-r,
-.restopos-sidebar .border-l {
+.restopos-sidebar .border-l,
+[data-sidebar="sidebar"] .border-b,
+[data-sidebar="sidebar"] .border-t,
+[data-sidebar="sidebar"] .border-r,
+[data-sidebar="sidebar"] .border-l,
+.bg-sidebar .border-b,
+.bg-sidebar .border-t,
+.bg-sidebar .border-r,
+.bg-sidebar .border-l {
   border-color: hsl(167 30% 20%) !important;
 }
