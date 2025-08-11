@@ -5,9 +5,17 @@
 .restopos-sidebar,
 [data-sidebar="sidebar"],
 .bg-sidebar {
-  background-color: hsl(167 100% 15%) !important;
-  color: hsl(0 0% 98%) !important;
-  border-color: hsl(167 30% 20%) !important;
+  /* Enforce dark sidebar palette in both light and dark modes */
+  --sidebar: 167 100% 15% !important;
+  --sidebar-foreground: 0 0% 98% !important;
+  --sidebar-accent: 167 30% 20% !important;
+  --sidebar-accent-foreground: 0 0% 98% !important;
+  --sidebar-border: 167 30% 20% !important;
+  --sidebar-ring: 240 4.9% 83.9% !important;
+
+  background-color: hsl(var(--sidebar)) !important;
+  color: hsl(var(--sidebar-foreground)) !important;
+  border-color: hsl(var(--sidebar-border)) !important;
 }
 
 /* All text elements in sidebar inherit white color */
@@ -44,6 +52,13 @@
   color: hsl(0 0% 98%) !important;
 }
 
+/* Normalize any Tailwind text-sidebar-foreground variants */
+.restopos-sidebar [class*="text-sidebar-foreground"],
+[data-sidebar="sidebar"] [class*="text-sidebar-foreground"],
+.bg-sidebar [class*="text-sidebar-foreground"] {
+  color: hsl(0 0% 98%) !important;
+}
+
 /* Override any brand colors that might interfere */
 .restopos-sidebar .text-\[\#00825A\],
 .restopos-sidebar .text-\[\#FF6B00\],
@@ -64,16 +79,20 @@
 
 /* Active and hover states with better contrast */
 .restopos-sidebar .sidebar-item-active,
-.bg-sidebar .sidebar-item-active {
-  background-color: hsl(167 30% 20%) !important;
-  color: hsl(0 0% 98%) !important;
+.bg-sidebar .sidebar-item-active,
+[data-sidebar="sidebar"] [data-active="true"],
+[data-sidebar="sidebar"] .data-[active=true] {
+  background-color: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
   font-weight: 500 !important;
 }
 
 .restopos-sidebar .sidebar-item-hover:hover,
-.bg-sidebar .sidebar-item-hover:hover {
-  background-color: hsl(167 30% 20%) !important;
-  color: hsl(0 0% 98%) !important;
+.bg-sidebar .sidebar-item-hover:hover,
+[data-sidebar="sidebar"] [data-state="open"],
+[data-sidebar="sidebar"] .hover\:bg-sidebar-accent:hover {
+  background-color: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
 }
 
 /* Ensure borders use consistent color */
