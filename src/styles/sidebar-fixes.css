@@ -17,11 +17,17 @@
 /* Ensure muted text is still readable inside sidebar */
 .restopos-sidebar .text-muted-foreground {
   color: hsl(var(--primary-foreground)) !important;
-  opacity: 0.9;
+  opacity: 1;
 }
 
 /* Override brand hard-coded green to remain visible on dark bg */
 .restopos-sidebar .text-\[\#00825A\] {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Ensure any 'text-primary' or generic 'text-foreground' inside sidebar inherits high-contrast color */
+.restopos-sidebar .text-primary,
+.restopos-sidebar .text-foreground {
   color: hsl(var(--primary-foreground)) !important;
 }
 
