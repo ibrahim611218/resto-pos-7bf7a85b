@@ -40,7 +40,5 @@ export const getStoredThemeId = (): string => {
 };
 
 export const getStoredMode = (): "light" | "dark" => {
-  const savedMode = localStorage.getItem("theme-mode") as "light" | "dark";
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  return savedMode || (prefersDark ? "dark" : "light");
+  return "dark";
 };

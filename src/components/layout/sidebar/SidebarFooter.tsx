@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AnimatedTransition from "../../ui-custom/AnimatedTransition";
-import ThemeToggle from "../../ui-custom/ThemeToggle";
+
 import { Language } from "@/types";
 import { toast } from "sonner";
 
@@ -39,7 +39,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
 
   return (
     <div className="border-t p-3 space-y-2">
-      <ThemeToggle collapsed={collapsed} className="w-full justify-start text-white" />
+      
       
       <Button 
         variant="outline"

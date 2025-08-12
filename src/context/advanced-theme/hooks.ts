@@ -12,7 +12,7 @@ import {
 
 export const useAdvancedThemeState = () => {
   const [currentThemeId, setCurrentThemeId] = useState<string>(getStoredThemeId);
-  const [mode, setMode] = useState<"light" | "dark">(getStoredMode);
+  const [mode, setMode] = useState<"light" | "dark">("dark");
   const [availableThemes, setAvailableThemes] = useState<ThemeSettings[]>(() => {
     const customThemes = getStoredThemes();
     return [...defaultThemes, ...customThemes];
@@ -32,7 +32,7 @@ export const useAdvancedThemeState = () => {
   };
 
   const toggleMode = () => {
-    setMode(prevMode => prevMode === "light" ? "dark" : "light");
+    setMode('dark');
   };
 
   const addCustomTheme = (theme: ThemeSettings) => {
@@ -61,7 +61,7 @@ export const useAdvancedThemeState = () => {
     availableThemes,
     setTheme,
     toggleMode,
-    setMode,
+    setMode: (_mode: "light" | "dark") => setMode('dark'),
     addCustomTheme,
     removeCustomTheme
   };

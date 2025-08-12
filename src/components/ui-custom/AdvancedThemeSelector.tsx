@@ -71,31 +71,17 @@ const AdvancedThemeSelector = ({ className }: AdvancedThemeSelectorProps) => {
         </DialogHeader>
         
         <div className="flex flex-col gap-4">
-          {/* Mode Toggle */}
+          {/* Mode is enforced to Dark */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                {mode === "light" ? <Sun size={16} /> : <Moon size={16} />}
+                <Moon size={16} />
                 {isArabic ? "وضع العرض" : "Display Mode"}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Button
-                onClick={toggleMode}
-                variant="outline"
-                className="w-full"
-              >
-                {mode === "light" ? (
-                  <>
-                    <Moon size={16} className="mr-2" />
-                    {isArabic ? "التبديل للوضع الداكن" : "Switch to Dark Mode"}
-                  </>
-                ) : (
-                  <>
-                    <Sun size={16} className="mr-2" />
-                    {isArabic ? "التبديل للوضع الفاتح" : "Switch to Light Mode"}
-                  </>
-                )}
+              <Button variant="outline" className="w-full" disabled>
+                {isArabic ? "الوضع الداكن مفعل دائماً" : "Dark mode is enforced"}
               </Button>
             </CardContent>
           </Card>
