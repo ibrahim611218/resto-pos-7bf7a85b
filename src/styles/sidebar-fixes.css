@@ -110,3 +110,35 @@
 .bg-sidebar .border-l {
   border-color: hsl(167 30% 20%) !important;
 }
+
+/* Force dark backgrounds for common background utility classes inside sidebar */
+.restopos-sidebar .bg-background,
+.restopos-sidebar .bg-card,
+.restopos-sidebar .bg-popover,
+.restopos-sidebar .bg-muted,
+.restopos-sidebar .bg-secondary,
+[data-sidebar="sidebar"] .bg-background,
+[data-sidebar="sidebar"] .bg-card,
+[data-sidebar="sidebar"] .bg-popover,
+[data-sidebar="sidebar"] .bg-muted,
+[data-sidebar="sidebar"] .bg-secondary,
+.bg-sidebar .bg-background,
+.bg-sidebar .bg-card,
+.bg-sidebar .bg-popover,
+.bg-sidebar .bg-muted,
+.bg-sidebar .bg-secondary {
+  background-color: hsl(var(--sidebar)) !important;
+  color: hsl(var(--sidebar-foreground)) !important;
+}
+
+/* Normalize active/selected states in all cases */
+.restopos-sidebar [data-active="true"],
+.restopos-sidebar [aria-current="page"],
+[data-sidebar="sidebar"] [data-active="true"],
+[data-sidebar="sidebar"] [aria-current="page"],
+.bg-sidebar [data-active="true"],
+.bg-sidebar [aria-current="page"] {
+  background-color: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
+  font-weight: 500 !important;
+}
