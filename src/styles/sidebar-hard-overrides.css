@@ -1,0 +1,81 @@
+/* Sidebar hard overrides to guarantee dark palette inside sidebar even in light mode */
+
+/* Ensure dark tokens are applied in light mode too (extra safety) */
+.light .restopos-sidebar,
+.light [data-sidebar="sidebar"],
+.light .bg-sidebar {
+  --sidebar: 167 100% 15% !important;
+  --sidebar-foreground: 0 0% 98% !important;
+  --sidebar-accent: 167 30% 20% !important;
+  --sidebar-accent-foreground: 0 0% 98% !important;
+  --sidebar-border: 167 30% 20% !important;
+  --sidebar-ring: 240 4.9% 83.9% !important;
+}
+
+/* Force common light backgrounds to use the sidebar dark background */
+.restopos-sidebar .bg-white,
+.restopos-sidebar .bg-gray-50,
+.restopos-sidebar .bg-slate-50,
+.restopos-sidebar .bg-neutral-50,
+.restopos-sidebar .bg-zinc-50,
+.restopos-sidebar [class*="bg-white"],
+[data-sidebar="sidebar"] .bg-white,
+[data-sidebar="sidebar"] .bg-gray-50,
+[data-sidebar="sidebar"] .bg-slate-50,
+[data-sidebar="sidebar"] .bg-neutral-50,
+[data-sidebar="sidebar"] .bg-zinc-50,
+[data-sidebar="sidebar"] [class*="bg-white"],
+.bg-sidebar .bg-white,
+.bg-sidebar .bg-gray-50,
+.bg-sidebar .bg-slate-50,
+.bg-sidebar .bg-neutral-50,
+.bg-sidebar .bg-zinc-50,
+.bg-sidebar [class*="bg-white"] {
+  background-color: hsl(var(--sidebar)) !important;
+  color: hsl(var(--sidebar-foreground)) !important;
+}
+
+/* Make sure text always stays readable (white) inside sidebar */
+.restopos-sidebar .text-black,
+.restopos-sidebar .text-gray-900,
+.restopos-sidebar .text-slate-900,
+.restopos-sidebar [class*="text-black"],
+[data-sidebar="sidebar"] .text-black,
+[data-sidebar="sidebar"] .text-gray-900,
+[data-sidebar="sidebar"] .text-slate-900,
+[data-sidebar="sidebar"] [class*="text-black"],
+.bg-sidebar .text-black,
+.bg-sidebar .text-gray-900,
+.bg-sidebar .text-slate-900,
+.bg-sidebar [class*="text-black"] {
+  color: hsl(var(--sidebar-foreground)) !important;
+}
+
+/* Links, buttons, labels inside the sidebar */
+.restopos-sidebar a,
+.restopos-sidebar button,
+.restopos-sidebar [role="button"],
+[data-sidebar="sidebar"] a,
+[data-sidebar="sidebar"] button,
+[data-sidebar="sidebar"] [role="button"],
+.bg-sidebar a,
+.bg-sidebar button,
+.bg-sidebar [role="button"] {
+  color: hsl(var(--sidebar-foreground)) !important;
+}
+
+/* General border utilities override */
+.restopos-sidebar .border,
+[data-sidebar="sidebar"] .border,
+.bg-sidebar .border {
+  border-color: hsl(167 30% 20%) !important;
+}
+
+/* Ensure icons fill/stroke follow text color */
+.restopos-sidebar svg,
+[data-sidebar="sidebar"] svg,
+.bg-sidebar svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: currentColor !important;
+}
