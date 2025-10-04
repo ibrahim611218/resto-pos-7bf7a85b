@@ -28,9 +28,11 @@ export const InvoiceHeader: React.FC<InvoiceHeaderProps> = ({
           {settings.nameAr || settings.name || "RestoPOS"}
         </DialogTitle>
         <DialogDescription className="text-center">
-          {settings.taxNumber && <div>الرقم الضريبي: {settings.taxNumber}</div>}
-          {settings.addressAr && <div>{settings.addressAr}</div>}
-          {settings.phone && <div>هاتف: {settings.phone}</div>}
+          {settings.taxEnabled !== false && settings.taxNumber && <div>الرقم الضريبي: {settings.taxNumber}</div>}
+          {settings.showAddress !== false && settings.addressAr && <div>{settings.addressAr}</div>}
+          {settings.showPhone !== false && settings.phone && <div>هاتف: {settings.phone}</div>}
+          {settings.showEmail !== false && settings.email && <div>البريد الإلكتروني: {settings.email}</div>}
+          {settings.commercialRegisterAr && <div>السجل التجاري: {settings.commercialRegisterAr}</div>}
         </DialogDescription>
       </div>
       

@@ -14,6 +14,10 @@ export const useBusinessSettings = () => {
     email: "info@example.com",
     taxRate: 15,
     taxIncluded: false,
+    taxEnabled: true,
+    showAddress: true,
+    showPhone: true,
+    showEmail: true,
     invoiceNotesAr: "شكراً لزيارتكم"
   });
   
