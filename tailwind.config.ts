@@ -24,8 +24,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Cairo", "Inter", "sans-serif"],
-        sidebar: ["Cairo", "Inter", "sans-serif"],
+        sans: ["Tajawal", "Cairo", "sans-serif"],
+        sidebar: ["Tajawal", "Cairo", "sans-serif"],
       },
       fontSize: {
         'sidebar': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],

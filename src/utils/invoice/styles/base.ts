@@ -3,20 +3,16 @@
  * Base styles for invoice
  */
 export const getBaseStyles = (): string => `
-  @font-face {
-    font-family: 'Tajawal';
-    src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
   body { 
-    font-family: 'Tajawal', Arial, sans-serif; 
+    font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif; 
     margin: 0; 
     padding: 0; 
     direction: rtl;
-    color: #333333;
+    color: #1a1a1a;
     background-color: #ffffff;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   .invoice-container {
@@ -97,11 +93,24 @@ export const getBaseStyles = (): string => `
     }
   }
   
-  /* Ensure all text is visible */
-  p, h1, h2, h3, h4, span, div, td, th {
+  /* Ensure all text is visible and clear */
+  p, h1, h2, h3, h4, h5, h6, span, div, td, th {
     overflow-wrap: break-word;
     word-wrap: break-word;
-    font-size: 95%;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 400;
+  }
+  
+  /* Bold text */
+  strong, b, th, .invoice-title {
+    font-weight: 700;
+  }
+  
+  /* Improve text rendering */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   /* Table styles for A4 PDF */
