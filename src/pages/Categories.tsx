@@ -148,7 +148,7 @@ const Categories = () => {
                 <div className="flex gap-2">
                   <Button 
                     variant="outline" 
-                    onClick={() => navigate(`/categories/edit/${category.id}`)}
+                    onClick={() => navigate(`/categories/${category.id}/edit`)}
                   >
                     <Pencil size={16} className={isArabic ? "ml-2" : "mr-2"} />
                     {isArabic ? "تعديل" : "Edit"}

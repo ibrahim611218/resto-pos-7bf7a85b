@@ -6,6 +6,9 @@ import { calculateDiscountAmount } from "../../calculations";
  * Generates HTML for the invoice summary section
  */
 export const generateInvoiceSummary = (invoice: Invoice, businessSettings: BusinessSettings): string => {
+  // Check if tax is enabled
+  const taxEnabled = businessSettings.taxEnabled !== false;
+  
   // Ensure tax rate is a valid number
   const taxRate = Number(businessSettings.taxRate);
   const effectiveTaxRate = isNaN(taxRate) ? 15 : taxRate;
@@ -20,7 +23,7 @@ export const generateInvoiceSummary = (invoice: Invoice, businessSettings: Busin
   return `
     <div class="invoice-summary">
       <p><strong>المجموع الفرعي:</strong> <span>${invoice.subtotal.toFixed(2)} ر.س</span></p>
-      <p><strong>ضريبة القيمة المضافة (${effectiveTaxRate}%):</strong> <span>${invoice.taxAmount.toFixed(2)} ر.س</span></p>
+      ${taxEnabled ? `<p><strong>ضريبة القيمة المضافة (${effectiveTaxRate}%):</strong> <span>${invoice.taxAmount.toFixed(2)} ر.س</span></p>` : ''}
       ${invoice.discount ? `<p><strong>الخصم${invoice.discountType === 'percentage' ? ` (${invoice.discount}%)` : ''}:</strong> <span>${
         discountAmount.toFixed(2)
       } ر.س</span></p>` : ''}

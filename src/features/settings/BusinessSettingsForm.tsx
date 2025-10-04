@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import GeneralInfo from './components/general-info/GeneralInfo';
 import ContactInformation from './components/contact-info/ContactInformation';
 import TaxSettings from './components/tax-settings/TaxSettings';
+import InvoiceDisplaySettings from './components/tax-settings/InvoiceDisplaySettings';
 import WorkHoursSettings from './components/work-hours/WorkHoursSettings';
 import { TouchModeSettings } from './components/touch-mode/TouchModeSettings';
 import { WindowSizeSettings } from './components/window-size/WindowSizeSettings';
@@ -81,8 +82,15 @@ const BusinessSettingsForm: React.FC = () => {
     },
     {
       id: 'tax',
-      label: isArabic ? 'إعدادات الضرائب' : 'Tax Settings',
-      component: <TaxSettings settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} onSwitchChange={handleSwitchChange} />
+      label: isArabic ? 'إعدادات الضرائب والفاتورة' : 'Tax & Invoice Settings',
+      component: (
+        <>
+          <TaxSettings settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} onSwitchChange={handleSwitchChange} />
+          <div className="mt-4">
+            <InvoiceDisplaySettings settings={localSettings} isArabic={isArabic} onSwitchChange={handleSwitchChange} />
+          </div>
+        </>
+      )
     },
     {
       id: 'hours',
