@@ -4,7 +4,7 @@
  */
 export const getBaseStyles = (): string => `
   body { 
-    font-family: 'Tajawal', 'Arial', 'Helvetica', sans-serif !important; 
+    font-family: 'Tajawal', 'Cairo', sans-serif !important; 
     margin: 0; 
     padding: 0; 
     direction: rtl;
@@ -15,7 +15,7 @@ export const getBaseStyles = (): string => `
   }
   
   * {
-    font-family: 'Tajawal', 'Arial', 'Helvetica', sans-serif !important;
+    font-family: 'Tajawal', 'Cairo', sans-serif !important;
   }
   
   .invoice-container {

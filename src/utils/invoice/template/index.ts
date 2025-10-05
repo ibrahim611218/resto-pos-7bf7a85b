@@ -48,7 +48,7 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <title>فاتورة ${invoice.number}</title>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
       <style>
         ${getInvoiceStyles()}
         /* Ensure invoice fits on one page */
@@ -58,12 +58,12 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
         }
         * {
           box-sizing: border-box;
-          font-family: 'Tajawal', sans-serif !important;
+          font-family: 'Tajawal', 'Cairo', sans-serif !important;
         }
         body, html {
           margin: 0;
           padding: 0;
-          font-family: 'Tajawal', sans-serif !important;
+          font-family: 'Tajawal', 'Cairo', sans-serif !important;
         }
         .invoice-container {
           page-break-inside: avoid;
