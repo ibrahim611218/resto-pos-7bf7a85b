@@ -89,6 +89,22 @@ const InvoiceDisplaySettings: React.FC<InvoiceDisplaySettingsProps> = ({
             onCheckedChange={(checked) => onSwitchChange('showEmail', checked)}
           />
         </div>
+
+        <div className="flex items-center justify-between">
+          <Label htmlFor="showRestoPOSBranding" className="flex-1">
+            {isArabic ? 'إظهار علامة RestoPOS' : 'Show RestoPOS Branding'}
+            <p className="text-sm text-muted-foreground mt-1">
+              {isArabic 
+                ? 'عرض "تم إنشاؤها بواسطة نظام RestoPOS" في أسفل الفاتورة' 
+                : 'Show "Created by RestoPOS" at the bottom of invoice'}
+            </p>
+          </Label>
+          <Switch
+            id="showRestoPOSBranding"
+            checked={settings.showRestoPOSBranding !== false}
+            onCheckedChange={(checked) => onSwitchChange('showRestoPOSBranding', checked)}
+          />
+        </div>
       </CardContent>
     </Card>
   );

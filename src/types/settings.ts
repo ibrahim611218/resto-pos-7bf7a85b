@@ -13,6 +13,7 @@ export interface BusinessSettings {
   showAddress?: boolean; // Show/hide address in invoice
   showPhone?: boolean; // Show/hide phone in invoice
   showEmail?: boolean; // Show/hide email in invoice
+  showRestoPOSBranding?: boolean; // Show/hide RestoPOS branding in invoice
   invoiceNotesAr: string;
   invoiceNotes?: string;
   commercialRegisterAr?: string;

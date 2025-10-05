@@ -7,7 +7,7 @@ import { Invoice } from "@/types";
 export const generateInvoiceDetails = (invoice: Invoice): string => {
   return `
     <div class="invoice-details">
-      <h2 style="text-align: center;">فاتورة رقم #${invoice.number}</h2>
+      <h2>فاتورة رقم #${invoice.number}</h2>
       <p><strong>التاريخ:</strong> ${new Date(invoice.date).toLocaleDateString('ar-SA')}</p>
       <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
       <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>

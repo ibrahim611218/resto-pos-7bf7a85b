@@ -4,11 +4,25 @@
  */
 export const getSummaryStyles = (): string => `
   .invoice-details { 
-    margin-bottom: 10px; 
+    margin-bottom: 12px; 
     background-color: #f9f9f9;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 10px;
+    border-radius: 6px;
     border: 1px solid #e5e5e5;
+  }
+  
+  .invoice-details h2 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+  }
+  
+  .invoice-details p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 4px 0;
   }
   
   .invoice-summary { 

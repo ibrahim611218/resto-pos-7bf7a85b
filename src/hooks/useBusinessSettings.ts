@@ -18,6 +18,7 @@ export const useBusinessSettings = () => {
     showAddress: true,
     showPhone: true,
     showEmail: true,
+    showRestoPOSBranding: true,
     invoiceNotesAr: "شكراً لزيارتكم"
   });
   

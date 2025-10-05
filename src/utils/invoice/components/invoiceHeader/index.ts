@@ -18,10 +18,10 @@ export const generateInvoiceHeader = (settings: BusinessSettings): string => {
         `<img src="${settings.logo}" class="logo" alt="شعار المطعم">` : 
         restoposLogoHtml
       }
-      <h1 style="font-weight: 700;">${settings.nameAr || settings.name || "RestoPOS"}</h1>
+      <h1>${settings.nameAr || settings.name || "RestoPOS"}</h1>
       ${settings.taxEnabled !== false && settings.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${settings.taxNumber}</p>` : ''}
-      ${settings.showAddress !== false && settings.addressAr ? `<p>${settings.addressAr}</p>` : ''}
-      ${settings.showPhone !== false && settings.phone ? `<p><strong>هاتف:</strong> ${settings.phone}</p>` : ''}
+      ${settings.showAddress !== false && settings.addressAr ? `<p><strong>العنوان:</strong> ${settings.addressAr}</p>` : ''}
+      ${settings.showPhone !== false && settings.phone ? `<p><strong>الهاتف:</strong> ${settings.phone}</p>` : ''}
       ${settings.showEmail !== false && settings.email ? `<p><strong>البريد الإلكتروني:</strong> ${settings.email}</p>` : ''}
       ${settings.commercialRegisterAr ? `<p><strong>السجل التجاري:</strong> ${settings.commercialRegisterAr}</p>` : ''}
     </div>

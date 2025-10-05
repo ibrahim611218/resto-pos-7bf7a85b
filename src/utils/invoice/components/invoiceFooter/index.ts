@@ -11,11 +11,11 @@ export const generateInvoiceFooter = (settings: BusinessSettings): string => {
   return `
     <div class="invoice-footer">
       <p>${notes}</p>
-      ${settings.addressAr ? `<p>${settings.addressAr}</p>` : ''}
-      ${settings.phone ? `<p>هاتف: ${settings.phone}</p>` : ''}
     </div>
+    ${settings.showRestoPOSBranding !== false ? `
     <div class="software-info">
       <p>تم إنشاؤها بواسطة نظام RestoPOS</p>
     </div>
+    ` : ''}
   `;
 };
