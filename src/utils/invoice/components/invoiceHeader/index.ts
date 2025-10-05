@@ -21,7 +21,7 @@ export const generateInvoiceHeader = (settings: BusinessSettings): string => {
       <h1>${settings.nameAr || settings.name || "RestoPOS"}</h1>
       ${settings.taxEnabled !== false && settings.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${settings.taxNumber}</p>` : ''}
       ${settings.showAddress !== false && settings.addressAr ? `<p><strong>العنوان:</strong> ${settings.addressAr}</p>` : ''}
-      ${settings.showPhone !== false && settings.phone ? `<p><strong>الهاتف:</strong> ${settings.phone}</p>` : ''}
+      ${settings.showPhone !== false && settings.phone ? `<p><strong>للتواصل:</strong> ${settings.phone}</p>` : ''}
       ${settings.showEmail !== false && settings.email ? `<p><strong>البريد الإلكتروني:</strong> ${settings.email}</p>` : ''}
       ${settings.commercialRegisterAr ? `<p><strong>السجل التجاري:</strong> ${settings.commercialRegisterAr}</p>` : ''}
     </div>

@@ -12,7 +12,12 @@ export const generateInvoiceDetails = (invoice: Invoice): string => {
       <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
       <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
       ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
-      <p><strong>طريقة الدفع:</strong> ${invoice.paymentMethod}</p>
+      <p><strong>طريقة الدفع:</strong> ${
+        invoice.paymentMethod === 'cash' ? 'نقدي' :
+        invoice.paymentMethod === 'card' ? 'بطاقة' :
+        invoice.paymentMethod === 'transfer' ? 'تحويل بنكي' :
+        invoice.paymentMethod
+      }</p>
       
       ${invoice.customer ? `
         <div class="customer-info">

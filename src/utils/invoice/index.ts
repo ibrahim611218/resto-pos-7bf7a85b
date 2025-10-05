@@ -5,12 +5,9 @@ import { v4 as uuidv4 } from 'uuid';
  * Generates a unique invoice number
  */
 export const generateInvoiceNumber = (): string => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 99999); // Random 5-digit number
-  return `${year}${month}${day}${random.toString().padStart(5, '0')}`;
+  // Generate 6 random digits
+  const random = Math.floor(Math.random() * 900000) + 100000; // Between 100000 and 999999
+  return random.toString();
 };
 
 // Function to calculate discount amount

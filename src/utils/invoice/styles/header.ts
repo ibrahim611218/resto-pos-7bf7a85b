@@ -17,15 +17,16 @@ export const getHeaderStyles = (): string => `
   }
   
   .invoice-header p {
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 4px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 5px 0;
+    font-weight: 500;
   }
   
   .logo { 
-    max-width: 120px; 
-    max-height: 60px; 
-    margin: 0 auto 8px;
+    max-width: 132px; 
+    max-height: 66px; 
+    margin: 0 auto 10px;
     display: block;
   }
   
@@ -54,11 +55,18 @@ export const getHeaderStyles = (): string => `
   
   @media print {
     .invoice-header h1 {
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: 700;
     }
     
     .invoice-header p {
-      font-size: 11px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .logo { 
+      max-width: 132px; 
+      max-height: 66px; 
     }
   }
 `;

@@ -12,8 +12,8 @@ export const generateInvoiceQRCode = (invoice: Invoice, isPdf: boolean = false):
     // Generate QR code data
     const qrCodeData = generateInvoiceQRCodeData(invoice);
     
-    // Set size based on document type - smaller for both receipt and PDF to fit on one page
-    const qrCodeSize = isPdf ? 90 : 80;
+    // Set size based on document type - increased by 20%
+    const qrCodeSize = isPdf ? 108 : 96;
     
     return `
       <div class="qr-code-container" 

@@ -6,24 +6,26 @@ export const getTableStyles = (): string => `
   .invoice-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 8px 0;
+    margin: 10px 0;
     table-layout: fixed;
   }
   
   .invoice-table th,
   .invoice-table td {
-    padding: 5px 3px;
-    border: 1px solid #e0e0e0;
+    padding: 8px 5px;
+    border: 1px solid #d0d0d0;
     text-align: right;
-    font-size: 11px;
+    font-size: 13px;
     overflow-wrap: break-word;
     word-wrap: break-word;
     max-width: 100%;
+    font-weight: 500;
   }
   
   .invoice-table th {
-    background-color: #f8f9fa;
-    font-weight: bold;
+    background-color: #f5f5f5;
+    font-weight: 700;
+    font-size: 14px;
   }
   
   .invoice-table th:nth-child(1) {
@@ -56,7 +58,7 @@ export const getTableStyles = (): string => `
   @media print {
     .invoice-table {
       page-break-inside: auto;
-      font-size: 10px;
+      width: 100%;
     }
     
     .invoice-table tr {
@@ -74,8 +76,17 @@ export const getTableStyles = (): string => `
 
     .invoice-table th,
     .invoice-table td {
-      padding: 4px 2px;
-      font-size: 10px;
+      padding: 8px 5px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    .invoice-table th {
+      font-size: 14px;
+      font-weight: 700;
+      background-color: #f5f5f5 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
   }
 `;

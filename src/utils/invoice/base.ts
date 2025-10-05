@@ -3,20 +3,19 @@
  * Base styles for invoice
  */
 export const getBaseStyles = (): string => `
-  @font-face {
-    font-family: 'Tajawal';
-    src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
   body { 
-    font-family: 'Tajawal', Arial, sans-serif; 
+    font-family: 'Tajawal', 'Arial', 'Helvetica', sans-serif !important; 
     margin: 0; 
     padding: 0; 
     direction: rtl;
-    color: #333333;
+    color: #1a1a1a !important;
     background-color: #ffffff;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  * {
+    font-family: 'Tajawal', 'Arial', 'Helvetica', sans-serif !important;
   }
   
   .invoice-container {

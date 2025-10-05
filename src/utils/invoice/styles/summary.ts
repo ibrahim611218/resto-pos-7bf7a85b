@@ -13,16 +13,17 @@ export const getSummaryStyles = (): string => `
   
   .invoice-details h2 {
     text-align: center;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    margin: 0 0 8px 0;
-    line-height: 1.4;
+    margin: 0 0 10px 0;
+    line-height: 1.5;
   }
   
   .invoice-details p {
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 4px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 5px 0;
+    font-weight: 500;
   }
   
   .invoice-summary { 
@@ -40,8 +41,9 @@ export const getSummaryStyles = (): string => `
   .invoice-summary p {
     display: flex;
     justify-content: space-between;
-    margin: 5px 0;
-    font-size: 12px;
+    margin: 6px 0;
+    font-size: 13px;
+    font-weight: 500;
   }
   
   .customer-info {
@@ -58,13 +60,25 @@ export const getSummaryStyles = (): string => `
       background-color: #f9f9f9 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
-      padding: 8px;
-      margin: 6px auto;
+      padding: 10px;
+      margin: 8px auto;
+    }
+    
+    .invoice-details h2 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    .invoice-details p {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 5px 0;
     }
     
     .invoice-summary p {
-      margin: 3px 0;
-      font-size: 11px;
+      margin: 6px 0;
+      font-size: 13px;
+      font-weight: 500;
     }
   }
 `;
