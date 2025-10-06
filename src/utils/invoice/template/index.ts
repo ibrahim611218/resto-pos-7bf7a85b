@@ -50,34 +50,53 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
       <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
         ${getInvoiceStyles()}
+        
         /* Ensure invoice fits on one page */
         @page {
           size: ${isPdf ? 'A4' : '80mm auto'};
           margin: ${isPdf ? '5mm' : '0'};
         }
+        
         * {
           box-sizing: border-box;
           font-family: 'Tajawal', sans-serif !important;
         }
+        
         body, html {
           margin: 0;
           padding: 0;
           font-family: 'Tajawal', sans-serif !important;
         }
+        
         .invoice-container {
           page-break-inside: avoid;
           page-break-after: always;
+          font-family: 'Tajawal', sans-serif !important;
         }
+        
         .compact-invoice {
           font-size: 100%;
           line-height: 1.4;
+          font-family: 'Tajawal', sans-serif !important;
         }
+        
         .compact-invoice p {
           margin: 4px 0;
+          font-family: 'Tajawal', sans-serif !important;
         }
+        
         .compact-invoice h1, .compact-invoice h2, .compact-invoice h3 {
           font-weight: 700;
+          font-family: 'Tajawal', sans-serif !important;
+        }
+        
+        @media print {
+          * {
+            font-family: 'Tajawal', sans-serif !important;
+          }
         }
       </style>
     </head>
