@@ -40,6 +40,7 @@ export const getBaseStyles = (): string => `
       margin: 0 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+      font-family: 'Tajawal', sans-serif !important;
     }
     
     .invoice-container {
@@ -55,6 +56,7 @@ export const getBaseStyles = (): string => `
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
       color-adjust: exact !important;
+      font-family: 'Tajawal', sans-serif !important;
     }
     
     .watermark {

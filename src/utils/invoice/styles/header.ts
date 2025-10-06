@@ -24,8 +24,8 @@ export const getHeaderStyles = (): string => `
   }
   
   .logo { 
-    max-width: 132px; 
-    max-height: 66px; 
+    max-width: 152px; 
+    max-height: 76px; 
     margin: 0 auto 10px;
     display: block;
   }
@@ -65,8 +65,8 @@ export const getHeaderStyles = (): string => `
     }
     
     .logo { 
-      max-width: 132px; 
-      max-height: 66px; 
+      max-width: 152px; 
+      max-height: 76px; 
     }
   }
 `;

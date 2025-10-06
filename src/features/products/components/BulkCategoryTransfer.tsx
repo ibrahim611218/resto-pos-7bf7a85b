@@ -88,7 +88,7 @@ const BulkCategoryTransfer: React.FC<BulkCategoryTransferProps> = ({ open, onOpe
 
     setIsLoading(true);
     try {
-      const updatePromises = Array.from(selectedProducts).map(async (productId) => {
+      const updatePromises = Array.from(selectedProducts).map((productId) => {
         const product = products.find(p => p.id === productId);
         if (product) {
           return productService.saveProduct({
@@ -96,6 +96,7 @@ const BulkCategoryTransfer: React.FC<BulkCategoryTransferProps> = ({ open, onOpe
             categoryId: targetCategoryId
           });
         }
+        return Promise.resolve();
       });
 
       await Promise.all(updatePromises);

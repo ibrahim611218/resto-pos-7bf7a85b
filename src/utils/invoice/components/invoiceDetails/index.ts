@@ -7,17 +7,17 @@ import { Invoice } from "@/types";
 export const generateInvoiceDetails = (invoice: Invoice): string => {
   return `
     <div class="invoice-details">
-      <h2>فاتورة رقم #${invoice.number}</h2>
-      <p><strong>التاريخ:</strong> ${new Date(invoice.date).toLocaleDateString('ar-SA')}</p>
-      <p><strong>الكاشير:</strong> ${invoice.cashierName}</p>
-      <p><strong>نوع الطلب:</strong> ${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</p>
-      ${invoice.tableNumber ? `<p><strong>رقم الطاولة:</strong> ${invoice.tableNumber}</p>` : ''}
-      <p><strong>طريقة الدفع:</strong> ${
+      <p style="display: flex; justify-content: space-between; width: 100%; font-size: 15px; font-weight: 700;"><strong>الفاتورة:</strong> <span>#${invoice.number}</span></p>
+      <p style="display: flex; justify-content: space-between; width: 100%;"><strong>التاريخ:</strong> <span>${new Date(invoice.date).toLocaleDateString('ar-SA')}</span></p>
+      <p style="display: flex; justify-content: space-between; width: 100%;"><strong>الكاشير:</strong> <span>${invoice.cashierName}</span></p>
+      <p style="display: flex; justify-content: space-between; width: 100%;"><strong>نوع الطلب:</strong> <span>${invoice.orderType === 'takeaway' ? 'سفري' : 'محلي'}</span></p>
+      ${invoice.tableNumber ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>رقم الطاولة:</strong> <span>${invoice.tableNumber}</span></p>` : ''}
+      <p style="display: flex; justify-content: space-between; width: 100%;"><strong>طريقة الدفع:</strong> <span>${
         invoice.paymentMethod === 'cash' ? 'نقدي' :
         invoice.paymentMethod === 'card' ? 'بطاقة' :
         invoice.paymentMethod === 'transfer' ? 'تحويل بنكي' :
         invoice.paymentMethod
-      }</p>
+      }</span></p>
       
       ${invoice.customer ? `
         <div class="customer-info">

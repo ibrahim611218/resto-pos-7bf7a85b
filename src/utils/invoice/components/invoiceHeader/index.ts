@@ -19,11 +19,11 @@ export const generateInvoiceHeader = (settings: BusinessSettings): string => {
         restoposLogoHtml
       }
       <h1>${settings.nameAr || settings.name || "RestoPOS"}</h1>
-      ${settings.taxEnabled !== false && settings.taxNumber ? `<p><strong>الرقم الضريبي:</strong> ${settings.taxNumber}</p>` : ''}
-      ${settings.showAddress !== false && settings.addressAr ? `<p style="text-align: right;"><strong>العنوان:</strong> ${settings.addressAr}</p>` : ''}
-      ${settings.showPhone !== false && settings.phone ? `<p style="text-align: right;"><strong>للتواصل:</strong> ${settings.phone}</p>` : ''}
-      ${settings.showEmail !== false && settings.email ? `<p><strong>البريد الإلكتروني:</strong> ${settings.email}</p>` : ''}
-      ${settings.commercialRegisterAr ? `<p><strong>السجل التجاري:</strong> ${settings.commercialRegisterAr}</p>` : ''}
+      ${settings.taxEnabled !== false && settings.taxNumber ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>الرقم الضريبي:</strong> <span>${settings.taxNumber}</span></p>` : ''}
+      ${settings.showAddress !== false && settings.addressAr ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>العنوان:</strong> <span>${settings.addressAr}</span></p>` : ''}
+      ${settings.showPhone !== false && settings.phone ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>للتواصل:</strong> <span>${settings.phone}</span></p>` : ''}
+      ${settings.showEmail !== false && settings.email ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>البريد الإلكتروني:</strong> <span>${settings.email}</span></p>` : ''}
+      ${settings.commercialRegisterAr ? `<p style="display: flex; justify-content: space-between; width: 100%;"><strong>السجل التجاري:</strong> <span>${settings.commercialRegisterAr}</span></p>` : ''}
     </div>
   `;
 };
