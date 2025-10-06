@@ -51,11 +51,13 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
     };
   }, []);
 
+  const selectedCategory = categories.find(c => c.id === categoryId);
+  
   return (
     <div className="space-y-2">
       <Label htmlFor="category">{isArabic ? "التصنيف" : "Category"}</Label>
       <Select 
-        value={categoryId} 
+        value={categoryId || undefined} 
         onValueChange={handleCategoryChange}
         disabled={isLoading}
       >
@@ -66,7 +68,15 @@ const ProductCategorySelect: React.FC<ProductCategorySelectProps> = ({
               {isArabic ? "جاري التحميل..." : "Loading..."}
             </div>
           ) : (
-            <SelectValue placeholder={isArabic ? "اختر التصنيف" : "Select category"} />
+            <SelectValue 
+              placeholder={isArabic ? "اختر التصنيف" : "Select category"}
+            >
+              {selectedCategory ? (
+                isArabic ? (selectedCategory.nameAr || selectedCategory.name) : selectedCategory.name
+              ) : (
+                isArabic ? "اختر التصنيف" : "Select category"
+              )}
+            </SelectValue>
           )}
         </SelectTrigger>
         <SelectContent 

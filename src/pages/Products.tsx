@@ -4,10 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
 import { ViewMode } from "@/components/ui-custom/ViewToggle";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
+import { Plus, FolderInput } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import productService from "@/services/products/ProductService";
 import { toast } from "@/hooks/use-toast";
+import BulkCategoryTransfer from "@/features/products/components/BulkCategoryTransfer";
 
 const Products = () => {
   const location = useLocation();
@@ -16,6 +17,7 @@ const Products = () => {
   const isArabic = language === "ar";
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showBulkTransfer, setShowBulkTransfer] = useState(false);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -77,10 +79,16 @@ const Products = () => {
       <div className="flex-shrink-0 p-4 border-b bg-background">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
-          <Button onClick={handleAddProduct}>
-            <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
-            {isArabic ? "إضافة منتج" : "Add Product"}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowBulkTransfer(true)}>
+              <FolderInput className={isArabic ? "ml-2" : "mr-2"} size={16} />
+              {isArabic ? "نقل المنتجات" : "Transfer Products"}
+            </Button>
+            <Button onClick={handleAddProduct}>
+              <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
+              {isArabic ? "إضافة منتج" : "Add Product"}
+            </Button>
+          </div>
         </div>
       </div>
       
@@ -93,6 +101,12 @@ const Products = () => {
           key={`products-grid-${refreshTrigger}`}  
         />
       </div>
+
+      <BulkCategoryTransfer
+        open={showBulkTransfer}
+        onOpenChange={setShowBulkTransfer}
+        onComplete={() => setRefreshTrigger(v => v + 1)}
+      />
     </div>
   );
 };
