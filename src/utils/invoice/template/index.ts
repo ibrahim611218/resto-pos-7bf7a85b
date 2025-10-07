@@ -97,6 +97,14 @@ export const generateInvoiceTemplate = (invoice: Invoice, businessSettings?: Bus
           * {
             font-family: 'Tajawal', sans-serif !important;
           }
+          
+          body, html {
+            font-family: 'Tajawal', sans-serif !important;
+          }
+          
+          p, h1, h2, h3, h4, h5, h6, span, div, td, th, label, input, button {
+            font-family: 'Tajawal', sans-serif !important;
+          }
         }
       </style>
     </head>

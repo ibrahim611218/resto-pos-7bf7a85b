@@ -68,20 +68,13 @@ const ProductVariantsManager: React.FC<ProductVariantsManagerProps> = ({
                   <ArrowDown className="h-4 w-4" />
                 </Button>
               </div>
-              <Select 
-                value={variant.size} 
-                onValueChange={(value) => updateVariant(variant.id, 'size', value)}
-              >
-                <SelectTrigger className="w-24">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="small">صغير</SelectItem>
-                  <SelectItem value="medium">وسط</SelectItem>
-                  <SelectItem value="large">كبير</SelectItem>
-                  <SelectItem value="xlarge">كبير جداً</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input 
+                type="text"
+                value={variant.size}
+                onChange={(e) => updateVariant(variant.id, 'size', e.target.value)}
+                placeholder="المقاس (مثال: صغير، وسط، كبير، ثمن كيلو، ربع كيلو، نصف كيلو، كيلو)"
+                className="w-48"
+              />
               
               <div className="flex items-center flex-1">
                 <Input 

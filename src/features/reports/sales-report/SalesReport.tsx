@@ -11,6 +11,7 @@ import { SearchIcon, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useReportsSync } from "@/hooks/useReportsSync";
 
 const CHART_COLORS = [
   "#10B981", // Green
@@ -51,10 +52,24 @@ const SalesReport: React.FC = () => {
     refreshData
   } = useSalesData({ language });
   
+  // Sync reports with invoices
+  useReportsSync();
+  
   // Load invoices data when component mounts
   useEffect(() => {
     loadInvoicesFromStorage();
   }, [loadInvoicesFromStorage]);
+  
+  // Listen for reports data updates
+  useEffect(() => {
+    const handleReportsUpdate = () => {
+      loadInvoicesFromStorage();
+      refreshData();
+    };
+    
+    window.addEventListener('reports-data-updated', handleReportsUpdate);
+    return () => window.removeEventListener('reports-data-updated', handleReportsUpdate);
+  }, [loadInvoicesFromStorage, refreshData]);
   
   const handleRefresh = () => {
     loadInvoicesFromStorage();

@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { exportToExcel } from "@/utils/reports";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { useReportsSync } from "@/hooks/useReportsSync";
 
 interface Expense {
   id: string;
@@ -28,8 +29,21 @@ const ExpensesReport: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
+  // Sync reports with purchases
+  useReportsSync();
+
   useEffect(() => {
     loadExpenses();
+  }, []);
+  
+  // Listen for reports data updates
+  useEffect(() => {
+    const handleReportsUpdate = () => {
+      loadExpenses();
+    };
+    
+    window.addEventListener('reports-data-updated', handleReportsUpdate);
+    return () => window.removeEventListener('reports-data-updated', handleReportsUpdate);
   }, []);
 
   const loadExpenses = () => {

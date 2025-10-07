@@ -10,6 +10,7 @@ import VatReportSummary from './components/VatReportSummary';
 import VatReportHistory from './components/VatReportHistory';
 import { toast } from 'sonner';
 import LoadingState from './components/LoadingState';
+import { useReportsSync } from '@/hooks/useReportsSync';
 
 const VatReport: React.FC = () => {
   const { language } = useLanguage();
@@ -19,8 +20,21 @@ const VatReport: React.FC = () => {
   const [currentReport, setCurrentReport] = useState<VatReportItem | null>(null);
   const [reportsHistory, setReportsHistory] = useState<VatReportItem[]>([]);
   
+  // Sync reports with invoices
+  useReportsSync();
+  
   useEffect(() => {
     loadReportsHistory();
+  }, []);
+  
+  // Listen for reports data updates
+  useEffect(() => {
+    const handleReportsUpdate = () => {
+      loadReportsHistory();
+    };
+    
+    window.addEventListener('reports-data-updated', handleReportsUpdate);
+    return () => window.removeEventListener('reports-data-updated', handleReportsUpdate);
   }, []);
   
   const loadReportsHistory = async () => {

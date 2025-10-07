@@ -51,6 +51,7 @@ class BrowserPurchasesService extends BaseService implements IPurchasesService {
       const purchases = await this.getPurchaseInvoices();
       
       // Generate ID and invoice number if it's a new purchase
+      const isNew = !invoice.id;
       if (!invoice.id) {
         invoice.id = uuidv4();
         invoice.invoiceNumber = `P-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(purchases.length + 1).padStart(3, '0')}`;
@@ -70,6 +71,9 @@ class BrowserPurchasesService extends BaseService implements IPurchasesService {
       
       // Update inventory
       this.updateInventory(invoice);
+      
+      // Trigger reports update
+      window.dispatchEvent(new CustomEvent(isNew ? 'purchase-created' : 'purchase-updated', { detail: invoice }));
       
       return true;
     } catch (error) {

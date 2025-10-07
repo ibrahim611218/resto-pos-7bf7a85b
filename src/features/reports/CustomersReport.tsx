@@ -10,6 +10,7 @@ import { exportToExcel } from "@/utils/reports";
 
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
 import { useEffect, useMemo } from "react";
+import { useReportsSync } from "@/hooks/useReportsSync";
 
 interface CustomerData {
   id: string;
@@ -27,8 +28,21 @@ const CustomersReport: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { invoices, loadInvoicesFromStorage } = useInvoices();
 
+  // Sync reports with invoices
+  useReportsSync();
+
   useEffect(() => {
     loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage]);
+  
+  // Listen for reports data updates
+  useEffect(() => {
+    const handleReportsUpdate = () => {
+      loadInvoicesFromStorage();
+    };
+    
+    window.addEventListener('reports-data-updated', handleReportsUpdate);
+    return () => window.removeEventListener('reports-data-updated', handleReportsUpdate);
   }, [loadInvoicesFromStorage]);
 
   const reportData = useMemo(() => {

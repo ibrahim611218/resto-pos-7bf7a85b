@@ -29,6 +29,10 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
       let invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
       invoices = [invoice, ...invoices];
       localStorage.setItem('invoices', JSON.stringify(invoices));
+      
+      // Trigger reports update
+      window.dispatchEvent(new CustomEvent('invoice-created', { detail: invoice }));
+      
       return { success: true, id: invoice.id };
     } catch (error) {
       console.error('Error saving invoice to localStorage:', error);
@@ -52,6 +56,10 @@ class BrowserInvoiceService extends BaseService implements IInvoiceService {
       
       invoices[index] = invoice;
       localStorage.setItem('invoices', JSON.stringify(invoices));
+      
+      // Trigger reports update
+      window.dispatchEvent(new CustomEvent('invoice-updated', { detail: invoice }));
+      
       return { success: true };
     } catch (error) {
       console.error('Error updating invoice in localStorage:', error);
