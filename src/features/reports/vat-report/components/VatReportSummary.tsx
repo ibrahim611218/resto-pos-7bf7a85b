@@ -77,15 +77,15 @@ const VatReportSummary: React.FC<VatReportSummaryProps> = ({ report }) => {
         <Card className="p-6 bg-green-50 dark:bg-green-900/20">
           <div className="text-center">
             <h3 className="text-lg font-medium mb-4">
-              {isArabic ? 'المشتريات' : 'Purchases'}
+              {isArabic ? 'المصروفات' : 'Expenses'}
             </h3>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span>{isArabic ? 'إجمالي المشتريات (قبل الضريبة):' : 'Total Purchases (before tax):'}</span>
+                <span>{isArabic ? 'إجمالي المصروفات (قبل الضريبة):' : 'Total Expenses (before tax):'}</span>
                 <span className="font-bold">{formatCurrency(report.totalPurchasesBeforeTax)}</span>
               </div>
               <div className="flex justify-between">
-                <span>{isArabic ? 'ضريبة المشتريات:' : 'Purchases Tax:'}</span>
+                <span>{isArabic ? 'ضريبة المصروفات:' : 'Expenses Tax:'}</span>
                 <span className="font-bold">{formatCurrency(report.purchasesTax)}</span>
               </div>
             </div>
@@ -98,7 +98,7 @@ const VatReportSummary: React.FC<VatReportSummaryProps> = ({ report }) => {
               {isArabic ? 'صافي الضريبة المستحقة' : 'Net Tax Due'}
             </h3>
             <div className="flex justify-between items-center">
-              <span>{isArabic ? 'ضريبة المبيعات - ضريبة المشتريات:' : 'Sales Tax - Purchases Tax:'}</span>
+              <span>{isArabic ? 'ضريبة المبيعات - ضريبة المصروفات:' : 'Sales Tax - Expenses Tax:'}</span>
               <span className="text-xl font-bold">
                 {formatCurrency(report.netTaxDue)}
               </span>

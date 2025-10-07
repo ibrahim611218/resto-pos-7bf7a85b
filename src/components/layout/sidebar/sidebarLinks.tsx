@@ -47,8 +47,8 @@ export const getBaseSidebarLinks = (): SidebarLink[] => ([
     roles: ["cashier", "supervisor", "admin", "owner"]
   },
   {
-    name: "المشتريات",
-    name_en: "Purchases",
+    name: "المصروفات",
+    name_en: "Expenses",
     path: "/purchases",
     icon: Receipt,
     roles: ["supervisor", "admin", "owner"]
@@ -114,6 +114,13 @@ export const getBaseSidebarLinks = (): SidebarLink[] => ([
         name_en: "VAT Report",
         path: "/vat-report",
         icon: FileSpreadsheet,
+        roles: ["supervisor", "admin", "owner"]
+      },
+      {
+        name: "تقرير المصروفات",
+        name_en: "Expenses Report",
+        path: "/expenses-report",
+        icon: Receipt,
         roles: ["supervisor", "admin", "owner"]
       },
     ],

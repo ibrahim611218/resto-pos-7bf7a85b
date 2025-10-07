@@ -55,7 +55,7 @@ const VatReportHistory: React.FC<VatReportHistoryProps> = ({ reports, onSelectRe
             <TableHead>{isArabic ? 'الفترة' : 'Period'}</TableHead>
             <TableHead>{isArabic ? 'النوع' : 'Type'}</TableHead>
             <TableHead className="text-right">{isArabic ? 'ضريبة المبيعات' : 'Sales Tax'}</TableHead>
-            <TableHead className="text-right">{isArabic ? 'ضريبة المشتريات' : 'Purchases Tax'}</TableHead>
+            <TableHead className="text-right">{isArabic ? 'ضريبة المصروفات' : 'Purchases Tax'}</TableHead>
             <TableHead className="text-right">{isArabic ? 'الضريبة المستحقة' : 'Tax Due'}</TableHead>
             <TableHead className="text-center">{isArabic ? 'إجراءات' : 'Actions'}</TableHead>
           </TableRow>

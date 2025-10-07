@@ -29,7 +29,7 @@ export const usePurchases = () => {
       setFilteredPurchases(purchasesList);
     } catch (error) {
       console.error('Error loading purchases:', error);
-      toast.error(isArabic ? 'حدث خطأ أثناء تحميل المشتريات' : 'Error loading purchases');
+      toast.error(isArabic ? 'حدث خطأ أثناء تحميل المصروفات' : 'Error loading expenses');
     } finally {
       setLoading(false);
     }

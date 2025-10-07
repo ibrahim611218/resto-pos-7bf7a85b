@@ -8,20 +8,56 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/LanguageContext";
 import { exportToExcel } from "@/utils/reports";
 
-// Mock customer data
-const customersData = [
-  { id: "cust-1", name: "محمد عبدالله", phone: "0555123456", email: "mohammed@example.com", invoiceCount: 5, totalSpent: 1200 },
-  { id: "cust-2", name: "أحمد محمد", phone: "0555987654", email: "ahmed@example.com", invoiceCount: 3, totalSpent: 850, taxNumber: "300123456700003" },
-  { id: "cust-3", name: "سارة خالد", phone: "0555111222", email: "sarah@example.com", invoiceCount: 7, totalSpent: 1550 },
-  { id: "cust-4", name: "فاطمة علي", phone: "0555444555", email: "fatima@example.com", invoiceCount: 2, totalSpent: 450 },
-  { id: "cust-5", name: "خالد عمر", phone: "0555666777", email: "khalid@example.com", invoiceCount: 4, totalSpent: 950 }
-];
+import { useInvoices } from "@/features/invoices/hooks/useInvoices";
+import { useEffect, useMemo } from "react";
+
+interface CustomerData {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  invoiceCount: number;
+  totalSpent: number;
+  taxNumber?: string;
+}
 
 const CustomersReport: React.FC = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const [searchTerm, setSearchTerm] = useState("");
-  const [reportData] = useState(customersData);
+  const { invoices, loadInvoicesFromStorage } = useInvoices();
+
+  useEffect(() => {
+    loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage]);
+
+  const reportData = useMemo(() => {
+    const customerMap = new Map<string, CustomerData>();
+
+    invoices.forEach(invoice => {
+      if (invoice.customer && invoice.status !== 'cancelled') {
+        const customerId = invoice.customer.taxNumber || invoice.customer.phone || invoice.customer.name;
+        
+        if (customerMap.has(customerId)) {
+          const existing = customerMap.get(customerId)!;
+          existing.invoiceCount += 1;
+          existing.totalSpent += invoice.status === 'refunded' ? 0 : invoice.total;
+        } else {
+          customerMap.set(customerId, {
+            id: customerId,
+            name: invoice.customer.name,
+            phone: invoice.customer.phone || "",
+            email: invoice.customer.email || "",
+            taxNumber: invoice.customer.taxNumber || "",
+            invoiceCount: 1,
+            totalSpent: invoice.status === 'refunded' ? 0 : invoice.total
+          });
+        }
+      }
+    });
+
+    return Array.from(customerMap.values());
+  }, [invoices]);
 
   const filteredData = searchTerm 
     ? reportData.filter(customer => 
@@ -34,7 +70,7 @@ const CustomersReport: React.FC = () => {
 
   const handleExport = () => {
     const headers = isArabic 
-      ? ["رقم", "اسم العميل", "رقم الهاتف", "البريد الإلكتروني", "عدد الفواتير", "إجمالي المشتريات", "الرقم الضريبي"]
+      ? ["رقم", "اسم العميل", "رقم الهاتف", "البريد الإلكتروني", "عدد الفواتير", "إجمالي المبيعات", "الرقم الضريبي"]
       : ["ID", "Customer Name", "Phone", "Email", "Invoice Count", "Total Spent", "Tax Number"];
     
     const data = filteredData.map(item => [
@@ -85,7 +121,7 @@ const CustomersReport: React.FC = () => {
                 <TableHead>{isArabic ? "رقم الهاتف" : "Phone"}</TableHead>
                 <TableHead>{isArabic ? "البريد الإلكتروني" : "Email"}</TableHead>
                 <TableHead>{isArabic ? "عدد الفواتير" : "Invoice Count"}</TableHead>
-                <TableHead>{isArabic ? "إجمالي المشتريات" : "Total Spent"}</TableHead>
+                <TableHead>{isArabic ? "إجمالي المبيعات" : "Total Spent"}</TableHead>
                 <TableHead>{isArabic ? "الرقم الضريبي" : "Tax Number"}</TableHead>
               </TableRow>
             </TableHeader>

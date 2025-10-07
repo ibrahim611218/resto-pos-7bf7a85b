@@ -76,7 +76,7 @@ const PurchaseDetailsDialog: React.FC<PurchaseDetailsDialogProps> = ({
       <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {isArabic ? `تفاصيل فاتورة المشتريات رقم: ${purchase.invoiceNumber}` : `Purchase Invoice Details: ${purchase.invoiceNumber}`}
+            {isArabic ? `تفاصيل فاتورة المصروفات رقم: ${purchase.invoiceNumber}` : `Expense Invoice Details: ${purchase.invoiceNumber}`}
           </DialogTitle>
         </DialogHeader>
         

@@ -63,7 +63,7 @@ const PurchasesList: React.FC<PurchasesListProps> = ({ language }) => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>
-            {isArabic ? 'فواتير المشتريات' : 'Purchase Invoices'}
+            {isArabic ? 'فواتير المصروفات' : 'Expense Invoices'}
           </CardTitle>
           <Button onClick={handleAddNew}>
             <Plus className="h-4 w-4 mr-2" />
