@@ -134,6 +134,18 @@ export const useInvoices = () => {
   // Add invoice
   const addInvoice = useCallback((invoice: Invoice) => {
     setInvoices((prevInvoices) => [invoice, ...prevInvoices]);
+    
+    // Save to localStorage
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      const invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
+      localStorage.setItem('invoices', JSON.stringify([invoice, ...invoices]));
+      
+      // Trigger reports update
+      window.dispatchEvent(new CustomEvent('invoice-created', { detail: invoice }));
+    } catch (error) {
+      console.error('Error saving invoice:', error);
+    }
   }, []);
 
   // Update invoice
@@ -143,6 +155,23 @@ export const useInvoices = () => {
         invoice.id === updatedInvoice.id ? updatedInvoice : invoice
       )
     );
+    
+    // Update in localStorage
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      if (storedInvoices) {
+        const invoices = JSON.parse(storedInvoices);
+        const updated = invoices.map((inv: Invoice) =>
+          inv.id === updatedInvoice.id ? updatedInvoice : inv
+        );
+        localStorage.setItem('invoices', JSON.stringify(updated));
+        
+        // Trigger reports update
+        window.dispatchEvent(new CustomEvent('invoice-updated', { detail: updatedInvoice }));
+      }
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+    }
   }, []);
 
   // Delete invoice

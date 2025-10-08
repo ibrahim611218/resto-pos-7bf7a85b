@@ -58,17 +58,26 @@ const SalesReport: React.FC = () => {
   // Load invoices data when component mounts
   useEffect(() => {
     loadInvoicesFromStorage();
-  }, [loadInvoicesFromStorage]);
+    refreshData();
+  }, [loadInvoicesFromStorage, refreshData]);
   
   // Listen for reports data updates
   useEffect(() => {
     const handleReportsUpdate = () => {
+      console.log('Reports data updated, refreshing...');
       loadInvoicesFromStorage();
       refreshData();
     };
     
     window.addEventListener('reports-data-updated', handleReportsUpdate);
-    return () => window.removeEventListener('reports-data-updated', handleReportsUpdate);
+    window.addEventListener('invoice-created', handleReportsUpdate);
+    window.addEventListener('invoice-updated', handleReportsUpdate);
+    
+    return () => {
+      window.removeEventListener('reports-data-updated', handleReportsUpdate);
+      window.removeEventListener('invoice-created', handleReportsUpdate);
+      window.removeEventListener('invoice-updated', handleReportsUpdate);
+    };
   }, [loadInvoicesFromStorage, refreshData]);
   
   const handleRefresh = () => {

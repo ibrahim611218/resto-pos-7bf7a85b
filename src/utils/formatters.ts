@@ -1,10 +1,14 @@
 
 export const formatDate = (date: Date, locale = 'en-US'): string => {
-  return new Intl.DateTimeFormat(locale, {
+  // Always use Gregorian calendar (en-US) for dates
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: locale.startsWith('ar'),
+    hour12: false,
   }).format(date);
 };
 

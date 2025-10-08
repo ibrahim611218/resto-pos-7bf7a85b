@@ -145,7 +145,18 @@ export const useCartInvoice = ({
     
     invoice.taxIncluded = taxIncluded;
     
-    await saveInvoiceToStorage(invoice);
+    // Save to localStorage and trigger reports update
+    try {
+      const storedInvoices = localStorage.getItem('invoices');
+      const invoices = storedInvoices ? JSON.parse(storedInvoices) : [];
+      localStorage.setItem('invoices', JSON.stringify([invoice, ...invoices]));
+      
+      // Trigger reports update event
+      window.dispatchEvent(new CustomEvent('invoice-created', { detail: invoice }));
+      window.dispatchEvent(new CustomEvent('reports-data-updated'));
+    } catch (error) {
+      console.error('Error saving invoice:', error);
+    }
     
     if (invoice.items.length > 0) {
       try {
