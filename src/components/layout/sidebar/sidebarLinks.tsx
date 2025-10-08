@@ -75,13 +75,6 @@ export const getBaseSidebarLinks = (): SidebarLink[] => ([
     roles: ["kitchen", "supervisor", "admin", "owner"]
   },
   {
-    name: "تقفيل اليومية",
-    name_en: "Daily Closing",
-    path: "/daily-closing",
-    icon: Calculator,
-    roles: ["cashier", "supervisor", "admin", "owner"]
-  },
-  {
     name: "التقارير",
     name_en: "Reports",
     path: "/reports",

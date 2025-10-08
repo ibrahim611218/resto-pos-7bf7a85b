@@ -93,11 +93,6 @@ const BusinessSettingsForm: React.FC = () => {
       )
     },
     {
-      id: 'hours',
-      label: isArabic ? 'ساعات العمل' : 'Work Hours',
-      component: <WorkHoursSettings settings={localSettings} isArabic={isArabic} onChange={handleSettingsChange} />
-    },
-    {
       id: 'display',
       label: isArabic ? 'إعدادات العرض' : 'Display Settings',
       component: (

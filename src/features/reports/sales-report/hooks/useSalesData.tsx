@@ -1,7 +1,6 @@
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { useInvoices } from "@/features/invoices/hooks/useInvoices";
-import { mockInvoices } from "@/features/invoices/data/mockInvoices";
 import { useFilterStates } from "./useFilterStates";
 import { useFilteredInvoices } from "./useFilteredInvoices";
 import { useSalesCalculations } from "./useSalesCalculations";
@@ -14,14 +13,21 @@ interface SalesDataProps {
 
 export const useSalesData = ({ language }: SalesDataProps) => {
   const isArabic = language === "ar";
-  const { invoices } = useInvoices();
+  const { invoices, loadInvoicesFromStorage } = useInvoices();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [refreshKey, setRefreshKey] = useState<number>(0);
   
+  // Load invoices on mount and when refresh is triggered
+  useEffect(() => {
+    loadInvoicesFromStorage();
+  }, [loadInvoicesFromStorage, refreshKey]);
+  
   // Function to refresh data
   const refreshData = useCallback(() => {
+    console.log('Refreshing sales data...');
+    loadInvoicesFromStorage();
     setRefreshKey(prev => prev + 1);
-  }, []);
+  }, [loadInvoicesFromStorage]);
   
   // Get filter states
   const {
@@ -40,9 +46,10 @@ export const useSalesData = ({ language }: SalesDataProps) => {
     resetFilters
   } = useFilterStates();
   
-  // Get all invoices (from API or mock)
+  // Use invoices directly from the hook
   const allInvoices = useMemo(() => {
-    return invoices.length > 0 ? invoices : mockInvoices;
+    console.log('Total invoices loaded:', invoices.length);
+    return invoices;
   }, [invoices, refreshKey]);
   
   // Get unique users from invoices
