@@ -82,6 +82,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
                 <SelectItem value="all">{isArabic ? "جميع طرق الدفع" : "All payment methods"}</SelectItem>
                 <SelectItem value="cash">{isArabic ? "نقدي" : "Cash"}</SelectItem>
                 <SelectItem value="card">{isArabic ? "بطاقة" : "Card"}</SelectItem>
+                <SelectItem value="transfer">{isArabic ? "تحويل بنكي" : "Transfer"}</SelectItem>
               </SelectContent>
             </Select>
           </div>

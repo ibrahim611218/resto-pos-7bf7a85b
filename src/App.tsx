@@ -23,6 +23,7 @@ import InventoryReport from "./pages/InventoryReport";
 import CustomersReport from "./pages/CustomersReport";
 import VatReport from "./pages/VatReport";
 import ExpensesReport from "./pages/ExpensesReport";
+import FinancialReport from "./pages/FinancialReport";
 import Kitchen from "./pages/Kitchen";
 import Pos from "./pages/Pos";
 import CompanyManagementPage from './pages/CompanyManagement';
@@ -78,6 +79,7 @@ function App() {
         <Route path="/customers-report" element={<CustomersReport />} />
         <Route path="/vat-report" element={<VatReport />} />
         <Route path="/expenses-report" element={<ExpensesReport />} />
+        <Route path="/financial-report" element={<FinancialReport />} />
         <Route path="/business-settings" element={<BusinessSettingsPage />} />
       </Route>
 

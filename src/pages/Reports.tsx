@@ -88,6 +88,20 @@ const ReportsPage: React.FC = () => {
                   {isArabic ? "عرض التقرير" : "View Report"} →
                 </a>
               </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-primary">
+                <h2 className="text-xl font-semibold mb-2 text-primary">
+                  {isArabic ? "التقرير المالي الشامل" : "Comprehensive Financial Report"}
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  {isArabic 
+                    ? "تقرير شامل يعرض المبيعات والمصروفات وصافي الربح" 
+                    : "Comprehensive report showing sales, expenses, and net profit"}
+                </p>
+                <a href="/financial-report" className="text-primary hover:underline font-semibold">
+                  {isArabic ? "عرض التقرير" : "View Report"} →
+                </a>
+              </div>
             </div>
           </div>
         </ScrollArea>
