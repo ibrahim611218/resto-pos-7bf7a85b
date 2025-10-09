@@ -24,15 +24,22 @@ const FinancialReport: React.FC = () => {
   const isArabic = language === "ar";
   const { invoices, loadInvoicesFromStorage } = useInvoices();
   
-  // Set default dates to today
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Get current date at midnight (start of day)
+  const getTodayStart = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  };
   
-  const endOfToday = new Date();
-  endOfToday.setHours(23, 59, 59, 999);
+  // Get current date at end of day
+  const getTodayEnd = () => {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return today;
+  };
   
-  const [startDate, setStartDate] = useState<Date | undefined>(today);
-  const [endDate, setEndDate] = useState<Date | undefined>(endOfToday);
+  const [startDate, setStartDate] = useState<Date | undefined>(getTodayStart());
+  const [endDate, setEndDate] = useState<Date | undefined>(getTodayEnd());
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   // Load data on mount
@@ -135,14 +142,8 @@ const FinancialReport: React.FC = () => {
   }, [invoices, expenses, startDate, endDate]);
 
   const resetFilters = () => {
-    const resetToday = new Date();
-    resetToday.setHours(0, 0, 0, 0);
-    
-    const resetEndOfToday = new Date();
-    resetEndOfToday.setHours(23, 59, 59, 999);
-    
-    setStartDate(resetToday);
-    setEndDate(resetEndOfToday);
+    setStartDate(getTodayStart());
+    setEndDate(getTodayEnd());
   };
 
   return (

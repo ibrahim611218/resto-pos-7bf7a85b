@@ -9,6 +9,8 @@ import { handleInvoiceExport } from "@/utils/invoice";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import { Invoice } from "@/types";
 import { toast } from "sonner";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Label } from "@/components/ui/label";
 
 interface InvoicesListProps {
   language?: "en" | "ar";
@@ -19,6 +21,15 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   const { settings } = useBusinessSettings();
   const [showReturnDialog, setShowReturnDialog] = useState(false);
   const [selectedInvoiceForReturn, setSelectedInvoiceForReturn] = useState<Invoice | null>(null);
+  
+  // Add date filter states
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const endOfToday = new Date();
+  endOfToday.setHours(23, 59, 59, 999);
+  
+  const [startDate, setStartDate] = useState<Date | undefined>(today);
+  const [endDate, setEndDate] = useState<Date | undefined>(endOfToday);
   
   const {
     invoices,
@@ -71,6 +82,14 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     }
   };
 
+  // Filter invoices by date range
+  const dateFilteredInvoices = filteredInvoices.filter(invoice => {
+    const invoiceDate = new Date(invoice.date);
+    if (startDate && invoiceDate < startDate) return false;
+    if (endDate && invoiceDate > endDate) return false;
+    return true;
+  });
+
   return (
     <div className="container mx-auto py-6" dir={isArabic ? "rtl" : "ltr"}>
       <InvoiceListHeader
@@ -79,9 +98,31 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
         setSearchTerm={setSearchTerm}
         placeholder={isArabic ? "بحث عن فاتورة..." : "Search invoices..."}
       />
+      
+      {/* Date filters */}
+      <div className="mb-4 p-4 bg-card rounded-lg border">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>{isArabic ? "من تاريخ" : "Start Date"}</Label>
+            <DatePicker
+              selected={startDate}
+              onSelect={setStartDate}
+              placeholderText={isArabic ? "اختر تاريخ البداية" : "Select start date"}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{isArabic ? "إلى تاريخ" : "End Date"}</Label>
+            <DatePicker
+              selected={endDate}
+              onSelect={setEndDate}
+              placeholderText={isArabic ? "اختر تاريخ النهاية" : "Select end date"}
+            />
+          </div>
+        </div>
+      </div>
 
       <InvoiceTabsContainer
-        filteredInvoices={filteredInvoices}
+        filteredInvoices={dateFilteredInvoices}
         isArabic={isArabic}
         formatInvoiceDate={formatInvoiceDate}
         getStatusBadgeColor={getStatusBadgeColor}
