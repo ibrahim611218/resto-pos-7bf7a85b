@@ -26,17 +26,18 @@ const SidebarContainer: React.FC<SidebarContainerProps> = ({
   const isArabic = language === "ar";
   const isDark = mode === "dark";
   
-  // Set width transition
-  const sidebarTransition = collapsed ? "w-20" : "w-64";
+  // Set width transition - always full width on mobile
+  const sidebarTransition = isMobile ? "w-full" : (collapsed ? "w-20" : "w-64");
 
   // Calculate border based on language
-  const borderClass = isArabic ? "border-l" : "border-r";
+  const borderClass = isMobile ? "" : (isArabic ? "border-l" : "border-r");
 
   return (
     <AnimatedTransition animation="fade" show={isInitialized}>
       <aside
         className={cn(
-          "relative inset-y-0 z-40 flex h-screen flex-col shadow-lg",
+          "relative inset-y-0 z-40 flex h-full flex-col",
+          !isMobile && "shadow-lg",
           sidebarTransition,
           borderClass,
           "transition-all duration-300 ease-in-out",

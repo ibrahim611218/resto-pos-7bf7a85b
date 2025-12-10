@@ -10,10 +10,12 @@ import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAdvancedTheme } from "@/context/AdvancedThemeContext";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHidden, setSidebarHidden] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { isMobile, isTablet, width } = useWindowDimensions();
   
@@ -45,6 +47,7 @@ const MainLayout: React.FC = () => {
     const handleForceCollapse = () => {
       setSidebarCollapsed(true);
       setSidebarHidden(true);
+      setMobileMenuOpen(false);
     };
 
     const handleToggleSidebar = (e: Event) => {
@@ -52,8 +55,13 @@ const MainLayout: React.FC = () => {
       if (customEvent.detail?.forceCollapse) {
         setSidebarCollapsed(true);
         setSidebarHidden(true);
+        setMobileMenuOpen(false);
       } else {
-        toggleSidebar();
+        if (isMobile) {
+          setMobileMenuOpen(prev => !prev);
+        } else {
+          toggleSidebar();
+        }
       }
     };
 
@@ -64,7 +72,7 @@ const MainLayout: React.FC = () => {
       window.removeEventListener('toggle-sidebar', handleToggleSidebar);
       window.removeEventListener('sidebar-force-collapse', handleForceCollapse);
     };
-  }, []);
+  }, [isMobile]);
 
   const toggleSidebar = useCallback(() => {
     setSidebarHidden(false);
@@ -75,12 +83,20 @@ const MainLayout: React.FC = () => {
   }, [sidebarCollapsed]);
 
   const hideSidebar = useCallback(() => {
-    setSidebarHidden(true);
-  }, []);
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    } else {
+      setSidebarHidden(true);
+    }
+  }, [isMobile]);
 
   const showSidebar = useCallback(() => {
-    setSidebarHidden(false);
-  }, []);
+    if (isMobile) {
+      setMobileMenuOpen(true);
+    } else {
+      setSidebarHidden(false);
+    }
+  }, [isMobile]);
 
   const handleMouseEnter = () => {
     if (!isMobile && !isTablet) {
@@ -107,9 +123,42 @@ const MainLayout: React.FC = () => {
     }
   }, [isArabic]);
 
+  // Mobile sidebar using Sheet
+  const MobileSidebar = () => (
+    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+      <SheetTrigger asChild>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className={cn(
+            "fixed top-4 z-50 bg-primary text-primary-foreground shadow-lg",
+            isArabic ? "right-4" : "left-4"
+          )}
+          title={isArabic ? "القائمة الرئيسية" : "Main Menu"}
+        >
+          <Menu className="h-6 w-6" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent 
+        side={isArabic ? "right" : "left"} 
+        className="p-0 w-72 bg-sidebar border-none"
+      >
+        <Sidebar 
+          collapsed={false} 
+          onToggle={() => setMobileMenuOpen(false)} 
+          onHide={() => setMobileMenuOpen(false)}
+        />
+      </SheetContent>
+    </Sheet>
+  );
+
   return (
     <div className={cn("flex min-h-screen h-screen bg-background w-full overflow-hidden", isArabic ? "rtl" : "ltr")} dir={isArabic ? "rtl" : "ltr"}>
-      {!sidebarHidden && (
+      {/* Mobile Menu */}
+      {isMobile && <MobileSidebar />}
+      
+      {/* Desktop Sidebar */}
+      {!isMobile && !sidebarHidden && (
         <div 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -124,7 +173,8 @@ const MainLayout: React.FC = () => {
       )}
       
       <div className="flex-1 flex flex-col min-w-0 relative">
-        {sidebarHidden && (
+        {/* Desktop show sidebar button */}
+        {!isMobile && sidebarHidden && (
           <Button 
             variant="ghost" 
             size="icon" 
