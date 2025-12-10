@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Invoice, PaymentMethod, Customer, CartItem, Size } from "@/types";
+import { Invoice, PaymentMethod, Customer, CartItem, Size, OrderType } from "@/types";
 import { createInvoiceObject } from "@/utils/invoice";
 import { useInvoiceFormatting } from "@/features/invoices/hooks/useInvoiceFormatting";
 import { toast } from "@/hooks/use-toast";
@@ -13,7 +13,7 @@ interface UseCartInvoiceProps {
   discount: number;
   discountType: "percentage" | "fixed";
   total: number;
-  orderType: "takeaway" | "dineIn";
+  orderType: OrderType;
   tableNumber: string;
   paymentMethod?: PaymentMethod;
   paidAmount?: number;
@@ -22,6 +22,8 @@ interface UseCartInvoiceProps {
   clearCart: () => void;
   isArabic: boolean;
   taxIncluded?: boolean;
+  deliveryAddress?: string;
+  deliveryFee?: number;
 }
 
 export const useCartInvoice = ({

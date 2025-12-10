@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { PaymentMethod, CartItem, Size, Product } from "@/types";
+import { PaymentMethod, CartItem, Size, Product, OrderType } from "@/types";
 import { useBusinessSettings } from "@/hooks/useBusinessSettings";
 import productService from "@/services/products/ProductService";
 
@@ -11,8 +11,10 @@ interface CartContextType {
   total: number;
   discount: number;
   discountType: "percentage" | "fixed";
-  orderType: "takeaway" | "dineIn";
+  orderType: OrderType;
   tableNumber: string;
+  deliveryAddress: string;
+  deliveryFee: number;
   paymentMethod?: PaymentMethod;
   paidAmount?: number;
   addToCart: (item: CartItem) => void;
@@ -23,8 +25,9 @@ interface CartContextType {
   clearCart: () => void;
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
-  setOrderType: (type: "takeaway" | "dineIn") => void;
+  setOrderType: (type: OrderType) => void;
   setTableNumber: (number: string) => void;
+  setDeliveryAddress: (address: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
   setPaidAmount: (amount: number) => void;
   taxIncluded: boolean;
@@ -37,8 +40,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [products, setProducts] = useState<Product[]>([]);
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
-  const [orderType, setOrderType] = useState<"takeaway" | "dineIn">("takeaway");
+  const [orderType, setOrderType] = useState<OrderType>("takeaway");
   const [tableNumber, setTableNumber] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
   const [paidAmount, setPaidAmount] = useState<number>();
   
@@ -54,12 +58,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchProducts();
   }, []);
 
-  // استخدام إعدادات العمل التجاري للحصول على إعداد تضمين الضريبة
+  // استخدام إعدادات العمل التجاري للحصول على إعداد تضمين الضريبة والتوصيل
   const { settings } = useBusinessSettings();
   const taxIncluded = settings?.taxIncluded || false;
   
-  // حساب المجموع الفرعي: جميع الأسعار × الكميات
+  // حساب رسوم التوصيل
   const rawSubtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  // حساب رسوم التوصيل بناءً على الإعدادات
+  let deliveryFee = 0;
+  if (orderType === "delivery" && settings.deliveryEnabled) {
+    // التحقق من حد التوصيل المجاني
+    if (settings.freeDeliveryThreshold && rawSubtotal >= settings.freeDeliveryThreshold) {
+      deliveryFee = 0;
+    } else {
+      deliveryFee = settings.deliveryFee || 0;
+    }
+  }
   
   // حساب الضريبة ومبلغ الضريبة بناءً على إعداد تضمين الضريبة
   let subtotal: number;
@@ -81,8 +96,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     ? (rawSubtotal) * (discount / 100) 
     : discount;
   
-  // حساب المجموع النهائي
-  const total = rawSubtotal - discountAmount;
+  // حساب المجموع النهائي (مع رسوم التوصيل)
+  const total = rawSubtotal - discountAmount + deliveryFee;
 
   const addToCart = (newItem: CartItem) => {
     setCartItems(prevItems => {
@@ -147,6 +162,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCartItems([]);
     setDiscount(0);
     setTableNumber("");
+    setDeliveryAddress("");
     setPaymentMethod(undefined);
     setPaidAmount(undefined);
   };
@@ -162,6 +178,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         discountType,
         orderType,
         tableNumber,
+        deliveryAddress,
+        deliveryFee,
         paymentMethod,
         paidAmount,
         addToCart,
@@ -174,6 +192,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setDiscountType,
         setOrderType,
         setTableNumber,
+        setDeliveryAddress,
         setPaymentMethod,
         setPaidAmount,
         taxIncluded

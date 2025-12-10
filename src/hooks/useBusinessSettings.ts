@@ -19,7 +19,11 @@ export const useBusinessSettings = () => {
     showPhone: true,
     showEmail: true,
     showRestoPOSBranding: true,
-    invoiceNotesAr: "شكراً لزيارتكم"
+    invoiceNotesAr: "شكراً لزيارتكم",
+    // Delivery defaults
+    deliveryEnabled: true,
+    deliveryFee: 10,
+    freeDeliveryThreshold: 100
   });
   
   const [loading, setLoading] = useState(true);

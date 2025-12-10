@@ -21,4 +21,8 @@ export interface BusinessSettings {
   logo?: string;
   workStartTime?: string;
   workEndTime?: string;
+  // Delivery settings
+  deliveryEnabled?: boolean;
+  deliveryFee?: number;
+  freeDeliveryThreshold?: number; // التوصيل مجاني عند الوصول لهذا المبلغ
 }

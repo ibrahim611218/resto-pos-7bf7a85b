@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Separator } from "@/components/ui/separator";
-import { PaymentMethod, Customer } from "@/types";
+import { PaymentMethod, Customer, OrderType } from "@/types";
 import OrderTypeSection from "./footer/OrderTypeSection";
 import DiscountSection from "./footer/DiscountSection";
 import SummarySection from "./footer/SummarySection";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 interface CartFooterProps {
   isMobile: boolean;
   cartItems: any[];
-  orderType: "takeaway" | "dineIn";
+  orderType: OrderType;
   tableNumber: string;
   discount: number;
   discountType: "percentage" | "fixed";
@@ -20,7 +20,7 @@ interface CartFooterProps {
   total: number;
   paymentMethod?: PaymentMethod;
   paidAmount?: number;
-  setOrderType: (type: "takeaway" | "dineIn") => void;
+  setOrderType: (type: OrderType) => void;
   setTableNumber: (number: string) => void;
   setDiscount: (discount: number) => void;
   setDiscountType: (type: "percentage" | "fixed") => void;
@@ -30,6 +30,9 @@ interface CartFooterProps {
   onPaidAmountClick?: () => void;
   customer?: Customer;
   className?: string;
+  deliveryAddress?: string;
+  setDeliveryAddress?: (address: string) => void;
+  deliveryFee?: number;
 }
 
 const CartFooter: React.FC<CartFooterProps> = ({
@@ -53,7 +56,10 @@ const CartFooter: React.FC<CartFooterProps> = ({
   isArabic,
   onPaidAmountClick,
   customer,
-  className
+  className,
+  deliveryAddress,
+  setDeliveryAddress,
+  deliveryFee = 0
 }) => {
   const footerClass = isMobile ? "p-1" : "p-2";
 
@@ -68,6 +74,8 @@ const CartFooter: React.FC<CartFooterProps> = ({
         setTableNumber={setTableNumber}
         isMobile={isMobile}
         isArabic={isArabic}
+        deliveryAddress={deliveryAddress}
+        setDeliveryAddress={setDeliveryAddress}
       />
       
       <DiscountSection
@@ -90,6 +98,8 @@ const CartFooter: React.FC<CartFooterProps> = ({
         paymentMethod={paymentMethod}
         paidAmount={paidAmount}
         onPaidAmountClick={onPaidAmountClick}
+        deliveryFee={deliveryFee}
+        orderType={orderType}
       />
       
       <ActionsSection
