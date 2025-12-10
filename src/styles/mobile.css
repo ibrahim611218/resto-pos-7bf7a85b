@@ -31,12 +31,115 @@
   }
 }
 
-/* Fix for small touch devices */
-@media (max-width: 480px) {
-  .touch-target-fix button, 
-  .touch-target-fix [role="button"] {
-    min-height: 40px !important;
-    min-width: 40px !important;
+/* Touch-friendly button and interactive element sizes */
+@media (max-width: 768px) {
+  /* Minimum touch target size - 44px is Apple's recommendation */
+  button,
+  [role="button"],
+  a,
+  input[type="checkbox"],
+  input[type="radio"],
+  .touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Larger clickable areas for buttons */
+  button:not(.icon-only),
+  [role="button"]:not(.icon-only) {
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+  }
+  
+  /* Icon buttons */
+  button.icon-only,
+  [role="button"].icon-only,
+  button[size="icon"],
+  .h-9.w-9,
+  .h-8.w-8,
+  .h-10.w-10 {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 10px !important;
+  }
+  
+  /* Form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  textarea,
+  select {
+    min-height: 48px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: 12px !important;
+  }
+  
+  /* Larger spacing between interactive elements */
+  .space-y-2 > * + * {
+    margin-top: 0.75rem !important;
+  }
+  
+  .space-x-2 > * + * {
+    margin-left: 0.75rem !important;
+    margin-right: 0.75rem !important;
+  }
+  
+  /* Card touch improvements */
+  .card,
+  [class*="Card"] {
+    padding: 16px !important;
+  }
+  
+  /* Table cells larger for touch */
+  td, th {
+    padding: 12px 8px !important;
+    min-height: 48px !important;
+  }
+  
+  /* Sidebar menu items */
+  .sidebar-item,
+  nav a,
+  nav button {
+    min-height: 48px !important;
+    padding: 12px 16px !important;
+  }
+  
+  /* Dropdown and select items */
+  [role="option"],
+  [role="menuitem"],
+  .dropdown-item {
+    min-height: 44px !important;
+    padding: 12px 16px !important;
+  }
+  
+  /* Dialog/Modal close buttons */
+  [data-radix-collection-item] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Tabs */
+  [role="tab"] {
+    min-height: 44px !important;
+    padding: 10px 16px !important;
+  }
+  
+  /* Checkbox and Radio larger hit areas */
+  [role="checkbox"],
+  [role="radio"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  /* Accordion triggers */
+  [data-state="open"],
+  [data-state="closed"] {
+    min-height: 48px !important;
   }
 }
 
@@ -51,9 +154,54 @@
 .responsive-table-container {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .responsive-table {
   width: 100%;
   min-width: 600px;
 }
+
+/* Touch feedback animations */
+@media (hover: none) and (pointer: coarse) {
+  button:active,
+  [role="button"]:active,
+  a:active {
+    transform: scale(0.97);
+    opacity: 0.8;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+  }
+  
+  /* Disable hover effects on touch devices */
+  button:hover,
+  [role="button"]:hover {
+    transform: none;
+  }
+}
+
+/* Safe area padding for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Improve scrolling on mobile */
+.mobile-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+/* Prevent text selection on buttons */
+button,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
