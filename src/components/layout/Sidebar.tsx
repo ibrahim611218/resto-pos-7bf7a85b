@@ -82,6 +82,7 @@ const Sidebar: React.FC<{
     <SidebarProvider>
       <div 
         onClick={handleClick}
+        className="h-full flex flex-col"
         style={{ 
           pointerEvents: "auto", 
           touchAction: "auto", 
@@ -92,42 +93,44 @@ const Sidebar: React.FC<{
       >
         <SidebarEventHandler onToggle={onToggle}>
           <SidebarContainer 
-            collapsed={collapsed} 
+            collapsed={isMobile ? false : collapsed} 
             onToggle={onToggle} 
             isInitialized={isInitialized}
             isMobile={isMobile}
           >
-            <SidebarHeader collapsed={collapsed} onToggle={onToggle} />
-            <SidebarUserProfile user={user} collapsed={collapsed} />
+            <SidebarHeader collapsed={isMobile ? false : collapsed} onToggle={onToggle} />
+            <SidebarUserProfile user={user} collapsed={isMobile ? false : collapsed} />
             <SidebarNavigation 
               links={sidebarLinks} 
-              collapsed={collapsed} 
+              collapsed={isMobile ? false : collapsed} 
               currentPath={location.pathname}
               onNavigate={handleNavigate} 
             />
             <SidebarFooter 
-              collapsed={collapsed} 
+              collapsed={isMobile ? false : collapsed} 
               language={language as any} 
               onLogout={logout} 
             />
             
-            {/* Add hide sidebar button */}
-            <div className="p-3 flex justify-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onHide}
-                className="w-full text-white hover:text-primary hover:bg-primary/10"
-                title={isArabic ? "إخفاء القائمة الجانبية" : "Hide Sidebar"}
-              >
-                {isArabic ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-                {!collapsed && (
-                  <span className="ml-2 text-white">
-                    {isArabic ? "إخفاء القائمة" : "Hide Sidebar"}
-                  </span>
-                )}
-              </Button>
-            </div>
+            {/* Hide sidebar button - only show on desktop */}
+            {!isMobile && (
+              <div className="p-3 flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onHide}
+                  className="w-full text-white hover:text-primary hover:bg-primary/10"
+                  title={isArabic ? "إخفاء القائمة الجانبية" : "Hide Sidebar"}
+                >
+                  {isArabic ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                  {!collapsed && (
+                    <span className="ml-2 text-white">
+                      {isArabic ? "إخفاء القائمة" : "Hide Sidebar"}
+                    </span>
+                  )}
+                </Button>
+              </div>
+            )}
           </SidebarContainer>
         </SidebarEventHandler>
       </div>
