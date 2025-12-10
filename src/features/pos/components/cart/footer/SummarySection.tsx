@@ -1,7 +1,7 @@
 
 import React from "react";
 import CartSummary from "../CartSummary";
-import { PaymentMethod } from "@/types";
+import { PaymentMethod, OrderType } from "@/types";
 
 interface SummarySectionProps {
   subtotal: number;
@@ -15,6 +15,8 @@ interface SummarySectionProps {
   paidAmount?: number;
   onPaidAmountClick?: () => void;
   taxIncluded?: boolean;
+  deliveryFee?: number;
+  orderType?: OrderType;
 }
 
 const SummarySection: React.FC<SummarySectionProps> = ({
@@ -28,7 +30,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   paymentMethod,
   paidAmount,
   onPaidAmountClick,
-  taxIncluded
+  taxIncluded,
+  deliveryFee = 0,
+  orderType
 }) => {
   return (
     <CartSummary
@@ -43,6 +47,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       paidAmount={paidAmount}
       onPaidAmountClick={onPaidAmountClick}
       taxIncluded={taxIncluded}
+      deliveryFee={deliveryFee}
+      orderType={orderType}
     />
   );
 };

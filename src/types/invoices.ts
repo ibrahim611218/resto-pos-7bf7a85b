@@ -3,6 +3,7 @@ import { PaymentMethod } from './payment';
 import { Customer } from './customers';
 
 export type InvoiceStatus = "completed" | "pending" | "cancelled" | "refunded";
+export type OrderType = "takeaway" | "dineIn" | "delivery";
 
 export interface Invoice {
   id: string;
@@ -24,11 +25,14 @@ export interface Invoice {
   notes?: string;
   createdAt?: string;
   status?: InvoiceStatus;
-  orderType?: "takeaway" | "dineIn";
+  orderType?: OrderType;
   tableNumber?: string;
   paidAmount: number;
   transferReceiptNumber?: string;
   taxIncluded?: boolean;
+  // Delivery fields
+  deliveryFee?: number;
+  deliveryAddress?: string;
 }
 
 export interface InvoiceItem {

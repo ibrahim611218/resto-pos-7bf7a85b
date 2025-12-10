@@ -1,14 +1,17 @@
 
 import React from "react";
 import OrderTypeSelector from "../OrderTypeSelector";
+import { OrderType } from "@/types";
 
 interface OrderTypeSectionProps {
-  orderType: "takeaway" | "dineIn";
+  orderType: OrderType;
   tableNumber: string;
-  setOrderType: (type: "takeaway" | "dineIn") => void;
+  setOrderType: (type: OrderType) => void;
   setTableNumber: (number: string) => void;
   isMobile: boolean;
   isArabic: boolean;
+  deliveryAddress?: string;
+  setDeliveryAddress?: (address: string) => void;
 }
 
 const OrderTypeSection: React.FC<OrderTypeSectionProps> = ({
@@ -17,7 +20,9 @@ const OrderTypeSection: React.FC<OrderTypeSectionProps> = ({
   setOrderType,
   setTableNumber,
   isMobile,
-  isArabic
+  isArabic,
+  deliveryAddress,
+  setDeliveryAddress
 }) => {
   return (
     <OrderTypeSelector
@@ -27,6 +32,8 @@ const OrderTypeSection: React.FC<OrderTypeSectionProps> = ({
       setTableNumber={setTableNumber}
       isMobile={isMobile}
       isArabic={isArabic}
+      deliveryAddress={deliveryAddress}
+      setDeliveryAddress={setDeliveryAddress}
     />
   );
 };

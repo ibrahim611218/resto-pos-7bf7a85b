@@ -1,6 +1,8 @@
 
 import React from "react";
 import { formatCurrency } from "@/utils/formatters";
+import { OrderType } from "@/types";
+import { Truck } from "lucide-react";
 
 export interface CartSummaryProps {
   subtotal: number;
@@ -14,6 +16,8 @@ export interface CartSummaryProps {
   paidAmount?: number;
   onPaidAmountClick?: () => void;
   taxIncluded?: boolean;
+  deliveryFee?: number;
+  orderType?: OrderType;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -27,7 +31,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   paymentMethod,
   paidAmount,
   onPaidAmountClick,
-  taxIncluded = false
+  taxIncluded = false,
+  deliveryFee = 0,
+  orderType
 }) => {
   // حساب مبلغ الخصم
   const discountAmount = discountType === "percentage" 
@@ -83,6 +89,22 @@ const CartSummary: React.FC<CartSummaryProps> = ({
           </span>
           <span>
             - {formatCurrency(discountAmount, isArabic ? "ar-SA" : "en-US", "SAR")}
+          </span>
+        </div>
+      )}
+
+      {/* رسوم التوصيل */}
+      {orderType === "delivery" && (
+        <div className="flex justify-between items-center text-blue-600">
+          <span className="flex items-center gap-1">
+            <Truck className="h-4 w-4" />
+            {isArabic ? "رسوم التوصيل" : "Delivery Fee"}
+          </span>
+          <span>
+            {deliveryFee > 0 
+              ? formatCurrency(deliveryFee, isArabic ? "ar-SA" : "en-US", "SAR")
+              : (isArabic ? "مجاني" : "Free")
+            }
           </span>
         </div>
       )}

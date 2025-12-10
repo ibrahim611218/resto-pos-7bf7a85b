@@ -37,6 +37,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
     setOrderType,
     tableNumber,
     setTableNumber,
+    deliveryAddress,
+    setDeliveryAddress,
+    deliveryFee,
     paymentMethod,
     paidAmount,
     setPaymentMethod,
@@ -128,6 +131,9 @@ const CartPanel: React.FC<CartPanelProps> = ({
               onPaidAmountClick={handleShowPaidAmountDialog}
               customer={customer}
               className="cart-footer"
+              deliveryAddress={deliveryAddress}
+              setDeliveryAddress={setDeliveryAddress}
+              deliveryFee={deliveryFee}
             />
           </div>
         </>
