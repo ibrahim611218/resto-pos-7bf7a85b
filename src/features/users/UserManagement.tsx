@@ -57,7 +57,7 @@ const UserManagement: React.FC = () => {
   const isLoading = usersLoading || connectionLoading;
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     
     if (!isConnected && connectionAttempted) {
       timer = setTimeout(() => {

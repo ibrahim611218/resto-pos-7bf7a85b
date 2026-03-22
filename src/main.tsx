@@ -12,9 +12,13 @@ import { AdvancedThemeProvider } from './context/AdvancedThemeContext';
 import { AuthProvider } from './features/auth/hooks/useAuth';
 import { CartProvider } from './features/pos/hooks/useCart';
 import { Toaster } from "@/components/ui/sonner";
+import { seedDemoData } from './data/seedData';
 
 // Load all styles
 loadStyles();
+
+// Seed demo data if empty
+seedDemoData();
 
 const queryClient = new QueryClient({
   defaultOptions: {
