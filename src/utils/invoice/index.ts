@@ -56,14 +56,12 @@ export const handleInvoiceExport = (
 
 // Function to print invoice
 export const printInvoice = (invoice: Invoice, businessSettings: BusinessSettings | undefined) => {
-  const { generateInvoiceHeader, generateInvoiceDetails, generateInvoiceItemsTable, generateInvoiceSummary, generateInvoiceFooter, generateInvoiceQRCode } = require('./components');
-  
-  const headerHTML = generateInvoiceHeader(businessSettings);
+  const headerHTML = generateInvoiceHeader(businessSettings as BusinessSettings);
   const detailsHTML = generateInvoiceDetails(invoice);
   const itemsHTML = generateInvoiceItemsTable(invoice);
-  const summaryHTML = generateInvoiceSummary(invoice, businessSettings);
-  const footerHTML = generateInvoiceFooter(businessSettings);
-  const qrCodeHTML = generateInvoiceQRCode(invoice, businessSettings);
+  const summaryHTML = generateInvoiceSummary(invoice, businessSettings as BusinessSettings);
+  const footerHTML = generateInvoiceFooter(businessSettings as BusinessSettings);
+  const qrCodeHTML = generateInvoiceQRCode(invoice, false);
   
   const printableContent = `
     <html>
