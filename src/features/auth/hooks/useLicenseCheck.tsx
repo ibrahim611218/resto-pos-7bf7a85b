@@ -10,7 +10,7 @@ export const useLicenseCheck = () => {
   const { user, isAuthenticated } = useAuth();
   const [isChecking, setIsChecking] = useState(false);
   const checkAttempted = useRef(true);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // في النسخة الأونلاين، نعتبر جميع المستخدمين كمشرفين لتجاوز التحقق من الترخيص
   const isAdminUser = true;

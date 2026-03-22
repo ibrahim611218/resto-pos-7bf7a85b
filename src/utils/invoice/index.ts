@@ -1,5 +1,6 @@
 import { Invoice, BusinessSettings, Customer, PaymentMethod } from "@/types";
 import { v4 as uuidv4 } from 'uuid';
+import { generateInvoiceHeader, generateInvoiceDetails, generateInvoiceItemsTable, generateInvoiceSummary, generateInvoiceFooter, generateInvoiceQRCode } from './components';
 
 /**
  * Generates a unique invoice number
