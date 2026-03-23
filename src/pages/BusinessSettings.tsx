@@ -13,7 +13,6 @@ const BusinessSettings = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   
-  // تطبيق أي إعدادات عرض محفوظة عند تحميل الصفحة
   useEffect(() => {
     const storedSettings = localStorage.getItem("display-settings");
     if (storedSettings) {
@@ -30,35 +29,37 @@ const BusinessSettings = () => {
   
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col" dir={isArabic ? "rtl" : "ltr"}>
-      <div className="flex-1 overflow-hidden p-4">
+      <div className="flex-1 overflow-hidden p-2 sm:p-4">
         <div className="h-full max-w-6xl mx-auto">
           <Tabs defaultValue="business" className="h-full flex flex-col">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-4 flex-shrink-0 overflow-x-auto whitespace-nowrap gap-2">
-              <TabsTrigger value="business">
-                {isArabic ? "إعدادات المؤسسة" : "Business Settings"}
+            <TabsList className="flex w-full sm:max-w-md sm:mx-auto mb-3 sm:mb-4 flex-shrink-0 overflow-x-auto gap-1 p-1">
+              <TabsTrigger value="business" className="flex-1 min-w-0 text-xs sm:text-sm px-2 sm:px-3 py-2 min-h-[40px]">
+                <span className="truncate">{isArabic ? "المؤسسة" : "Business"}</span>
               </TabsTrigger>
-              <TabsTrigger value="display">
-                {isArabic ? "إعدادات العرض" : "Display Settings"}
+              <TabsTrigger value="display" className="flex-1 min-w-0 text-xs sm:text-sm px-2 sm:px-3 py-2 min-h-[40px]">
+                <span className="truncate">{isArabic ? "العرض" : "Display"}</span>
               </TabsTrigger>
-              <TabsTrigger value="data">
-                {isArabic ? "إدارة البيانات" : "Data Management"}
+              <TabsTrigger value="data" className="flex-1 min-w-0 text-xs sm:text-sm px-2 sm:px-3 py-2 min-h-[40px]">
+                <span className="truncate">{isArabic ? "البيانات" : "Data"}</span>
               </TabsTrigger>
             </TabsList>
             
             <div className="flex-1 overflow-hidden">
               <TabsContent value="business" className="h-full">
                 <ScrollArea className="h-full">
-                  <BusinessSettingsForm />
+                  <div className="px-1 sm:px-0">
+                    <BusinessSettingsForm />
+                  </div>
                 </ScrollArea>
               </TabsContent>
               
               <TabsContent value="display" className="h-full">
                 <ScrollArea className="h-full">
                   <Card>
-                    <CardHeader>
-                      <CardTitle>{isArabic ? "إعدادات العرض" : "Display Settings"}</CardTitle>
+                    <CardHeader className="p-3 sm:p-6">
+                      <CardTitle className="text-base sm:text-lg">{isArabic ? "إعدادات العرض" : "Display Settings"}</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-3 sm:p-6 pt-0">
                       <DisplaySettings />
                       <SidebarCustomization />
                     </CardContent>
@@ -69,10 +70,10 @@ const BusinessSettings = () => {
               <TabsContent value="data" className="h-full">
                 <ScrollArea className="h-full">
                   <Card>
-                    <CardHeader>
-                      <CardTitle>{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
+                    <CardHeader className="p-3 sm:p-6">
+                      <CardTitle className="text-base sm:text-lg">{isArabic ? "إدارة البيانات" : "Data Management"}</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-3 sm:p-6 pt-0">
                       <DataManagement />
                     </CardContent>
                   </Card>

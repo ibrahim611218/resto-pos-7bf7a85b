@@ -81,13 +81,13 @@ const CartPanel: React.FC<CartPanelProps> = ({
     <div 
       className={cn(
         "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden",
-        expanded ? "w-80 xl:w-96" : "w-16",
+        isMobile ? "w-full" : expanded ? "w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
-        "shadow-lg border",
-        isArabic ? "border-l" : "border-r"
+        !isMobile && "shadow-lg border",
+        !isMobile && (isArabic ? "border-l" : "border-r")
       )}
       style={{ 
-        height: "calc(100vh - 4rem)",
+        height: isMobile ? "100%" : "calc(100vh - 4rem)",
         direction: isArabic ? "rtl" : "ltr"
       }}
       dir={isArabic ? "rtl" : "ltr"}
@@ -104,7 +104,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
       
       {expanded ? (
         <>
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-auto">
             <CartContent cartItems={cartItems} isArabic={isArabic} />
           </div>
           
