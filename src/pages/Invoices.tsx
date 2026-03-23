@@ -8,7 +8,7 @@ const Invoices: React.FC = () => {
   const isArabic = language === "ar";
   
   return (
-    <div className="container mx-auto p-2 sm:p-4 overflow-auto h-full" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="container mx-auto p-4 overflow-auto h-full" dir={isArabic ? "rtl" : "ltr"}>
       <InvoicesList language={language} />
     </div>
   );

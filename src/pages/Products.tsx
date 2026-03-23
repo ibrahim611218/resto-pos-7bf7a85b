@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductsGrid from "@/features/pos/components/products/ProductsGrid";
@@ -75,17 +76,17 @@ const Products = () => {
 
   return (
     <div className="h-screen w-full overflow-hidden flex flex-col">
-      <div className="flex-shrink-0 p-3 sm:p-4 border-b bg-background">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <h1 className="text-xl sm:text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none min-h-[44px]" onClick={() => setShowBulkTransfer(true)}>
-              <FolderInput className={isArabic ? "ml-1" : "mr-1"} size={16} />
-              <span className="text-xs sm:text-sm">{isArabic ? "نقل" : "Transfer"}</span>
+      <div className="flex-shrink-0 p-4 border-b bg-background">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">{isArabic ? "المنتجات" : "Products"}</h1>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowBulkTransfer(true)}>
+              <FolderInput className={isArabic ? "ml-2" : "mr-2"} size={16} />
+              {isArabic ? "نقل المنتجات" : "Transfer Products"}
             </Button>
-            <Button size="sm" className="flex-1 sm:flex-none min-h-[44px]" onClick={handleAddProduct}>
-              <Plus className={isArabic ? "ml-1" : "mr-1"} size={16} />
-              <span className="text-xs sm:text-sm">{isArabic ? "إضافة منتج" : "Add"}</span>
+            <Button onClick={handleAddProduct}>
+              <Plus className={isArabic ? "ml-2" : "mr-2"} size={16} />
+              {isArabic ? "إضافة منتج" : "Add Product"}
             </Button>
           </div>
         </div>

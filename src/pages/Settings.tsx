@@ -40,21 +40,22 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-3 sm:p-4 space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{isArabic ? "الإعدادات" : "Settings"}</h1>
+    <div className="container mx-auto p-4 space-y-6">
+      <h1 className="text-2xl font-bold mb-6">{isArabic ? "الإعدادات" : "Settings"}</h1>
       
-      <Card className="overflow-hidden">
-        <CardHeader className="p-3 sm:p-6">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <Truck className="h-5 w-5 flex-shrink-0" />
-            <span className="truncate">{isArabic ? "إعدادات التوصيل" : "Delivery Settings"}</span>
+      {/* Delivery Settings Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Truck className="h-5 w-5" />
+            {isArabic ? "إعدادات التوصيل" : "Delivery Settings"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3 sm:p-6 pt-0 space-y-4">
-          <div className="flex items-start sm:items-center justify-between gap-3">
-            <Label htmlFor="deliveryEnabled" className="flex flex-col gap-1 flex-1 min-w-0">
-              <span className="text-sm sm:text-base">{isArabic ? "تفعيل خدمة التوصيل" : "Enable Delivery Service"}</span>
-              <span className="text-xs sm:text-sm text-muted-foreground break-words">
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="deliveryEnabled" className="flex flex-col gap-1">
+              <span>{isArabic ? "تفعيل خدمة التوصيل" : "Enable Delivery Service"}</span>
+              <span className="text-sm text-muted-foreground">
                 {isArabic ? "عند التفعيل سيظهر خيار التوصيل في نقاط البيع" : "When enabled, delivery option will appear in POS"}
               </span>
             </Label>
@@ -62,14 +63,13 @@ const Settings: React.FC = () => {
               id="deliveryEnabled"
               checked={deliveryEnabled}
               onCheckedChange={setDeliveryEnabled}
-              className="flex-shrink-0"
             />
           </div>
 
           {deliveryEnabled && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="deliveryFee" className="text-sm">
+                <Label htmlFor="deliveryFee">
                   {isArabic ? "رسوم التوصيل (ر.س)" : "Delivery Fee (SAR)"}
                 </Label>
                 <Input
@@ -80,15 +80,14 @@ const Settings: React.FC = () => {
                   value={deliveryFee}
                   onChange={(e) => setDeliveryFee(Number(e.target.value))}
                   placeholder={isArabic ? "أدخل رسوم التوصيل" : "Enter delivery fee"}
-                  className="min-h-[44px]"
                 />
-                <p className="text-xs sm:text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isArabic ? "اتركه 0 للتوصيل المجاني" : "Set to 0 for free delivery"}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="freeDeliveryThreshold" className="text-sm">
+                <Label htmlFor="freeDeliveryThreshold">
                   {isArabic ? "حد التوصيل المجاني (ر.س)" : "Free Delivery Threshold (SAR)"}
                 </Label>
                 <Input
@@ -99,16 +98,15 @@ const Settings: React.FC = () => {
                   value={freeDeliveryThreshold}
                   onChange={(e) => setFreeDeliveryThreshold(Number(e.target.value))}
                   placeholder={isArabic ? "أدخل الحد الأدنى للتوصيل المجاني" : "Enter minimum for free delivery"}
-                  className="min-h-[44px]"
                 />
-                <p className="text-xs sm:text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isArabic ? "التوصيل مجاني عند تجاوز هذا المبلغ (اتركه 0 لتعطيل)" : "Free delivery when order exceeds this amount (0 to disable)"}
                 </p>
               </div>
             </>
           )}
 
-          <Button onClick={handleSaveDeliverySettings} disabled={loading} className="w-full min-h-[48px]">
+          <Button onClick={handleSaveDeliverySettings} disabled={loading} className="w-full">
             <Save className="h-4 w-4 ml-2" />
             {isArabic ? "حفظ إعدادات التوصيل" : "Save Delivery Settings"}
           </Button>
@@ -118,8 +116,10 @@ const Settings: React.FC = () => {
   );
 };
 
+// Export the component for direct use
 export { Settings };
 
+// Export a default component for backward compatibility
 const SettingsPage: React.FC = () => (
   <Settings />
 );

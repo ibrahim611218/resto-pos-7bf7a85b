@@ -22,6 +22,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   const [showReturnDialog, setShowReturnDialog] = useState(false);
   const [selectedInvoiceForReturn, setSelectedInvoiceForReturn] = useState<Invoice | null>(null);
   
+  // Add date filter states
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const endOfToday = new Date();
@@ -45,6 +46,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     loadInvoicesFromStorage
   } = useInvoices();
 
+  // Load invoices from localStorage on component mount
   useEffect(() => {
     loadInvoicesFromStorage();
   }, [loadInvoicesFromStorage]);
@@ -80,6 +82,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
     }
   };
 
+  // Filter invoices by date range
   const dateFilteredInvoices = filteredInvoices.filter(invoice => {
     const invoiceDate = new Date(invoice.date);
     if (startDate && invoiceDate < startDate) return false;
@@ -88,7 +91,7 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
   });
 
   return (
-    <div className="container mx-auto py-3 sm:py-6 px-0 sm:px-4" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="container mx-auto py-6" dir={isArabic ? "rtl" : "ltr"}>
       <InvoiceListHeader
         title={isArabic ? "الفواتير" : "Invoices"}
         searchTerm={searchTerm}
@@ -97,22 +100,22 @@ const InvoicesList: React.FC<InvoicesListProps> = ({ language = "ar" }) => {
       />
       
       {/* Date filters */}
-      <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-card rounded-lg border">
-        <div className="grid grid-cols-2 gap-2 sm:gap-4">
-          <div className="space-y-1">
-            <Label className="text-xs sm:text-sm">{isArabic ? "من تاريخ" : "From"}</Label>
+      <div className="mb-4 p-4 bg-card rounded-lg border">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>{isArabic ? "من تاريخ" : "Start Date"}</Label>
             <DatePicker
               selected={startDate}
               onSelect={setStartDate}
-              placeholderText={isArabic ? "البداية" : "Start"}
+              placeholderText={isArabic ? "اختر تاريخ البداية" : "Select start date"}
             />
           </div>
-          <div className="space-y-1">
-            <Label className="text-xs sm:text-sm">{isArabic ? "إلى تاريخ" : "To"}</Label>
+          <div className="space-y-2">
+            <Label>{isArabic ? "إلى تاريخ" : "End Date"}</Label>
             <DatePicker
               selected={endDate}
               onSelect={setEndDate}
-              placeholderText={isArabic ? "النهاية" : "End"}
+              placeholderText={isArabic ? "اختر تاريخ النهاية" : "Select end date"}
             />
           </div>
         </div>
