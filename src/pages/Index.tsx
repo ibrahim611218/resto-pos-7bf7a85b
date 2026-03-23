@@ -24,9 +24,9 @@ const Index = () => {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-16 px-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-16">
           <div className="bg-card p-5 sm:p-8 rounded-lg shadow-lg border border-border">
-            <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3 sm:mb-4" />
+            <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3" />
             <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">
               {isArabic ? 'نقاط البيع' : 'Point of Sale'}
             </h2>
@@ -38,7 +38,7 @@ const Index = () => {
           </div>
 
           <div className="bg-card p-5 sm:p-8 rounded-lg shadow-lg border border-border">
-            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3 sm:mb-4" />
+            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3" />
             <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">
               {isArabic ? 'إدارة المخزون' : 'Inventory Management'}
             </h2>
@@ -50,7 +50,7 @@ const Index = () => {
           </div>
 
           <div className="bg-card p-5 sm:p-8 rounded-lg shadow-lg border border-border sm:col-span-2 md:col-span-1">
-            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3 sm:mb-4" />
+            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-3" />
             <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-4">
               {isArabic ? 'تقارير شاملة' : 'Comprehensive Reports'}
             </h2>
