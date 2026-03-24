@@ -70,7 +70,7 @@ const Pos = () => {
 
           {/* Cart view */}
           <div className={cn(
-            "absolute inset-0 overflow-hidden transition-transform duration-200",
+            "absolute inset-0 flex flex-col transition-transform duration-200",
             mobileView === "cart" ? "translate-x-0" : isArabic ? "-translate-x-full" : "translate-x-full"
           )}>
             <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
