@@ -61,10 +61,10 @@ const CartFooter: React.FC<CartFooterProps> = ({
   setDeliveryAddress,
   deliveryFee = 0
 }) => {
-  const footerClass = isMobile ? "p-1" : "p-2";
+  const footerClass = isMobile ? "p-2" : "p-2";
 
   return (
-    <div className={cn(`${footerClass} border-t bg-card flex-shrink-0`, className)}>
+    <div className={cn(`${footerClass} border-t bg-card flex-shrink-0 overflow-y-auto max-h-[60vh]`, className)}>
       <Separator className={isMobile ? "mb-1" : "mb-2"} />
       
       <OrderTypeSection

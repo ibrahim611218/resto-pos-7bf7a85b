@@ -80,8 +80,8 @@ const CartPanel: React.FC<CartPanelProps> = ({
   return (
     <div 
       className={cn(
-        "h-full flex flex-col bg-card cart-panel rounded-sm overflow-hidden",
-        isMobile ? "w-full" : expanded ? "w-80 xl:w-96" : "w-16",
+        "flex flex-col bg-card cart-panel rounded-sm overflow-hidden",
+        isMobile ? "w-full h-full" : expanded ? "w-80 xl:w-96" : "w-16",
         "transition-all duration-300 ease-in-out",
         !isMobile && "shadow-lg border",
         !isMobile && (isArabic ? "border-l" : "border-r")
