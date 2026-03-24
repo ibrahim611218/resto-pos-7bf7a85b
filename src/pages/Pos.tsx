@@ -39,42 +39,38 @@ const Pos = () => {
   if (isMobile) {
     return (
       <div className="h-screen w-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
-        {/* Mobile Header */}
-        <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background border-b h-14 z-10">
-          <h1 className="text-lg font-bold truncate">{isArabic ? "نقاط البيع" : "POS"}</h1>
-          <div className="flex gap-1 items-center">
-            <AdvancedThemeSelector />
-            <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomOut} disabled={viewMode === "list"}>
-              <ZoomOut size={16} />
-            </Button>
-            <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomIn} disabled={viewMode === "grid-large"}>
-              <ZoomIn size={16} />
-            </Button>
-            <Button variant="outline" size="icon" className="h-9 w-9" onClick={toggleViewMode}>
-              {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Content area */}
-        <div className="flex-1 overflow-hidden relative">
-          {/* Products view */}
-          <div className={cn(
-            "absolute inset-0 overflow-auto transition-transform duration-200",
-            mobileView === "products" ? "translate-x-0" : isArabic ? "translate-x-full" : "-translate-x-full"
-          )}>
-            <div className="p-3 pb-20">
-              <ProductsGrid viewMode={viewMode} onViewModeChange={setViewMode} />
+        {/* Mobile Header - only show on products view */}
+        {mobileView === "products" && (
+          <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background border-b h-14 z-10">
+            <h1 className="text-lg font-bold truncate">{isArabic ? "نقاط البيع" : "POS"}</h1>
+            <div className="flex gap-1 items-center">
+              <AdvancedThemeSelector />
+              <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomOut} disabled={viewMode === "list"}>
+                <ZoomOut size={16} />
+              </Button>
+              <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomIn} disabled={viewMode === "grid-large"}>
+                <ZoomIn size={16} />
+              </Button>
+              <Button variant="outline" size="icon" className="h-9 w-9" onClick={toggleViewMode}>
+                {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
+              </Button>
             </div>
           </div>
+        )}
 
-          {/* Cart view */}
-          <div className={cn(
-            "absolute inset-0 flex flex-col transition-transform duration-200",
-            mobileView === "cart" ? "translate-x-0" : isArabic ? "-translate-x-full" : "translate-x-full"
-          )}>
-            <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
-          </div>
+        {/* Content area */}
+        <div className="flex-1 overflow-hidden">
+          {mobileView === "products" ? (
+            <div className="h-full overflow-auto">
+              <div className="p-3 pb-20">
+                <ProductsGrid viewMode={viewMode} onViewModeChange={setViewMode} />
+              </div>
+            </div>
+          ) : (
+            <div className="h-full w-full flex flex-col">
+              <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
+            </div>
+          )}
         </div>
 
         {/* Bottom tab bar */}
