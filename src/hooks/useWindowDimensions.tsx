@@ -29,12 +29,18 @@ export const useWindowDimensions = (): WindowDimensions => {
   useEffect(() => {
     // Helper function to calculate dimensions and breakpoints
     const calculateDimensions = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const visualWidth = window.visualViewport?.width;
+      const visualHeight = window.visualViewport?.height;
+      const documentWidth = document.documentElement?.clientWidth || window.innerWidth;
+      const documentHeight = document.documentElement?.clientHeight || window.innerHeight;
+
+      // Use the most reliable viewport values for mobile browsers (Samsung Internet/Chrome)
+      const width = Math.round(visualWidth ?? Math.min(window.innerWidth, documentWidth));
+      const height = Math.round(visualHeight ?? Math.min(window.innerHeight, documentHeight));
       
       // Calculate responsive breakpoints
-      const isMobile = width < 640;
-      const isTablet = width >= 640 && width < 1024;
+      const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
       const isDesktop = width >= 1024;
       const isSmallScreen = height < 700;
       const orientation = width >= height ? 'landscape' : 'portrait';
