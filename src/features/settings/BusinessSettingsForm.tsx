@@ -136,10 +136,10 @@ const BusinessSettingsForm: React.FC = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-7 w-full">
+            <TabsList className="flex w-full overflow-x-auto gap-0.5 p-1 h-auto flex-wrap sm:flex-nowrap">
               {tabs.map((tab) => (
-                <TabsTrigger key={tab.id} value={tab.id} className="text-xs">
-                  {tab.label}
+                <TabsTrigger key={tab.id} value={tab.id} className="text-[10px] sm:text-xs px-1.5 sm:px-3 py-1.5 min-h-[36px] whitespace-nowrap flex-shrink-0">
+                  <span className="truncate">{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
