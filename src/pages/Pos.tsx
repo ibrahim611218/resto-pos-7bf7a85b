@@ -15,9 +15,9 @@ import { Badge } from "@/components/ui/badge";
 const Pos = () => {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  const { isMobile } = useWindowDimensions();
+  const { isMobile, isTablet } = useWindowDimensions();
   const [viewMode, setViewMode] = useState<ViewMode>("grid-small");
-  const [cartExpanded, setCartExpanded] = useState(!isMobile);
+  const [cartExpanded, setCartExpanded] = useState(!isMobile && !isTablet);
   const [mobileView, setMobileView] = useState<"products" | "cart">("products");
   const { cartItems } = useCart();
   
@@ -35,46 +35,44 @@ const Pos = () => {
     else if (viewMode === "grid-small") setViewMode("list");
   };
 
-  // Mobile layout
+  // Mobile layout - full screen cart toggle
   if (isMobile) {
     return (
-      <div className="h-screen w-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
-        {/* Mobile Header - only show on products view */}
-        {mobileView === "products" && (
-          <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background border-b h-14 z-10">
-            <h1 className="text-lg font-bold truncate">{isArabic ? "نقاط البيع" : "POS"}</h1>
-            <div className="flex gap-1 items-center">
-              <AdvancedThemeSelector />
-              <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomOut} disabled={viewMode === "list"}>
-                <ZoomOut size={16} />
-              </Button>
-              <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomIn} disabled={viewMode === "grid-large"}>
-                <ZoomIn size={16} />
-              </Button>
-              <Button variant="outline" size="icon" className="h-9 w-9" onClick={toggleViewMode}>
-                {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
-              </Button>
-            </div>
-          </div>
+      <div className="fixed inset-0 w-full h-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+        {/* Show cart full screen */}
+        {mobileView === "cart" && (
+          <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
         )}
 
-        {/* Content area */}
-        <div className="flex-1 overflow-hidden">
-          {mobileView === "products" ? (
-            <div className="h-full overflow-auto">
+        {/* Products view */}
+        {mobileView === "products" && (
+          <>
+            <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background border-b h-14 z-10">
+              <h1 className="text-lg font-bold truncate">{isArabic ? "نقاط البيع" : "POS"}</h1>
+              <div className="flex gap-1 items-center">
+                <AdvancedThemeSelector />
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomOut} disabled={viewMode === "list"}>
+                  <ZoomOut size={16} />
+                </Button>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={zoomIn} disabled={viewMode === "grid-large"}>
+                  <ZoomIn size={16} />
+                </Button>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={toggleViewMode}>
+                  {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-auto">
               <div className="p-3 pb-20">
                 <ProductsGrid viewMode={viewMode} onViewModeChange={setViewMode} />
               </div>
             </div>
-          ) : (
-            <div className="h-full w-full flex flex-col">
-              <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
-            </div>
-          )}
-        </div>
+          </>
+        )}
 
         {/* Bottom tab bar */}
-        <div className="flex-shrink-0 border-t bg-background safe-area-bottom">
+        <div className="flex-shrink-0 border-t bg-background safe-area-bottom z-[60]">
           <div className="flex">
             <button
               onClick={() => setMobileView("products")}
@@ -113,13 +111,13 @@ const Pos = () => {
     );
   }
 
-  // Desktop layout
+  // Desktop & Tablet layout
   return (
-    <div className="h-screen w-full flex overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+    <div className="h-screen w-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-50 flex-shrink-0 p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b h-16">
+      <div className="flex-shrink-0 p-2 flex justify-between items-center bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b h-16 z-30">
         <h1 className="text-2xl font-bold">{isArabic ? "نقاط البيع" : "Point of Sale"}</h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <AdvancedThemeSelector />
           <Button 
             variant="outline" 
@@ -142,26 +140,42 @@ const Pos = () => {
           <Button variant="outline" size="sm" onClick={toggleViewMode}>
             {viewMode === "list" ? <LayoutGrid size={18} /> : <List size={18} />}
           </Button>
+          {/* Cart toggle button for tablet */}
+          {isTablet && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setCartExpanded(prev => !prev)}
+              className="relative"
+            >
+              <ShoppingCart size={18} />
+              {cartItems.length > 0 && (
+                <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 flex items-center justify-center p-0 text-[9px] bg-destructive text-destructive-foreground">
+                  {cartItems.length}
+                </Badge>
+              )}
+            </Button>
+          )}
         </div>
       </div>
       
       {/* Main Content */}
-      <div className={cn("flex w-full pt-16", isArabic ? "flex-row-reverse" : "")}>
-        <div className="flex-shrink-0">
+      <div className={cn("flex flex-1 min-h-0", isArabic ? "flex-row-reverse" : "")}>
+        {/* Cart Panel - desktop sidebar or tablet overlay */}
+        {(!isTablet || cartExpanded) && (
           <CartPanel 
             expanded={cartExpanded} 
             onToggleExpand={() => setCartExpanded(prev => !prev)} 
           />
-        </div>
+        )}
         
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0 h-screen">
-          <div className="h-full overflow-auto">
-            <div className="p-4 h-full">
-              <ProductsGrid 
-                viewMode={viewMode} 
-                onViewModeChange={setViewMode}
-              />
-            </div>
+        {/* Products */}
+        <div className="flex-1 min-w-0 overflow-auto">
+          <div className="p-4 h-full">
+            <ProductsGrid 
+              viewMode={viewMode} 
+              onViewModeChange={setViewMode}
+            />
           </div>
         </div>
       </div>

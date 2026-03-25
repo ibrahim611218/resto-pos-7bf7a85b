@@ -61,11 +61,14 @@ const CartFooter: React.FC<CartFooterProps> = ({
   setDeliveryAddress,
   deliveryFee = 0
 }) => {
-  const footerClass = isMobile ? "p-2" : "p-2";
-
   return (
-    <div className={cn(`${footerClass} border-t bg-card flex-shrink-0 overflow-y-auto max-h-[60vh]`, className)}>
-      <Separator className={isMobile ? "mb-1" : "mb-2"} />
+    <div className={cn(
+      "border-t bg-card flex-shrink-0",
+      "overflow-y-auto",
+      isMobile ? "p-3 max-h-[50vh]" : "p-2 max-h-[55vh]",
+      className
+    )}>
+      <Separator className={isMobile ? "mb-2" : "mb-2"} />
       
       <OrderTypeSection
         orderType={orderType}
@@ -102,13 +105,16 @@ const CartFooter: React.FC<CartFooterProps> = ({
         orderType={orderType}
       />
       
-      <ActionsSection
-        cartItems={cartItems}
-        handleCreateInvoice={handleCreateInvoice}
-        clearCart={clearCart}
-        isMobile={isMobile}
-        isArabic={isArabic}
-      />
+      {/* Sticky action button */}
+      <div className="sticky bottom-0 bg-card pt-2">
+        <ActionsSection
+          cartItems={cartItems}
+          handleCreateInvoice={handleCreateInvoice}
+          clearCart={clearCart}
+          isMobile={isMobile}
+          isArabic={isArabic}
+        />
+      </div>
       
       {customer && (
         <div className="border-t pt-2">
