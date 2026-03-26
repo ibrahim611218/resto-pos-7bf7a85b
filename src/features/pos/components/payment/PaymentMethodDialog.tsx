@@ -35,10 +35,9 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   };
 
   const handleClose = () => {
-    // إعادة تعيين الحالة عند الإغلاق
     setShowCustomerForm(false);
     setSelectedMethod(null);
-    // إغلاق النافذة فقط دون إصدار فاتورة
+    setSelectedCustomer(undefined);
     onClose();
   };
 
