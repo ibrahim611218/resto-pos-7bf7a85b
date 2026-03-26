@@ -27,14 +27,11 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   const isArabic = language === "ar";
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | undefined>();
 
   const handleMethodSelect = (method: PaymentMethod) => {
-    if (method === "transfer") {
-      setSelectedMethod(method);
-      setShowCustomerForm(true);
-    } else {
-      onSelectPaymentMethod(method);
-    }
+    setSelectedMethod(method);
+    setShowCustomerForm(true);
   };
 
   const handleClose = () => {
