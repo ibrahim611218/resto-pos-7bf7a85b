@@ -50,11 +50,11 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
   if (showCustomerForm) {
     return (
       <Dialog open={open} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="sm:max-w-md" dir={isArabic ? "rtl" : "ltr"}>
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" dir={isArabic ? "rtl" : "ltr"}>
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="text-xl">
-                {isArabic ? "معلومات العميل" : "Customer Information"}
+                {isArabic ? "معلومات العميل (اختياري)" : "Customer Info (Optional)"}
               </DialogTitle>
               <Button
                 variant="ghost"
@@ -73,8 +73,17 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({
               }
               setShowCustomerForm(false);
               setSelectedMethod(null);
+              setSelectedCustomer(undefined);
             }}
-            onCancel={() => setShowCustomerForm(false)}
+            onCancel={() => {
+              // Skip customer - proceed without customer
+              if (selectedMethod) {
+                onSelectPaymentMethod(selectedMethod);
+              }
+              setShowCustomerForm(false);
+              setSelectedMethod(null);
+            }}
+            skipLabel={isArabic ? "تخطي بدون عميل" : "Skip without customer"}
           />
         </DialogContent>
       </Dialog>
