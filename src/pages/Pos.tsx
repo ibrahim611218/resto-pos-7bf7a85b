@@ -41,7 +41,7 @@ const Pos = () => {
       <div className="fixed inset-0 w-full h-[100dvh] flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
         {/* Show cart full screen */}
         {mobileView === "cart" && (
-          <div className="fixed inset-0 z-50 w-full h-[100dvh]">
+          <div className="fixed inset-0 z-50 w-full h-[100dvh] animate-slide-in-up-full">
             <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
           </div>
         )}

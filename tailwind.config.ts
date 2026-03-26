@@ -99,6 +99,14 @@ export default {
           from: { transform: "translateY(10px)", opacity: "0" },
           to: { transform: "translateY(0)", opacity: "1" },
         },
+        "slide-in-up-full": {
+          from: { transform: "translateY(100%)" },
+          to: { transform: "translateY(0)" },
+        },
+        "slide-out-down-full": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(100%)" },
+        },
         shimmer: {
           from: { backgroundPosition: "0 0" },
           to: { backgroundPosition: "200% 0" },
@@ -117,6 +125,8 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fadeIn 0.3s ease-out",
         "slide-in-up": "slideInUp 0.3s ease-out",
+        "slide-in-up-full": "slide-in-up-full 0.3s ease-out",
+        "slide-out-down-full": "slide-out-down-full 0.3s ease-out",
         "scale-in": "scaleIn 0.2s ease-out",
         shimmer: "shimmer 2s linear infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
