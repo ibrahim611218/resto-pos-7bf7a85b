@@ -61,13 +61,13 @@ const CustomerSelectionForm: React.FC<CustomerSelectionFormProps> = ({
         />
       )}
 
-      <div className="flex justify-end space-x-2 space-x-reverse pt-4">
+      <div className="flex justify-end gap-2 pt-4">
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           onClick={onCancel}
         >
-          {isArabic ? "إلغاء" : "Cancel"}
+          {skipLabel || (isArabic ? "تخطي" : "Skip")}
         </Button>
         <Button
           type="button"
