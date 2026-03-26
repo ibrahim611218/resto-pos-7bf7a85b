@@ -23,12 +23,12 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   isArabic,
   className,
 }) => {
-  const headerClass = isMobile ? "p-1 text-sm" : "p-2";
+  const headerClass = isMobile ? "p-3" : "p-2";
 
   return (
-    <div className={cn(`${headerClass} flex-shrink-0 flex justify-between items-center border-b`, className)}>
-      <h2 className={isMobile ? "text-base font-semibold" : "text-lg font-bold"}>
-        {isArabic ? "السلة" : "Cart"}
+    <div className={cn(`${headerClass} flex-shrink-0 flex justify-between items-center border-b bg-card`, className)}>
+      <h2 className={isMobile ? "text-lg font-bold" : "text-lg font-bold"}>
+        {isArabic ? "سلة المشتريات" : "Shopping Cart"}
       </h2>
       <div className="flex items-center gap-1">
         {isMobile && (
