@@ -82,8 +82,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   // Desktop: sidebar drawer 400-500px
   const getContainerClasses = () => {
     if (isMobile) {
-      // Full screen - fixed overlay
-      return "fixed inset-0 z-50 w-full h-full";
+      return "fixed inset-0 z-50 w-[100vw] h-[100dvh]";
     }
     if (isTablet) {
       // 70% width overlay from the side
