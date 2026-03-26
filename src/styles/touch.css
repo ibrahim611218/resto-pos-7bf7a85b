@@ -81,7 +81,13 @@ html, body, #root, #app, .app-container {
 }
 
 /* Fix z-index issues that might block interaction */
-.products-panel, .cart-panel {
+.products-panel {
+  z-index: 5;
+  position: relative;
+}
+
+.cart-panel--desktop,
+.cart-panel--tablet.collapsed {
   z-index: 5;
   position: relative;
 }

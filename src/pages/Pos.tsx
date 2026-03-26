@@ -38,10 +38,12 @@ const Pos = () => {
   // Mobile layout - full screen cart toggle
   if (isMobile) {
     return (
-      <div className="fixed inset-0 w-full h-full flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
+      <div className="fixed inset-0 w-full h-[100dvh] flex flex-col overflow-hidden" dir={isArabic ? "rtl" : "ltr"}>
         {/* Show cart full screen */}
         {mobileView === "cart" && (
-          <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
+          <div className="fixed inset-0 z-50 w-full h-[100dvh]">
+            <CartPanel expanded={true} onToggleExpand={() => setMobileView("products")} />
+          </div>
         )}
 
         {/* Products view */}

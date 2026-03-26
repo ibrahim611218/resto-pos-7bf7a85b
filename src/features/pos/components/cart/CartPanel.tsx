@@ -82,8 +82,7 @@ const CartPanel: React.FC<CartPanelProps> = ({
   // Desktop: sidebar drawer 400-500px
   const getContainerClasses = () => {
     if (isMobile) {
-      // Full screen - fixed overlay
-      return "fixed inset-0 z-50 w-full h-full";
+      return "fixed inset-0 z-50 w-[100vw] h-[100dvh]";
     }
     if (isTablet) {
       // 70% width overlay from the side
@@ -117,12 +116,14 @@ const CartPanel: React.FC<CartPanelProps> = ({
           "flex flex-col bg-card cart-panel overflow-hidden",
           "transition-all duration-300 ease-in-out",
           getContainerClasses(),
+          expanded ? "expanded" : "collapsed",
+          isMobile ? "cart-panel--mobile" : isTablet ? "cart-panel--tablet" : "cart-panel--desktop",
           !isMobile && "shadow-lg border",
           !isMobile && !isTablet && (isArabic ? "border-l" : "border-r")
         )}
         style={{ 
           direction: isArabic ? "rtl" : "ltr",
-          height: isMobile ? '100%' : isTablet ? '100vh' : 'calc(100vh - 4rem)'
+          height: isMobile ? '100dvh' : isTablet ? '100vh' : 'calc(100vh - 4rem)'
         }}
         dir={isArabic ? "rtl" : "ltr"}
       >

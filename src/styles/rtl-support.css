@@ -140,8 +140,8 @@ html[dir="rtl"] .modal-content {
   text-align: right;
 }
 
-/* Cart specific RTL */
-html[dir="rtl"] .cart-panel {
+/* Cart specific RTL - desktop/tablet only */
+html[dir="rtl"] .cart-panel:not(.cart-panel--mobile) {
   right: 0;
   left: auto;
   border-left: 1px solid hsl(var(--border));
