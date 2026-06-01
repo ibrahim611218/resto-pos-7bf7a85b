@@ -1,6 +1,6 @@
-
 /**
- * Sets up print window with options
+ * Print helpers — mobile-friendly using a hidden iframe instead of window.open
+ * (popup windows are blocked / unreliable on mobile browsers and PWAs).
  */
 export interface PrintWindowOptions {
   title?: string;
@@ -9,21 +9,43 @@ export interface PrintWindowOptions {
   isPdf?: boolean;
 }
 
+/**
+ * Mounts content inside a hidden iframe and returns its window so callers can
+ * print or further manipulate it. Returns null on failure.
+ */
 export const openPrintWindow = (content: string): Window | null => {
   try {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      console.error("Could not open print window. Pop-up might be blocked");
+    // Remove any previous print iframe to avoid stacking
+    const previous = document.getElementById("lovable-print-frame");
+    if (previous) previous.remove();
+
+    const iframe = document.createElement("iframe");
+    iframe.id = "lovable-print-frame";
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.style.opacity = "0";
+    iframe.style.pointerEvents = "none";
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc || !iframe.contentWindow) {
+      console.error("Could not access iframe document for printing");
       return null;
     }
-    
-    printWindow.document.open();
-    printWindow.document.write(content);
-    printWindow.document.close();
-    
-    return printWindow;
+
+    doc.open();
+    doc.write(content);
+    doc.close();
+
+    return iframe.contentWindow;
   } catch (error) {
-    console.error("Error opening print window:", error);
+    console.error("Error opening print iframe:", error);
     return null;
   }
 };
@@ -33,41 +55,46 @@ export const setupPrintWindow = (
   options: PrintWindowOptions = {}
 ): void => {
   const {
-    title = 'Print Document',
+    title = "Print Document",
     printAutomatically = true,
-    delay = 1000,
-    isPdf = false
+    delay = 800,
+    isPdf = false,
   } = options;
-  
-  if (title) {
-    printWindow.document.title = title;
+
+  try {
+    if (title && printWindow.document) {
+      printWindow.document.title = title;
+    }
+  } catch {
+    // ignore — cross-frame title set may fail in some browsers
   }
-  
-  // Focus the window to make sure it's in the foreground
-  printWindow.focus();
-  
-  // For PDF mode, we don't automatically print
+
   if (printAutomatically && !isPdf) {
-    setTimeout(() => {
+    const trigger = () => {
       try {
-        // Set print media before printing to ensure styles are applied
-        const style = printWindow.document.createElement('style');
+        const style = printWindow.document.createElement("style");
         style.textContent = `
           @media print {
-            body { -webkit-print-color-adjust: exact; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .invoice-container { page-break-inside: avoid !important; }
           }
         `;
         printWindow.document.head.appendChild(style);
-        
-        // Print the document
+
+        printWindow.focus();
         printWindow.print();
-        
-        // Don't close the window yet to allow print dialog to appear
+
+        // Cleanup iframe after print dialog resolves
+        setTimeout(() => {
+          const frame = document.getElementById("lovable-print-frame");
+          if (frame) frame.remove();
+        }, 1500);
       } catch (error) {
         console.error("Error in print function:", error);
       }
-    }, delay);
+    };
+
+    // Wait for fonts/images to load before printing for better mobile output
+    setTimeout(trigger, delay);
   }
 };
-

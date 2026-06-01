@@ -51,6 +51,7 @@
     "electron-builder": "^25.1.8",
     "electron-is-dev": "^3.0.1",
     "embla-carousel-react": "^8.3.0",
+    "html2pdf.js": "^0.14.0",
     "input-otp": "^1.2.4",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.7.0",

@@ -1,44 +1,53 @@
-
 import { Invoice, BusinessSettings } from "@/types";
 import { toast } from "@/hooks/use-toast";
 import { generateInvoiceTemplate } from "../template";
-import { openPrintWindow, setupPrintWindow } from "./print-helpers";
 
 /**
- * Exports invoice to PDF using browser's print functionality
+ * Exports invoice to PDF using html2pdf (works on mobile + desktop).
+ * Triggers a real file download (no browser print dialog).
  */
-export const exportInvoiceToPDF = (
+export const exportInvoiceToPDF = async (
   invoice: Invoice,
   businessSettings: BusinessSettings
-): void => {
+): Promise<void> => {
   try {
     console.log("Exporting invoice to PDF:", invoice.id, invoice.number);
-    
-    // For PDF export, always use A4 size and pass isPdf flag
-    const printContent = generateInvoiceTemplate(invoice, businessSettings, true);
-    
-    const printWindow = openPrintWindow(printContent);
-    
-    if (!printWindow) {
-      console.error("Could not open print window");
-      toast({
-        title: "خطأ في تصدير الفاتورة",
-        description: "تعذر فتح نافذة التصدير",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setupPrintWindow(printWindow, {
-      title: `invoice-${invoice.number}.pdf`,
-      printAutomatically: true,
-      isPdf: true,
-      delay: 2000 // Adjusted delay for proper rendering
-    });
-    
+
+    const html = generateInvoiceTemplate(invoice, businessSettings, true);
+
+    // Render HTML into an off-screen container so html2pdf can capture it
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.left = "-10000px";
+    container.style.top = "0";
+    container.style.width = "210mm";
+    container.style.background = "#ffffff";
+    container.innerHTML = html;
+    document.body.appendChild(container);
+
+    // Pick only the invoice body (avoid full <html> wrapper)
+    const target =
+      (container.querySelector(".invoice-container") as HTMLElement) || container;
+
+    // @ts-ignore - no types shipped
+    const html2pdf = (await import("html2pdf.js")).default;
+
+    await html2pdf()
+      .from(target)
+      .set({
+        margin: 5,
+        filename: `invoice-${invoice.number}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .save();
+
+    document.body.removeChild(container);
+
     toast({
       title: "تم تصدير الفاتورة",
-      description: `تم تصدير الفاتورة رقم ${invoice.number} بنجاح`,
+      description: `تم تنزيل الفاتورة رقم ${invoice.number} بصيغة PDF`,
     });
   } catch (error) {
     console.error("Error in exportInvoiceToPDF:", error);

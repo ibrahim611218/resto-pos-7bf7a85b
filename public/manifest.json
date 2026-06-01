@@ -4,8 +4,8 @@
   "description": "نظام نقاط البيع الشامل للمطاعم والمقاهي",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#004d40",
-  "theme_color": "#00695c",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "icons": [
     {
