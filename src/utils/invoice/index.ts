@@ -36,71 +36,10 @@ export const generateInvoiceQRCodeData = (invoice: Invoice): string => {
   return qrData;
 };
 
-// Function to handle invoice export (print, pdf, email)
-export const handleInvoiceExport = (
-  type: "print" | "pdf" | "email", 
-  invoice: Invoice, 
-  settings: BusinessSettings | undefined,
-  email?: string
-) => {
-  if (type === "print") {
-    printInvoice(invoice, settings);
-  } else if (type === "pdf") {
-    // Handle PDF export
-    console.log("Exporting PDF...");
-  } else if (type === "email") {
-    // Handle email
-    console.log("Sending email to:", email);
-  }
-};
-
-// Function to print invoice
-export const printInvoice = (invoice: Invoice, businessSettings: BusinessSettings | undefined) => {
-  const headerHTML = generateInvoiceHeader(businessSettings as BusinessSettings);
-  const detailsHTML = generateInvoiceDetails(invoice);
-  const itemsHTML = generateInvoiceItemsTable(invoice);
-  const summaryHTML = generateInvoiceSummary(invoice, businessSettings as BusinessSettings);
-  const footerHTML = generateInvoiceFooter(businessSettings as BusinessSettings);
-  const qrCodeHTML = generateInvoiceQRCode(invoice, false);
-  
-  const printableContent = `
-    <html>
-      <head>
-        <title>فاتورة رقم ${invoice.number}</title>
-        <style>
-          body { font-family: Arial, sans-serif; direction: rtl; }
-          .invoice-header { text-align: center; margin-bottom: 20px; }
-          .invoice-details { margin-bottom: 20px; }
-          .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-          .invoice-table th, .invoice-table td { border: 1px solid #ddd; padding: 8px; text-align: right; }
-          .invoice-summary { text-align: right; }
-          .total-row { font-weight: bold; }
-          .invoice-footer { margin-top: 30px; text-align: center; font-size: small; color: #777; }
-          .invoice-empty-items { text-align: center; font-style: italic; color: #777; }
-        </style>
-      </head>
-      <body>
-        ${headerHTML}
-        ${detailsHTML}
-        ${itemsHTML}
-        ${summaryHTML}
-        ${qrCodeHTML}
-        ${footerHTML}
-      </body>
-    </html>
-  `;
-
-  const printWindow = window.open('', '_blank');
-  if (printWindow) {
-    printWindow.document.write(printableContent);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-  } else {
-    console.error('يجب السماح بفتح النوافذ المنبثقة لطباعة الفاتورة.');
-  }
-};
+// Re-export the mobile-friendly print/PDF/email implementations so all
+// callers use the same iframe-based pipeline (avoids PWA closing on print
+// and ensures PDF actually downloads on mobile).
+export { handleInvoiceExport, printInvoice, exportInvoiceToPDF, emailInvoice } from "./export";
 
 // Fix the Customer object to include the required phone property
 export const createCustomerObject = (name: string, phone: string = "", taxNumber?: string): Customer => {
