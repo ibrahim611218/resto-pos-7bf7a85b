@@ -80,27 +80,19 @@ export const printInvoice = (invoice: Invoice, settings?: BusinessSettings): voi
       </html>
     `;
     
-    const printWindow = window.open('', '_blank');
+    // Use hidden iframe for mobile-friendly printing
+    const { openPrintWindow, setupPrintWindow } = await import("./print-helpers");
+    const printWindow = openPrintWindow(printContent);
     if (!printWindow) {
-      console.error("Could not open print window. Please check if pop-ups are blocked.");
+      console.error("Could not open print frame.");
       return;
     }
-    
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    
-    // Wait for content to load before printing
-    printWindow.onload = () => {
-      try {
-        setTimeout(() => {
-          printWindow.print();
-          printWindow.close();
-        }, 500);
-      } catch (err) {
-        console.error("Error while printing:", err);
-        printWindow.close();
-      }
-    };
+
+    setupPrintWindow(printWindow, {
+      title: `invoice-${invoice.number}`,
+      printAutomatically: true,
+      delay: 700,
+    });
     
   } catch (error) {
     console.error("Error in printInvoice:", error);
