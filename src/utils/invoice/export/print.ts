@@ -19,7 +19,7 @@ export interface PrintWindowOptions {
 /**
  * Open a print window with invoice content
  */
-export const printInvoice = (invoice: Invoice, settings?: BusinessSettings): void => {
+export const printInvoice = async (invoice: Invoice, settings?: BusinessSettings): Promise<void> => {
   try {
     console.log("Printing invoice:", invoice.id, invoice.number);
     
